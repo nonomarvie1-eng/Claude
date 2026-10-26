@@ -1,6 +1,6 @@
 # Pages légales — Sapin & Lin
 
-À compléter avant l'ouverture : [CODE POSTAL], [VILLE], [E-MAIL], [SIRET], [MÉDIATEUR].
+À compléter avant l'ouverture : [E-MAIL], [SIRET], [MÉDIATEUR].
 Ces textes sont des modèles : faites-les relire si vous avez un doute (ce n'est pas un conseil juridique).
 
 ---
@@ -10,7 +10,7 @@ Ces textes sont des modèles : faites-les relire si vous avez un doute (ce n'est
 
 **Éditeur du site**
 Le site Sapin & Lin est édité par Marvie Noël, entrepreneur individuel (EI) sous le régime de la micro-entreprise.
-Adresse : 1104 boulevard des Belles Portes, [CODE POSTAL] [VILLE], France
+Adresse : 1104 boulevard des Belles Portes, 14200 Hérouville-Saint-Clair, France
 SIRET : en cours d'attribution
 E-mail : [E-MAIL]
 TVA non applicable, article 293 B du Code général des impôts.
@@ -30,7 +30,7 @@ Les textes, visuels, logos et designs présents sur ce site sont la propriété 
 (Shopify → Paramètres → Politiques → Conditions d'utilisation / Conditions de vente)
 
 **Article 1 — Objet**
-Les présentes conditions s'appliquent à toutes les ventes conclues sur le site Sapin & Lin, édité par Marvie Noël (EI), 1104 boulevard des Belles Portes, [CODE POSTAL] [VILLE], France, SIRET en cours d'attribution, e-mail : [E-MAIL].
+Les présentes conditions s'appliquent à toutes les ventes conclues sur le site Sapin & Lin, édité par Marvie Noël (EI), 1104 boulevard des Belles Portes, 14200 Hérouville-Saint-Clair, France, SIRET en cours d'attribution, e-mail : [E-MAIL].
 
 **Article 2 — Produits**
 Sapin & Lin vend des articles de Noël personnalisés (décorations, mugs, vêtements). Chaque article est fabriqué à la commande, selon la personnalisation choisie par le client (prénom, nom, texte). Les photos sont aussi fidèles que possible ; de légères différences de couleur peuvent exister selon les écrans.
@@ -85,7 +85,7 @@ Vous bénéficiez dans tous les cas des garanties légales de conformité et des
 ## 4. Politique de confidentialité
 (Shopify → Paramètres → Politiques → Politique de confidentialité)
 
-**Responsable du traitement** : Marvie Noël (EI), Sapin & Lin, 1104 boulevard des Belles Portes, [CODE POSTAL] [VILLE], [E-MAIL].
+**Responsable du traitement** : Marvie Noël (EI), Sapin & Lin, 1104 boulevard des Belles Portes, 14200 Hérouville-Saint-Clair, [E-MAIL].
 
 **Données collectées** : nom, adresse de livraison, e-mail, téléphone (facultatif), contenu de la personnalisation, historique de commande. Les données de paiement sont traitées directement par notre prestataire de paiement ; nous n'y avons pas accès.
 
