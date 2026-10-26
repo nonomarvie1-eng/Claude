@@ -15,6 +15,10 @@ const designs = {
     ${caps(100, 70, 'NOËL 2026', 10)}
     ${script(100, 116, 'Emma', 46)}
     ${sprig(100, 140, 1.5)}` },
+  // 1b. Boule sans prénom (le prénom est ajouté en texte dans Printify)
+  'boule-sans-prenom': { w: 200, h: 200, px: 3000, svg: `
+    ${caps(100, 70, 'NOËL 2026', 10)}
+    ${sprig(100, 140, 1.5)}` },
   // 2. Famille (pull, coussin, affiche)
   'famille-noel': { w: 240, h: 200, px: 4000, svg: `
     ${caps(120, 52, 'FAMILLE', 14)}
