@@ -36,6 +36,21 @@ function fir(x, base, h) { const tiers = 4, greens = ['#1f4a33', '#2a5c40', '#34
   g += `<path d="M${x} ${base - h * 1.02}l${h * .05} ${h * .07}h${-h * .1}z" fill="#fff"/>`;
   return `<g filter="url(#wc)">${g}</g>`; }
 
+
+// motifs tricotés (pull de Noël)
+const KC = 9.5, KCOLS = 150;
+const SNOW = ['X..X..X', '.X.X.X.', '..XXX..', 'XXX.XXX', '..XXX..', '.X.X.X.', 'X..X..X'];
+const TREE = ['...X...', '..XXX..', '.XXXXX.', '..XXX..', '.XXXXX.', 'XXXXXXX', '...X...'];
+function knitBand(y0, col, flip) { let s = ''; const cell = (c, r) => `<rect x="${c * KC + KC * .07}" y="${y0 + r * KC + KC * .07}" width="${KC * .86}" height="${KC * .86}" rx="${KC * .3}" fill="${col}"/>`;
+  const rows = [];
+  rows.push(c => true); rows.push(c => false);
+  rows.push(c => c % 4 === 0); rows.push(c => c % 4 === 1 || c % 4 === 3); rows.push(c => false);
+  for (let r = 0; r < 7; r++) rows.push(c => { const m = c % 15; if (m < 7) return SNOW[r][m] === 'X'; if (m === 7) return false; return TREE[r][m - 8] === 'X'; });
+  rows.push(c => false); rows.push(c => c % 4 === 1 || c % 4 === 3); rows.push(c => c % 4 === 0); rows.push(c => false); rows.push(c => true);
+  const order = flip ? rows.slice().reverse() : rows;
+  order.forEach((fn, r) => { for (let c = 0; c < KCOLS; c++) if (fn(c)) s += cell(c, r); });
+  return s; }
+
 const D = {
   // A — Guirlande de sapin et boules suspendues tout autour du haut du mug
   'guirlande': n => { L.setSeed(21); let s = EXTRA + garlandBand(70, 18);
@@ -43,13 +58,10 @@ const D = {
     for (let x = 60, i = 0; x < VW; x += 118, i++) { if (SIDES.some(c => Math.abs(x - c) < 150)) continue; const len = L.R(40, 130); s += bauble(x, 70 + Math.sin(x / VW * Math.PI * 4) * 18 + len, L.R(16, 24), fills[i % 4], len); }
     for (const c of SIDES) s += caps(c, 300, 'JOYEUX NOËL', 26, '#a3312f', .45) + script(c, 420, n, fit(n, 140), '#1f4430') + caps(c, 492, '2026', 24, 'url(#gold)', .55) + L.sparkle(c - 62, 484, 7) + L.sparkle(c + 62, 484, 7);
     return s; },
-  // B — Forêt enneigée en aquarelle tout le long du bas, flocons qui tombent
-  'foret': n => { L.setSeed(42); let s = EXTRA;
-    for (let i = 0; i < 70; i++) { const x = L.R(10, VW - 10), y = L.R(20, 380); if (SIDES.some(c => Math.abs(x - c) < 250 && y > 90 && y < 330)) continue; s += i % 3 ? `<circle cx="${x}" cy="${y}" r="${L.R(2, 4)}" fill="#a9c6d6" opacity=".8"/>` : L.flake(x, y, L.R(8, 13), '#a9c6d6', 2); }
-    const trees = []; for (let x = -30; x < VW + 40; x += L.R(48, 74)) trees.push([x, L.R(110, 190)]);
-    trees.sort((a, b) => b[1] - a[1]).forEach(([x, h]) => s += fir(x, 586, h));
-    s += `<path d="M0 578 C 300 566 600 590 ${VW / 2} 576 S 1200 566 ${VW} 578 V${VH} H0Z" fill="#fff"/>`;
-    for (const c of SIDES) s += L.star(c, 92, 13) + caps(c, 152, 'JOYEUX NOËL', 24, '#2f5c40', .45) + script(c, 262, n, fit(n, 138), '#a3312f') + caps(c, 316, '2026', 22, 'url(#gold)', .55);
+  // B — Pull de Noël rouge, motifs tricotés tout autour
+  'pull-rouge': n => { let s = EXTRA + `<rect width="${VW}" height="${VH}" fill="#b01f28"/><rect width="${VW}" height="${VH}" filter="url(#grain)" opacity=".5"/>`;
+    s += knitBand(16, '#fbf3e4', false) + knitBand(VH - 16 - 17 * KC, '#fbf3e4', false);
+    for (const c of SIDES) s += caps(c, 236, 'JOYEUX NOËL', 24, '#f3d9a4', .45) + script(c, 338, n, fit(n, 124), '#fffaf0') + L.sparkle(c - 70, 384, 7, '#f3d9a4') + caps(c, 392, '2026', 22, '#f3d9a4', .55) + L.sparkle(c + 70, 384, 7, '#f3d9a4');
     return s; },
   // C — Nuit verte et branches dorées, étiquette crème
   'nuit-doree': n => { L.setSeed(9); let s = EXTRA + `<rect width="${VW}" height="${VH}" fill="#173a29"/><rect width="${VW}" height="${VH}" filter="url(#grain)" opacity=".6"/>`;
@@ -60,7 +72,7 @@ const D = {
       ${caps(c, 232, 'JOYEUX NOËL', 22, '#a3312f', .42)}${script(c, 338, n, fit(n, 116), '#1f4430')}${caps(c, 402, '2026', 22, 'url(#gold)', .55)}`;
     return s; }
 };
-const NAMES = { 'guirlande': 'Emma', 'foret': 'Lucas', 'nuit-doree': 'Chloé' };
+const NAMES = { 'guirlande': 'Emma', 'pull-rouge': 'Lucas', 'nuit-doree': 'Chloé' };
 (async () => { const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 2850, height: 1200 } });
   for (const [k, name] of Object.entries(NAMES)) for (const [suf, n] of [['', name], ['-sans-prenom', '']]) {
     await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0;background:transparent}</style></head><body><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" width="2850" height="1200">${L.DEFS}${D[k](n)}</svg></body></html>`);
