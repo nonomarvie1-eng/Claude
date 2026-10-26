@@ -61,6 +61,18 @@ nav.links a:hover { color: var(--berry); }
 .dates b { color: var(--pine); font-variant-numeric: tabular-nums; }
 .arch { position: relative; aspect-ratio: 5 / 6; max-width: 100%; width: 100%; max-height: 520px; border-radius: 999px 999px 18px 18px; overflow: hidden; background: linear-gradient(#e9eee8, #d7e1d8); justify-self: center; }
 .arch svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.arch .tag { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); background: var(--paper); color: var(--ink); font-size: 13px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+.arch .tag b { color: var(--berry); }
+.link { color: var(--pine); font-weight: 600; text-decoration: none; font-size: 14.5px; }
+.link:hover { color: var(--berry); }
+.actions { align-items: center; gap: 18px; }
+
+/* Best-sellers */
+.best { padding-block: 40px 4px; }
+.strip { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+  padding-left: max(18px, calc(50vw - 552px)); padding-right: max(18px, calc(50vw - 552px)); scroll-padding-left: max(18px, calc(50vw - 552px)); padding-bottom: 6px; }
+.strip::-webkit-scrollbar { display: none; }
+.strip .card { scroll-snap-align: start; }
 .sway { transform-box: fill-box; transform-origin: 50% 0; animation: sway 5s ease-in-out infinite alternate; }
 .sway.b { animation-duration: 6s; animation-delay: -2s; }
 .sway.c { animation-duration: 4.4s; animation-delay: -1s; }
@@ -186,8 +198,12 @@ footer .logo { font-size: 23px; color: var(--linen); }
 
 @media (max-width: 900px) {
   nav.links { display: none; }
-  .hero .wrap { grid-template-columns: 1fr; gap: 28px; padding-block: 36px 44px; }
-  .arch { max-width: 360px; }
+  .hero .wrap { grid-template-columns: 1fr; gap: 20px; padding-block: 16px 30px; }
+  .arch { max-width: none; aspect-ratio: 1 / 1; max-height: 380px; border-radius: 22px; }
+  .hero h1 { font-size: 44px; margin: 0 0 10px; }
+  .hero p { font-size: 16px; margin-bottom: 18px; }
+  .dates { margin-top: 18px; gap: 4px 14px; font-size: 13px; }
+  .strip { grid-auto-columns: 44%; }
   .grid { grid-template-columns: repeat(3, 1fr); }
   .kit, .perso-band .wrap { grid-template-columns: 1fr; }
   .sheet { left: 0; right: 0; top: auto; bottom: 0; transform: none; width: 100%; max-height: 92%; border-radius: 20px 20px 0 0; grid-template-columns: 1fr;
@@ -227,22 +243,26 @@ footer .logo { font-size: 23px; color: var(--linen); }
 
 <section class="hero">
   <div class="wrap">
-    <div>
-      <div class="kicker">Décoration de Noël naturelle</div>
-      <h1>Un Noël <em>naturel</em>, à votre nom.</h1>
-      <p>Boules en bois gravées, lin, feutre de laine et lumières douces. Des décorations simples, faites pour durer et se transmettre.</p>
-      <div class="actions">
-        <a class="btn btn-pine" href="#shop">Découvrir la collection</a>
-        <a class="btn btn-ghost" href="#perso">Graver un prénom</a>
-      </div>
-      <div class="dates">
-        <span>Noël dans <b id="days">–</b> <span id="daysWord">jours</span></span>
-        <span>Personnalisé : avant le <b>10 déc.</b></span>
-        <span>Le reste : avant le <b>18 déc.</b></span>
-      </div>
+    <div class="arch" id="heroArt" aria-hidden="true">
+      <span class="tag">Boule gravée au prénom · <b>9,90 €</b></span>
     </div>
-    <div class="arch" id="heroArt" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <h1>Un Noël <em>naturel</em>, à votre nom.</h1>
+      <p>Boules en bois gravées, lin et feutre de laine. Livré avant Noël.</p>
+      <div class="actions">
+        <a class="btn btn-pine" href="#best">Voir les best-sellers</a>
+        <a class="link" href="#perso">Graver un prénom →</a>
+      </div>
+      <div class="dates"><span>Noël dans <b id="days">–</b> <span id="daysWord">jours</span></span><span>Commandez avant le <b>10 déc.</b> (personnalisé) ou le <b>18 déc.</b></span></div>
+    </div>
   </div>
+</section>
+
+<section class="best" id="best">
+  <div class="wrap">
+    <div class="section-head"><h2>Les best-sellers</h2><a class="link" href="#shop">Tout voir →</a></div>
+  </div>
+  <div class="strip" id="strip"></div>
 </section>
 
 <section class="block wrap" id="shop">
@@ -455,8 +475,23 @@ function renderHero() {
     <g class="sway b"><path d="M100 60v52" stroke="${WD}" stroke-width="1.2"/>${bauble("Noël", 100, 166, 48).replace(/^<path[^>]*\/>/, "")}</g>
     <g class="sway c"><path d="M150 56v28" stroke="${WD}" stroke-width="1.2"/><g transform="translate(150 118) scale(.55)"><path d="M0-64l16 38 40 4-30 27 9 40L0 24l-35 21 9-40-30-27 40-4z" fill="${L}" stroke="${LD}" stroke-width="3" stroke-linejoin="round"/></g></g>
     <g fill="#fff" opacity=".8">${[[24,150],[170,170],[40,210],[150,214],[70,226],[184,120],[16,96]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.6"/>`).join("")}</g>`;
-  $("heroArt").innerHTML = scene("#e9eee8", "#d4dfd5", body, "0 0 200 240");
+  $("heroArt").insertAdjacentHTML("afterbegin", scene("#e9eee8", "#d4dfd5", body, "0 0 200 240"));
 }
+function cardHTML(p) {
+  return `
+    <article class="card">
+      <button class="open" data-open="${p.id}" aria-label="Voir ${p.t}">
+        <div class="art">${artOf(p.k, p.perso)}
+          ${p.perso ? `<span class="badge perso">À votre nom</span>` : p.b ? `<span class="badge">${p.b}</span>` : ""}
+        </div>
+        <h3>${p.t}</h3>
+        <span class="sub">${p.s}</span>
+      </button>
+      <div class="row"><span class="price">${eur(p.p)}</span>
+        <button class="add" data-${p.perso ? "open" : "add"}="${p.id}">${p.perso ? "Personnaliser" : "Ajouter"}</button></div>
+    </article>`;
+}
+function renderBest() { $("strip").innerHTML = [1, 13, 5, 14, 8].map(byId).map(cardHTML).join(""); }
 function renderRayons() {
   $("rayons").innerHTML = RAYONS.map(r => `
     <button class="rayon" data-f="${r.f}" aria-pressed="${filter === r.f}">
@@ -468,18 +503,7 @@ function renderGrid() {
   const list = PRODUCTS.filter(p => filter === "all" || (filter === "perso" ? p.perso : p.c === filter));
   $("shelfTitle").textContent = TITLES[filter];
   $("resultCount").textContent = list.length + " articles";
-  $("grid").innerHTML = list.map(p => `
-    <article class="card">
-      <button class="open" data-open="${p.id}" aria-label="Voir ${p.t}">
-        <div class="art">${artOf(p.k, p.perso)}
-          ${p.perso ? `<span class="badge perso">À votre nom</span>` : p.b ? `<span class="badge">${p.b}</span>` : ""}
-        </div>
-        <h3>${p.t}</h3>
-        <span class="sub">${p.s}</span>
-      </button>
-      <div class="row"><span class="price">${eur(p.p)}</span>
-        <button class="add" data-${p.perso ? "open" : "add"}="${p.id}">${p.perso ? "Personnaliser" : "Ajouter"}</button></div>
-    </article>`).join("");
+  $("grid").innerHTML = list.map(cardHTML).join("");
 }
 function renderKit() {
   const items = KIT.items.map(byId);
@@ -583,5 +607,5 @@ $("checkout").onclick = () => { $("note").textContent = "Le paiement sera activ�
   $("days").textContent = d; $("daysWord").textContent = d > 1 ? "jours" : "jour";
 })();
 
-renderHero(); renderRayons(); renderGrid(); renderKit(); renderTry(); renderCart();
+renderHero(); renderBest(); renderRayons(); renderGrid(); renderKit(); renderTry(); renderCart();
 </script>
