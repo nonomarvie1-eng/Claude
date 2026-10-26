@@ -1,6 +1,6 @@
 # Pages légales — Sapin & Lin
 
-À compléter avant l'ouverture : [SIRET], [MÉDIATEUR].
+À compléter avant l'ouverture : [SIRET]. Médiateur : CM2C (adresse à confirmer avec le mail d'adhésion).
 Ces textes sont des modèles : faites-les relire si vous avez un doute (ce n'est pas un conseil juridique).
 
 ---
@@ -61,7 +61,7 @@ Le client bénéficie de la garantie légale de conformité (articles L217-3 et 
 Garantie légale de conformité : le consommateur dispose d'un délai de deux ans à compter de la délivrance du bien pour obtenir la mise en œuvre de la garantie légale de conformité en cas d'apparition d'un défaut de conformité. Durant ce délai, il n'est tenu d'établir que l'existence du défaut de conformité, et non sa date d'apparition.
 
 **Article 10 — Médiation**
-En cas de litige, le client contacte d'abord Sapin & Lin à sapinetlin.contact@gmail.com. À défaut d'accord, il peut recourir gratuitement au médiateur de la consommation : [MÉDIATEUR — nom, adresse et site web].
+En cas de litige, le client contacte d'abord Sapin & Lin à sapinetlin.contact@gmail.com. À défaut d'accord, il peut recourir gratuitement au médiateur de la consommation : CM2C – Centre de la Médiation de la Consommation de Conciliateurs de Justice, 49 rue de Ponthieu, 75008 Paris – www.cm2c.net. Le client peut aussi utiliser la plateforme européenne de règlement en ligne des litiges : https://ec.europa.eu/consumers/odr
 Plateforme européenne de règlement des litiges : https://ec.europa.eu/consumers/odr
 
 **Article 11 — Droit applicable**
