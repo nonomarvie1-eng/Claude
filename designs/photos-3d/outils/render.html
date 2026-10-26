@@ -1,0 +1,81 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#fff}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script></head>
+<body><script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+const q = new URLSearchParams(location.search);
+const KEY = q.get('k'), SHOT = q.get('s'), SIZE = 1600;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(SIZE, SIZE); renderer.setPixelRatio(1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+// --- studio ---
+const BG = new THREE.Color('#ecebe8');
+scene.background = BG;
+const wallMat = new THREE.MeshStandardMaterial({ color: '#ecebe8', roughness: 1 });
+const hemi = new THREE.HemisphereLight('#ffffff', '#d9d4cc', 0.9); scene.add(hemi);
+const key = new THREE.DirectionalLight('#fff7ee', 2.2);
+key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 14; key.shadow.blurSamples = 25;
+const sc = key.shadow.camera; sc.left = -4; sc.right = 4; sc.top = 4; sc.bottom = -4; sc.near = 0.1; sc.far = 30;
+scene.add(key); scene.add(key.target);
+renderer.shadowMap.type = THREE.VSMShadowMap;
+
+// --- médaillon ---
+const loader = new THREE.TextureLoader();
+const tex = i => { const t = loader.load(`tex/${KEY}-${i}.png`); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; t.repeat.set(.5, .5); t.offset.set(.5, .5); return t; };
+const HOLE = { x: 0, y: .85, r: .058 };
+function discShape(r) { const s = new THREE.Shape(); s.absarc(0, 0, r, 0, Math.PI * 2, false); const h = new THREE.Path(); h.absarc(HOLE.x, HOLE.y, HOLE.r, 0, Math.PI * 2, true); s.holes.push(h); return s; }
+const ceramic = new THREE.MeshPhysicalMaterial({ color: '#f6f2ea', roughness: .32, clearcoat: 1, clearcoatRoughness: .12 });
+function medallion(i) {
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.ExtrudeGeometry(discShape(.975), { depth: .05, bevelEnabled: true, bevelThickness: .022, bevelSize: .025, bevelSegments: 8, curveSegments: 160 }), ceramic);
+  body.position.z = -.025; body.castShadow = true; body.receiveShadow = true; g.add(body);
+  const t = tex(i);
+  const faceMat = new THREE.MeshPhysicalMaterial({ map: t, roughness: .3, clearcoat: 1, clearcoatRoughness: .1 });
+  const fGeo = new THREE.ShapeGeometry(discShape(.975), 160);
+  const front = new THREE.Mesh(fGeo, faceMat); front.position.z = .0475; g.add(front);
+  const back = new THREE.Mesh(fGeo, faceMat); back.rotation.y = Math.PI; back.position.z = -.0475; g.add(back);
+  return g;
+}
+// ruban : bande le long d'une courbe
+const satin = new THREE.MeshPhysicalMaterial({ color: '#b5161d', roughness: .38, sheen: 1, sheenColor: new THREE.Color('#ff6b6b'), sheenRoughness: .4, side: THREE.DoubleSide });
+function ribbon(points, width = .075, normal = new THREE.Vector3(0, 0, 1)) {
+  const curve = new THREE.CatmullRomCurve3(points, false, 'centripetal'); const N = 220;
+  const pos = [], idx = []; let prev = new THREE.Vector3(1, 0, 0);
+  for (let i = 0; i <= N; i++) { const t = i / N, p = curve.getPoint(t), tg = curve.getTangent(t);
+    let o = new THREE.Vector3().crossVectors(tg, normal); if (o.length() < .2) o = prev.clone(); o.normalize(); if (o.dot(prev) < 0) o.negate(); prev = o;
+    const a = p.clone().addScaledVector(o, width / 2), b = p.clone().addScaledVector(o, -width / 2); pos.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    if (i < N) { const k = i * 2; idx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); } }
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setIndex(idx); geo.computeVertexNormals();
+  const m = new THREE.Mesh(geo, satin); m.castShadow = true; return m;
+}
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+function hanging(i, top = 3.2) {
+  const g = medallion(i);
+  g.add(ribbon([V(-.06, top, .03), V(-.05, 1.6, .035), V(-.02, 1.0, .05), V(0, .87, .055), V(0, .85, 0), V(0, .87, -.055), V(.02, 1.0, -.05), V(.06, 1.6, -.035), V(.07, top, -.03)]));
+  return g;
+}
+function wall(z = -1.2) { const w = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), wallMat); w.position.z = z; w.receiveShadow = true; scene.add(w); }
+const cam = new THREE.PerspectiveCamera(28, 1, .1, 100);
+
+// --- prises de vue ---
+if (SHOT === 'face') { wall(); const g = hanging(0); scene.add(g); key.position.set(-3, 4, 6); cam.position.set(0, .2, 6.2); cam.lookAt(0, .2, 0); }
+if (SHOT === 'trois-quarts') { wall(); const g = hanging(0); g.rotation.y = .62; scene.add(g); key.position.set(-3, 4, 6); cam.position.set(.45, .25, 6.1); cam.lookAt(0, .2, 0); }
+if (SHOT === 'recto-verso') { wall(); const a = hanging(0); a.position.x = -1.15; a.rotation.y = .3; const b = hanging(0); b.position.x = 1.15; b.position.y = .15; b.rotation.y = Math.PI - .45; scene.add(a, b); key.position.set(-3, 4, 6); cam.position.set(0, .35, 9.6); cam.lookAt(0, .3, 0); }
+if (SHOT === 'detail') { wall(-1.5); const g = hanging(0); g.rotation.y = -.35; g.rotation.x = .05; scene.add(g); key.position.set(-2, 3, 6); cam.fov = 22; cam.updateProjectionMatrix(); cam.position.set(-.8, .2, 4.6); cam.lookAt(0, .05, 0); }
+if (SHOT === 'a-plat') { const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), wallMat); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+  const g = medallion(0); g.rotation.x = -Math.PI / 2; g.rotation.z = .18; g.position.y = .075; scene.add(g);
+  const hx = -Math.sin(.18) * .85, hz = -Math.cos(.18) * .85;
+  scene.add(ribbon([V(hx, .13, hz), V(hx + .05, .05, hz - .25), V(hx + .35, .012, hz - .45), V(hx + .62, .012, hz - .25), V(hx + .4, .012, hz - .02), V(hx + .08, .02, hz - .12), V(hx - .35, .012, hz - .42), V(hx - .8, .012, hz - .5)], .075, V(0, 1, 0)));
+  key.position.set(-3, 7, 3); cam.position.set(0, 6.0, 1.6); cam.lookAt(0, 0, -.25); }
+if (SHOT === 'prenoms') { wall(); [[-1.75, .2, .2, 1], [0, -.1, 0, 0], [1.75, .2, -.2, 2]].forEach(([x, y, r, i]) => { const g = hanging(i); g.position.set(x, y, 0); g.scale.setScalar(.82); g.rotation.y = r; scene.add(g); });
+  key.position.set(-3, 4, 6); cam.position.set(0, .3, 10.8); cam.lookAt(0, .2, 0); }
+key.target.position.set(0, 0, 0);
+THREE.DefaultLoadingManager.onLoad = () => { renderer.render(scene, cam); requestAnimationFrame(() => { renderer.render(scene, cam); window.done = true; }); };
+</script></body></html>
