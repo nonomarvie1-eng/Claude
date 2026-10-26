@@ -33,12 +33,12 @@ function gingerbread(cx, cy, s = 1) { return `<g transform="translate(${cx} ${cy
 
 const D = {
   // 1. Renne mignon — enfants
-  'renne': n => { seed = 7; let s = scatter(46, (x, y) => nearSides(x, y, 230, 250), (x, y, k) => k % 3 === 0 ? flake(x, y, R(10, 16), '#9fc3d6', 2.6) : k % 3 === 1 ? heart(x, y, R(.7, 1), RED) : star(x, y, R(5, 8), GOLD));
+  'renne': n => { seed = 7; let s = scatter(46, (x, y) => nearSides(x, y, 290, 300), (x, y, k) => k % 3 === 0 ? flake(x, y, R(10, 16), '#9fc3d6', 2.6) : k % 3 === 1 ? heart(x, y, R(.7, 1), RED) : star(x, y, R(5, 8), GOLD));
     for (const c of SIDES) s += `<text x="${c}" y="86" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="54" fill="${GREEN}">Le chocolat chaud de</text>
       ${reindeer(c, 290, 1.25)}<text x="${c}" y="${n ? 528 : 528}" text-anchor="middle" font-family="Fraunces" font-weight="900" font-size="${fitS(n, 92)}" fill="${RED}">${n}</text>`;
     return s; },
   // 2. Pain d'épices gourmand
-  'pain-epices': n => { seed = 11; let s = scatter(40, (x, y) => nearSides(x, y, 230, 260), (x, y, k) => k % 2 ? flake(x, y, R(10, 15), BROWN, 2.6) : `<circle cx="${x}" cy="${y}" r="${R(5, 8)}" fill="${k % 4 ? RED : GREEN}"/>`);
+  'pain-epices': n => { seed = 11; let s = scatter(40, (x, y) => nearSides(x, y, 300, 300), (x, y, k) => k % 2 ? flake(x, y, R(10, 15), BROWN, 2.6) : `<circle cx="${x}" cy="${y}" r="${R(5, 8)}" fill="${k % 4 ? RED : GREEN}"/>`);
     for (const c of SIDES) s += `<text x="${c}" y="92" text-anchor="middle" font-family="Pinyon Script" font-size="62" fill="${DBROWN}">Les petites douceurs de</text>
       ${gingerbread(c, 300, 1.05)}<text x="${c}" y="552" text-anchor="middle" font-family="Pinyon Script" font-size="${fitS(n, 112)}" fill="${RED}">${n}</text>`;
     return s; },
