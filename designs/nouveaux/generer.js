@@ -85,14 +85,31 @@ const paper = (bg) => `<rect width="600" height="600" fill="${bg}"/><rect width=
 
 const paw = (x, y, s, fill) => `<g transform="translate(${x} ${y}) scale(${s})" fill="${fill}"><ellipse cx="0" cy="8" rx="13" ry="11"/><ellipse cx="-15" cy="-8" rx="5.5" ry="7" transform="rotate(-20 -15 -8)"/><ellipse cx="-5.5" cy="-15" rx="5.5" ry="7.5"/><ellipse cx="5.5" cy="-15" rx="5.5" ry="7.5"/><ellipse cx="15" cy="-8" rx="5.5" ry="7" transform="rotate(20 15 -8)"/></g>`;
 const DESIGNS = {
-  'medaillon-animal': { name: 'Rocky', f: n => { seed = 41; return `${paper('#fbf6ec')}
-    <circle cx="300" cy="300" r="262" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
-    ${garland(300, 300, 212, 28, 152, 13)}
-    ${T.arc('a1', 168, true, 318)}${T.arcText('a1', 'JOYEUX NOËL', 26, '#a3312f')}
-    ${paw(300, 200, 1.05, 'url(#gold)')}
-    ${T.script(300, 318, n, scriptSize(n, 150), '#2c4a37')}
-    ${T.caps(300, 392, '2026', 30, 'url(#gold)', .4)}
-    ${paw(222, 384, .42, '#c9b48a')}${paw(378, 384, .42, '#c9b48a')}`; } },
+  'medaillon-animal': { name: 'Rocky', f: n => { seed = 41;
+    let snow = ''; for (let i = 0; i < 55; i++) { const x = R(40, 560), y = R(40, 560); if (Math.hypot(x - 300, y - 300) < 250 && Math.hypot(x - 300, y - 250) > 120 && !(y > 330 && y < 500) && !(y < 215 && Math.hypot(x - 300, y - 300) > 170)) snow += `<circle cx="${x}" cy="${y}" r="${R(1.5, 3.4)}" fill="#fff" opacity="${R(.35, .85)}"/>`; }
+    const C = '#f6efe2';
+    // chien assis de profil, tourné vers la gauche
+    const dog = `<g transform="translate(300 262)">
+      <path d="M38 78 C 70 70 92 40 84 2 C 78 -26 58 -40 44 -46 L 40 -52 C 34 -70 22 -84 4 -86 C -14 -88 -30 -80 -38 -66 L -62 -58 C -72 -56 -76 -48 -70 -42 C -62 -36 -48 -38 -36 -40 C -32 -30 -24 -22 -16 -18 C -22 0 -26 24 -28 46 C -30 62 -36 72 -44 76 C -50 79 -48 84 -40 84 L -10 84 C -4 84 -2 80 -6 76 C -10 72 -10 62 -8 50 L -4 30 C 2 44 6 60 4 76 C 2 82 6 84 12 84 L 46 84 C 54 84 56 79 50 76 Z" fill="${C}"/>
+      <path d="M78 40 C 100 40 112 24 116 6 C 118 -2 112 -4 108 2 C 100 18 92 26 80 28 Z" fill="${C}"/>
+      <path d="M6 -74 C 14 -60 16 -44 8 -34 C 4 -30 -2 -32 -2 -38 C -2 -50 0 -62 6 -74 Z" fill="#d9ccb4"/>
+      <circle cx="-26" cy="-62" r="3.2" fill="#3a1a12"/><circle cx="-68" cy="-50" r="4.5" fill="#3a1a12"/>
+      <path d="M-30 -36 C -16 -30 2 -30 14 -36 L 16 -28 C 2 -22 -16 -22 -30 -28 Z" fill="#1f3d2c"/><circle cx="-8" cy="-22" r="5" fill="url(#gold)"/>
+      <path d="M-34 -78 C -30 -104 -4 -122 26 -116 C 48 -112 62 -96 70 -76 C 74 -66 66 -60 60 -66 C 52 -84 36 -94 22 -92 C 8 -88 -10 -82 -34 -78 Z" fill="#e0434b" stroke="#f6efe2" stroke-width="2.5"/>
+      <path d="M-40 -84 C -14 -94 14 -96 40 -88 C 46 -86 46 -76 40 -76 C 14 -82 -14 -80 -40 -72 C -46 -70 -48 -82 -40 -84 Z" fill="#fff"/>
+      <circle cx="66" cy="-62" r="10" fill="#fff"/>
+    </g>`;
+    return `<defs><radialGradient id="vel" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#b5363b"/><stop offset=".7" stop-color="#86202a"/><stop offset="1" stop-color="#5e141c"/></radialGradient></defs>
+    <rect width="600" height="600" fill="url(#vel)"/><rect width="600" height="600" filter="url(#grain)" opacity=".6"/>
+    <circle cx="300" cy="300" r="262" fill="none" stroke="url(#gold)" stroke-width="3"/><circle cx="300" cy="300" r="252" fill="none" stroke="url(#gold)" stroke-width="1" opacity=".6"/>
+    ${snow}
+    ${T.arc('a1', 200, true, 300)}${T.arcText('a1', 'JOYEUX NOËL', 24, C, .35)}
+    <ellipse cx="300" cy="350" rx="120" ry="8" fill="#000" opacity=".18"/>
+    ${dog}
+    ${T.script(300, 428, n, scriptSize(n, 104), 'url(#gold)')}
+    ${T.caps(300, 482, '2026', 24, C, .5)}
+    ${paw(222, 474, .38, 'url(#gold)')}${paw(378, 474, .38, 'url(#gold)')}
+    ${flake(140, 250, 12, C, 2)}${flake(462, 250, 12, C, 2)}${sparkle(175, 330, 7)}${sparkle(428, 330, 7)}`; } },
 };
 
 // plaid 50x60 pouces, portrait
@@ -127,7 +144,7 @@ const PLAID = n => { seed = 61; const W = 1000, H = 1200, G = '#1f3d2c', C = '#f
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(500);
     await p.locator('svg').screenshot({ path: `${OUT}${k}${suffix}.png`, omitBackground: true });
   }
-  for (const [suffix, n] of [['', 'Martin'], ['-sans-prenom', '']]) {
+  for (const [suffix, n] of (process.env.PLAID ? [['', 'Martin'], ['-sans-prenom', '']] : [])) {
     await p.setViewportSize({ width: 6000, height: 7200 });
     await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0}</style></head><body>${PLAID(n).replace('__W__', 6000).replace('__H__', 7200)}</body></html>`);
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
