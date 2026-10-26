@@ -79,25 +79,25 @@ const T = {
   arcText: (id, t, size, fill, ls = .3) => `<text font-family="Cinzel" font-weight="600" font-size="${size}" letter-spacing="${size * ls}" fill="${fill}"><textPath href="#${id}" startOffset="50%" text-anchor="middle">${t}</textPath></text>`
 };
 const scriptSize = (n, base) => !n ? base : n.length > 10 ? base * .62 : n.length > 7 ? base * .78 : base;
-const paper = (bg) => `<circle cx="300" cy="300" r="300" fill="${bg}"/><rect width="600" height="600" filter="url(#grain)" clip-path="url(#disc)"/>`;
+const paper = (bg) => `<rect width="600" height="600" fill="${bg}"/><rect width="600" height="600" filter="url(#grain)"/>`;
 
 const DESIGNS = {
   // 1. Bébé
   'premier-noel-bebe': { name: 'Emma', f: n => { seed = 11; return `${paper('#fbf5ee')}
-    <circle cx="300" cy="300" r="282" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
-    ${garland(300, 300, 236, 25, 155, 13)}
-    ${T.arc('a1', 205, true)}${T.arcText('a1', 'MON PREMIER NOËL', 27, '#3c5a46')}
-    ${sparkle(300, 150, 13)}${sparkle(262, 170, 6)}${sparkle(338, 170, 6)}
+    <circle cx="300" cy="300" r="262" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+    ${garland(300, 300, 212, 28, 152, 13)}
+    ${T.arc('a1', 168, true, 318)}${T.arcText('a1', 'MON PREMIER NOËL', 25, '#3c5a46')}
+    ${sparkle(300, 196, 11)}${sparkle(268, 212, 5)}${sparkle(332, 212, 5)}
     ${T.script(300, 318, n, scriptSize(n, 150), '#2c4a37')}
     ${T.caps(300, 392, '2026', 30, 'url(#gold)', .4)}`; } },
   // 2. Couple
   'notre-premier-noel': { name: 'Léa & Tom', f: n => { seed = 23; return `
     <defs><radialGradient id="night" cx=".5" cy=".42" r=".65"><stop offset="0" stop-color="#2d5a40"/><stop offset="1" stop-color="#132a1c"/></radialGradient></defs>
-    <circle cx="300" cy="300" r="300" fill="url(#night)"/><rect width="600" height="600" filter="url(#grain)" clip-path="url(#disc)" opacity=".7"/>
-    <circle cx="300" cy="300" r="276" fill="none" stroke="url(#gold)" stroke-width="3"/><circle cx="300" cy="300" r="266" fill="none" stroke="url(#gold)" stroke-width="1" opacity=".7"/>
-    ${pine(300, 92, 92, 200, { dark: '#4f8a63', light: '#83b892' })}${pine(300, 92, 92, -20, { dark: '#4f8a63', light: '#83b892' })}
-    ${holly(282, 104, 26, -35, '#3d7a55')}${holly(318, 104, 26, 35, '#3d7a55')}${berries(300, 98, 4, 8)}
-    ${T.caps(300, 196, 'NOTRE PREMIER NOËL', 22, 'url(#gold)', .32)}
+    <rect width="600" height="600" fill="url(#night)"/><rect width="600" height="600" filter="url(#grain)" opacity=".7"/>
+    <circle cx="300" cy="300" r="262" fill="none" stroke="url(#gold)" stroke-width="3"/><circle cx="300" cy="300" r="252" fill="none" stroke="url(#gold)" stroke-width="1" opacity=".7"/>
+    ${pine(300, 150, 80, 200, { dark: '#4f8a63', light: '#83b892' })}${pine(300, 150, 80, -20, { dark: '#4f8a63', light: '#83b892' })}
+    ${holly(284, 160, 24, -35, '#3d7a55')}${holly(316, 160, 24, 35, '#3d7a55')}${berries(300, 155, 4, 7.5)}
+    ${T.caps(300, 222, 'NOTRE PREMIER NOËL', 20, 'url(#gold)', .3)}
     ${T.script(300, 318, n, scriptSize(n, 118), '#fbf3e4')}
     <path d="M300 372c-14-14-30-4-22 10 5 9 22 18 22 18s17-9 22-18c8-14-8-24-22-10z" fill="url(#gold)"/>
     ${T.caps(300, 446, '2026', 28, 'url(#gold)', .45)}
@@ -110,17 +110,17 @@ const DESIGNS = {
     let trees = ''; for (const [x, s] of [[96, 1.1], [478, 1.2], [520, .8], [70, .8]]) trees += `<path d="M${x} ${470 - 90 * s}l${28 * s} ${44 * s}h${-12 * s}l${22 * s} ${36 * s}h${-76 * s}l${22 * s} ${-36 * s}h${-12 * s}z" fill="#163526"/><path d="M${x} ${470 - 90 * s}l${10 * s} ${16 * s}h${-20 * s}z" fill="#f6f1e6"/>`;
     let snow = ''; for (let i = 0; i < 70; i++) { const x = R(40, 560), y = R(40, 400); if (Math.hypot(x - 300, y - 300) < 290 && !(y > 200 && y < 330 && x > 110 && x < 490)) snow += `<circle cx="${x}" cy="${y}" r="${R(1.2, 3)}" fill="#fff" opacity="${R(.5, 1)}"/>`; }
     return `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f2236"/><stop offset=".7" stop-color="#284a63"/><stop offset="1" stop-color="#3f6680"/></linearGradient></defs>
-    <circle cx="300" cy="300" r="300" fill="url(#sky)"/>
+    <rect width="600" height="600" fill="url(#sky)"/>
     <circle cx="456" cy="142" r="26" fill="#f6efd8"/><circle cx="468" cy="134" r="24" fill="url(#sky)" opacity=".001"/>
     ${snow}${trees}${houses}
     <path d="M0 470 C 120 444 220 486 320 466 S 520 448 600 470 V600 H0Z" fill="#f6f1e6"/><path d="M0 500 C 150 486 300 512 600 492 V600 H0Z" fill="#e7ecef"/>
-    <circle cx="300" cy="300" r="284" fill="none" stroke="url(#gold)" stroke-width="3"/>
+    <circle cx="300" cy="300" r="262" fill="none" stroke="url(#gold)" stroke-width="3"/>
     ${T.caps(300, 196, 'LA FAMILLE', 26, '#f6f1e6', .45)}
     ${T.script(300, 300, n, scriptSize(n, 130), 'url(#gold)')}
-    ${T.caps(300, 548, 'NOËL 2026', 22, '#3f6680', .4)}`; } },
+    ${T.caps(300, 536, 'NOËL 2026', 20, '#3f6680', .4)}`; } },
   // 4. Prénom classique
   'prenom-couronne': { name: 'Emma', f: n => { seed = 5; return `${paper('#fbf6ec')}
-    ${garland(300, 300, 238, -90, 268, 12)}
+    ${garland(300, 300, 218, -56, 236, 12)}
     ${T.caps(300, 232, 'JOYEUX NOËL', 24, '#a3312f', .38)}
     ${T.script(300, 336, n, scriptSize(n, 140), '#24432f')}
     ${T.caps(300, 400, '2026', 26, 'url(#gold)', .45)}
@@ -158,7 +158,7 @@ function mockup(dataUrl) {
   for (const [k, d] of Object.entries(DESIGNS)) {
     for (const [suffix, n] of [['', d.name], ['-sans-prenom', '']]) {
       await p.setViewportSize({ width: 3000, height: 3000 });
-      await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0;background:transparent}</style></head><body><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="3000" height="3000">${DEFS}<g clip-path="url(#disc)">${d.f(n)}</g></svg></body></html>`);
+      await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0;background:transparent}</style></head><body><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="3000" height="3000">${DEFS}${d.f(n)}</svg></body></html>`);
       await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(400);
       const file = `${OUT}${k}${suffix}.png`;
       await p.locator('svg').screenshot({ path: file, omitBackground: true });
