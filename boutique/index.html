@@ -76,6 +76,10 @@ nav.links a:hover { color: var(--berry); }
 .dates b { color: var(--pine); font-variant-numeric: tabular-nums; }
 .arch { position: relative; aspect-ratio: 5 / 6; max-width: 100%; width: 100%; max-height: 520px; border-radius: 999px 999px 18px 18px; overflow: hidden; background: linear-gradient(#e9eee8, #d7e1d8); justify-self: center; }
 .arch svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.sheet .art, .line .sw { position: relative; }
+.preview-name { position: absolute; left: 12px; bottom: 12px; background: rgba(251,249,245,.94); color: var(--ink); font-size: 13px; padding: 6px 12px; border-radius: 999px; }
+.preview-name b { color: var(--berry); }
 .arch .tag { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); background: var(--paper); color: var(--ink); font-size: 13px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
 .arch .tag b { color: var(--berry); }
 .link { color: var(--pine); font-weight: 600; text-decoration: none; font-size: 14.5px; }
@@ -101,7 +105,7 @@ section.block { padding-block: 52px 8px; }
 
 .rayons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .rayon { border: 0; padding: 0; background: none; text-align: left; display: flex; flex-direction: column; gap: 10px; }
-.rayon .art { aspect-ratio: 4 / 5; max-width: 100%; border-radius: 200px 200px 14px 14px; overflow: hidden; outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .2s, transform .25s; }
+.rayon .art { position: relative; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 200px 200px 14px 14px; overflow: hidden; outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .2s, transform .25s; }
 .rayon:hover .art { transform: translateY(-3px); }
 .rayon[aria-pressed="true"] .art { outline-color: var(--pine); }
 .rayon b { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--pine); line-height: 1.1; }
@@ -260,15 +264,16 @@ footer .logo { font-size: 23px; color: var(--linen); }
 <section class="hero">
   <canvas class="snow" id="snow" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div class="arch" id="heroArt" aria-hidden="true">
-      <span class="tag">Boule au prénom · <b>14,90 €</b></span>
+    <div class="arch" id="heroArt">
+      <img class="ph" src="img/photo-premier-noel-bebe.jpg" alt="Médaillon « Mon premier Noël » au prénom Emma, accroché au sapin">
+      <span class="tag">Médaillon au prénom · <b>dès 14,90 €</b></span>
     </div>
     <div class="hero-copy">
-      <h1>Un Noël <em>chaleureux</em>, à votre nom.</h1>
-      <p>Boules, chaussettes, mugs et pulls personnalisés. Imprimés en Europe, livrés avant Noël.</p>
+      <h1>Le souvenir de Noël <em>à votre nom</em>.</h1>
+      <p>Médaillons, chaussettes, mugs et pulls personnalisés. Imprimés en Europe, livrés avant Noël.</p>
       <div class="actions">
         <a class="btn btn-pine" href="#best">Voir les best-sellers</a>
-        <a class="link" href="#perso">Graver un prénom →</a>
+        <a class="link" href="#perso">Personnaliser →</a>
       </div>
       <div class="dates"><span>Noël dans <b id="days">–</b> <span id="daysWord">jours</span></span><span>Commandez avant le <b>12 décembre</b></span></div>
     </div>
@@ -310,9 +315,9 @@ footer .logo { font-size: 23px; color: var(--linen); }
   <div class="wrap">
     <div>
       <div class="kicker">Personnalisation offerte</div>
-      <h2>Un prénom, et la boule devient un souvenir.</h2>
+      <h2>Un prénom, et la décoration devient un souvenir.</h2>
       <ol class="steps">
-        <li><span class="n">1</span><p style="margin:0"><b>Choisissez votre article</b><span>Boule, chaussette, mug, coussin ou pull.</span></p></li>
+        <li><span class="n">1</span><p style="margin:0"><b>Choisissez votre article</b><span>Médaillon, chaussette, mug, coussin ou pull.</span></p></li>
         <li><span class="n">2</span><p style="margin:0"><b>Écrivez le prénom</b><span>Vous voyez le résultat avant de commander.</span></p></li>
         <li><span class="n">3</span><p style="margin:0"><b>On imprime et on expédie</b><span>Fabriqué à la commande en Europe, en 2 à 5 jours.</span></p></li>
       </ol>
@@ -324,7 +329,7 @@ footer .logo { font-size: 23px; color: var(--linen); }
         <input class="f" id="tryName" maxlength="10" value="Emma" autocomplete="off">
         <span class="hint">10 lettres maximum</span>
       </div>
-      <button class="btn btn-pine" id="tryAdd">Commander cette boule · 14,90 €</button>
+      <button class="btn btn-pine" id="tryAdd">Commander ce médaillon · 14,90 €</button>
     </div>
   </div>
 </section>
@@ -483,7 +488,10 @@ Object.assign(ART, {
 
 /* ---------- Catalogue (exemples, à remplacer par vos produits Printify) ---------- */
 const PRODUCTS = [
-  { id: 1,  t: "Boule de Noël au prénom",         s: "Céramique, Ø 7,5 cm",          p: 14.90, c: "deco",    perso: "Emma",   b: "Best-seller", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Une boule blanche à suspendre, imprimée avec le prénom de votre choix et l'année. Le petit souvenir que l'on ressort chaque Noël.", sp: ["Imprimée en Europe", "Ruban inclus", "Personnalisation offerte"] },
+  { id: 1,  t: "Médaillon « Joyeux Noël » au prénom", s: "Céramique, Ø 7,5 cm",      p: 14.90, c: "deco",    perso: "Emma",   b: "Best-seller", img: "img/photo-prenom-couronne.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Un médaillon en céramique à suspendre au sapin, avec une couronne de sapin et de houx, et le prénom de votre choix. Le petit souvenir que l'on ressort chaque Noël.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
+  { id: 11, t: "Médaillon « Mon premier Noël »",  s: "Pour le premier Noël de bébé", p: 16.90, c: "deco",    perso: "Emma",   b: "Coup de cœur", img: "img/photo-premier-noel-bebe.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Pour célébrer le tout premier Noël de bébé, avec son prénom et l'année. Le cadeau de naissance que les parents gardent toute leur vie.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
+  { id: 12, t: "Médaillon « Notre premier Noël »", s: "Pour les couples",            p: 16.90, c: "deco",    perso: "Léa & Tom", label: "Vos deux prénoms", img: "img/photo-notre-premier-noel.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Pour un premier Noël à deux : vos deux prénoms, un cœur doré et l'année, sur un fond vert sapin.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
+  { id: 13, t: "Médaillon « La famille »",         s: "Village sous la neige",       p: 16.90, c: "deco",    perso: "Martin", label: "Nom de famille", img: "img/photo-famille.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Un petit village sous la neige et votre nom de famille en lettres dorées. À accrocher au sapin chaque année.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
   { id: 2,  t: "Chaussette de Noël au prénom",    s: "Velours doux, 45 cm",          p: 24.90, c: "deco",    perso: "Jules",  k: ["stocking", "#f1ebe2", "#e6ddd0"], d: "La chaussette à accrocher à la cheminée, avec le prénom de chacun. Une par membre de la famille.", sp: ["Velours doux", "45 cm, avec attache", "Imprimée en Europe"] },
   { id: 3,  t: "Coussin « Famille » au nom",      s: "45 × 45 cm",                   p: 34.90, c: "deco",    perso: "Martin", label: "Nom de famille", k: ["cushion", "#e9eee8", "#d9e3da"], d: "Un coussin doux avec votre nom de famille et l'année. Il s'installe sur le canapé pour tout l'hiver.", sp: ["45 × 45 cm", "Housse et garnissage inclus", "Imprimé en Europe"] },
   { id: 4,  t: "Plaid polaire motif sapins",      s: "127 × 152 cm",                 p: 54.90, c: "cocon",   k: ["blanket", "#efe7da", "#e3d6c2"], d: "Un grand plaid tout doux, vert sapin, pour les soirées films de décembre.", sp: ["Polaire douce", "127 × 152 cm", "Lavable en machine"] },
@@ -494,10 +502,10 @@ const PRODUCTS = [
   { id: 9,  t: "Puzzle de Noël 500 pièces",       s: "Pour toute la famille",        p: 32.90, c: "offrir",  k: ["puzzle", "#e9eee8", "#d9e3da"], d: "Un puzzle à faire ensemble entre le repas et les cadeaux.", sp: ["500 pièces", "Boîte incluse", "Imprimé en Europe"] },
   { id: 10, t: "Tote bag de Noël",                s: "Coton, 38 × 42 cm",            p: 19.90, c: "offrir",  k: ["tote", "#efe7da", "#e3d6c2"], d: "Un sac en coton avec un motif de branches et d'étoiles. Pour les courses de Noël, puis toute l'année.", sp: ["100 % coton", "38 × 42 cm", "Imprimé en Europe"] }
 ];
-const KIT = { id: 100, t: "Pack déco au prénom", c: "deco", perso: "Emma", items: [1, 2, 5], p: 49.90, k: ["ornament", "#efe7da", "#e3d6c2"],
-  d: "La boule, la chaussette et le mug, avec le même prénom. Le cadeau tout prêt pour un enfant, un filleul ou une petite-fille.", sp: ["Boule de Noël au prénom", "Chaussette de Noël au prénom", "Mug au prénom"] };
+const KIT = { id: 100, t: "Pack déco au prénom", c: "deco", perso: "Emma", items: [1, 2, 5], p: 49.90, img: "img/photo-prenom-couronne.jpg", k: ["ornament", "#efe7da", "#e3d6c2"],
+  d: "Le médaillon, la chaussette et le mug, avec le même prénom. Le cadeau tout prêt pour un enfant, un filleul ou une petite-fille.", sp: ["Médaillon « Joyeux Noël » au prénom", "Chaussette de Noël au prénom", "Mug au prénom"] };
 const RAYONS = [
-  { f: "deco",    n: "Déco au prénom", s: "Boules, chaussettes, coussins", k: ["ornament", "#efe7da", "#e3d6c2"] },
+  { f: "deco",    n: "Déco au prénom", s: "Médaillons, chaussettes, coussins", img: "img/photo-prenom-couronne.jpg", k: ["ornament", "#efe7da", "#e3d6c2"] },
   { f: "cocon",   n: "Cocooning",      s: "Plaids et mugs",                k: ["blanket", "#e9eee8", "#d9e3da"] },
   { f: "famille", n: "En famille",     s: "Pulls et t-shirts assortis",    k: ["sweater", "#f1ebe2", "#e6ddd0"] },
   { f: "offrir",  n: "À offrir",       s: "Affiches, puzzles, tote bags",  k: ["poster", "#efe7da", "#e3d6c2"] }
@@ -536,8 +544,8 @@ function cardHTML(p) {
   return `
     <article class="card">
       <button class="open" data-open="${p.id}" aria-label="Voir ${p.t}">
-        <div class="art">${artOf(p.k, p.perso)}
-          ${p.perso ? `<span class="badge perso">À votre nom</span>` : p.b ? `<span class="badge">${p.b}</span>` : ""}
+        <div class="art">${p.img ? `<img class="ph" src="${p.img}" alt="${esc(p.t)}" loading="lazy">` : artOf(p.k, p.perso)}
+          ${p.b ? `<span class="badge${p.perso ? " perso" : ""}">${p.b}</span>` : p.perso ? `<span class="badge perso">À votre nom</span>` : ""}
         </div>
         <h3>${p.t}</h3>
         <span class="sub">${p.s}</span>
@@ -546,11 +554,11 @@ function cardHTML(p) {
         <button class="add" data-${p.perso ? "open" : "add"}="${p.id}">${p.perso ? "Personnaliser" : "Ajouter"}</button></div>
     </article>`;
 }
-function renderBest() { $("strip").innerHTML = [1, 6, 2, 5, 3].map(byId).map(cardHTML).join(""); }
+function renderBest() { $("strip").innerHTML = [11, 1, 12, 13, 6, 2].map(byId).map(cardHTML).join(""); }
 function renderRayons() {
   $("rayons").innerHTML = RAYONS.map(r => `
     <button class="rayon" data-f="${r.f}" aria-pressed="${filter === r.f}">
-      <div class="art">${artOf(r.k)}</div>
+      <div class="art">${r.img ? `<img class="ph" src="${r.img}" alt="">` : artOf(r.k)}</div>
       <div><b>${r.n}</b><small>${r.s}</small></div>
     </button>`).join("");
 }
@@ -585,7 +593,7 @@ function renderCart() {
     `<div class="bar"><i style="width:${Math.min(100, total / FREE_SHIP * 100)}%"></i></div>`;
   $("lines").innerHTML = keys.length ? keys.map(k => {
     const [id, name] = k.split("|"); const p = byId(id);
-    return `<div class="line"><div class="sw">${artOf(p.k, name || p.perso)}</div>
+    return `<div class="line"><div class="sw">${p.img ? `<img class="ph" src="${p.img}" alt="">` : artOf(p.k, name || p.perso)}</div>
       <div style="min-width:0"><div class="t">${p.t}</div>${name ? `<div class="nm">Personnalisé : ${esc(name)}</div>` : ""}
       <div class="qty"><button data-dec="${esc(k)}" aria-label="Retirer un">−</button>${cart[k]}<button data-inc="${esc(k)}" aria-label="Ajouter un">+</button></div></div>
       <div class="p">${eur(p.p * cart[k])}</div></div>`;
@@ -620,7 +628,7 @@ function openSheet(id) {
 }
 function updateSheet() {
   const p = current, name = p.perso ? $("sheetName").value.trim() : "";
-  $("sheetArt").innerHTML = artOf(p.k, p.perso ? (name || p.perso) : undefined);
+  $("sheetArt").innerHTML = p.img ? `<img class="ph" src="${p.img}" alt="${esc(p.t)}"><span class="preview-name"${name ? "" : " hidden"}>Votre texte : <b>${esc(name)}</b></span>` : artOf(p.k, p.perso ? (name || p.perso) : undefined);
   $("qVal").textContent = qty;
   $("sheetAdd").textContent = `Ajouter · ${eur(p.p * qty)}`;
 }
@@ -683,5 +691,5 @@ $("checkout").onclick = () => { $("note").textContent = "Le paiement sera activ�
   size(); draw(); window.addEventListener("resize", size);
 })();
 
-renderHero(); renderBest(); renderRayons(); renderGrid(); renderKit(); renderTry(); renderCart();
+renderBest(); renderRayons(); renderGrid(); renderKit(); renderTry(); renderCart();
 </script>
