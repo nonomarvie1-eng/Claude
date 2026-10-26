@@ -87,9 +87,9 @@ const paw = (x, y, s, fill) => `<g transform="translate(${x} ${y}) scale(${s})" 
 const DESIGNS = {
   'medaillon-animal': { name: 'Rocky', f: n => { seed = 41;
     const C = '#f6efe2';
-    let snow = ''; for (let i = 0; i < 60; i++) { const x = R(40, 560), y = R(40, 560); if (Math.hypot(x - 300, y - 300) < 250 && !(y > 250 && y < 400) && !(y < 215 && Math.hypot(x - 300, y - 300) > 170) && !(y > 440)) snow += `<circle cx="${x}" cy="${y}" r="${R(1.5, 3.4)}" fill="#fff" opacity="${R(.35, .85)}"/>`; }
+    let snow = ''; for (let i = 0; i < 60; i++) { const x = R(40, 560), y = R(40, 560); if (Math.hypot(x - 300, y - 300) < 250 && !(y > 250 && y < 400) && !(y < 215 && Math.hypot(x - 300, y - 300) > 170) && !(y > 440) && Math.hypot(x - 300, y - 95) > 50 && !(y < 215 && Math.hypot(x - 300, y - 300) > 120)) snow += `<circle cx="${x}" cy="${y}" r="${R(1.5, 3.4)}" fill="#fff" opacity="${R(.35, .85)}"/>`; }
     // traces de pattes qui traversent en arc
-    let trail = ''; for (let i = 0; i < 5; i++) { const t = i / 4, x = 196 + t * 208, y = 232 - Math.sin(t * Math.PI) * 18 + (i % 2 ? 10 : -10); trail += `<g transform="rotate(90 ${x} ${y})">${paw(x, y, .5, C + 'd9')}</g>`; }
+    let trail = ''; for (let i = 0; i < 5; i++) { const t = i / 4, x = 200 + t * 200, y = 500 + Math.sin(t * Math.PI) * 12 + (i % 2 ? 9 : -9); trail += `<g transform="rotate(90 ${x} ${y})">${paw(x, y, .5, C + 'd9')}</g>`; }
     // os : barre + 4 boules
     const bx = 300, by = 325, hw = 138, hh = 44, r = 36;
     const bone = `<g filter="url(#bsh)">
@@ -108,13 +108,13 @@ const DESIGNS = {
     <rect width="600" height="600" fill="url(#vel)"/><rect width="600" height="600" filter="url(#grain)" opacity=".6"/>
     <circle cx="300" cy="300" r="262" fill="none" stroke="url(#gold)" stroke-width="3"/><circle cx="300" cy="300" r="252" fill="none" stroke="url(#gold)" stroke-width="1" opacity=".6"/>
     ${snow}
-    ${T.arc('a1', 200, true, 300)}${T.arcText('a1', 'JOYEUX NOËL', 24, C, .35)}
+    ${T.arc('a1', 150, true, 300)}${T.arcText('a1', 'JOYEUX NOËL', 23, C, .32)}
     ${trail}
     ${bone}${hat}${sprig}
     ${T.script(300, 342, n, scriptSize(n, 84), '#1f3d2c')}
     ${T.caps(300, 448, '2026', 26, 'url(#gold)', .5)}
     ${sparkle(222, 440, 8)}${sparkle(378, 440, 8)}
-    ${flake(150, 470, 11, C, 2)}${flake(450, 470, 11, C, 2)}`; } },
+    ${flake(150, 420, 11, C, 2)}${flake(450, 420, 11, C, 2)}`; } },
 };
 
 // plaid 50x60 pouces, portrait
