@@ -86,30 +86,35 @@ const paper = (bg) => `<rect width="600" height="600" fill="${bg}"/><rect width=
 const paw = (x, y, s, fill) => `<g transform="translate(${x} ${y}) scale(${s})" fill="${fill}"><ellipse cx="0" cy="8" rx="13" ry="11"/><ellipse cx="-15" cy="-8" rx="5.5" ry="7" transform="rotate(-20 -15 -8)"/><ellipse cx="-5.5" cy="-15" rx="5.5" ry="7.5"/><ellipse cx="5.5" cy="-15" rx="5.5" ry="7.5"/><ellipse cx="15" cy="-8" rx="5.5" ry="7" transform="rotate(20 15 -8)"/></g>`;
 const DESIGNS = {
   'medaillon-animal': { name: 'Rocky', f: n => { seed = 41;
-    let snow = ''; for (let i = 0; i < 55; i++) { const x = R(40, 560), y = R(40, 560); if (Math.hypot(x - 300, y - 300) < 250 && Math.hypot(x - 300, y - 250) > 120 && !(y > 330 && y < 500) && !(y < 215 && Math.hypot(x - 300, y - 300) > 170)) snow += `<circle cx="${x}" cy="${y}" r="${R(1.5, 3.4)}" fill="#fff" opacity="${R(.35, .85)}"/>`; }
     const C = '#f6efe2';
-    // chien assis de profil, tourné vers la gauche
-    const dog = `<g transform="translate(300 262)">
-      <path d="M38 78 C 70 70 92 40 84 2 C 78 -26 58 -40 44 -46 L 40 -52 C 34 -70 22 -84 4 -86 C -14 -88 -30 -80 -38 -66 L -62 -58 C -72 -56 -76 -48 -70 -42 C -62 -36 -48 -38 -36 -40 C -32 -30 -24 -22 -16 -18 C -22 0 -26 24 -28 46 C -30 62 -36 72 -44 76 C -50 79 -48 84 -40 84 L -10 84 C -4 84 -2 80 -6 76 C -10 72 -10 62 -8 50 L -4 30 C 2 44 6 60 4 76 C 2 82 6 84 12 84 L 46 84 C 54 84 56 79 50 76 Z" fill="${C}"/>
-      <path d="M78 40 C 100 40 112 24 116 6 C 118 -2 112 -4 108 2 C 100 18 92 26 80 28 Z" fill="${C}"/>
-      <path d="M6 -74 C 14 -60 16 -44 8 -34 C 4 -30 -2 -32 -2 -38 C -2 -50 0 -62 6 -74 Z" fill="#d9ccb4"/>
-      <circle cx="-26" cy="-62" r="3.2" fill="#3a1a12"/><circle cx="-68" cy="-50" r="4.5" fill="#3a1a12"/>
-      <path d="M-30 -36 C -16 -30 2 -30 14 -36 L 16 -28 C 2 -22 -16 -22 -30 -28 Z" fill="#1f3d2c"/><circle cx="-8" cy="-22" r="5" fill="url(#gold)"/>
-      <path d="M-34 -78 C -30 -104 -4 -122 26 -116 C 48 -112 62 -96 70 -76 C 74 -66 66 -60 60 -66 C 52 -84 36 -94 22 -92 C 8 -88 -10 -82 -34 -78 Z" fill="#e0434b" stroke="#f6efe2" stroke-width="2.5"/>
-      <path d="M-40 -84 C -14 -94 14 -96 40 -88 C 46 -86 46 -76 40 -76 C 14 -82 -14 -80 -40 -72 C -46 -70 -48 -82 -40 -84 Z" fill="#fff"/>
-      <circle cx="66" cy="-62" r="10" fill="#fff"/>
-    </g>`;
-    return `<defs><radialGradient id="vel" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#b5363b"/><stop offset=".7" stop-color="#86202a"/><stop offset="1" stop-color="#5e141c"/></radialGradient></defs>
+    let snow = ''; for (let i = 0; i < 60; i++) { const x = R(40, 560), y = R(40, 560); if (Math.hypot(x - 300, y - 300) < 250 && !(y > 250 && y < 400) && !(y < 215 && Math.hypot(x - 300, y - 300) > 170) && !(y > 440)) snow += `<circle cx="${x}" cy="${y}" r="${R(1.5, 3.4)}" fill="#fff" opacity="${R(.35, .85)}"/>`; }
+    // traces de pattes qui traversent en arc
+    let trail = ''; for (let i = 0; i < 5; i++) { const t = i / 4, x = 196 + t * 208, y = 232 - Math.sin(t * Math.PI) * 18 + (i % 2 ? 10 : -10); trail += `<g transform="rotate(90 ${x} ${y})">${paw(x, y, .5, C + 'd9')}</g>`; }
+    // os : barre + 4 boules
+    const bx = 300, by = 325, hw = 138, hh = 44, r = 36;
+    const bone = `<g filter="url(#bsh)">
+      <rect x="${bx - hw}" y="${by - hh}" width="${hw * 2}" height="${hh * 2}" fill="${C}"/>
+      <circle cx="${bx - hw}" cy="${by - r * .78}" r="${r}" fill="${C}"/><circle cx="${bx - hw}" cy="${by + r * .78}" r="${r}" fill="${C}"/>
+      <circle cx="${bx + hw}" cy="${by - r * .78}" r="${r}" fill="${C}"/><circle cx="${bx + hw}" cy="${by + r * .78}" r="${r}" fill="${C}"/></g>
+      <rect x="${bx - hw + 6}" y="${by - hh + 8}" width="${hw * 2 - 12}" height="${hh * 2 - 16}" rx="10" fill="none" stroke="url(#gold)" stroke-width="2"/>`;
+    // bonnet posé sur la boule gauche du haut
+    const hat = `<g transform="translate(${bx - hw + 2} ${by - r * .78 - 26}) rotate(-12) scale(.85)">
+      <path d="M-40 4 C -34 -30 -6 -52 24 -48 C 44 -44 56 -28 60 -8 C 62 2 54 6 50 -2 C 44 -18 34 -28 22 -28 C 4 -26 -18 -16 -40 4 Z" fill="#2f6a48" stroke="${C}" stroke-width="2"/>
+      <path d="M-48 2 C -16 -10 16 -12 46 -2 C 52 0 52 12 46 12 C 16 4 -16 4 -48 14 C -54 16 -56 4 -48 2 Z" fill="#fff"/>
+      <circle cx="54" cy="0" r="10" fill="#fff"/></g>`;
+    const sprig = `${holly(bx + hw + 10, by - r * .78 - 30, 22, 30, '#2f6a48')}${holly(bx + hw + 30, by - r * .78 - 18, 20, 75, '#2f6a48')}${berries(bx + hw + 16, by - r * .78 - 18, 3, 6)}`;
+    return `<defs><radialGradient id="vel" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#b5363b"/><stop offset=".7" stop-color="#86202a"/><stop offset="1" stop-color="#5e141c"/></radialGradient>
+      <filter id="bsh" x="-20%" y="-40%" width="140%" height="180%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#3a0a10" flood-opacity=".45"/></filter></defs>
     <rect width="600" height="600" fill="url(#vel)"/><rect width="600" height="600" filter="url(#grain)" opacity=".6"/>
     <circle cx="300" cy="300" r="262" fill="none" stroke="url(#gold)" stroke-width="3"/><circle cx="300" cy="300" r="252" fill="none" stroke="url(#gold)" stroke-width="1" opacity=".6"/>
     ${snow}
     ${T.arc('a1', 200, true, 300)}${T.arcText('a1', 'JOYEUX NOËL', 24, C, .35)}
-    <ellipse cx="300" cy="350" rx="120" ry="8" fill="#000" opacity=".18"/>
-    ${dog}
-    ${T.script(300, 428, n, scriptSize(n, 104), 'url(#gold)')}
-    ${T.caps(300, 482, '2026', 24, C, .5)}
-    ${paw(222, 474, .38, 'url(#gold)')}${paw(378, 474, .38, 'url(#gold)')}
-    ${flake(140, 250, 12, C, 2)}${flake(462, 250, 12, C, 2)}${sparkle(175, 330, 7)}${sparkle(428, 330, 7)}`; } },
+    ${trail}
+    ${bone}${hat}${sprig}
+    ${T.script(300, 342, n, scriptSize(n, 84), '#1f3d2c')}
+    ${T.caps(300, 448, '2026', 26, 'url(#gold)', .5)}
+    ${sparkle(222, 440, 8)}${sparkle(378, 440, 8)}
+    ${flake(150, 470, 11, C, 2)}${flake(450, 470, 11, C, 2)}`; } },
 };
 
 // plaid 50x60 pouces, portrait
