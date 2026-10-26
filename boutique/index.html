@@ -1,119 +1,124 @@
-<title>La Hotte à Idées</title>
+<title>Sapin &amp; Lin</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: grand bandeau vert sapin avec neige, rayons illustrés, grille de produits lumineuse, panier coulissant. Thème clair unique (choix volontaire). */
+/* Layout: déco de Noël naturelle — bandeau lin avec suspensions qui se balancent, rayons illustrés, grille de produits, panier coulissant. Thème clair unique (choix volontaire). */
 :root {
   color-scheme: light;
-  --pine: #0e3b2c;
-  --pine-2: #15523d;
-  --red: #c3141f;
-  --gold: #d4a64a;
-  --snow: #ffffff;
-  --paper: #f7f4ef;
-  --ink: #1d1d1b;
-  --muted: #6b6a66;
-  --line: #e7e2da;
-  --display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --linen: #f3eee6;      /* lin naturel */
+  --paper: #fbf9f5;
+  --wood: #c9a27a;       /* bois clair */
+  --wood-dk: #8d6748;
+  --pine: #24402f;       /* vert sapin profond */
+  --berry: #a3312f;      /* rouge baie, accent rare */
+  --ink: #22261f;
+  --muted: #6e6c64;
+  --line: #e4ddd1;
+  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { background: var(--snow); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--pine); }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
 .wrap { max-width: 1140px; margin: 0 auto; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); }
 button { font: inherit; cursor: pointer; color: inherit; }
-button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+button:focus-visible { outline: 2px solid var(--berry); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; margin: 0; text-wrap: balance; }
 
-/* Barre d'annonce */
-.announce { background: var(--red); color: #fff; font-size: 13px; font-weight: 500; text-align: center; }
+.announce { background: var(--pine); color: #f3eee6; font-size: 12.5px; letter-spacing: .02em; text-align: center; }
 .announce .wrap { padding-block: 8px; }
 
-/* En-tête */
-header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--pine); color: #fff; border-bottom: 1px solid rgba(255,255,255,.08); }
-header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 14px; }
-.logo { font-family: var(--display); font-size: 23px; display: flex; align-items: baseline; gap: 2px; }
-.logo i { font-style: italic; color: var(--gold); }
-.cart-btn { position: relative; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.1); display: grid; place-items: center; }
-.cart-btn svg { width: 22px; height: 22px; }
-.cart-btn .count { position: absolute; top: -2px; right: -2px; background: var(--gold); color: var(--pine); border-radius: 999px; min-width: 20px; height: 20px; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; font-variant-numeric: tabular-nums; }
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: rgba(251,249,245,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; }
+.logo { font-family: var(--display); font-weight: 600; font-size: 27px; color: var(--pine); letter-spacing: .01em; }
+.logo i { font-style: italic; color: var(--berry); font-weight: 500; }
+.cart-btn { position: relative; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); display: grid; place-items: center; color: var(--pine); }
+.cart-btn svg { width: 21px; height: 21px; }
+.cart-btn .count { position: absolute; top: -3px; right: -3px; background: var(--berry); color: #fff; border-radius: 999px; min-width: 19px; height: 19px; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; font-variant-numeric: tabular-nums; }
 
 /* Hero */
-.hero { position: relative; background: radial-gradient(120% 90% at 80% 0%, var(--pine-2), var(--pine) 60%); color: #fff; overflow: hidden; }
-.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.hero .wrap { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center; padding-block: 52px 60px; }
-.pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
-.pill b { color: var(--gold); font-variant-numeric: tabular-nums; }
-.hero h1 { font-size: clamp(40px, 7vw, 68px); line-height: 1.02; margin: 18px 0 16px; }
-.hero h1 em { color: var(--gold); }
-.hero p { color: rgba(255,255,255,.78); font-size: 17px; max-width: 40ch; margin: 0 0 26px; }
+.hero { background: var(--linen); position: relative; overflow: hidden; }
+.hanging { position: absolute; top: 0; right: 0; width: 52%; height: 100%; pointer-events: none; }
+.hanging .orn { position: absolute; top: 0; transform-origin: top center; animation: sway 5s ease-in-out infinite alternate; }
+.hanging .orn svg { display: block; }
+@keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+.hero .wrap { position: relative; padding-block: 56px 60px; }
+.hero .copy { max-width: 520px; }
+.kicker { font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--wood-dk); }
+.hero h1 { font-size: clamp(44px, 7.4vw, 76px); line-height: .98; color: var(--pine); margin: 14px 0 16px; }
+.hero h1 em { font-weight: 500; color: var(--berry); }
+.hero p { color: var(--muted); font-size: 17px; max-width: 38ch; margin: 0 0 26px; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .btn { display: inline-block; border: 0; border-radius: 999px; padding: 14px 26px; font-weight: 600; font-size: 15px; }
-.btn-gold { background: var(--gold); color: var(--pine); }
-.btn-red { background: var(--red); color: #fff; }
-.collage { position: relative; height: 340px; }
-.collage .tile { position: absolute; width: 58%; aspect-ratio: 4 / 5; border-radius: 18px; box-shadow: 0 24px 50px rgba(0,0,0,.35); overflow: hidden; }
-.collage .tile:nth-child(1) { left: 0; top: 30px; transform: rotate(-6deg); }
-.collage .tile:nth-child(2) { right: 0; top: 0; transform: rotate(5deg); }
-.collage .tile:nth-child(3) { left: 24%; top: 120px; transform: rotate(-1deg); width: 52%; }
+.btn-pine { background: var(--pine); color: #f3eee6; }
+.btn-ghost { background: transparent; border: 1px solid var(--pine); color: var(--pine); }
+.days { margin-top: 26px; font-size: 13.5px; color: var(--muted); }
+.days b { color: var(--pine); font-variant-numeric: tabular-nums; }
 
-/* Rayons */
-section.block { padding-block: 44px 8px; }
+/* Sections */
+section.block { padding-block: 48px 8px; }
 .section-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
-.section-head h2 { font-size: clamp(28px, 4vw, 38px); line-height: 1.1; }
+.section-head h2 { font-size: clamp(32px, 4.4vw, 44px); line-height: 1.05; color: var(--pine); }
 .section-head span { color: var(--muted); font-size: 14px; }
+
 .rayons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.rayon { border: 0; border-radius: 16px; overflow: hidden; text-align: left; background: var(--paper); padding: 0; display: flex; flex-direction: column; outline: 2px solid transparent; transition: outline-color .2s, transform .2s; }
-.rayon:hover { transform: translateY(-2px); }
-.rayon[aria-pressed="true"] { outline-color: var(--ink); }
-.rayon .art { aspect-ratio: 16 / 10; max-width: 100%; }
-.rayon .txt { padding: 12px 14px 14px; }
-.rayon b { font-family: var(--display); font-weight: 400; font-size: 21px; display: block; line-height: 1.1; }
-.rayon small { color: var(--muted); font-size: 13px; }
+.rayon { border: 0; padding: 0; background: none; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+.rayon .art { aspect-ratio: 4 / 5; max-width: 100%; border-radius: 200px 200px 14px 14px; overflow: hidden; outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .2s; }
+.rayon[aria-pressed="true"] .art { outline-color: var(--pine); }
+.rayon b { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--pine); line-height: 1.1; }
+.rayon small { display: block; color: var(--muted); font-size: 13px; }
 
-/* Produits */
-.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 16px; padding-bottom: 56px; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px 16px; padding-bottom: 56px; }
 .card { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.card .art { position: relative; aspect-ratio: 1 / 1; max-width: 100%; border-radius: 16px; overflow: hidden; }
-.badge { position: absolute; top: 10px; left: 10px; background: #fff; color: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 4px 9px; border-radius: 999px; }
-.badge.hot { background: var(--red); color: #fff; }
-.quick { position: absolute; right: 10px; bottom: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: #fff; color: var(--ink); display: grid; place-items: center; box-shadow: 0 4px 14px rgba(0,0,0,.18); transition: transform .15s; }
+.card .art { position: relative; aspect-ratio: 1 / 1; max-width: 100%; border-radius: 14px; overflow: hidden; }
+.badge { position: absolute; top: 10px; left: 10px; background: var(--paper); color: var(--pine); font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 4px 9px; border-radius: 999px; }
+.badge.perso { background: var(--berry); color: #fff; }
+.quick { position: absolute; right: 10px; bottom: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--pine); color: #f3eee6; display: grid; place-items: center; transition: transform .15s; }
 .quick:active { transform: scale(.92); }
-.quick svg { width: 20px; height: 20px; }
+.quick svg { width: 19px; height: 19px; }
 .card h3 { font-family: var(--body); font-weight: 600; font-size: 15px; line-height: 1.3; }
-.meta { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.card .sub { color: var(--muted); font-size: 13px; margin-top: -6px; }
 .price { font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; }
-.price s { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 6px; }
-.stars { color: var(--gold); font-size: 12px; letter-spacing: 1px; white-space: nowrap; }
 
-/* Bande engagements */
-.trust { background: var(--paper); }
-.trust .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-block: 30px; }
+/* Bloc personnalisation */
+.perso-band { background: var(--pine); color: #f3eee6; }
+.perso-band .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; padding-block: 44px; }
+.perso-band h2 { font-size: clamp(32px, 4.6vw, 46px); line-height: 1.05; }
+.perso-band p { color: rgba(243,238,230,.78); max-width: 42ch; }
+.preview { background: var(--linen); border-radius: 16px; padding: 18px; display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: center; color: var(--ink); }
+.preview .art { aspect-ratio: 1 / 1; max-width: 100%; border-radius: 12px; overflow: hidden; }
+.preview label { font-size: 13px; font-weight: 600; color: var(--pine); display: block; margin-bottom: 6px; }
+.preview input { width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 11px 12px; font: inherit; color: var(--ink); }
+.preview small { display: block; color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+.trust .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-block: 34px; border-top: 1px solid var(--line); }
 .trust div { display: flex; gap: 12px; align-items: flex-start; }
-.trust svg { flex: none; width: 26px; height: 26px; color: var(--red); }
+.trust svg { flex: none; width: 26px; height: 26px; color: var(--wood-dk); }
 .trust b { display: block; font-size: 15px; }
 .trust span { color: var(--muted); font-size: 13.5px; }
 
-footer { background: var(--pine); color: rgba(255,255,255,.7); font-size: 13px; }
-footer .wrap { padding-block: 26px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-footer .logo { font-size: 19px; color: #fff; }
+footer { background: var(--linen); color: var(--muted); font-size: 13px; }
+footer .wrap { padding-block: 26px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+footer .logo { font-size: 22px; }
 
 /* Panier */
-.scrim { position: fixed; inset: 0; background: rgba(10,25,18,.5); z-index: 20; }
-.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(410px, 100%); background: #fff; z-index: 21; display: flex; flex-direction: column; gap: 14px;
+.scrim { position: fixed; inset: 0; background: rgba(20,28,22,.45); z-index: 20; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(410px, 100%); background: var(--paper); z-index: 21; display: flex; flex-direction: column; gap: 14px;
   padding: calc(env(safe-area-inset-top, 0px) + 20px) max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 20px) 20px; }
 .drawer-head { display: flex; justify-content: space-between; align-items: center; }
-.drawer-head h2 { font-size: 28px; }
-.close { background: var(--paper); border: 0; width: 38px; height: 38px; border-radius: 50%; font-size: 22px; line-height: 1; }
-.ship { background: var(--paper); border-radius: 12px; padding: 12px 14px; font-size: 13.5px; }
+.drawer-head h2 { font-size: 32px; color: var(--pine); }
+.close { background: var(--linen); border: 0; width: 38px; height: 38px; border-radius: 50%; font-size: 22px; line-height: 1; }
+.ship { background: var(--linen); border-radius: 12px; padding: 12px 14px; font-size: 13.5px; }
 .bar { height: 6px; background: var(--line); border-radius: 99px; margin-top: 8px; overflow: hidden; }
-.bar i { display: block; height: 100%; background: var(--red); width: 0; transition: width .3s; }
+.bar i { display: block; height: 100%; background: var(--pine); width: 0; transition: width .3s; }
 .lines { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
 .line { display: grid; grid-template-columns: 58px 1fr auto; gap: 12px; align-items: center; }
 .line .sw { width: 58px; height: 58px; border-radius: 10px; overflow: hidden; }
 .line .t { font-size: 14px; font-weight: 600; }
+.line .n { font-size: 12.5px; color: var(--berry); }
 .qty { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 4px; margin-top: 6px; font-size: 13px; font-variant-numeric: tabular-nums; }
 .qty button { width: 24px; height: 24px; border: 0; background: none; font-size: 16px; line-height: 1; }
 .line .p { font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -122,71 +127,97 @@ footer .logo { font-size: 19px; color: #fff; }
 .checkout { width: 100%; }
 .checkout:disabled { opacity: .45; cursor: default; }
 .note { font-size: 12.5px; color: var(--muted); text-align: center; min-height: 1em; }
-.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); transform: translateX(-50%); background: var(--pine); color: #fff; padding: 11px 18px; border-radius: 999px; font-size: 14px; z-index: 30; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); transform: translateX(-50%); background: var(--pine); color: #f3eee6; padding: 11px 18px; border-radius: 999px; font-size: 14px; z-index: 30; }
 
 @media (max-width: 900px) {
-  .hero .wrap { grid-template-columns: 1fr; padding-block: 36px 40px; }
-  .collage { height: 260px; max-width: 420px; }
   .grid { grid-template-columns: repeat(3, 1fr); }
+  .perso-band .wrap { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
-  .rayons { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .rayon b { font-size: 18px; }
-  .grid { grid-template-columns: repeat(2, 1fr); gap: 18px 12px; }
+  .hanging { width: 46%; opacity: .9; }
+  .hero .wrap { padding-block: 40px 44px; }
+  .hero .copy { max-width: 64%; }
+  .hero p { font-size: 15.5px; }
+  .rayons { grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 22px 12px; }
   .card h3 { font-size: 14px; }
   .trust .wrap { grid-template-columns: 1fr; gap: 14px; }
-  .stars { display: none; }
+  .preview { grid-template-columns: 96px 1fr; }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 420px) {
+  .hero .copy { max-width: 100%; }
+  .hanging { opacity: .35; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
-<div class="announce"><div class="wrap">Livraison offerte dès 49 € · Commandez avant le 18 décembre pour Noël</div></div>
+<div class="announce"><div class="wrap">Livraison offerte dès 49 € · Personnalisation offerte</div></div>
 
 <header class="top">
   <div class="wrap">
-    <div class="logo">La Hotte <i>à</i> Idées</div>
+    <div class="logo">Sapin <i>&amp;</i> Lin</div>
     <button class="cart-btn" id="openCart" aria-label="Ouvrir le panier">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.3 12H6.3z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.3 12H6.3z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
       <span class="count" id="cartCount">0</span>
     </button>
   </div>
 </header>
 
 <section class="hero">
-  <canvas id="snow" aria-hidden="true"></canvas>
+  <div class="hanging" id="hanging" aria-hidden="true"></div>
   <div class="wrap">
-    <div>
-      <span class="pill">Noël dans <b id="days">–</b> <span id="daysWord">jours</span></span>
-      <h1>Des cadeaux qui font <em>vraiment</em> plaisir.</h1>
-      <p>Une sélection d'idées pour elle, pour lui et pour les enfants. Emballées et livrées avant le réveillon.</p>
-      <button class="btn btn-gold" id="goShop">Trouver un cadeau</button>
+    <div class="copy">
+      <div class="kicker">Décoration de Noël</div>
+      <h1>Un Noël <em>naturel</em>, à votre nom.</h1>
+      <p>Boules en bois gravées, lin, feutre et lumières douces. Des décorations simples et belles, personnalisées pour votre famille.</p>
+      <div class="actions">
+        <button class="btn btn-pine" id="goShop">Découvrir la collection</button>
+      </div>
+      <div class="days">Noël dans <b id="days">–</b> <span id="daysWord">jours</span> · commandes personnalisées jusqu'au 10 décembre</div>
     </div>
-    <div class="collage" id="collage" aria-hidden="true"></div>
   </div>
 </section>
 
 <section class="block wrap" id="shop">
-  <div class="section-head"><h2>Choisissez pour qui</h2></div>
+  <div class="section-head"><h2>Les collections</h2></div>
   <div class="rayons" id="rayons"></div>
 </section>
 
 <section class="block wrap">
-  <div class="section-head"><h2 id="shelfTitle">Toutes nos idées</h2><span id="resultCount"></span></div>
+  <div class="section-head"><h2 id="shelfTitle">Toute la collection</h2><span id="resultCount"></span></div>
   <div class="grid" id="grid"></div>
+</section>
+
+<section class="perso-band">
+  <div class="wrap">
+    <div>
+      <div class="kicker" style="color:var(--wood)">Personnalisation offerte</div>
+      <h2 style="margin:10px 0 12px">Un prénom, une date, et la boule devient un souvenir.</h2>
+      <p>Chaque pièce personnalisée est gravée ou brodée à la commande. Essayez avec le prénom de votre choix.</p>
+    </div>
+    <div class="preview">
+      <div class="art" id="previewArt"></div>
+      <div>
+        <label for="nameInput">Prénom à graver</label>
+        <input id="nameInput" maxlength="10" value="Emma" autocomplete="off">
+        <small>10 lettres maximum</small>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="trust">
   <div class="wrap">
-    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><p style="margin:0"><b>Livré avant Noël</b><span>Pour toute commande avant le 18 décembre.</span></p></div>
-    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1"/><path d="M4 13h16M12 9v11M12 9c-2-4-6-3-5-1s5 1 5 1 4 1 5-1-3-3-5 1"/></svg><p style="margin:0"><b>Prêt à offrir</b><span>Emballage cadeau sur demande.</span></p></div>
-    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><p style="margin:0"><b>Paiement sécurisé</b><span>Carte bancaire, Apple Pay, PayPal.</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 7 6 7 11a7 7 0 0 1-14 0c0-5 4-7 7-11z"/><path d="M12 21v-8"/></svg><p style="margin:0"><b>Matières naturelles</b><span>Bois, lin, feutre de laine et coton.</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><p style="margin:0"><b>Livré avant Noël</b><span>Expédition en 48 h pour les articles non personnalisés.</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><p style="margin:0"><b>Paiement sécurisé</b><span>Carte bancaire, Apple Pay, PayPal.</span></p></div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <div class="logo">La Hotte <i>à</i> Idées</div>
-    <span>Maquette : produits et prix donnés à titre d'exemple.</span>
+    <div class="logo">Sapin <i>&amp;</i> Lin</div>
+    <span>Maquette : produits, prix et délais donnés à titre d'exemple.</span>
   </div>
 </footer>
 
@@ -196,114 +227,120 @@ footer .logo { font-size: 19px; color: #fff; }
   <div class="ship" id="ship"></div>
   <div class="lines" id="lines"></div>
   <div class="total"><span>Total</span><span id="total">0,00 €</span></div>
-  <button class="btn btn-red checkout" id="checkout">Commander</button>
+  <button class="btn btn-pine checkout" id="checkout">Commander</button>
   <div class="note" id="note"></div>
 </aside>
 <div class="toast" id="toast" hidden></div>
 
 <script>
-/* ---------- Illustrations des produits (SVG dessinés) ---------- */
-const G = {
-  // fond doux + motif de petits pois
-  bg: (a, b) => `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>
-    <pattern id="d" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.3" fill="#fff" opacity=".35"/></pattern></defs>
-    <rect width="200" height="200" fill="url(#g)"/><rect width="200" height="200" fill="url(#d)"/>
-    <ellipse cx="100" cy="172" rx="62" ry="9" fill="#000" opacity=".12"/>`,
-};
-const ART = {
-  giftbox: (c1, c2) => `<rect x="48" y="84" width="104" height="86" rx="6" fill="${c1}"/><rect x="40" y="68" width="120" height="24" rx="5" fill="${c2}"/>
-    <rect x="92" y="68" width="16" height="102" fill="#d4a64a"/><path d="M100 68c-18-26-44-16-34-4 6 7 34 4 34 4zm0 0c18-26 44-16 34-4-6 7-34 4-34 4z" fill="#d4a64a"/>`,
-  candle: (c1) => `<rect x="70" y="82" width="60" height="88" rx="8" fill="#fff"/><rect x="70" y="112" width="60" height="22" fill="${c1}"/>
-    <rect x="98" y="66" width="4" height="16" fill="#3a2a22"/><path d="M100 36c-12 14-10 28 0 30 10-2 12-16 0-30z" fill="#f4b23a"/><path d="M100 48c-5 7-4 14 0 15 4-1 5-8 0-15z" fill="#fff3c4"/>`,
-  diffuser: (c1) => `<path d="M64 116c0-22 16-36 36-36s36 14 36 36v40c0 8-6 14-14 14H78c-8 0-14-6-14-14z" fill="#c99a6b"/><path d="M64 128h72" stroke="#a87a4e" stroke-width="3"/>
-    <path d="M92 74c-6-12 4-18 0-30M108 74c6-12-4-18 0-30" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity=".8"/><circle cx="100" cy="80" r="5" fill="${c1}"/>`,
-  spa: (c1) => `<rect x="54" y="90" width="44" height="80" rx="10" fill="#fff"/><rect x="66" y="74" width="20" height="18" rx="3" fill="${c1}"/>
-    <rect x="106" y="112" width="44" height="58" rx="22" fill="${c1}"/><rect x="118" y="100" width="20" height="14" rx="3" fill="#fff"/><path d="M64 120h24M64 130h16" stroke="${c1}" stroke-width="4" stroke-linecap="round"/>`,
-  necklace: (c1) => `<path d="M50 40c0 70 30 98 50 98s50-28 50-98" stroke="#d4a64a" stroke-width="3" fill="none"/><circle cx="100" cy="148" r="20" fill="#d4a64a"/>
-    <text x="100" y="156" text-anchor="middle" font-family="DM Serif Display, Georgia, serif" font-size="24" fill="${c1}">L</text>`,
-  beard: (c1) => `<rect x="56" y="80" width="32" height="90" rx="8" fill="#2b2b2b"/><rect x="62" y="66" width="20" height="16" rx="3" fill="#d4a64a"/>
-    <rect x="100" y="110" width="48" height="60" rx="8" fill="#c99a6b"/><path d="M106 110v-20M114 110v-24M122 110v-20M130 110v-24M138 110v-20" stroke="#5a3b28" stroke-width="4" stroke-linecap="round"/>`,
-  wallet: (c1) => `<rect x="44" y="72" width="112" height="88" rx="10" fill="${c1}"/><path d="M44 96h112" stroke="#000" opacity=".2" stroke-width="2"/>
-    <rect x="112" y="104" width="44" height="28" rx="6" fill="#000" opacity=".18"/><circle cx="128" cy="118" r="5" fill="#d4a64a"/><text x="74" y="140" font-family="DM Serif Display, Georgia, serif" font-size="22" fill="#d4a64a" opacity=".9">A.M.</text>`,
-  apero: (c1) => `<rect x="44" y="140" width="112" height="30" rx="6" fill="#c99a6b"/><path d="M70 60h24l-4 46c-1 8-7 12-8 12s-7-4-8-12z" fill="${c1}"/><rect x="80" y="118" width="4" height="22" fill="#fff"/>
-    <rect x="70" y="138" width="24" height="4" rx="2" fill="#fff"/><rect x="112" y="70" width="28" height="70" rx="6" fill="#2f4a3a"/><rect x="120" y="54" width="12" height="18" rx="2" fill="#2f4a3a"/><rect x="112" y="96" width="28" height="22" fill="#f1e3c8"/>`,
-  speaker: (c1) => `<rect x="58" y="62" width="84" height="108" rx="14" fill="#c99a6b"/><circle cx="100" cy="128" r="26" fill="#5a3b28"/><circle cx="100" cy="128" r="10" fill="#3a2418"/><circle cx="100" cy="84" r="8" fill="#5a3b28"/>`,
-  stars: (c1) => `<path d="M64 170l8-56h56l8 56z" fill="#fff"/><ellipse cx="100" cy="114" rx="28" ry="8" fill="#e9e3d6"/><circle cx="100" cy="96" r="22" fill="${c1}"/>
-    <g fill="#ffe7a3"><path d="M44 50l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M150 40l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path d="M160 86l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><circle cx="70" cy="80" r="2"/><circle cx="128" cy="66" r="2"/></g>`,
-  blocks: (c1) => `<rect x="44" y="124" width="46" height="46" rx="4" fill="${c1}"/><rect x="96" y="124" width="46" height="46" rx="4" fill="#d4a64a"/><rect x="70" y="74" width="46" height="46" rx="4" fill="#2f6b55"/>
-    <path d="M128 74l24 44h-48z" fill="#c3141f"/><text x="67" y="155" text-anchor="middle" font-family="DM Serif Display, Georgia, serif" font-size="26" fill="#fff">A</text><text x="119" y="155" text-anchor="middle" font-family="DM Serif Display, Georgia, serif" font-size="26" fill="#fff">B</text>`,
-  craft: (c1) => `<circle cx="80" cy="120" r="34" fill="${c1}"/><rect x="74" y="80" width="12" height="10" rx="2" fill="#d4a64a"/><path d="M50 116c18 10 42 10 60 0" stroke="#fff" stroke-width="4" fill="none"/>
-    <rect x="120" y="70" width="10" height="90" rx="4" fill="#2f6b55" transform="rotate(14 125 115)"/><rect x="138" y="76" width="10" height="90" rx="4" fill="#d4a64a" transform="rotate(-10 143 121)"/>`,
-  reindeer: (c1) => `<ellipse cx="100" cy="140" rx="44" ry="32" fill="#a87a4e"/><circle cx="100" cy="98" r="30" fill="#b88a5c"/><ellipse cx="100" cy="112" rx="16" ry="11" fill="#e9d2b4"/><circle cx="100" cy="106" r="7" fill="#c3141f"/>
-    <circle cx="89" cy="92" r="3.5" fill="#2b1d16"/><circle cx="111" cy="92" r="3.5" fill="#2b1d16"/><path d="M80 72c-8-14-20-16-24-28M78 66c-10 0-14-6-16-10M120 72c8-14 20-16 24-28M122 66c10 0 14-6 16-10" stroke="#6b4a32" stroke-width="5" stroke-linecap="round" fill="none"/>`,
-  socks: (c1) => `<path d="M60 40h34v70l14 22c8 14-12 28-22 16L60 112z" fill="${c1}"/><rect x="60" y="40" width="34" height="16" fill="#fff"/>
-    <path d="M110 52h34v70l14 22c8 14-12 28-22 16l-26-38z" fill="#2f6b55"/><rect x="110" y="52" width="34" height="16" fill="#fff"/><path d="M68 76h18M118 88h18" stroke="#fff" stroke-width="4" stroke-dasharray="4 4"/>`,
-  mug: (c1) => `<rect x="56" y="70" width="76" height="98" rx="10" fill="#fff"/><path d="M132 92h12a16 16 0 0 1 0 32h-12" stroke="#fff" stroke-width="9" fill="none"/>
-    <text x="94" y="126" text-anchor="middle" font-family="DM Serif Display, Georgia, serif" font-size="24" fill="${c1}">Léa</text><path d="M80 56c-4-8 4-12 0-20M100 56c-4-8 4-12 0-20" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/>`,
-  moon: (c1) => `<circle cx="100" cy="98" r="50" fill="#fff4d6"/><circle cx="82" cy="84" r="8" fill="#efe0b6"/><circle cx="116" cy="112" r="11" fill="#efe0b6"/><circle cx="110" cy="76" r="5" fill="#efe0b6"/>
-    <rect x="94" y="146" width="12" height="16" fill="#c99a6b"/><rect x="74" y="160" width="52" height="10" rx="3" fill="#c99a6b"/>`,
-  sapin: (c1) => `<path d="M100 30l40 60h-20l30 44h-24l24 36H50l24-36H50l30-44H60z" fill="#2f6b55"/><rect x="92" y="170" width="16" height="12" fill="#6b4a32"/><circle cx="84" cy="110" r="5" fill="#c3141f"/><circle cx="116" cy="130" r="5" fill="#d4a64a"/><circle cx="100" cy="80" r="4" fill="#d4a64a"/><circle cx="80" cy="150" r="5" fill="#d4a64a"/><circle cx="122" cy="156" r="5" fill="#c3141f"/>`
-};
-function art(key, bgA, bgB, c1, c2) {
-  return `<svg viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true">${G.bg(bgA, bgB).replace(/id="g"/, `id="g${key}${bgA.slice(1)}"`).replace(/url\(#g\)/, `url(#g${key}${bgA.slice(1)})`).replace(/id="d"/, `id="d${key}${bgA.slice(1)}"`).replace(/url\(#d\)/, `url(#d${key}${bgA.slice(1)})`)}${ART[key](c1, c2)}</svg>`;
+/* ---------- Illustrations ---------- */
+const W = "#c9a27a", WD = "#8d6748", WL = "#e3c9a8", P = "#24402f", P2 = "#3d6b4f", R = "#a3312f", L = "#f3eee6", LD = "#e2d8c8";
+let uid = 0;
+function scene(bgA, bgB, body) {
+  const g = "g" + (++uid);
+  return `<svg viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient></defs>
+    <rect width="200" height="200" fill="url(#${g})"/>${body}</svg>`;
 }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ART = {
+  woodBauble: (name = "Emma") => `<path d="M100 0v52" stroke="${WD}" stroke-width="1.5"/><path d="M92 50h16" stroke="${R}" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="100" cy="112" r="56" fill="${W}"/><circle cx="100" cy="112" r="56" fill="none" stroke="${WD}" stroke-width="1.2" opacity=".5"/>
+    <path d="M58 92c20 8 64 8 84 0M52 120c24 8 72 8 96 0M60 146c20 6 60 6 80 0" stroke="${WD}" stroke-width=".8" fill="none" opacity=".35"/>
+    <text x="100" y="122" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="600" font-size="${name.length > 6 ? 22 : 30}" fill="#5a3f2b">${esc(name)}</text>
+    <path d="M86 138l14 0" stroke="#5a3f2b" stroke-width="1" opacity=".6"/>`,
+  feltBalls: () => [[70,90,R],[112,80,L],[140,118,P2],[96,124,W],[62,140,LD],[124,154,R]].map(([x,y,c]) => `<circle cx="${x}" cy="${y}" r="24" fill="${c}"/><circle cx="${x-7}" cy="${y-8}" r="5" fill="#fff" opacity=".18"/>`).join(""),
+  woodStars: () => [[70,60,30,0],[132,90,24,14],[86,140,26,-10]].map(([x,y,s,r]) => `<path d="M100 0v${y-s}" transform="translate(${x-100} 0)" stroke="${WD}" stroke-width="1.2"/><g transform="translate(${x} ${y}) rotate(${r}) scale(${s/30})"><path d="M0-30l8.8 18 19.7 2.9-14.3 13.9 3.4 19.7L0 15.2l-17.6 9.3 3.4-19.7L-28.5-9.1l19.7-2.9z" fill="${W}" stroke="${WD}" stroke-width="1"/></g>`).join(""),
+  reindeer: () => `<path d="M100 0v40" stroke="${WD}" stroke-width="1.2"/><path d="M100 40c-30 0-40 30-34 56 6 26 22 44 34 54 12-10 28-28 34-54 6-26-4-56-34-56z" fill="${LD}"/>
+    <path d="M78 56c-14-6-20-20-18-34M70 40c-8 2-14-2-18-8M122 56c14-6 20-20 18-34M130 40c8 2 14-2 18-8" stroke="${WD}" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <circle cx="88" cy="96" r="3.5" fill="${P}"/><circle cx="112" cy="96" r="3.5" fill="${P}"/><circle cx="100" cy="138" r="8" fill="${R}"/><path d="M66 120l-8 6M134 120l8 6" stroke="${R}" stroke-width="3" stroke-linecap="round"/>`,
+  garland: () => `<path d="M-10 70c60 50 160 50 220 0" stroke="${P}" stroke-width="1.5" fill="none"/><path d="M-10 120c60 50 160 50 220 0" stroke="${P}" stroke-width="1.5" fill="none"/>` +
+    [[20,88],[56,104],[100,110],[144,104],[180,88],[20,138],[56,154],[100,160],[144,154],[180,138]].map(([x,y],i) => `<circle cx="${x}" cy="${y}" r="16" fill="#fff6e0" opacity=".55"/><circle cx="${x}" cy="${y}" r="11" fill="${i%3===0?LD:i%3===1?"#fffaf0":WL}"/>`).join(""),
+  topper: () => `<g transform="translate(100 88)"><path d="M0-60l17.6 36 39.4 5.8-28.5 27.8 6.7 39.3L0 30.3l-35.2 18.6 6.7-39.3L-57-18.2l39.4-5.8z" fill="none" stroke="${W}" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M0-60l17.6 36 39.4 5.8-28.5 27.8 6.7 39.3L0 30.3l-35.2 18.6 6.7-39.3L-57-18.2l39.4-5.8z" fill="none" stroke="${WD}" stroke-width="1" stroke-dasharray="3 4"/></g>
+    <rect x="94" y="136" width="12" height="44" rx="3" fill="${WD}"/>`,
+  feltTree: () => `<path d="M100 30l46 70h-92z" fill="${P2}"/><path d="M100 64l56 80H44z" fill="${P}"/><path d="M100 104l64 72H36z" fill="${P2}"/>
+    <rect x="92" y="176" width="16" height="14" fill="${WD}"/><g fill="${L}"><circle cx="86" cy="96" r="4"/><circle cx="118" cy="130" r="4"/><circle cx="80" cy="160" r="4"/><circle cx="130" cy="164" r="4"/></g><circle cx="100" cy="28" r="6" fill="${R}"/>`,
+  village: () => `<rect x="20" y="96" width="50" height="76" fill="${WL}"/><path d="M14 100l31-34 31 34z" fill="${W}"/><rect x="34" y="116" width="12" height="14" fill="#ffd57a"/><rect x="52" y="144" width="12" height="28" fill="${WD}"/>
+    <rect x="76" y="70" width="58" height="102" fill="${LD}"/><path d="M70 74l35-40 35 40z" fill="${WD}"/><rect x="90" y="92" width="12" height="16" fill="#ffd57a"/><rect x="110" y="92" width="12" height="16" fill="#ffd57a"/><rect x="98" y="138" width="14" height="34" fill="${W}"/>
+    <rect x="140" y="110" width="44" height="62" fill="${WL}"/><path d="M134 114l28-30 28 30z" fill="${W}"/><rect x="154" y="128" width="14" height="14" fill="#ffd57a"/><rect x="10" y="172" width="180" height="8" rx="3" fill="${WD}"/>`,
+  runner: () => `<rect x="0" y="80" width="200" height="120" fill="${WL}"/><rect x="66" y="80" width="68" height="120" fill="${L}"/><path d="M66 80v120M134 80v120" stroke="${LD}" stroke-width="3"/>
+    <path d="M70 186h60" stroke="${LD}" stroke-width="2" stroke-dasharray="2 3"/><circle cx="100" cy="118" r="18" fill="${P2}"/><circle cx="92" cy="110" r="4" fill="${R}"/><circle cx="108" cy="124" r="4" fill="${R}"/><path d="M100 100v-6" stroke="${WD}" stroke-width="2"/>`,
+  napkin: () => `<rect x="40" y="96" width="120" height="44" rx="22" fill="${L}"/><rect x="40" y="96" width="120" height="44" rx="22" fill="none" stroke="${LD}" stroke-width="2"/>
+    <rect x="88" y="90" width="24" height="56" rx="4" fill="${W}"/><path d="M100 98l10 16h-6l8 12H88l8-12h-6z" fill="${P}"/>`,
+  candles: () => `<rect x="32" y="130" width="136" height="34" rx="16" fill="${W}"/><path d="M40 146h120" stroke="${WD}" stroke-width="1" opacity=".4"/><circle cx="168" cy="147" r="10" fill="${WL}"/><circle cx="168" cy="147" r="5" fill="none" stroke="${WD}"/>
+    ${[60,100,140].map((x,i)=>`<rect x="${x-9}" y="${78+i%2*12}" width="18" height="${52-i%2*12}" rx="3" fill="#fffaf0"/><path d="M${x} ${78+i%2*12}v-8" stroke="#3a2a22" stroke-width="2"/><path d="M${x} ${48+i%2*12}c-7 9-6 18 0 20 6-2 7-11 0-20z" fill="#f2b440"/>`).join("")}`,
+  placecard: () => `<rect x="36" y="78" width="128" height="70" rx="6" fill="${W}"/><path d="M36 136h128" stroke="${WD}" stroke-width="1" opacity=".4"/><circle cx="54" cy="96" r="4" fill="${WD}"/>
+    <path d="M54 96c20-24 30-24 30-24" stroke="${P}" stroke-width="1.2" fill="none"/><text x="100" y="124" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="600" font-size="28" fill="#5a3f2b">Louis</text>
+    <path d="M60 148v18M140 148v18" stroke="${WD}" stroke-width="5" stroke-linecap="round"/>`,
+  stocking: () => `<path d="M100 0v28" stroke="${WD}" stroke-width="1.2"/><path d="M72 40h56v86l20 28c12 18-10 40-28 26l-48-38z" fill="${R}"/><rect x="66" y="30" width="68" height="30" rx="4" fill="${L}"/>
+    <text x="100" y="51" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="600" font-size="20" fill="${P}">Jules</text><path d="M80 90h40M80 100h40" stroke="#fff" stroke-width="2" stroke-dasharray="4 4" opacity=".6"/>`,
+  wreath: () => `<circle cx="100" cy="104" r="58" fill="none" stroke="${P}" stroke-width="22"/>` +
+    Array.from({length: 18}, (_, i) => { const a = i / 18 * Math.PI * 2, x = 100 + Math.cos(a) * 58, y = 104 + Math.sin(a) * 58; return `<ellipse cx="${x}" cy="${y}" rx="12" ry="5" fill="${i%2?P2:"#4f7d5f"}" transform="rotate(${a*57.3+60} ${x} ${y})"/>`; }).join("") +
+    `<circle cx="72" cy="66" r="5" fill="${R}"/><circle cx="140" cy="128" r="5" fill="${R}"/><path d="M100 160l-14 24M100 160l14 24" stroke="${R}" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="158" r="7" fill="${R}"/>
+    <rect x="62" y="94" width="76" height="22" rx="4" fill="${L}"/><text x="100" y="110" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-weight="600" font-size="14" fill="${P}">Famille Martin</text>`,
+  pinecones: () => [[64,132,1],[112,120,1.2],[148,146,.9]].map(([x,y,s]) => `<g transform="translate(${x} ${y}) scale(${s})">${Array.from({length:5},(_,r)=>`<ellipse cx="0" cy="${-r*9}" rx="${16-r*2.4}" ry="7" fill="${r%2?WD:"#7a5a3e"}"/>`).join("")}</g>`).join("") + `<path d="M30 176c50-10 90-10 140 0" stroke="${P2}" stroke-width="4" fill="none"/>`,
+  linenStar: () => `<path d="M100 0v44" stroke="${WD}" stroke-width="1.2"/><g transform="translate(100 112)"><path d="M0-64l16 38 40 4-30 27 9 40L0 24l-35 21 9-40-30-27 40-4z" fill="${L}" stroke="${LD}" stroke-width="3" stroke-linejoin="round"/><path d="M0-64l16 38 40 4-30 27 9 40L0 24l-35 21 9-40-30-27 40-4z" fill="none" stroke="${WD}" stroke-width="1" stroke-dasharray="3 3" transform="scale(.86)"/></g>`
+};
+const art = (key, a, b, arg) => scene(a, b, ART[key](arg));
 
-/* ---------- Catalogue (exemples à remplacer par les produits du fournisseur) ---------- */
+/* ---------- Catalogue (exemples) ---------- */
 const PRODUCTS = [
-  { id: 1,  t: "Coffret cocooning plaid et bougie",      p: 44.90, old: 54.90, c: "elle",    a: ["giftbox", "#f6d9d4", "#eebfb8", "#c3141f", "#a10f18"], b: "Best-seller", hot: 1, r: 4.8 },
-  { id: 2,  t: "Diffuseur d'huiles essentielles en bois", p: 34.90, c: "elle",    a: ["diffuser", "#e3ece6", "#cfe0d5", "#2f6b55"], r: 4.6 },
-  { id: 3,  t: "Kit spa mains et pieds",                   p: 29.90, c: "elle",    a: ["spa", "#f3e3ea", "#e8cdd9", "#b4566b"], r: 4.7 },
-  { id: 4,  t: "Collier initiale personnalisée",           p: 24.90, c: "elle",    a: ["necklace", "#f4ecdd", "#ead9bb", "#0e3b2c"], b: "Personnalisable", r: 4.9 },
-  { id: 5,  t: "Kit d'entretien pour barbe",               p: 32.90, c: "lui",     a: ["beard", "#e5ebe8", "#d1ddd7", "#2b2b2b"], r: 4.6 },
-  { id: 6,  t: "Portefeuille en cuir gravé",               p: 39.90, c: "lui",     a: ["wallet", "#efe4da", "#e2d0bf", "#7a4a2e"], b: "Personnalisable", r: 4.8 },
-  { id: 7,  t: "Coffret apéro dégustation",                p: 49.90, old: 59.90, c: "lui", a: ["apero", "#f5e1dc", "#ebc9c1", "#8a1d27"], b: "Best-seller", hot: 1, r: 4.9 },
-  { id: 8,  t: "Mini enceinte Bluetooth en bois",          p: 27.90, c: "lui",     a: ["speaker", "#e9ebe4", "#d9ddd0", "#5a3b28"], r: 4.5 },
-  { id: 9,  t: "Veilleuse projecteur d'étoiles",           p: 29.90, c: "enfants", a: ["stars", "#1f2d55", "#2c3d70", "#f1c75b"], b: "Best-seller", hot: 1, r: 4.8 },
-  { id: 10, t: "Jeu de construction en bois",              p: 36.90, c: "enfants", a: ["blocks", "#f4ecdd", "#ead9bb", "#c27a3a"], r: 4.7 },
-  { id: 11, t: "Kit de boules de Noël à peindre",          p: 19.90, c: "enfants", a: ["craft", "#e3ece6", "#cfe0d5", "#c3141f"], b: "Nouveau", r: 4.6 },
-  { id: 12, t: "Peluche renne géante",                     p: 34.90, c: "enfants", a: ["reindeer", "#f2e6d8", "#e6d3bd", "#a87a4e"], r: 4.9 },
-  { id: 13, t: "Duo de chaussettes de Noël",               p: 12.90, c: "elle",    a: ["socks", "#fbeeee", "#f3d8d8", "#c3141f"], r: 4.5 },
-  { id: 14, t: "Mug au prénom",                            p: 16.90, c: "lui",     a: ["mug", "#dfe8e3", "#c6d8ce", "#0e3b2c"], b: "Personnalisable", r: 4.7 },
-  { id: 15, t: "Lampe lune 3D",                            p: 22.90, c: "enfants", a: ["moon", "#26304f", "#34406a", "#fff"], r: 4.6 },
-  { id: 16, t: "Bougie parfumée pain d'épices",            p: 14.90, c: "elle",    a: ["candle", "#f4e6d6", "#ebd3b8", "#a8572a"], r: 4.8 }
+  { id: 1,  t: "Boule en bois gravée au prénom",      s: "Hêtre, Ø 8 cm",            p: 9.90,  c: "boules",  perso: 1, k: ["woodBauble", "#efe7da", "#e3d6c2"] },
+  { id: 2,  t: "Lot de 6 boules en feutre de laine",   s: "Fait main, Ø 5 cm",        p: 19.90, c: "boules",  k: ["feltBalls", "#f1ebe2", "#e6ddd0"] },
+  { id: 3,  t: "Étoiles en bois à suspendre",          s: "Lot de 8",                 p: 14.90, c: "boules",  k: ["woodStars", "#e9eee8", "#d9e3da"] },
+  { id: 4,  t: "Suspension renne en lin",              s: "Lin lavé, 12 cm",          p: 12.90, c: "boules",  k: ["reindeer", "#efe7da", "#e5d9c6"] },
+  { id: 5,  t: "Guirlande lumineuse boules de coton",  s: "20 LED, 3 m",              p: 24.90, c: "sapin",   b: "Best-seller", k: ["garland", "#2d4a38", "#22392b"] },
+  { id: 6,  t: "Cimier étoile en rotin",               s: "Ø 22 cm",                  p: 19.90, c: "sapin",   k: ["topper", "#e9eee8", "#d9e3da"] },
+  { id: 7,  t: "Sapin en feutre à poser",              s: "Hauteur 40 cm",            p: 29.90, c: "sapin",   k: ["feltTree", "#f3eee6", "#e7dfd2"] },
+  { id: 8,  t: "Village lumineux en bois",             s: "LED, à piles",             p: 34.90, c: "sapin",   b: "Nouveau", k: ["village", "#2a3b4d", "#1f2d3c"] },
+  { id: 9,  t: "Chemin de table en lin",               s: "40 × 180 cm",              p: 27.90, c: "table",   k: ["runner", "#efe7da", "#e3d6c2"] },
+  { id: 10, t: "Ronds de serviette sapin",             s: "Lot de 4, bois",           p: 16.90, c: "table",   k: ["napkin", "#e9eee8", "#d9e3da"] },
+  { id: 11, t: "Bougeoir rondin 3 bougies",            s: "Bois brut",                p: 24.90, c: "table",   k: ["candles", "#f1ebe2", "#e6ddd0"] },
+  { id: 12, t: "Marque-places en bois au prénom",      s: "Lot de 6",                 p: 14.90, c: "table",   perso: 1, k: ["placecard", "#efe7da", "#e3d6c2"] },
+  { id: 13, t: "Chaussette de Noël brodée au prénom",  s: "Lin et coton, 45 cm",      p: 22.90, c: "boules",  perso: 1, b: "Best-seller", k: ["stocking", "#f1ebe2", "#e6ddd0"] },
+  { id: 14, t: "Couronne de porte au nom de famille",  s: "Ø 35 cm",                  p: 39.90, c: "sapin",   perso: 1, k: ["wreath", "#f3eee6", "#e7dfd2"] },
+  { id: 15, t: "Pommes de pin décoratives",            s: "Lot de 12, naturelles",    p: 9.90,  c: "table",   k: ["pinecones", "#efe7da", "#e3d6c2"] },
+  { id: 16, t: "Étoile en lin à suspendre",            s: "20 cm",                    p: 11.90, c: "boules",  k: ["linenStar", "#e9eee8", "#d9e3da"] }
 ];
 const RAYONS = [
-  { f: "elle",    n: "Pour elle",     s: "Cocooning, bijoux, bien-être", a: ["giftbox", "#f6d9d4", "#eebfb8", "#c3141f", "#a10f18"] },
-  { f: "lui",     n: "Pour lui",      s: "Apéro, cuir, tech",            a: ["apero", "#efe4da", "#e2d0bf", "#8a1d27"] },
-  { f: "enfants", n: "Enfants",       s: "Jouets et veilleuses",         a: ["reindeer", "#e3ece6", "#cfe0d5", "#a87a4e"] },
-  { f: "petits",  n: "Moins de 25 €", s: "Petites attentions",           a: ["sapin", "#f4ecdd", "#ead9bb", "#2f6b55"] }
+  { f: "boules", n: "Suspensions",       s: "Boules, étoiles, chaussettes", k: ["woodStars", "#e9eee8", "#d9e3da"] },
+  { f: "sapin",  n: "Sapin & lumières",  s: "Guirlandes, cimiers, couronnes", k: ["garland", "#2d4a38", "#22392b"] },
+  { f: "table",  n: "Table de fête",     s: "Lin, bougies, marque-places",  k: ["candles", "#f1ebe2", "#e6ddd0"] },
+  { f: "perso",  n: "À votre nom",       s: "Gravé ou brodé pour vous",    k: ["woodBauble", "#efe7da", "#e3d6c2"] }
 ];
-const CAT = { elle: "Pour elle", lui: "Pour lui", enfants: "Enfants", petits: "Moins de 25 €" };
+const TITLES = { all: "Toute la collection", boules: "Suspensions", sapin: "Sapin & lumières", table: "Table de fête", perso: "À votre nom" };
 const FREE_SHIP = 49;
 const eur = n => n.toFixed(2).replace(".", ",") + " €";
 const $ = id => document.getElementById(id);
 const plus = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-const artOf = a => art(...a);
+const artOf = k => art(k[0], k[1], k[2]);
 
 let filter = "all";
 let cart = {};
-try { cart = JSON.parse(localStorage.getItem("hotte-cart") || "{}") || {}; } catch (e) { cart = {}; }
-const save = () => { try { localStorage.setItem("hotte-cart", JSON.stringify(cart)); } catch (e) {} };
+try { cart = JSON.parse(localStorage.getItem("sapinlin-cart") || "{}") || {}; } catch (e) { cart = {}; }
+const save = () => { try { localStorage.setItem("sapinlin-cart", JSON.stringify(cart)); } catch (e) {} };
 
 function renderRayons() {
   $("rayons").innerHTML = RAYONS.map(r => `
     <button class="rayon" data-f="${r.f}" aria-pressed="${filter === r.f}">
-      <div class="art">${artOf(r.a)}</div>
-      <div class="txt"><b>${r.n}</b><small>${r.s}</small></div>
+      <div class="art">${artOf(r.k)}</div>
+      <div><b>${r.n}</b><small>${r.s}</small></div>
     </button>`).join("");
 }
 function renderGrid() {
-  const list = PRODUCTS.filter(p => filter === "all" ? true : filter === "petits" ? p.p < 25 : p.c === filter);
-  $("shelfTitle").textContent = filter === "all" ? "Toutes nos idées" : CAT[filter];
-  $("resultCount").textContent = list.length + " idées";
+  const list = PRODUCTS.filter(p => filter === "all" || (filter === "perso" ? p.perso : p.c === filter));
+  $("shelfTitle").textContent = TITLES[filter];
+  $("resultCount").textContent = list.length + " articles";
   $("grid").innerHTML = list.map(p => `
     <article class="card">
-      <div class="art">${artOf(p.a)}
-        ${p.b ? `<span class="badge ${p.hot ? "hot" : ""}">${p.b}</span>` : ""}
+      <div class="art">${artOf(p.k)}
+        ${p.perso ? `<span class="badge perso">À votre nom</span>` : p.b ? `<span class="badge">${p.b}</span>` : ""}
         <button class="quick" data-id="${p.id}" aria-label="Ajouter ${p.t} au panier">${plus}</button>
       </div>
       <h3>${p.t}</h3>
-      <div class="meta"><span class="price">${eur(p.p)}${p.old ? `<s>${eur(p.old)}</s>` : ""}</span></div>
+      <div class="sub">${p.s}</div>
+      <span class="price">${eur(p.p)}</span>
     </article>`).join("");
 }
 function renderCart() {
@@ -317,8 +354,8 @@ function renderCart() {
     `<div class="bar"><i style="width:${Math.min(100, total / FREE_SHIP * 100)}%"></i></div>`;
   $("lines").innerHTML = ids.length ? ids.map(id => {
     const p = PRODUCTS.find(x => x.id == id);
-    return `<div class="line"><div class="sw">${artOf(p.a)}</div>
-      <div style="min-width:0"><div class="t">${p.t}</div>
+    return `<div class="line"><div class="sw">${artOf(p.k)}</div>
+      <div style="min-width:0"><div class="t">${p.t}</div>${p.perso ? `<div class="n">Prénom indiqué à la commande</div>` : ""}
       <div class="qty"><button data-dec="${id}" aria-label="Retirer un">−</button>${cart[id]}<button data-inc="${id}" aria-label="Ajouter un">+</button></div></div>
       <div class="p">${eur(p.p * cart[id])}</div></div>`;
   }).join("") : `<div class="empty">Votre panier est vide.</div>`;
@@ -334,15 +371,30 @@ document.addEventListener("click", e => {
   if (add) { const id = add.dataset.id; cart[id] = (cart[id] || 0) + 1; save(); renderCart(); toast("Ajouté au panier"); }
   if (inc) { cart[inc.dataset.inc]++; save(); renderCart(); }
   if (dec) { const k = dec.dataset.dec; cart[k]--; if (cart[k] <= 0) delete cart[k]; save(); renderCart(); }
-  if (ray) { filter = filter === ray.dataset.f ? "all" : ray.dataset.f; renderRayons(); renderGrid(); $("grid").scrollIntoView({ behavior: "smooth", block: "start" }); }
+  if (ray) { filter = filter === ray.dataset.f ? "all" : ray.dataset.f; renderRayons(); renderGrid(); $("shelfTitle").scrollIntoView({ behavior: "smooth", block: "start" }); }
 });
 $("openCart").onclick = () => openCart(true);
 $("closeCart").onclick = $("scrim").onclick = () => openCart(false);
 $("goShop").onclick = () => $("shop").scrollIntoView({ behavior: "smooth" });
-$("checkout").onclick = () => { $("note").textContent = "Le paiement sera activé quand la boutique sera reliée à Shopify ou Stripe."; };
+$("checkout").onclick = () => { $("note").textContent = "Le paiement sera activé quand la boutique sera reliée à Shopify."; };
 
-/* Collage du bandeau */
-$("collage").innerHTML = [PRODUCTS[0], PRODUCTS[8], PRODUCTS[6]].map(p => `<div class="tile">${artOf(p.a)}</div>`).join("");
+/* Aperçu de gravure */
+function renderPreview() { $("previewArt").innerHTML = art("woodBauble", "#efe7da", "#e3d6c2", ($("nameInput").value.trim() || "Emma").slice(0, 10)); }
+$("nameInput").addEventListener("input", renderPreview);
+
+/* Suspensions du bandeau */
+(function () {
+  const items = [
+    { x: 8,  len: 70,  k: "woodBauble", arg: "Noël", size: 120, d: 0 },
+    { x: 44, len: 30,  k: "linenStar",  size: 110, d: -1.6 },
+    { x: 70, len: 110, k: "woodBauble", arg: "Emma", size: 100, d: -3.1 }
+  ];
+  $("hanging").innerHTML = items.map(o => `
+    <div class="orn" style="left:${o.x}%; animation-delay:${o.d}s">
+      <svg width="2" height="${o.len}" style="margin-left:${o.size / 2 - 1}px"><rect width="1.4" height="${o.len}" fill="${WD}"/></svg>
+      <div style="width:${o.size}px; height:${o.size}px; margin-top:-${o.size * .24}px">${scene("transparent", "transparent", ART[o.k](o.arg))}</div>
+    </div>`).join("");
+})();
 
 /* Compte à rebours */
 (function () {
@@ -353,28 +405,8 @@ $("collage").innerHTML = [PRODUCTS[0], PRODUCTS[8], PRODUCTS[6]].map(p => `<div 
   $("days").textContent = d; $("daysWord").textContent = d > 1 ? "jours" : "jour";
 })();
 
-/* Neige légère */
-(function () {
-  const c = $("snow"), ctx = c.getContext("2d");
-  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let w, h, flakes = [];
-  function size() {
-    const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
-    w = r.width; h = r.height; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    flakes = Array.from({ length: Math.round(w / 9) }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.8 + .6, s: Math.random() * .5 + .2, o: Math.random() * .5 + .25 }));
-  }
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    for (const f of flakes) {
-      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${f.o})`; ctx.fill();
-      if (!still) { f.y += f.s; f.x += Math.sin(f.y / 30) * .2; if (f.y > h + 4) { f.y = -4; f.x = Math.random() * w; } }
-    }
-    if (!still) requestAnimationFrame(draw);
-  }
-  size(); draw(); window.addEventListener("resize", size);
-})();
-
 renderRayons();
 renderGrid();
 renderCart();
+renderPreview();
 </script>
