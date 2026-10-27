@@ -162,31 +162,46 @@ const TOTE = (n, face) => { seed = 71; const W = 1000, BG = '#f5efe4', G = '#1f3
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${W}" width="__W__" height="__W__">${DEFS}
   <rect width="${W}" height="${W}" fill="${BG}"/>${center}</svg>`; };
 
-// affiche certificat du Père Noël — format A (1:1.414)
-const CERT = (n) => { seed = 91; const W = 1000, H = 1414, RED = '#a3312f', G = '#1f3d2c', INK = '#3a2a1c', BG = '#fbf6ec';
+// affiche certificat du Père Noël — format 8x11
+const CERT = (n) => { seed = 91; const W = 1000, H = 1375, RED = '#a3312f', G = '#1f3d2c', INK = '#3a2a1c', BG = '#fbf6ec', GOLD = '#b8893a';
   const corner = (x, y, rot) => `<g transform="translate(${x} ${y}) rotate(${rot})">${pine(0, 0, 120, 0)}${pine(0, 0, 110, 90)}${holly(30, 30, 30, 45)}${holly(54, 12, 26, 10)}${holly(12, 54, 26, 80)}${berries(34, 34, 3, 8)}</g>`;
+  // renne stylisé (silhouette simple) + traîneau
+  const deer = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})" fill="${G}">
+    <path d="M0 0 C 10 -6 30 -6 44 -2 L 52 -14 L 58 -12 L 54 0 C 58 4 58 10 54 14 L 50 30 L 46 30 L 46 16 L 20 16 L 14 30 L 10 30 L 10 14 C 2 12 -2 6 0 0 Z"/>
+    <path d="M52 -14 L 48 -26 M52 -14 L 58 -28 M48 -26 L 42 -30 M58 -28 L 64 -32" stroke="${G}" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>`;
+  const sleigh = `<g fill="${RED}"><path d="M560 228 C 556 210 566 200 586 200 L 640 200 C 652 200 656 214 652 228 Z"/>
+    <path d="M550 236 H664 C 676 236 680 226 676 220" stroke="${GOLD}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <rect x="596" y="184" width="30" height="18" rx="4" fill="${G}"/><circle cx="611" cy="180" r="9" fill="${RED}"/><circle cx="611" cy="171" r="5" fill="#fff"/></g>
+    <path d="M440 214 C 480 208 520 210 562 214" stroke="${GOLD}" stroke-width="2" fill="none"/>`;
+  const banner = `<g><path d="M150 610 L 210 610 L 190 655 L 210 700 L 150 700 L 170 655 Z" fill="#7d1418"/><path d="M850 610 L 790 610 L 810 655 L 790 700 L 850 700 L 830 655 Z" fill="#7d1418"/>
+    <path d="M190 590 H810 V690 H190 Z" fill="${RED}"/><path d="M190 690 L 210 712 L 210 690 Z M810 690 L 790 712 L 790 690 Z" fill="#5e141c"/>
+    <path d="M200 600 H800" stroke="${GOLD}" stroke-width="2" stroke-dasharray="6 6" opacity=".8"/><path d="M200 680 H800" stroke="${GOLD}" stroke-width="2" stroke-dasharray="6 6" opacity=".8"/></g>`;
+  const box = (x, y, checked, label) => `<rect x="${x}" y="${y - 30}" width="34" height="34" rx="4" fill="none" stroke="${INK}" stroke-width="3"/>
+    ${checked ? `<path d="M${x + 6} ${y - 14} l10 12 l24 -34" stroke="${RED}" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
+    <text x="${x + 50}" y="${y}" font-family="Cinzel" font-weight="600" font-size="28" letter-spacing="3" fill="${INK}">${label}</text>`;
+  let snow = ''; for (let i = 0; i < 40; i++) { const x = R(120, 880), y = R(110, 300); if (Math.hypot(x - 500, y - 200) > 95) snow += `<circle cx="${x}" cy="${y}" r="${R(1.5, 3)}" fill="${GOLD}" opacity="${R(.3, .7)}"/>`; }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="__W__" height="__H__">${DEFS}
   <rect width="${W}" height="${H}" fill="${BG}"/><rect width="${W}" height="${H}" filter="url(#grain)"/>
-  <rect x="40" y="40" width="${W - 80}" height="${H - 80}" fill="none" stroke="url(#gold)" stroke-width="6"/>
-  <rect x="58" y="58" width="${W - 116}" height="${H - 116}" fill="none" stroke="${RED}" stroke-width="2"/>
-  ${corner(70, 70, 0)}${corner(W - 70, 70, 90)}${corner(W - 70, H - 70, 180)}${corner(70, H - 70, 270)}
-  ${star(500, 175, 30)}
-  <text x="500" y="270" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="74" letter-spacing="10" fill="${G}">CERTIFICAT</text>
-  <text x="500" y="340" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="34" letter-spacing="14" fill="${RED}">OFFICIEL DU PÈRE NOËL</text>
-  <path d="M330 380 H670" stroke="#b8893a" stroke-width="3"/>${sparkle(500, 380, 10)}
-  <text x="500" y="500" text-anchor="middle" font-family="Pinyon Script" font-size="62" fill="${INK}">Le Père Noël certifie que</text>
-  ${n ? `<text x="500" y="690" text-anchor="middle" font-family="Pinyon Script" font-size="${n.length > 9 ? 150 : 190}" fill="url(#gold)">${n}</text>` : ''}
-  <path d="M220 740 H780" stroke="${INK}" stroke-width="2" opacity=".5"/>
-  <text x="500" y="840" text-anchor="middle" font-family="Pinyon Script" font-size="58" fill="${INK}">a été très sage cette année</text>
-  <text x="500" y="910" text-anchor="middle" font-family="Pinyon Script" font-size="58" fill="${INK}">et mérite tous ses cadeaux.</text>
-  <text x="500" y="1010" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="34" letter-spacing="16" fill="${RED}">NOËL 2026</text>
-  <g transform="translate(270 1150)">
-    <circle r="88" fill="${RED}"/><circle r="74" fill="none" stroke="#7d1418" stroke-width="4"/>
-    
-    ${star(0, -10, 34, '#7d1418')}<text y="44" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="16" letter-spacing="3" fill="#f3d7d3">PÔLE NORD</text></g>
-  <text x="680" y="1150" text-anchor="middle" font-family="Pinyon Script" font-size="88" fill="${G}">Père Noël</text>
-  <path d="M540 1175 H820" stroke="${INK}" stroke-width="2" opacity=".5"/>
-  <text x="680" y="1212" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="18" letter-spacing="4" fill="${INK}" opacity=".8">PÔLE NORD, LE 24 DÉCEMBRE</text>
+  <rect x="44" y="44" width="${W - 88}" height="${H - 88}" fill="none" stroke="${GOLD}" stroke-width="6"/>
+  <rect x="62" y="62" width="${W - 124}" height="${H - 124}" fill="none" stroke="${RED}" stroke-width="2"/>
+  ${corner(74, 74, 0)}${corner(W - 74, 74, 90)}${corner(W - 74, H - 74, 180)}${corner(74, H - 74, 270)}
+  ${snow}
+  <circle cx="500" cy="200" r="88" fill="url(#gold)" opacity=".9"/><circle cx="500" cy="200" r="88" fill="${BG}" opacity=".35"/>
+  ${deer(330, 205, 1.05)}${deer(395, 196, 1.05)}${deer(460, 206, 1.05)}${sleigh}
+  <text x="500" y="380" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="70" letter-spacing="10" fill="${G}">CERTIFICAT</text>
+  <text x="500" y="440" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="30" letter-spacing="12" fill="${RED}">OFFICIEL DU PÈRE NOËL</text>
+  <text x="500" y="540" text-anchor="middle" font-family="Pinyon Script" font-size="56" fill="${INK}">Le Père Noël certifie que</text>
+  ${banner}
+  ${n ? `<text x="500" y="668" text-anchor="middle" font-family="Pinyon Script" font-size="${n.length > 9 ? 80 : 96}" fill="#fbf3e4">${n}</text>` : ''}
+  <text x="500" y="790" text-anchor="middle" font-family="Pinyon Script" font-size="52" fill="${INK}">a été inscrit(e) sur la liste des enfants</text>
+  ${box(250, 880, true, 'TRÈS SAGE')}${box(560, 880, false, 'UN PEU COQUIN')}
+  <text x="500" y="960" text-anchor="middle" font-family="Pinyon Script" font-size="52" fill="${INK}">et recevra tous ses cadeaux.</text>
+  <text x="500" y="1040" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="30" letter-spacing="14" fill="${GOLD}">NOËL 2026</text>
+  <g transform="translate(270 1170)"><circle r="80" fill="${RED}"/><circle r="66" fill="none" stroke="#7d1418" stroke-width="4"/>
+    ${star(0, -10, 30, '#7d1418')}<text y="40" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="15" letter-spacing="3" fill="#f3d7d3">PÔLE NORD</text></g>
+  <text x="680" y="1165" text-anchor="middle" font-family="Pinyon Script" font-size="84" fill="${G}">Père Noël</text>
+  <path d="M545 1188 H815" stroke="${INK}" stroke-width="2" opacity=".5"/>
+  <text x="680" y="1222" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="17" letter-spacing="4" fill="${INK}" opacity=".8">PÔLE NORD, LE 24 DÉCEMBRE</text>
   </svg>`; };
 
 (async () => {
@@ -210,8 +225,8 @@ const CERT = (n) => { seed = 91; const W = 1000, H = 1414, RED = '#a3312f', G = 
     await p.locator('svg').screenshot({ path: `${OUT}${file}.png` });
   }
   for (const [file, n] of (process.env.CERT ? [['certificat', 'Léo'], ['certificat-sans-prenom', '']] : [])) {
-    await p.setViewportSize({ width: 3508, height: 4961 });
-    await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0}</style></head><body>${CERT(n).replace('__W__', 3508).replace('__H__', 4961)}</body></html>`);
+    await p.setViewportSize({ width: 3600, height: 4950 });
+    await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0}</style></head><body>${CERT(n).replace('__W__', 3600).replace('__H__', 4950)}</body></html>`);
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
     await p.locator('svg').screenshot({ path: `${OUT}${file}.png` });
   }
