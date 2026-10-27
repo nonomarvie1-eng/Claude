@@ -7,13 +7,13 @@ os.makedirs('hdf',exist_ok=True)
 # (fichier, durée, centre horizontal du recadrage, textes)
 S=[
  (1,2.4,1.0,None),
- (2,2.2,0.5,dict(lines=["Personnalisez","avec vos prénoms,","une date, un message…"],x=690,y=1420,size=86,rot=6,arrow=True)),
- (3,2.2,0.5,dict(lines=["Des designs","doux et élégants"],x=720,y=1500,size=94,rot=6,heart=True)),
- (4,2.2,0.5,None),
- (5,2.2,0.5,dict(lines=["Des médaillons","de qualité"],x=730,y=1510,size=94,rot=6,heart=True)),
- (6,2.8,0.5,dict(lines=["Le cadeau parfait","pour toute la famille"],x=700,y=1540,size=90,rot=6,heart=True)),
- (7,2.8,0.5,dict(icons=True)),
- (8,2.8,0.5,dict(lines=["Personnalisez","votre médaillon de Noël"],x=540,y=1500,size=108,rot=4,heart=True,flourish=True)),
+ (2,3.2,0.5,dict(lines=["Personnalisez","avec vos prénoms,","une date, un message…"],x=690,y=1420,size=86,rot=6,arrow=True)),
+ (3,3.2,0.5,dict(lines=["Des designs","doux et élégants"],x=720,y=1500,size=94,rot=6,heart=True)),
+ (4,3.2,0.5,None),
+ (5,3.2,0.5,dict(lines=["Des médaillons","de qualité"],x=730,y=1510,size=94,rot=6,heart=True)),
+ (6,3.8,0.5,dict(lines=["Le cadeau parfait","pour toute la famille"],x=700,y=1540,size=90,rot=6,heart=True)),
+ (7,3.8,0.5,dict(icons=True)),
+ (8,3.8,0.5,dict(lines=["Personnalisez","votre médaillon de Noël"],x=540,y=1500,size=108,rot=4,heart=True,flourish=True)),
  (9,3.2,0.5,None),
 ]
 def cover(im,cx):
