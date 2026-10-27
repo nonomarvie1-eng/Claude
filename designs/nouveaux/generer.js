@@ -162,9 +162,36 @@ const TOTE = (n, face) => { seed = 71; const W = 1000, BG = '#f5efe4', G = '#1f3
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${W}" width="__W__" height="__W__">${DEFS}
   <rect width="${W}" height="${W}" fill="${BG}"/>${center}</svg>`; };
 
+// affiche certificat du Père Noël — format A (1:1.414)
+const CERT = (n) => { seed = 91; const W = 1000, H = 1414, RED = '#a3312f', G = '#1f3d2c', INK = '#3a2a1c', BG = '#fbf6ec';
+  const corner = (x, y, rot) => `<g transform="translate(${x} ${y}) rotate(${rot})">${pine(0, 0, 120, 0)}${pine(0, 0, 110, 90)}${holly(30, 30, 30, 45)}${holly(54, 12, 26, 10)}${holly(12, 54, 26, 80)}${berries(34, 34, 3, 8)}</g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="__W__" height="__H__">${DEFS}
+  <rect width="${W}" height="${H}" fill="${BG}"/><rect width="${W}" height="${H}" filter="url(#grain)"/>
+  <rect x="40" y="40" width="${W - 80}" height="${H - 80}" fill="none" stroke="url(#gold)" stroke-width="6"/>
+  <rect x="58" y="58" width="${W - 116}" height="${H - 116}" fill="none" stroke="${RED}" stroke-width="2"/>
+  ${corner(70, 70, 0)}${corner(W - 70, 70, 90)}${corner(W - 70, H - 70, 180)}${corner(70, H - 70, 270)}
+  ${star(500, 175, 30)}
+  <text x="500" y="270" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="74" letter-spacing="10" fill="${G}">CERTIFICAT</text>
+  <text x="500" y="340" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="34" letter-spacing="14" fill="${RED}">OFFICIEL DU PÈRE NOËL</text>
+  <path d="M330 380 H670" stroke="#b8893a" stroke-width="3"/>${sparkle(500, 380, 10)}
+  <text x="500" y="500" text-anchor="middle" font-family="Pinyon Script" font-size="62" fill="${INK}">Le Père Noël certifie que</text>
+  ${n ? `<text x="500" y="690" text-anchor="middle" font-family="Pinyon Script" font-size="${n.length > 9 ? 150 : 190}" fill="url(#gold)">${n}</text>` : ''}
+  <path d="M220 740 H780" stroke="${INK}" stroke-width="2" opacity=".5"/>
+  <text x="500" y="840" text-anchor="middle" font-family="Pinyon Script" font-size="58" fill="${INK}">a été très sage cette année</text>
+  <text x="500" y="910" text-anchor="middle" font-family="Pinyon Script" font-size="58" fill="${INK}">et mérite tous ses cadeaux.</text>
+  <text x="500" y="1010" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="34" letter-spacing="16" fill="${RED}">NOËL 2026</text>
+  <g transform="translate(270 1150)">
+    <circle r="88" fill="${RED}"/><circle r="74" fill="none" stroke="#7d1418" stroke-width="4"/>
+    
+    ${star(0, -10, 34, '#7d1418')}<text y="44" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="16" letter-spacing="3" fill="#f3d7d3">PÔLE NORD</text></g>
+  <text x="680" y="1150" text-anchor="middle" font-family="Pinyon Script" font-size="88" fill="${G}">Père Noël</text>
+  <path d="M540 1175 H820" stroke="${INK}" stroke-width="2" opacity=".5"/>
+  <text x="680" y="1212" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="18" letter-spacing="4" fill="${INK}" opacity=".8">PÔLE NORD, LE 24 DÉCEMBRE</text>
+  </svg>`; };
+
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage();
-  for (const [k, d] of (process.env.TOTE ? [] : Object.entries(DESIGNS))) for (const [suffix, n] of [['', d.name], ['-sans-prenom', '']]) {
+  for (const [k, d] of (process.env.TOTE || process.env.CERT ? [] : Object.entries(DESIGNS))) for (const [suffix, n] of [['', d.name], ['-sans-prenom', '']]) {
     await p.setViewportSize({ width: 3000, height: 3000 });
     await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0;background:transparent}</style></head><body><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="3000" height="3000">${DEFS}${d.f(n)}</svg></body></html>`);
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(500);
@@ -179,6 +206,12 @@ const TOTE = (n, face) => { seed = 71; const W = 1000, BG = '#f5efe4', G = '#1f3
   for (const [file, n, face] of (process.env.TOTE ? [['tote-face', 'Léo', 'face'], ['tote-face-sans-prenom', '', 'face'], ['tote-dos', '', 'dos']] : [])) {
     await p.setViewportSize({ width: 5000, height: 5000 });
     await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0}</style></head><body>${TOTE(n, face).replace(/__W__/g, 5000)}</body></html>`);
+    await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
+    await p.locator('svg').screenshot({ path: `${OUT}${file}.png` });
+  }
+  for (const [file, n] of (process.env.CERT ? [['certificat', 'Léo'], ['certificat-sans-prenom', '']] : [])) {
+    await p.setViewportSize({ width: 3508, height: 4961 });
+    await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0}</style></head><body>${CERT(n).replace('__W__', 3508).replace('__H__', 4961)}</body></html>`);
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
     await p.locator('svg').screenshot({ path: `${OUT}${file}.png` });
   }
