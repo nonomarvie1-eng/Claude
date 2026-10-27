@@ -141,9 +141,25 @@ const PLAID = n => { seed = 61; const W = 1000, H = 1200, G = '#1f3d2c', C = '#f
   ${sparkle(290, 787, 12)}${sparkle(710, 787, 12)}
   </svg>`; };
 
+
+// tote bag : 2 faces carrées
+const TOTE = (n, face) => { seed = 71; const W = 1000, G = '#1f3d2c', C = '#f3ead8';
+  let snow = ''; for (let i = 0; i < 70; i++) { const x = R(30, W - 30), y = R(250, 760); if (face === 'dos' || Math.abs(y - 500) > 170 || Math.abs(x - 500) > 380) snow += `<circle cx="${x}" cy="${y}" r="${R(2, 4.5)}" fill="${C}" opacity="${R(.35, .8)}"/>`; }
+  const center = face === 'face' ? `${star(500, 335, 24)}
+    <text x="500" y="410" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="40" letter-spacing="16" fill="${C}">LE SAC DE NOËL</text>
+    ${n ? `<text x="500" y="580" text-anchor="middle" font-family="Pinyon Script" font-size="${n.length > 9 ? 150 : 190}" fill="url(#gold)">${n}</text>` : ''}
+    <text x="500" y="680" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="34" letter-spacing="16" fill="${C}">2026</text>
+    ${sparkle(410, 670, 11)}${sparkle(590, 670, 11)}`
+  : `${star(500, 440, 30)}<text x="500" y="560" text-anchor="middle" font-family="Pinyon Script" font-size="130" fill="url(#gold)">Joyeux Noël</text>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${W}" width="__W__" height="__W__">${DEFS}
+  <rect width="${W}" height="${W}" fill="${G}"/>
+  ${knitBand(70, W, 13, C, G)}${knitBand(W - 200, W, 13, C, G)}
+  <rect x="0" y="232" width="${W}" height="3" fill="${C}" opacity=".5"/><rect x="0" y="${W - 232}" width="${W}" height="3" fill="${C}" opacity=".5"/>
+  ${snow}${center}</svg>`; };
+
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage();
-  for (const [k, d] of Object.entries(DESIGNS)) for (const [suffix, n] of [['', d.name], ['-sans-prenom', '']]) {
+  for (const [k, d] of (process.env.TOTE ? [] : Object.entries(DESIGNS))) for (const [suffix, n] of [['', d.name], ['-sans-prenom', '']]) {
     await p.setViewportSize({ width: 3000, height: 3000 });
     await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0;background:transparent}</style></head><body><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="3000" height="3000">${DEFS}${d.f(n)}</svg></body></html>`);
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(500);
@@ -154,6 +170,12 @@ const PLAID = n => { seed = 61; const W = 1000, H = 1200, G = '#1f3d2c', C = '#f
     await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0}</style></head><body>${PLAID(n).replace('__W__', 6000).replace('__H__', 7200)}</body></html>`);
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
     await p.locator('svg').screenshot({ path: `${OUT}plaid-famille${suffix}.png` });
+  }
+  for (const [file, n, face] of (process.env.TOTE ? [['tote-face', 'Léo', 'face'], ['tote-face-sans-prenom', '', 'face'], ['tote-dos', '', 'dos']] : [])) {
+    await p.setViewportSize({ width: 5000, height: 5000 });
+    await p.setContent(`<html><head>${FONTS}<style>html,body{margin:0}</style></head><body>${TOTE(n, face).replace(/__W__/g, 5000)}</body></html>`);
+    await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
+    await p.locator('svg').screenshot({ path: `${OUT}${file}.png` });
   }
   await b.close();
 })();
