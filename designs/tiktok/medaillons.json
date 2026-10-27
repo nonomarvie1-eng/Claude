@@ -1,0 +1,11 @@
+{"slides":[
+ {"img":"/home/user/Claude/designs/sapin/sapin-5-medaillons.jpg","cover":true,"center":[0.5,0.45],"text":["Et si cette année,","le sapin portait","VOS prénoms ?"],"y":150},
+ {"img":"/home/user/Claude/designs/sapin/sapin-5-medaillons-zoom.jpg","cover":true,"text":["Des médaillons","personnalisés"],"y":1500},
+ {"img":"/home/user/Claude/designs/photos-3d/prenom-couronne/1-face.jpg","text":["Joyeux Noël","+ le prénom"]},
+ {"img":"/home/user/Claude/designs/photos-3d/premier-noel-bebe/1-face.jpg","text":["Pour son tout","premier Noël"]},
+ {"img":"/home/user/Claude/designs/photos-3d/notre-premier-noel/1-face.jpg","text":["Votre premier","Noël à deux"]},
+ {"img":"/home/user/Claude/designs/photos-3d/famille/1-face.jpg","text":["Au nom de","toute la famille"]},
+ {"img":"/home/user/Claude/designs/photos-3d/medaillon-animal/1-face.jpg","text":["Et pour le chien","aussi"]},
+ {"img":"/home/user/Claude/designs/photos-3d/prenom-couronne/6-prenoms.jpg","text":["12,90 €","le souvenir à garder","chaque année"]},
+ {"end":true,"script":"Médaillons au prénom","lines":["Imprimé en Europe","Livré avant Noël"]}
+]}
