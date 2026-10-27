@@ -142,20 +142,35 @@ const PLAID = n => { seed = 61; const W = 1000, H = 1200, G = '#1f3d2c', C = '#f
   </svg>`; };
 
 
-// tote bag : 2 faces carrées
-const TOTE = (n, face) => { seed = 71; const W = 1000, G = '#1f3d2c', C = '#f3ead8';
-  let snow = ''; for (let i = 0; i < 70; i++) { const x = R(30, W - 30), y = R(250, 760); if (face === 'dos' || Math.abs(y - 500) > 170 || Math.abs(x - 500) > 380) snow += `<circle cx="${x}" cy="${y}" r="${R(2, 4.5)}" fill="${C}" opacity="${R(.35, .8)}"/>`; }
-  const center = face === 'face' ? `${star(500, 335, 24)}
-    <text x="500" y="410" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="40" letter-spacing="16" fill="${C}">LE SAC DE NOËL</text>
-    ${n ? `<text x="500" y="580" text-anchor="middle" font-family="Pinyon Script" font-size="${n.length > 9 ? 150 : 190}" fill="url(#gold)">${n}</text>` : ''}
-    <text x="500" y="680" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="34" letter-spacing="16" fill="${C}">2026</text>
-    ${sparkle(410, 670, 11)}${sparkle(590, 670, 11)}`
-  : `${star(500, 440, 30)}<text x="500" y="560" text-anchor="middle" font-family="Pinyon Script" font-size="130" fill="url(#gold)">Joyeux Noël</text>`;
+// tote bag : 2 faces carrées — style colis du Père Noël
+const TOTE = (n, face) => { seed = 71; const W = 1000, K = '#d8bf96', RED = '#a3312f', G = '#1f3d2c', INK = '#3a2a1c';
+  // texture kraft
+  let fib = ''; for (let i = 0; i < 260; i++) { const x = R(0, W), y = R(0, W), l = R(8, 30), a = R(0, Math.PI); fib += `<path d="M${x} ${y}l${Math.cos(a) * l} ${Math.sin(a) * l}" stroke="${rnd() > .5 ? '#c2a679' : '#e6d2ae'}" stroke-width="${R(1, 2.2)}" opacity=".55"/>`; }
+  const ring = (cx, cy, r, txt, col, rot) => `<g transform="rotate(${rot} ${cx} ${cy})" opacity=".88">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="7"/><circle cx="${cx}" cy="${cy}" r="${r - 16}" fill="none" stroke="${col}" stroke-width="3"/>
+    <path id="rg${cx}" d="M${cx} ${cy + r - 38}A${r - 38} ${r - 38} 0 1 1 ${cx} ${cy - r + 38}A${r - 38} ${r - 38} 0 1 1 ${cx} ${cy + r - 38}" fill="none"/>
+    <text font-family="Cinzel" font-weight="700" font-size="${r > 170 ? 30 : 24}" letter-spacing="${r > 170 ? 7 : 4}" fill="${col}"><textPath href="#rg${cx}" startOffset="50%" text-anchor="middle">${txt}</textPath></text>
+    ${star(cx, cy + 6, 34, col)}<text x="${cx}" y="${cy + 80}" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="30" letter-spacing="6" fill="${col}">2026</text></g>`;
+  const stripe = (y) => { let s = ''; for (let x = -40; x < W + 40; x += 56) s += `<path d="M${x} ${y}l28 0l-24 26l-28 0z" fill="${Math.round((x + 40) / 56) % 2 ? RED : G}"/>`; return s; };
+  const frame = `${stripe(40)}${stripe(W - 66)}`;
+  const center = face === 'face' ? `
+    ${ring(250, 250, 150, 'PÔLE NORD · PÔLE NORD · PÔLE NORD ·', RED, -14)}
+    <text x="455" y="225" font-family="Cinzel" font-weight="700" font-size="54" letter-spacing="4" fill="${G}">SAC OFFICIEL</text>
+    <text x="455" y="292" font-family="Cinzel" font-weight="700" font-size="44" letter-spacing="5" fill="${G}">DU PÈRE NOËL</text>
+    <rect x="455" y="322" width="420" height="5" fill="${RED}"/>
+    <text x="500" y="520" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="38" letter-spacing="12" fill="${RED}">LIVRAISON SPÉCIALE POUR</text>
+    <path d="M150 720 H850" stroke="${INK}" stroke-width="3" stroke-dasharray="10 9" opacity=".7"/>
+    ${n ? `<text x="500" y="690" text-anchor="middle" font-family="Pinyon Script" font-size="${n.length > 9 ? 150 : 180}" fill="${G}">${n}</text>` : ''}
+    <g transform="rotate(-6 780 840)"><rect x="650" y="790" width="280" height="96" rx="8" fill="none" stroke="${RED}" stroke-width="6"/><text x="790" y="852" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="34" letter-spacing="5" fill="${RED}">FRAGILE</text></g>
+    <text x="100" y="855" font-family="Cinzel" font-weight="600" font-size="24" letter-spacing="5" fill="${INK}" opacity=".75">EXP. : ATELIER DES LUTINS</text>`
+  : `
+    ${ring(500, 330, 190, '· PÔLE NORD · LIVRAISON EXPRESS · PÔLE NORD ', RED, 8)}
+    <text x="500" y="640" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="50" letter-spacing="8" fill="${G}">NE PAS OUVRIR</text>
+    <text x="500" y="710" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="50" letter-spacing="8" fill="${G}">AVANT LE</text>
+    <text x="500" y="830" text-anchor="middle" font-family="Pinyon Script" font-size="120" fill="${RED}">25 décembre</text>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${W}" width="__W__" height="__W__">${DEFS}
-  <rect width="${W}" height="${W}" fill="${G}"/>
-  ${knitBand(70, W, 13, C, G)}${knitBand(W - 200, W, 13, C, G)}
-  <rect x="0" y="232" width="${W}" height="3" fill="${C}" opacity=".5"/><rect x="0" y="${W - 232}" width="${W}" height="3" fill="${C}" opacity=".5"/>
-  ${snow}${center}</svg>`; };
+  <rect width="${W}" height="${W}" fill="${K}"/>${fib}<rect width="${W}" height="${W}" filter="url(#grain)"/>
+  ${frame}${center}</svg>`; };
 
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage();
