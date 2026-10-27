@@ -19,7 +19,7 @@ def med(name, width, ribbon_px):
     yy,xx=np.mgrid[0:H,0:W]; grad=1.05-0.12*(xx/W)-0.12*(yy/H)   # lumière chaude venant d'en haut à gauche
     warm=np.stack([grad*1.03,grad*1.0,grad*.95],-1)
     arr=np.clip(arr*warm,0,255).astype('uint8'); rgb=Image.fromarray(arr)
-    rgb=rgb.filter(ImageFilter.GaussianBlur(.7)); m=rgb.convert('RGBA'); m.putalpha(a); return m
+    rgb=rgb.filter(ImageFilter.GaussianBlur(float(__import__('os').environ.get('BLUR','.7')))); m=rgb.convert('RGBA'); m.putalpha(a); return m
 def put(m,x,y):
     sh=Image.new('RGBA',m.size,(0,0,0,0)); sh.putalpha(m.split()[3].point(lambda v:v*.45)); sh=sh.filter(ImageFilter.GaussianBlur(14))
     bg.paste((10,15,8),(x+10,y+16),sh); bg.paste(m,(x,y),m)
