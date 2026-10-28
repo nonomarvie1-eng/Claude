@@ -1,0 +1,46 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script></head>
+<body><script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+const q = new URLSearchParams(location.search), KEY = q.get('k'), VIEW = q.get('v') || 'droite', W = 1600, H = 1600;
+const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.setSize(W, H);
+r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.0; r.outputColorSpace = THREE.SRGBColorSpace;
+r.shadowMap.enabled = true; r.shadowMap.type = THREE.VSMShadowMap; document.body.appendChild(r.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#ecebe8');
+scene.environment = new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(), .04).texture;
+scene.add(new THREE.HemisphereLight('#fff', '#d9d4cc', .7));
+const key = new THREE.DirectionalLight('#fff6ec', 2.4); key.position.set(-4, 6, 5); key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 16; key.shadow.blurSamples = 25;
+Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4 }); scene.add(key);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({ color: '#ecebe8', roughness: 1 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+const wall = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({ color: '#ecebe8', roughness: 1 })); wall.position.z = -6; scene.add(wall);
+
+// --- mug 11 oz : Ø 8,2 cm, h 9,5 cm (unités = dm) ---
+const R = .82 / 2 * 2, HH = .95 * 2;
+const img = new Image(); img.src = `tex/mug-${KEY}.png`; await img.decode();
+const cv = document.createElement('canvas'); cv.width = img.width; cv.height = Math.round(img.width / (2 * Math.PI * R) * HH);
+const g = cv.getContext('2d'); g.fillStyle = '#fbfaf7'; g.fillRect(0, 0, cv.width, cv.height);
+const ph = img.height * (cv.width / img.width), py = (cv.height - ph) / 2; g.drawImage(img, 0, py, cv.width, ph);
+const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 16;
+const glaze = { roughness: .18, clearcoat: 1, clearcoatRoughness: .06 };
+const mug = new THREE.Group();
+const outer = new THREE.Mesh(new THREE.CylinderGeometry(R, R * .985, HH, 256, 1, true, Math.PI / 2, Math.PI * 2), new THREE.MeshPhysicalMaterial({ map: tex, ...glaze }));
+outer.position.y = HH / 2; outer.castShadow = true; mug.add(outer);
+const white = new THREE.MeshPhysicalMaterial({ color: '#fbfaf7', ...glaze, side: THREE.DoubleSide });
+const inner = new THREE.Mesh(new THREE.CylinderGeometry(R * .93, R * .92, HH * .96, 128, 1, true), white); inner.position.y = HH / 2 + HH * .02; mug.add(inner);
+const rim = new THREE.Mesh(new THREE.TorusGeometry(R * .965, R * .035, 24, 200), white); rim.rotation.x = Math.PI / 2; rim.position.y = HH; mug.add(rim);
+const bottom = new THREE.Mesh(new THREE.CircleGeometry(R * .93, 96), white); bottom.rotation.x = -Math.PI / 2; bottom.position.y = HH * .06; mug.add(bottom);
+const base = new THREE.Mesh(new THREE.CircleGeometry(R * .985, 96), white); base.rotation.x = Math.PI / 2; base.position.y = .002; mug.add(base);
+// poignée
+const hp = new THREE.CurvePath(); const hc = new THREE.CubicBezierCurve3(new THREE.Vector3(R * .96, HH * .8, 0), new THREE.Vector3(R * 1.85, HH * .86, 0), new THREE.Vector3(R * 1.85, HH * .22, 0), new THREE.Vector3(R * .96, HH * .26, 0));
+const handle = new THREE.Mesh(new THREE.TubeGeometry(hc, 80, R * .085, 24), white); handle.scale.z = .75; handle.castShadow = true; mug.add(handle);
+scene.add(mug);
+
+const cam = new THREE.PerspectiveCamera(24, W / H, .1, 100);
+if (VIEW === 'droite') { mug.rotation.y = 0; cam.position.set(-.9, 2.5, 8.3); }
+if (VIEW === 'gauche') { mug.rotation.y = Math.PI; cam.position.set(.9, 2.5, 8.3); }
+if (VIEW === 'dessus') { mug.rotation.y = -.15; cam.position.set(-1.2, 5.6, 6.4); }
+if (VIEW === 'tour') { mug.rotation.y = Math.PI / 2; cam.position.set(0, 2.4, 8.4); }
+cam.lookAt(0, HH * .5, 0);
+r.render(scene, cam); requestAnimationFrame(() => { r.render(scene, cam); window.done = true; });
+</script></body></html>
