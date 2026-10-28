@@ -563,7 +563,8 @@ const PV=P.filter(p=>!p.vh);
 const E=n=>n.toFixed(2).replace('.',',')+' €';
 // Livraison Mondial Relay : poids max de la tranche (g), tarif Point Relais, tarif Domicile (TTC). 'pack' = poids du carton et du calage (g).
 const SHIP={pack:300,c:[['FR','France'],['BE','Belgique'],['LU','Luxembourg'],['NL','Pays-Bas'],['ES','Espagne'],['PT','Portugal'],['IT','Italie'],['PL','Pologne']],map:{LU:'BE',PT:'ES',IT:'ES'},d:{FR:'3 à 5',BE:'3',LU:'3'},
-FR:[[500,4.15,7.49],[1000,5.99,9.49],[2000,7.99,10.99],[3000,7.99,16.39],[5000,15.99,16.39],[10000,15.99,24.99],[15000,25.99,31.49]],
+// France : tarifs Sendcloud TVA comprise (prix coûtant, aucune marge).
+FR:[[500,4.11,7.49],[1000,4.52,9.48],[2000,6.33,10.96],[3000,6.71,16.35],[5000,13.36,16.35],[10000,13.36,24.99],[15000,20.97,31.49]],
 BE:[[500,4.60],[1000,6.60],[2000,8.30],[3000,9.99],[4000,9.99],[10000,17.40],[25000,26.00]],
 NL:[[500,4.60],[1000,6.60],[2000,8.30],[3000,9.99],[4000,9.99],[10000,17.40],[25000,26.00]],
 ES:[[500,6.60],[1000,9.50],[2000,10.60],[3000,13.10],[4000,13.10],[10000,19.40],[25000,28.80]],
