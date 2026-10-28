@@ -42,7 +42,7 @@ Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël 
 ## Point du 28/10 (avant ouverture)
 - Livraison corrigée : tous les produits sont dans le Profil général, France seulement, 4,90 € ou offerte dès 35 € (avant : tarifs Printify de 5,69 à 7,79 €, jamais offerts).
 - Médaillons fabriqués par Harrier, probablement au Royaume-Uni (délai annoncé par Printify : 13 à 35 jours ouvrés vers la France). À vérifier dans Printify.
-- CGV : médiateur encore « à compléter ».
+- CGV : médiateur CM2C ajouté (article 10), vérifié le 28/10.
 
 ## À faire (dans l'ordre)
 1. Publier la **v4** du thème.
