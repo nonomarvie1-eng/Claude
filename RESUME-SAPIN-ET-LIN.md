@@ -44,6 +44,10 @@ Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël 
 - Médaillons fabriqués par Harrier, probablement au Royaume-Uni (délai annoncé par Printify : 13 à 35 jours ouvrés vers la France). À vérifier dans Printify.
 - CGV : médiateur CM2C ajouté (article 10), vérifié le 28/10.
 
+- Commande test #1001 OK (livraison 4,90 €, prénom visible dans Printify via Preview), annulée et remboursée.
+- Printify : les commandes personnalisées doivent être validées (Settings → Personalized orders → Automatically 24 h + case « approved by the buyer »).
+- Livraison : profil « Sapin & Lin – France » (ancien profil Printify Harrier) contient les 34 variantes. Ne pas utiliser le Profil général : les produits y deviennent « Non disponible ».
+
 ## À faire (dans l'ordre)
 1. Publier la **v4** du thème.
 2. Importer les **3 nouveaux mugs** dans Printify (fichiers `designs/mugs-v2/*-sans-prenom.png`), puis Claude corrige prix/options/photos.
