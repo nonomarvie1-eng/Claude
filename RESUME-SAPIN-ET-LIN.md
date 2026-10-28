@@ -39,6 +39,8 @@ Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël 
 - 3 vidéos TikTok : `designs/tiktok/medaillons-tiktok.mp4`, `designs/tiktok/pub/sapin-et-lin-pub-hd.mp4` (médaillons, 30 s), `designs/tiktok/mugs/sapin-et-lin-mugs.mp4` (mugs, 28 s).
 - **Nouveaux designs de mugs** (rouge pull de Noël, vert sapin avec médaillon, crème guirlande) : `designs/mugs-v2/` — **à importer dans Printify** à la place des 3 mugs actuels, puis prévenir Claude.
 
+## 🎄 BOUTIQUE OUVERTE le 28/10/2026 à 18 h : https://sapin-et-lin.myshopify.com
+
 ## Point du 28/10 (avant ouverture)
 - Livraison corrigée : tous les produits sont dans le Profil général, France seulement, 4,90 € ou offerte dès 35 € (avant : tarifs Printify de 5,69 à 7,79 €, jamais offerts).
 - Médaillons fabriqués par Harrier, probablement au Royaume-Uni (délai annoncé par Printify : 13 à 35 jours ouvrés vers la France). À vérifier dans Printify.
