@@ -28,7 +28,7 @@ Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël 
 ## Règles importantes
 - **Chaque republication depuis Printify remet le prix, les options en anglais et supprime mes photos.** Après toute republication, demander à Claude de corriger (prix, options en français, photos, metafield `printify_custom.is_personalizable = true`).
 - **Thème** : Claude ne peut pas modifier le thème publié. Il travaille sur une copie, la personne la publie (Boutique en ligne → Thèmes → Publier).
-  - En ligne : « Sapin & Lin – v4 ». Prête à publier : **« Sapin & Lin – v5 »** (ligne promo sous les boutons de l'accueil + bandeau d'annonce -15 %).
+  - En ligne : « Sapin & Lin – v4 ». Prête à publier : **« Sapin & Lin – v5 »** (bandeau « -15 % dès 2 articles · Livraison offerte dès 35 € », plus de date limite du 12/12 sur le site ; 3ᵉ photo des mugs supprimée).
 - Le bouton Printify « Personnaliser » : la fenêtre Printify reste en anglais (non modifiable). L'alerte « app block missing » de Printify est à ignorer (« Publish anyway »).
 - **Style des photos** : la personne n'aime pas les images qui font « IA ». Elle aime les photos studio 3D des médaillons (fond gris clair #ecebe8) et ses propres images de mise en scène générées.
 - Couleurs : vert sapin #1f3d2c, rouge #a3312f, doré #b8893a / #c9a24e, crème #fbf6ec. Polices : Pinyon Script (prénoms), Cinzel (titres), Caveat (textes manuscrits des vidéos).
@@ -42,7 +42,7 @@ Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël 
 ## À faire (dans l'ordre)
 1. Publier la **v4** du thème.
 2. Importer les **3 nouveaux mugs** dans Printify (fichiers `designs/mugs-v2/*-sans-prenom.png`), puis Claude corrige prix/options/photos.
-3. Modifier le **bandeau d'annonce** : « 🎄 -15 % dès 2 articles · Livraison offerte dès 35 € · Commandez avant le 12/12 ».
+3. Bandeau d'annonce : fait dans la v5.
 4. **Commande test** (payer, vérifier le prénom dans Printify → Orders, annuler et rembourser).
 5. Ajouter le **médiateur CM2C** dans les CGV.
 6. Acheter **sapinetlin.fr** sur IONOS (6 € TTC la 1ʳᵉ année, sans options) puis le relier à Shopify (Claude guide).
