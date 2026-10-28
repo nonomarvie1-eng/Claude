@@ -28,7 +28,7 @@ Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël 
 ## Règles importantes
 - **Chaque republication depuis Printify remet le prix, les options en anglais et supprime mes photos.** Après toute republication, demander à Claude de corriger (prix, options en français, photos, metafield `printify_custom.is_personalizable = true`).
 - **Thème** : Claude ne peut pas modifier le thème publié. Il travaille sur une copie, la personne la publie (Boutique en ligne → Thèmes → Publier).
-  - En ligne : « Sapin & Lin – v3 ». Prête à publier : **« Sapin & Lin – v4 »** (encadré ① ②, bouton « ✓ Prénom enregistré », idées cadeaux classées).
+  - En ligne : « Sapin & Lin – v4 ». Prête à publier : **« Sapin & Lin – v5 »** (ligne promo sous les boutons de l'accueil + bandeau d'annonce -15 %).
 - Le bouton Printify « Personnaliser » : la fenêtre Printify reste en anglais (non modifiable). L'alerte « app block missing » de Printify est à ignorer (« Publish anyway »).
 - **Style des photos** : la personne n'aime pas les images qui font « IA ». Elle aime les photos studio 3D des médaillons (fond gris clair #ecebe8) et ses propres images de mise en scène générées.
 - Couleurs : vert sapin #1f3d2c, rouge #a3312f, doré #b8893a / #c9a24e, crème #fbf6ec. Polices : Pinyon Script (prénoms), Cinzel (titres), Caveat (textes manuscrits des vidéos).
