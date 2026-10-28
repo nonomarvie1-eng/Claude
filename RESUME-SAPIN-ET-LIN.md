@@ -26,7 +26,7 @@ Plaid « La famille » : retiré (brouillon), trop cher (55 €).
 Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël · En famille · Toutes nos idées cadeaux (ordre manuel).
 
 ## Règles importantes
-- **Chaque republication depuis Printify remet le prix, les options en anglais et supprime mes photos.** Après toute republication, demander à Claude de corriger (prix, options en français, photos, metafield `printify_custom.is_personalizable = true`).
+- **Chaque republication depuis Printify remet le prix, les options en anglais et supprime mes photos.** Après toute republication, demander à Claude de corriger (prix, options en français, photos, metafield `printify_custom.is_personalizable = true`, **et remettre le produit dans le « Profil général » de livraison** : 4,90 €, offerte dès 35 €, France uniquement).
 - **Thème** : Claude ne peut pas modifier le thème publié. Il travaille sur une copie, la personne la publie (Boutique en ligne → Thèmes → Publier).
   - En ligne : « Sapin & Lin – v4 ». Prête à publier : **« Sapin & Lin – v5 »** (bandeau « -15 % dès 2 articles · Livraison offerte dès 35 € », plus de date limite du 12/12 sur le site ; 3ᵉ photo des mugs supprimée).
 - Le bouton Printify « Personnaliser » : la fenêtre Printify reste en anglais (non modifiable). L'alerte « app block missing » de Printify est à ignorer (« Publish anyway »).
@@ -38,6 +38,11 @@ Catégories : Décorations de sapin · Premier Noël de bébé · Mugs de Noël 
 - Logo + favicon, page d'accueil refaite, menus (haut + bas de page avec CGV, livraison, etc.).
 - 3 vidéos TikTok : `designs/tiktok/medaillons-tiktok.mp4`, `designs/tiktok/pub/sapin-et-lin-pub-hd.mp4` (médaillons, 30 s), `designs/tiktok/mugs/sapin-et-lin-mugs.mp4` (mugs, 28 s).
 - **Nouveaux designs de mugs** (rouge pull de Noël, vert sapin avec médaillon, crème guirlande) : `designs/mugs-v2/` — **à importer dans Printify** à la place des 3 mugs actuels, puis prévenir Claude.
+
+## Point du 28/10 (avant ouverture)
+- Livraison corrigée : tous les produits sont dans le Profil général, France seulement, 4,90 € ou offerte dès 35 € (avant : tarifs Printify de 5,69 à 7,79 €, jamais offerts).
+- Médaillons fabriqués par Harrier, probablement au Royaume-Uni (délai annoncé par Printify : 13 à 35 jours ouvrés vers la France). À vérifier dans Printify.
+- CGV : médiateur encore « à compléter ».
 
 ## À faire (dans l'ordre)
 1. Publier la **v4** du thème.
