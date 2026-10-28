@@ -18,7 +18,7 @@
 |---|---|
 | Médaillon « Joyeux Noël », « Mon premier Noël », « Notre premier Noël », « La famille », « Mon chien » | 12,90 € |
 | Mug « Guirlande », « Nuit dorée », « Pull de Noël » | 14,90 € |
-| Body « Mon premier Noël », « Le petit renne » | 27,90 € |
+| Body « Mon premier Noël », « Le petit renne », « Pain d'épices » | 22,90 € (baissé le 28/10, concurrence Etsy) |
 | Sweat « Pull de Noël » | 36,90 € |
 | Affiche « Certificat du Père Noël » (20 × 28 cm) | 12,90 € |
 
