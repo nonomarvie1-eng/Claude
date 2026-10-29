@@ -198,7 +198,7 @@ index = template([('hero', hero), ('marquee', marquee), ('selection', selection)
                   ('about', about), ('promises', promises), ('newsletter', newsletter)])
 
 # ---------------------------------------------------------------- Fiche produit
-caracteristiques = ("{%- assign c = closest.product.metafields.custom.caracteristiques.value -%}"
+caracteristiques = ("{%- assign c = product.metafields.custom.caracteristiques.value -%}"
                     "{%- if c != blank -%}<ul style=\"margin:0;padding-left:1.1em;display:grid;gap:.35em\">"
                     "{%- assign lines = c | newline_to_br | split: '<br />' -%}"
                     "{%- for l in lines -%}{%- assign l = l | strip -%}{%- if l != blank -%}<li>{{ l }}</li>{%- endif -%}{%- endfor -%}</ul>{%- endif -%}")
@@ -221,7 +221,7 @@ product = template([
             'product-details': {'type': '_product-details', 'static': True,
                                 'settings': {'gap': 20, 'sticky_details_desktop': True, 'details_position': 'flex-start'},
                                 'blocks': {
-                                    'eyebrow': text('<p>{{ closest.product.type }}</p>', preset='h6', color=GOLDT),
+                                    'eyebrow': {'type': 'custom-liquid', 'settings': {'custom_liquid': '<p style="margin:0;color:#9B6F2B;font-family:var(--font-subheading--family);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase">{{ product.type }}</p>'}},
                                     'title': text('<h1>{{ closest.product.title }}</h1>', preset='h3'),
                                     'price': {'type': 'price', 'settings': {'type_preset': 'h4', 'show_tax_info': False, 'show_installments': False}},
                                     'tva': text('<p>TVA non applicable, art. 293 B du CGI. Frais de livraison calculés au paiement.</p>',
