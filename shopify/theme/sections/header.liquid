@@ -1,4 +1,5 @@
 {%- liquid
+  assign contact_url = section.settings.contact_url | default: "https://linktr.ee/marviejustine121"
   assign menu = linklists[section.settings.menu]
   assign shop_url = routes.all_products_collection_url
 -%}
@@ -9,7 +10,7 @@
       {%- if menu.links.size > 0 -%}
         {%- for l in menu.links -%}<a href="{{ l.url }}"{% if l.active or l.child_active %} class="on" aria-current="page"{% endif %}>{{ l.title }}</a>{%- endfor -%}
       {%- else -%}
-        <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} class="on"{% endif %}>Accueil</a><a href="{{ shop_url }}"{% if request.page_type == 'collection' or request.page_type == 'product' %} class="on"{% endif %}>Boutique</a><a href="/pages/a-propos">À propos</a>{% if section.settings.contact_url != blank %}<a href="{{ section.settings.contact_url }}" target="_blank" rel="noopener">Contact</a>{% endif %}
+        <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} class="on"{% endif %}>Accueil</a><a href="{{ shop_url }}"{% if request.page_type == 'collection' or request.page_type == 'product' %} class="on"{% endif %}>Boutique</a><a href="/pages/a-propos">À propos</a>{% if contact_url != blank %}<a href="{{ contact_url }}" target="_blank" rel="noopener">Contact</a>{% endif %}
       {%- endif -%}
     </nav>
     <a class="lg" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} – accueil">
@@ -25,7 +26,7 @@
     {%- if menu.links.size > 0 -%}
       {%- for l in menu.links -%}<a href="{{ l.url }}">{{ l.title }}</a>{%- endfor -%}
     {%- else -%}
-      <a href="{{ routes.root_url }}">Accueil</a><a href="{{ shop_url }}">Boutique</a><a href="/pages/a-propos">À propos</a>{% if section.settings.contact_url != blank %}<a href="{{ section.settings.contact_url }}" target="_blank" rel="noopener">Contact</a>{% endif %}
+      <a href="{{ routes.root_url }}">Accueil</a><a href="{{ shop_url }}">Boutique</a><a href="/pages/a-propos">À propos</a>{% if contact_url != blank %}<a href="{{ contact_url }}" target="_blank" rel="noopener">Contact</a>{% endif %}
     {%- endif -%}
   </nav>
 </header>
@@ -37,7 +38,7 @@
   "enabled_on": { "groups": ["header"] },
   "settings": [
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Sans menu, les liens Accueil, Boutique, À propos et Contact sont affichés." },
-    { "type": "url", "id": "contact_url", "label": "Lien Contact (si pas de menu)", "default": "https://linktr.ee/marviejustine121" },
+    { "type": "url", "id": "contact_url", "label": "Lien Contact (si pas de menu)", "info": "Vide : https://linktr.ee/marviejustine121" },
     { "type": "image_picker", "id": "logo", "label": "Logo (image)", "info": "Laisser vide pour le logo texte du site." },
     { "type": "text", "id": "logo_top", "label": "Logo : ligne manuscrite", "default": "La Boutique de" },
     { "type": "text", "id": "logo_main", "label": "Logo : nom", "default": "Mme Fofana" },

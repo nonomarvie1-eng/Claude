@@ -1,4 +1,5 @@
 {%- liquid
+  assign contact_url = section.settings.contact_url | default: "https://linktr.ee/marviejustine121"
   assign menu = linklists[section.settings.menu]
   assign legal = linklists[section.settings.legal_menu]
 -%}
@@ -15,7 +16,7 @@
         {%- if menu.links.size > 0 -%}
           {%- for l in menu.links -%}<a href="{{ l.url }}">{{ l.title }}</a>{%- endfor -%}
         {%- else -%}
-          <a href="{{ routes.root_url }}">Accueil</a><a href="{{ routes.all_products_collection_url }}">Boutique</a><a href="/pages/a-propos">À propos</a>{% if section.settings.contact_url != blank %}<a href="{{ section.settings.contact_url }}" target="_blank" rel="noopener">Contact</a>{% endif %}
+          <a href="{{ routes.root_url }}">Accueil</a><a href="{{ routes.all_products_collection_url }}">Boutique</a><a href="/pages/a-propos">À propos</a>{% if contact_url != blank %}<a href="{{ contact_url }}" target="_blank" rel="noopener">Contact</a>{% endif %}
         {%- endif -%}
       </div>
       <div>
@@ -64,7 +65,7 @@
     { "type": "text", "id": "logo_main", "label": "Logo : nom", "default": "Mme Fofana" },
     { "type": "text", "id": "logo_tagline", "label": "Logo : slogan", "default": "Traditions, créations & art de vivre" },
     { "type": "link_list", "id": "menu", "label": "Menu « Liens utiles »", "info": "Sans menu : Accueil, Boutique, À propos, Contact." },
-    { "type": "url", "id": "contact_url", "label": "Lien Contact (si pas de menu)", "default": "https://linktr.ee/marviejustine121" },
+    { "type": "url", "id": "contact_url", "label": "Lien Contact (si pas de menu)", "info": "Vide : https://linktr.ee/marviejustine121" },
     { "type": "link_list", "id": "legal_menu", "label": "Menu des pages légales", "info": "Sans menu : mentions légales, CGV, livraison et retours, confidentialité." },
     { "type": "text", "id": "nl_title", "label": "Newsletter : titre", "default": "Newsletter" },
     { "type": "text", "id": "nl_text", "label": "Newsletter : texte", "default": "Recevez mes nouveautés et offres exclusives." }
