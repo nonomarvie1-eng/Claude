@@ -314,3 +314,4 @@ details p,details ul{margin:12px 0 0;color:var(--mut)}details ul{padding-left:20
  .pg,.ctr,.cartp{padding-left:40px;padding-right:40px}
 }
 .vx{display:none!important}
+.sec.sel{padding-top:40px}@media(min-width:1000px){.sec.sel{padding-top:64px}}
