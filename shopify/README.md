@@ -24,6 +24,17 @@ Reste à faire à la main dans l'admin Shopify :
 - [ ] Installer l'application Sendcloud ou Mondial Relay pour le choix du Point Relais au paiement
 - [ ] Mettre le vrai poids de la grande taille Côte d'Ivoire (0 g actuellement)
 
+## Deuxième thème : « Mme Fofana – Horizon » (à comparer)
+
+Copie du thème officiel Shopify **Horizon 4.3.0**, habillée aux couleurs de la boutique. Non publié : le thème « Mme Fofana » reste le choix par défaut.
+
+- Seuls quelques fichiers diffèrent d'Horizon : `theme-horizon/config/settings_data.json` et les fichiers générés par `theme-horizon/build.py` (accueil, fiche produit, page À propos, en-tête, pied de page).
+- Logo et favicon : `theme-horizon/images/` (envoyés dans Contenu › Fichiers).
+- Accueil : grande photo, bandeau défilant, « Les Trésors de Chez Nous » en carrousel, « Par univers » (Cuisine / Service de table), À propos, 4 engagements, newsletter.
+- Fiche produit : galerie avec vignettes et zoom, stock restant, réassurance livraison, onglets Caractéristiques (métadonnée), Livraison, Retours, Pièce artisanale, barre d'achat fixe.
+- Tout est modifiable dans l'éditeur de thème Shopify (glisser-déposer des sections et blocs).
+- Aperçu : Boutique en ligne › Thèmes › « Mme Fofana – Horizon » › Aperçu.
+
 ## Contenu
 
 | Dossier / fichier | Rôle |
