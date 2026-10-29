@@ -7,7 +7,7 @@
         "desktop_media_position": "left",
         "equal_columns": false,
         "limit_details_width": true,
-        "gap": 56,
+        "gap": 48,
         "padding-block-start": 24,
         "padding-block-end": 48
       },

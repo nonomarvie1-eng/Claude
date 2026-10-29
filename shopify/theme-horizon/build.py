@@ -211,7 +211,7 @@ product = template([
     ('main', {
         'type': 'product-information',
         'settings': {'content_width': 'content-center-aligned', 'desktop_media_position': 'left', 'equal_columns': False,
-                     'limit_details_width': True, 'gap': 56, 'padding-block-start': 24, 'padding-block-end': 48},
+                     'limit_details_width': True, 'gap': 48, 'padding-block-start': 24, 'padding-block-end': 48},
         'blocks': {
             'media-gallery': {'type': '_product-media-gallery', 'static': True, 'settings': {
                 'media_presentation': 'carousel', 'media_columns': 'one', 'image_gap': 8, 'large_first_image': True,
