@@ -24,7 +24,7 @@ Reste à faire à la main dans l'admin Shopify :
 - [ ] Installer l'application Sendcloud ou Mondial Relay pour le choix du Point Relais au paiement
 - [ ] Mettre le vrai poids de la grande taille Côte d'Ivoire (0 g actuellement)
 
-## Deuxième thème : « Mme Fofana – Horizon » (à comparer)
+## Deuxième thème : « Mme Fofana – Horizon » (essai, non retenu : on garde « Mme Fofana »)
 
 Copie du thème officiel Shopify **Horizon 4.3.0**, habillée aux couleurs de la boutique. Non publié : le thème « Mme Fofana » reste le choix par défaut.
 
@@ -91,7 +91,8 @@ Au-delà de 14,7 kg de produits, aucun tarif ne s'affiche (comme sur le site : d
 
 Thème Online Store 2.0 (sections JSON), en français, contrôlé avec l'outil officiel `theme-check` (aucune erreur).
 
-- Accueil : grande photo, bande de confiance, « Les Trésors de Chez Nous », À propos.
+- Accueil : grande photo, banderole défilante, bande de confiance, « Des objets, des histoires, des savoir-faire ». L'histoire de Mme Fofana est seulement sur la page À propos (menu).
+- Slogan du logo : « Traditions, créations & art de vivre ».
 - Boutique : recherche, catégories, filtres Shopify (disponibilité, prix), tri, pagination.
 - Fiche produit : galerie avec flèches et vignettes, boutons de variante (rupture barrée), quantité limitée au stock, alerte « me prévenir » (formulaire de contact), caractéristiques, barre d'achat fixe sur mobile, « Tu aimeras aussi ».
 - Panier en tiroir avec jauge « livraison offerte », page panier, pages légales, 404, recherche.
