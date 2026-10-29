@@ -243,6 +243,58 @@
         "i4"
       ]
     },
+    "statement": {
+      "type": "section",
+      "settings": {
+        "horizontal_alignment_flex_direction_column": "center",
+        "gap": 18,
+        "section_width": "page-width",
+        "padding-block-start": 80,
+        "padding-block-end": 24
+      },
+      "blocks": {
+        "eyebrow": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Bienvenue</p>",
+            "type_preset": "h6",
+            "alignment": "center",
+            "width": "100%",
+            "max_width": "normal",
+            "text_color": "#9B6F2B"
+          }
+        },
+        "quote": {
+          "type": "text",
+          "settings": {
+            "text": "<p>« J'ai voulu vous faire découvrir les objets que j'utilise chez moi, ceux qui m'accompagnent en cuisine depuis mon premier voyage en Côte d'Ivoire. »</p>",
+            "type_preset": "custom",
+            "alignment": "center",
+            "width": "100%",
+            "max_width": "narrow",
+            "font": "var(--font-accent--family)",
+            "font_size": "1.5rem",
+            "line_height": "normal"
+          }
+        },
+        "sign": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Justine — Mme Fofana</p>",
+            "type_preset": "h6",
+            "alignment": "center",
+            "width": "100%",
+            "max_width": "normal",
+            "text_color": "#9B6F2B"
+          }
+        }
+      },
+      "block_order": [
+        "eyebrow",
+        "quote",
+        "sign"
+      ]
+    },
     "selection": {
       "type": "product-list",
       "settings": {
@@ -253,15 +305,15 @@
         "columns": 4,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
-        "columns_gap": 16,
+        "columns_gap": 20,
         "rows_gap": 32,
         "icons_style": "arrow",
         "icons_shape": "circle",
         "section_width": "page-width",
         "horizontal_alignment": "center",
-        "gap": 32,
-        "padding-block-start": 72,
-        "padding-block-end": 72
+        "gap": 40,
+        "padding-block-start": 56,
+        "padding-block-end": 88
       },
       "blocks": {
         "static-header": {
@@ -270,7 +322,7 @@
           "settings": {
             "content_direction": "column",
             "horizontal_alignment_flex_direction_column": "center",
-            "gap": 8
+            "gap": 10
           },
           "blocks": {
             "eyebrow": {
@@ -289,11 +341,21 @@
                 "type_preset": "h2",
                 "alignment": "center"
               }
+            },
+            "sub": {
+              "type": "_product-list-text",
+              "settings": {
+                "text": "<p>Mortiers, pilons et plateaux sculptés à la main, en quantités limitées.</p>",
+                "type_preset": "paragraph",
+                "alignment": "center",
+                "text_color": "#5E6158"
+              }
             }
           },
           "block_order": [
             "eyebrow",
-            "title"
+            "title",
+            "sub"
           ]
         },
         "static-product-card": {
@@ -339,7 +401,7 @@
           "settings": {
             "label": "Voir toute la boutique",
             "link": "shopify://collections/all",
-            "style_class": "button-secondary"
+            "style_class": "button"
           }
         }
       },
@@ -358,20 +420,20 @@
         "columns": 2,
         "mobile_columns": "1",
         "max_collections": 2,
-        "columns_gap": 16,
-        "rows_gap": 16,
+        "columns_gap": 20,
+        "rows_gap": 20,
         "section_width": "page-width",
-        "gap": 28,
+        "gap": 40,
         "background_color": "#EEE6D4",
-        "padding-block-start": 64,
-        "padding-block-end": 64
+        "padding-block-start": 88,
+        "padding-block-end": 88
       },
       "blocks": {
         "header": {
           "type": "group",
           "settings": {
             "horizontal_alignment_flex_direction_column": "center",
-            "gap": 8
+            "gap": 10
           },
           "blocks": {
             "eyebrow": {
@@ -392,13 +454,25 @@
                 "type_preset": "h2",
                 "alignment": "center",
                 "width": "100%",
-                "max_width": "normal"
+                "max_width": "narrow"
+              }
+            },
+            "sub": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Des ustensiles pour cuisiner comme en Côte d’Ivoire, des plateaux pour servir avec caractère.</p>",
+                "type_preset": "paragraph",
+                "alignment": "center",
+                "width": "100%",
+                "max_width": "narrow",
+                "text_color": "#5E6158"
               }
             }
           },
           "block_order": [
             "eyebrow",
-            "title"
+            "title",
+            "sub"
           ]
         },
         "static-collection-card": {
@@ -408,19 +482,20 @@
             "placement": "on_image",
             "horizontal_alignment": "flex-start",
             "vertical_alignment": "flex-end",
-            "border_radius": 8
+            "collection_card_gap": 4,
+            "border_radius": 12
           },
           "blocks": {
             "collection-card-image": {
               "type": "_collection-card-image",
               "static": true,
               "settings": {
-                "image_ratio": "landscape",
+                "image_ratio": "portrait",
                 "toggle_overlay": true,
                 "overlay_style": "gradient",
-                "overlay_color": "#10201A99",
+                "overlay_color": "#10201ACC",
                 "gradient_direction": "to top",
-                "border_radius": 8
+                "border_radius": 12
               }
             },
             "collection-title": {
@@ -428,15 +503,27 @@
               "settings": {
                 "type_preset": "h3",
                 "text_color": "#F6F1E6",
-                "padding-block-start": 16,
-                "padding-block-end": 16,
-                "padding-inline-start": 20,
-                "padding-inline-end": 20
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
+              }
+            },
+            "cta": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Découvrir →</p>",
+                "type_preset": "h6",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal",
+                "text_color": "#C9A15A",
+                "padding-inline-start": 24,
+                "padding-block-end": 24
               }
             }
           },
           "block_order": [
-            "collection-title"
+            "collection-title",
+            "cta"
           ]
         }
       },
@@ -445,31 +532,25 @@
       ]
     },
     "about": {
-      "type": "media-with-content",
+      "type": "section",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "80svh",
-        "section_width": "full-width",
-        "extend_media": true
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "space-between",
+        "vertical_alignment": "center",
+        "gap": 48,
+        "section_width": "page-width",
+        "padding-block-start": 88,
+        "padding-block-end": 88
       },
       "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image": "shopify://shop_images/mme-fofana.jpg",
-            "image_position": "cover"
-          }
-        },
         "content": {
-          "type": "_content-without-appearance",
-          "static": true,
+          "type": "group",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
+            "gap": 18,
+            "width": "custom",
+            "custom_width": 50,
+            "width_mobile": "fill"
           },
           "blocks": {
             "eyebrow": {
@@ -490,23 +571,37 @@
                 "type_preset": "h2",
                 "alignment": "left",
                 "width": "100%",
-                "max_width": "normal"
+                "max_width": "narrow"
               }
             },
             "body": {
               "type": "text",
               "settings": {
-                "text": "<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana. Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique.</p><p>Depuis mon premier voyage en Côte d’Ivoire en 2019, j’y suis retournée à plusieurs reprises et j’ai développé un véritable attachement à ses cultures, à sa cuisine et à ses traditions.</p><p><strong>Cette boutique est le prolongement naturel de cet univers</strong> : les objets que j’utilise chez moi, les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher.</p>",
+                "text": "<p>Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique. Depuis mon premier voyage en Côte d’Ivoire en 2019, j’y suis retournée à plusieurs reprises et je me suis attachée à sa cuisine et à ses traditions.</p><p>Cette boutique est le prolongement naturel de cet univers : les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher.</p>",
                 "type_preset": "rte",
                 "alignment": "left",
                 "width": "100%",
                 "max_width": "narrow"
               }
             },
+            "sign": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Justine Fofana</p>",
+                "type_preset": "custom",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal",
+                "text_color": "#9B6F2B",
+                "font": "var(--font-accent--family)",
+                "font_size": "1.5rem"
+              }
+            },
             "buttons": {
               "type": "group",
               "settings": {
                 "content_direction": "row",
+                "vertical_on_mobile": false,
                 "gap": 12,
                 "width": "fit-content"
               },
@@ -539,197 +634,292 @@
             "eyebrow",
             "title",
             "body",
+            "sign",
             "buttons"
           ]
+        },
+        "photo": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/mme-fofana.jpg",
+            "image_ratio": "portrait",
+            "width": "custom",
+            "custom_width": 42,
+            "width_mobile": "fill",
+            "border_radius": 12
+          }
         }
       },
-      "block_order": []
+      "block_order": [
+        "content",
+        "photo"
+      ]
     },
     "promises": {
       "type": "section",
       "settings": {
-        "content_direction": "row",
-        "vertical_on_mobile": true,
-        "gap": 32,
+        "horizontal_alignment_flex_direction_column": "center",
+        "gap": 40,
         "section_width": "page-width",
-        "padding-block-start": 72,
-        "padding-block-end": 72
+        "background_color": "#EEE6D4",
+        "padding-block-start": 88,
+        "padding-block-end": 88
       },
       "blocks": {
-        "p0": {
+        "header": {
           "type": "group",
           "settings": {
             "horizontal_alignment_flex_direction_column": "center",
             "gap": 10
           },
           "blocks": {
-            "icon": {
-              "type": "icon",
-              "settings": {
-                "icon": "serving_dish",
-                "width": 30,
-                "icon_color": "#9B6F2B"
-              }
-            },
-            "h": {
+            "eyebrow": {
               "type": "text",
               "settings": {
-                "text": "<h3>Artisanat authentique</h3>",
-                "type_preset": "h4",
+                "text": "<p>Nos engagements</p>",
+                "type_preset": "h6",
                 "alignment": "center",
                 "width": "100%",
-                "max_width": "normal"
+                "max_width": "normal",
+                "text_color": "#9B6F2B"
               }
             },
-            "t": {
+            "title": {
               "type": "text",
               "settings": {
-                "text": "<p>Des pièces sculptées à la main en Côte d'Ivoire : chacune est unique.</p>",
-                "type_preset": "rte",
+                "text": "<h2>Acheter chez Mme Fofana</h2>",
+                "type_preset": "h2",
                 "alignment": "center",
                 "width": "100%",
-                "max_width": "normal"
+                "max_width": "narrow"
               }
             }
           },
           "block_order": [
-            "icon",
-            "h",
-            "t"
+            "eyebrow",
+            "title"
           ]
         },
-        "p1": {
+        "cards": {
           "type": "group",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "center",
-            "gap": 10
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "gap": 16
           },
           "blocks": {
-            "icon": {
-              "type": "icon",
+            "p0": {
+              "type": "group",
               "settings": {
-                "icon": "heart",
-                "width": 30,
-                "icon_color": "#9B6F2B"
-              }
+                "gap": 10,
+                "background_color": "#FFFCF5",
+                "border": "solid",
+                "border_width": 1,
+                "border_color": "#E1D7C2",
+                "border_radius": 12,
+                "padding-block-start": 28,
+                "padding-block-end": 28,
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
+              },
+              "blocks": {
+                "icon": {
+                  "type": "icon",
+                  "settings": {
+                    "icon": "serving_dish",
+                    "width": 28,
+                    "icon_color": "#9B6F2B"
+                  }
+                },
+                "h": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Artisanat authentique</h3>",
+                    "type_preset": "h5",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                },
+                "t": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Sculptées à la main en Côte d'Ivoire, chaque pièce est unique.</p>",
+                    "type_preset": "rte",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                }
+              },
+              "block_order": [
+                "icon",
+                "h",
+                "t"
+              ]
             },
-            "h": {
-              "type": "text",
+            "p1": {
+              "type": "group",
               "settings": {
-                "text": "<h3>Choisi avec soin</h3>",
-                "type_preset": "h4",
-                "alignment": "center",
-                "width": "100%",
-                "max_width": "normal"
-              }
+                "gap": 10,
+                "background_color": "#FFFCF5",
+                "border": "solid",
+                "border_width": 1,
+                "border_color": "#E1D7C2",
+                "border_radius": 12,
+                "padding-block-start": 28,
+                "padding-block-end": 28,
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
+              },
+              "blocks": {
+                "icon": {
+                  "type": "icon",
+                  "settings": {
+                    "icon": "heart",
+                    "width": 28,
+                    "icon_color": "#9B6F2B"
+                  }
+                },
+                "h": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Choisi avec soin</h3>",
+                    "type_preset": "h5",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                },
+                "t": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Uniquement des objets que j'utilise et que j'aime chez moi.</p>",
+                    "type_preset": "rte",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                }
+              },
+              "block_order": [
+                "icon",
+                "h",
+                "t"
+              ]
             },
-            "t": {
-              "type": "text",
+            "p2": {
+              "type": "group",
               "settings": {
-                "text": "<p>Uniquement des objets que j'utilise et que j'aime chez moi.</p>",
-                "type_preset": "rte",
-                "alignment": "center",
-                "width": "100%",
-                "max_width": "normal"
-              }
+                "gap": 10,
+                "background_color": "#FFFCF5",
+                "border": "solid",
+                "border_width": 1,
+                "border_color": "#E1D7C2",
+                "border_radius": 12,
+                "padding-block-start": 28,
+                "padding-block-end": 28,
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
+              },
+              "blocks": {
+                "icon": {
+                  "type": "icon",
+                  "settings": {
+                    "icon": "truck",
+                    "width": 28,
+                    "icon_color": "#9B6F2B"
+                  }
+                },
+                "h": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Expédié depuis Lyon</h3>",
+                    "type_preset": "h5",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                },
+                "t": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Sous 2 jours, en Point Relais ou à domicile. Offert dès 110 €.</p>",
+                    "type_preset": "rte",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                }
+              },
+              "block_order": [
+                "icon",
+                "h",
+                "t"
+              ]
+            },
+            "p3": {
+              "type": "group",
+              "settings": {
+                "gap": 10,
+                "background_color": "#FFFCF5",
+                "border": "solid",
+                "border_width": 1,
+                "border_color": "#E1D7C2",
+                "border_radius": 12,
+                "padding-block-start": 28,
+                "padding-block-end": 28,
+                "padding-inline-start": 24,
+                "padding-inline-end": 24
+              },
+              "blocks": {
+                "icon": {
+                  "type": "icon",
+                  "settings": {
+                    "icon": "return",
+                    "width": 28,
+                    "icon_color": "#9B6F2B"
+                  }
+                },
+                "h": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>14 jours pour changer d’avis</h3>",
+                    "type_preset": "h5",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                },
+                "t": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Tous les produits peuvent être retournés.</p>",
+                    "type_preset": "rte",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal"
+                  }
+                }
+              },
+              "block_order": [
+                "icon",
+                "h",
+                "t"
+              ]
             }
           },
           "block_order": [
-            "icon",
-            "h",
-            "t"
-          ]
-        },
-        "p2": {
-          "type": "group",
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "center",
-            "gap": 10
-          },
-          "blocks": {
-            "icon": {
-              "type": "icon",
-              "settings": {
-                "icon": "truck",
-                "width": 30,
-                "icon_color": "#9B6F2B"
-              }
-            },
-            "h": {
-              "type": "text",
-              "settings": {
-                "text": "<h3>Expédié depuis Lyon</h3>",
-                "type_preset": "h4",
-                "alignment": "center",
-                "width": "100%",
-                "max_width": "normal"
-              }
-            },
-            "t": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Sous 2 jours, en Point Relais ou à domicile. Offert dès 110 €.</p>",
-                "type_preset": "rte",
-                "alignment": "center",
-                "width": "100%",
-                "max_width": "normal"
-              }
-            }
-          },
-          "block_order": [
-            "icon",
-            "h",
-            "t"
-          ]
-        },
-        "p3": {
-          "type": "group",
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "center",
-            "gap": 10
-          },
-          "blocks": {
-            "icon": {
-              "type": "icon",
-              "settings": {
-                "icon": "return",
-                "width": 30,
-                "icon_color": "#9B6F2B"
-              }
-            },
-            "h": {
-              "type": "text",
-              "settings": {
-                "text": "<h3>14 jours pour changer d’avis</h3>",
-                "type_preset": "h4",
-                "alignment": "center",
-                "width": "100%",
-                "max_width": "normal"
-              }
-            },
-            "t": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Tous les produits peuvent être retournés.</p>",
-                "type_preset": "rte",
-                "alignment": "center",
-                "width": "100%",
-                "max_width": "normal"
-              }
-            }
-          },
-          "block_order": [
-            "icon",
-            "h",
-            "t"
+            "p0",
+            "p1",
+            "p2",
+            "p3"
           ]
         }
       },
       "block_order": [
-        "p0",
-        "p1",
-        "p2",
-        "p3"
+        "header",
+        "cards"
       ]
     },
     "newsletter": {
@@ -738,8 +928,8 @@
         "horizontal_alignment_flex_direction_column": "center",
         "gap": 16,
         "background_color": "#17301F",
-        "padding-block-start": 72,
-        "padding-block-end": 72
+        "padding-block-start": 88,
+        "padding-block-end": 88
       },
       "blocks": {
         "eyebrow": {
@@ -771,15 +961,15 @@
             "type_preset": "paragraph",
             "alignment": "center",
             "width": "100%",
-            "max_width": "normal",
-            "text_color": "#F6F1E6"
+            "max_width": "narrow",
+            "text_color": "#D9D2C3"
           }
         },
         "form": {
           "type": "email-signup",
           "settings": {
             "width": "custom",
-            "custom_width": 50,
+            "custom_width": 60,
             "border_style": "all",
             "input_style": "custom",
             "border_radius": 4,
@@ -807,6 +997,7 @@
   "order": [
     "hero",
     "marquee",
+    "statement",
     "selection",
     "univers",
     "about",

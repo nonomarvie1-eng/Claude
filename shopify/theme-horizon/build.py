@@ -87,95 +87,127 @@ for i, t in enumerate(marquee_items):
 marquee = section('marquee', mq_blocks, background_color=G, gap_between_elements=28,
                   **{'padding-block-start': 14, 'padding-block-end': 14})
 
+def heading_group(label, title, sub=None, align='center', color=None, sub_color=None):
+    items = [('eyebrow', eyebrow(label, align=align)),
+             ('title', text(f'<h2>{title}</h2>', preset='h2', align=align, color=color, max_width='narrow'))]
+    if sub:
+        items.append(('sub', text(f'<p>{sub}</p>', preset='paragraph', align=align, color=sub_color or '#5E6158', max_width='narrow')))
+    return group(items, horizontal_alignment_flex_direction_column=align if align != 'left' else 'flex-start', gap=10)
+
+
+PAD = {'padding-block-start': 88, 'padding-block-end': 88}
+
+# Mot d'accueil, juste sous le bandeau défilant
+statement = section(
+    'section',
+    [
+        ('eyebrow', eyebrow('Bienvenue', align='center')),
+        ('quote', text("<p>« J'ai voulu vous faire découvrir les objets que j'utilise chez moi, ceux qui m'accompagnent en cuisine "
+                       "depuis mon premier voyage en Côte d'Ivoire. »</p>", preset='custom', align='center', max_width='narrow',
+                       font='var(--font-accent--family)', font_size='1.5rem', line_height='normal')),
+        ('sign', text('<p>Justine — Mme Fofana</p>', preset='h6', align='center', color=GOLDT)),
+    ],
+    horizontal_alignment_flex_direction_column='center', gap=18, section_width='page-width',
+    **{'padding-block-start': 80, 'padding-block-end': 24},
+)
+
 selection = section(
     'product-list',
     [
         ('static-header', {
             'type': '_product-list-content', 'static': True,
-            'settings': {'content_direction': 'column', 'horizontal_alignment_flex_direction_column': 'center', 'gap': 8},
+            'settings': {'content_direction': 'column', 'horizontal_alignment_flex_direction_column': 'center', 'gap': 10},
             'blocks': {
                 'eyebrow': {'type': '_product-list-text', 'settings': {'text': '<p>Ma sélection</p>', 'type_preset': 'h6', 'alignment': 'center', 'text_color': GOLDT}},
                 'title': {'type': '_product-list-text', 'settings': {'text': '<h2>Les Trésors de Chez Nous</h2>', 'type_preset': 'h2', 'alignment': 'center'}},
+                'sub': {'type': '_product-list-text', 'settings': {'text': '<p>Mortiers, pilons et plateaux sculptés à la main, en quantités limitées.</p>',
+                                                                    'type_preset': 'paragraph', 'alignment': 'center', 'text_color': '#5E6158'}},
             },
-            'block_order': ['eyebrow', 'title'],
+            'block_order': ['eyebrow', 'title', 'sub'],
         }),
         ('static-product-card', product_card()),
-        ('all', button('Voir toute la boutique', 'shopify://collections/all', 'button-secondary')),
+        ('all', button('Voir toute la boutique', 'shopify://collections/all', 'button')),
     ],
     collection='all', layout_type='carousel', carousel_on_mobile=True, max_products=12, columns=4, mobile_columns='2',
-    mobile_card_size='60cqw', columns_gap=16, rows_gap=32, icons_style='arrow', icons_shape='circle',
-    section_width='page-width', horizontal_alignment='center', gap=32,
-    **{'padding-block-start': 72, 'padding-block-end': 72},
+    mobile_card_size='60cqw', columns_gap=20, rows_gap=32, icons_style='arrow', icons_shape='circle',
+    section_width='page-width', horizontal_alignment='center', gap=40,
+    **{'padding-block-start': 56, 'padding-block-end': 88},
 )
+
+def collection_card():
+    return {
+        'type': '_collection-card', 'static': True,
+        'settings': {'placement': 'on_image', 'horizontal_alignment': 'flex-start', 'vertical_alignment': 'flex-end',
+                     'collection_card_gap': 4, 'border_radius': 12},
+        'blocks': {
+            'collection-card-image': {'type': '_collection-card-image', 'static': True,
+                                      'settings': {'image_ratio': 'portrait', 'toggle_overlay': True, 'overlay_style': 'gradient',
+                                                   'overlay_color': '#10201ACC', 'gradient_direction': 'to top', 'border_radius': 12}},
+            'collection-title': {'type': 'collection-title',
+                                 'settings': {'type_preset': 'h3', 'text_color': BG, 'padding-inline-start': 24, 'padding-inline-end': 24}},
+            'cta': text('<p>Découvrir →</p>', preset='h6', color=GOLD, **{'padding-inline-start': 24, 'padding-block-end': 24}),
+        },
+        'block_order': ['collection-title', 'cta'],
+    }
 
 univers = section(
     'collection-list',
     [
-        ('header', group([
-            ('eyebrow', eyebrow('Explorer', align='center')),
-            ('title', text('<h2>Par univers</h2>', preset='h2', align='center')),
-        ], horizontal_alignment_flex_direction_column='center', gap=8)),
-        ('static-collection-card', {
-            'type': '_collection-card', 'static': True,
-            'settings': {'placement': 'on_image', 'horizontal_alignment': 'flex-start', 'vertical_alignment': 'flex-end', 'border_radius': 8},
-            'blocks': {
-                'collection-card-image': {'type': '_collection-card-image', 'static': True,
-                                          'settings': {'image_ratio': 'landscape', 'toggle_overlay': True, 'overlay_style': 'gradient',
-                                                       'overlay_color': '#10201A99', 'gradient_direction': 'to top', 'border_radius': 8}},
-                'collection-title': {'type': 'collection-title',
-                                     'settings': {'type_preset': 'h3', 'text_color': BG, 'padding-block-start': 16,
-                                                  'padding-block-end': 16, 'padding-inline-start': 20, 'padding-inline-end': 20}},
-            },
-            'block_order': ['collection-title'],
-        }),
+        ('header', heading_group('Explorer', 'Par univers', 'Des ustensiles pour cuisiner comme en Côte d’Ivoire, des plateaux pour servir avec caractère.')),
+        ('static-collection-card', collection_card()),
     ],
     collection_list=['cuisine', 'service-de-table'], layout_type='grid', columns=2, mobile_columns='1', max_collections=2,
-    columns_gap=16, rows_gap=16, section_width='page-width', gap=28, background_color=SOFT,
-    **{'padding-block-start': 64, 'padding-block-end': 64},
+    columns_gap=20, rows_gap=20, section_width='page-width', gap=40, background_color=SOFT, **PAD,
 )
 
-apropos_text = ("<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana. Française d’origine, je suis passionnée par les "
-                "cultures du monde et particulièrement par les richesses de l’Afrique.</p><p>Depuis mon premier voyage en Côte d’Ivoire "
-                "en 2019, j’y suis retournée à plusieurs reprises et j’ai développé un véritable attachement à ses cultures, à sa cuisine "
-                "et à ses traditions.</p><p><strong>Cette boutique est le prolongement naturel de cet univers</strong> : les objets que "
-                "j’utilise chez moi, les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher.</p>")
+apropos_text = ("<p>Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique. "
+                "Depuis mon premier voyage en Côte d’Ivoire en 2019, j’y suis retournée à plusieurs reprises et je me suis attachée "
+                "à sa cuisine et à ses traditions.</p><p>Cette boutique est le prolongement naturel de cet univers : les ustensiles qui "
+                "m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher.</p>")
 
+# Texte d'abord (sur mobile la photo vient après, plus de saut brutal), photo encadrée à droite sur ordinateur
 about = section(
-    'media-with-content',
+    'section',
     [
-        ('media', {'type': '_media-without-appearance', 'static': True,
-                   'settings': {'media_type': 'image', 'image': 'shopify://shop_images/mme-fofana.jpg', 'image_position': 'cover'}}),
-        ('content', {'type': '_content-without-appearance', 'static': True,
-                     'settings': {'horizontal_alignment_flex_direction_column': 'flex-start', 'vertical_alignment_flex_direction_column': 'center', 'gap': 20},
-                     'blocks': {
-                         'eyebrow': eyebrow('À propos'),
-                         'title': text('<h2>Française et ivoirienne de cœur</h2>', preset='h2'),
-                         'body': text(apropos_text, preset='rte', max_width='narrow'),
-                         'buttons': group([
-                             ('story', button('Lire mon histoire', 'shopify://pages/a-propos', 'button')),
-                             ('tiktok', button('Me suivre sur TikTok', TIKTOK, 'button-secondary', open_in_new_tab=True)),
-                         ], content_direction='row', gap=12, width='fit-content'),
-                     },
-                     'block_order': ['eyebrow', 'title', 'body', 'buttons']}),
+        ('content', group([
+            ('eyebrow', eyebrow('À propos')),
+            ('title', text('<h2>Française et ivoirienne de cœur</h2>', preset='h2', max_width='narrow')),
+            ('body', text(apropos_text, preset='rte', max_width='narrow')),
+            ('sign', text('<p>Justine Fofana</p>', preset='custom', font='var(--font-accent--family)', font_size='1.5rem', color=GOLDT)),
+            ('buttons', group([
+                ('story', button('Lire mon histoire', 'shopify://pages/a-propos', 'button')),
+                ('tiktok', button('Me suivre sur TikTok', TIKTOK, 'button-secondary', open_in_new_tab=True)),
+            ], content_direction='row', vertical_on_mobile=False, gap=12, width='fit-content')),
+        ], gap=18, width='custom', custom_width=50, width_mobile='fill')),
+        ('photo', {'type': 'image', 'settings': {'image': 'shopify://shop_images/mme-fofana.jpg', 'image_ratio': 'portrait',
+                                                 'width': 'custom', 'custom_width': 42, 'width_mobile': 'fill', 'border_radius': 12}}),
     ],
-    media_position='left', media_width='medium', media_height='80svh', section_width='full-width', extend_media=True,
+    content_direction='row', vertical_on_mobile=True, horizontal_alignment='space-between', vertical_alignment='center',
+    gap=48, section_width='page-width', **PAD,
 )
 
 promesses = [
-    ('serving_dish', 'Artisanat authentique', "Des pièces sculptées à la main en Côte d'Ivoire : chacune est unique."),
+    ('serving_dish', 'Artisanat authentique', "Sculptées à la main en Côte d'Ivoire, chaque pièce est unique."),
     ('heart', 'Choisi avec soin', "Uniquement des objets que j'utilise et que j'aime chez moi."),
     ('truck', 'Expédié depuis Lyon', 'Sous 2 jours, en Point Relais ou à domicile. Offert dès 110 €.'),
     ('return', '14 jours pour changer d’avis', 'Tous les produits peuvent être retournés.'),
 ]
-prom_blocks = []
+cards = []
 for i, (ic, h, t) in enumerate(promesses):
-    prom_blocks.append((f'p{i}', group([
-        ('icon', {'type': 'icon', 'settings': {'icon': ic, 'width': 30, 'icon_color': GOLDT}}),
-        ('h', text(f'<h3>{h}</h3>', preset='h4', align='center')),
-        ('t', text(f'<p>{t}</p>', preset='rte', align='center')),
-    ], horizontal_alignment_flex_direction_column='center', gap=10)))
-promises = section('section', prom_blocks, content_direction='row', vertical_on_mobile=True, gap=32,
-                   section_width='page-width', **{'padding-block-start': 72, 'padding-block-end': 72})
+    cards.append((f'p{i}', group([
+        ('icon', {'type': 'icon', 'settings': {'icon': ic, 'width': 28, 'icon_color': GOLDT}}),
+        ('h', text(f'<h3>{h}</h3>', preset='h5')),
+        ('t', text(f'<p>{t}</p>', preset='rte')),
+    ], gap=10, background_color=CARD, border='solid', border_width=1, border_color=LINE, border_radius=12,
+       **{'padding-block-start': 28, 'padding-block-end': 28, 'padding-inline-start': 24, 'padding-inline-end': 24})))
+promises = section(
+    'section',
+    [
+        ('header', heading_group('Nos engagements', 'Acheter chez Mme Fofana')),
+        ('cards', group(cards, content_direction='row', vertical_on_mobile=True, gap=16)),
+    ],
+    horizontal_alignment_flex_direction_column='center', gap=40, section_width='page-width', background_color=SOFT, **PAD,
+)
 
 newsletter = section(
     'section',
@@ -183,18 +215,17 @@ newsletter = section(
         ('eyebrow', eyebrow('Newsletter', color=GOLD, align='center')),
         ('title', text('<h2>Envie de découvrir les prochaines nouveautés ?</h2>', preset='h2', align='center', color=BG, max_width='narrow')),
         ('text', text('<p>Nouveaux produits, offres et actualités de la boutique, directement dans votre boîte mail.</p>',
-                      preset='paragraph', align='center', color=BG)),
+                      preset='paragraph', align='center', color='#D9D2C3', max_width='narrow')),
         ('form', {'type': 'email-signup', 'settings': {
-            'width': 'custom', 'custom_width': 50, 'border_style': 'all', 'input_style': 'custom', 'border_radius': 4,
+            'width': 'custom', 'custom_width': 60, 'border_style': 'all', 'input_style': 'custom', 'border_radius': 4,
             'input_background_color': CARD, 'input_text_color': INK, 'input_border_color': CARD,
             'style_class': 'button-custom', 'custom_button_background': GOLD, 'custom_button_text': G, 'custom_button_border': GOLD,
             'display_type': 'text', 'label': "Je m'inscris", 'integrated_button': False}}),
     ],
-    horizontal_alignment_flex_direction_column='center', gap=16, background_color=G,
-    **{'padding-block-start': 72, 'padding-block-end': 72},
+    horizontal_alignment_flex_direction_column='center', gap=16, background_color=G, **PAD,
 )
 
-index = template([('hero', hero), ('marquee', marquee), ('selection', selection), ('univers', univers),
+index = template([('hero', hero), ('marquee', marquee), ('statement', statement), ('selection', selection), ('univers', univers),
                   ('about', about), ('promises', promises), ('newsletter', newsletter)])
 
 # ---------------------------------------------------------------- Fiche produit
@@ -273,31 +304,31 @@ product = template([
 # ---------------------------------------------------------------- Page À propos
 page_apropos = template([
     ('about', section(
-        'media-with-content',
+        'section',
         [
-            ('media', {'type': '_media-without-appearance', 'static': True,
-                       'settings': {'media_type': 'image', 'image': 'shopify://shop_images/mme-fofana.jpg', 'image_position': 'cover'}}),
-            ('content', {'type': '_content-without-appearance', 'static': True,
-                         'settings': {'horizontal_alignment_flex_direction_column': 'flex-start', 'vertical_alignment_flex_direction_column': 'center', 'gap': 20},
-                         'blocks': {
-                             'eyebrow': eyebrow('À propos'),
-                             'title': text('<h1>Française et ivoirienne de cœur</h1>', preset='h2'),
-                             'body': text(
-                                 "<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana. Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique.</p>"
-                                 "<p>J’ai découvert la Côte d’Ivoire pour la première fois en 2019, à l’âge de 16 ans. Depuis, j’y suis retournée à plusieurs reprises et j’ai développé un véritable attachement à ses cultures, à sa cuisine et à ses traditions. À travers mon mari, mes amies sénégalaises, maliennes et mes rencontres, j’ai aussi découvert de nombreuses autres spécialités africaines qui inspirent aujourd’hui ma cuisine.</p>"
-                                 "<p>Sur mes réseaux sociaux, je partage mes recettes, mes découvertes et des moments de mon quotidien avec une communauté qui grandit chaque jour.</p>"
-                                 "<p><strong>La Boutique de Mme Fofana est le prolongement naturel de cet univers.</strong> J’ai voulu vous faire découvrir les objets que j’utilise chez moi, les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher, en Côte d’Ivoire et ailleurs.</p>"
-                                 "<p>Cette sélection évoluera au fil de mes découvertes, avec de nouveaux produits, des nouveautés et des offres à retrouver régulièrement.</p>",
-                                 preset='rte', max_width='narrow'),
-                             'buttons': group([
-                                 ('shop', button('Découvrir la boutique', 'shopify://collections/all', 'button')),
-                                 ('tiktok', button('Me suivre sur TikTok', TIKTOK, 'button-secondary', open_in_new_tab=True)),
-                             ], content_direction='row', gap=12, width='fit-content'),
-                         },
-                         'block_order': ['eyebrow', 'title', 'body', 'buttons']}),
+            ('content', group([
+                ('eyebrow', eyebrow('À propos')),
+                ('title', text('<h1>Française et ivoirienne de cœur</h1>', preset='h1', max_width='narrow')),
+                ('body', text(
+                    "<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana. Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique.</p>"
+                    "<p>J’ai découvert la Côte d’Ivoire pour la première fois en 2019, à l’âge de 16 ans. Depuis, j’y suis retournée à plusieurs reprises et j’ai développé un véritable attachement à ses cultures, à sa cuisine et à ses traditions. À travers mon mari, mes amies sénégalaises, maliennes et mes rencontres, j’ai aussi découvert de nombreuses autres spécialités africaines qui inspirent aujourd’hui ma cuisine.</p>"
+                    "<p>Sur mes réseaux sociaux, je partage mes recettes, mes découvertes et des moments de mon quotidien avec une communauté qui grandit chaque jour.</p>"
+                    "<p><strong>La Boutique de Mme Fofana est le prolongement naturel de cet univers.</strong> J’ai voulu vous faire découvrir les objets que j’utilise chez moi, les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher, en Côte d’Ivoire et ailleurs.</p>"
+                    "<p>Cette sélection évoluera au fil de mes découvertes, avec de nouveaux produits, des nouveautés et des offres à retrouver régulièrement.</p>",
+                    preset='rte', max_width='narrow')),
+                ('sign', text('<p>Justine Fofana</p>', preset='custom', font='var(--font-accent--family)', font_size='1.5rem', color=GOLDT)),
+                ('buttons', group([
+                    ('shop', button('Découvrir la boutique', 'shopify://collections/all', 'button')),
+                    ('tiktok', button('Me suivre sur TikTok', TIKTOK, 'button-secondary', open_in_new_tab=True)),
+                ], content_direction='row', vertical_on_mobile=False, gap=12, width='fit-content')),
+            ], gap=18, width='custom', custom_width=52, width_mobile='fill')),
+            ('photo', {'type': 'image', 'settings': {'image': 'shopify://shop_images/mme-fofana.jpg', 'image_ratio': 'portrait',
+                                                     'width': 'custom', 'custom_width': 40, 'width_mobile': 'fill', 'border_radius': 12}}),
         ],
-        media_position='right', media_width='medium', media_height='100svh', section_width='full-width', extend_media=True,
+        content_direction='row', vertical_on_mobile=True, horizontal_alignment='space-between', vertical_alignment='flex-start',
+        gap=48, section_width='page-width', **{'padding-block-start': 64, 'padding-block-end': 88},
     )),
+    ('promises', promises),
     ('newsletter', newsletter),
 ])
 
@@ -326,8 +357,8 @@ header_group = {
             'blocks': {
                 'header-logo': {'type': '_header-logo', 'static': True, 'settings': {'hide_logo_on_home_page': False}},
                 'header-menu': {'type': '_header-menu', 'static': True, 'settings': {
-                    'menu': 'main-menu', 'type_font_primary_size': '0.875rem', 'menu_font_style': 'regular', 'type_font_primary_link': 'subheading',
-                    'type_case_primary_link': 'uppercase', 'menu_style': 'featured_products', 'navigation_bar': False}},
+                    'menu': 'main-menu', 'type_font_primary_size': '0.875rem', 'menu_font_style': 'regular', 'type_font_primary_link': 'heading',
+                    'type_case_primary_link': 'none', 'menu_style': 'featured_products', 'navigation_bar': False}},
             },
         },
     },
