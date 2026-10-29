@@ -1,0 +1,172 @@
+{
+  "type": "footer",
+  "name": "Pied de page",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "section_width": "page-width",
+        "gap": 48,
+        "background_color": "#EEE6D4",
+        "padding-block-start": 56,
+        "padding-block-end": 40
+      },
+      "blocks": {
+        "brand": {
+          "type": "group",
+          "settings": {
+            "gap": 12
+          },
+          "blocks": {
+            "logo": {
+              "type": "image",
+              "settings": {
+                "image": "shopify://shop_images/logo-mme-fofana.png",
+                "width": "custom",
+                "custom_width": 70,
+                "width_mobile": "custom",
+                "custom_width_mobile": 70
+              }
+            },
+            "tag": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Ustensiles &amp; art de vivre africains, sélectionnés avec soin et expédiés depuis Lyon.</p>",
+                "type_preset": "rte",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "narrow"
+              }
+            },
+            "social": {
+              "type": "social-links",
+              "settings": {
+                "icon_color": "#17301F",
+                "instagram_url": "https://www.instagram.com/juju_fofana",
+                "tiktok_url": "https://www.tiktok.com/@jujufofana",
+                "snapchat_url": "https://snapchat.com/t/VUMKoSqa",
+                "facebook_url": "https://www.facebook.com/share/1GzJyVUD8a/"
+              }
+            }
+          },
+          "block_order": [
+            "logo",
+            "tag",
+            "social"
+          ]
+        },
+        "menu_shop": {
+          "type": "menu",
+          "settings": {
+            "menu": "main-menu",
+            "heading": "La boutique",
+            "menu_spacing": 10,
+            "heading_preset": "h6",
+            "link_preset": "paragraph"
+          }
+        },
+        "menu_help": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer",
+            "heading": "Infos utiles",
+            "menu_spacing": 10,
+            "heading_preset": "h6",
+            "link_preset": "paragraph"
+          }
+        },
+        "contact": {
+          "type": "group",
+          "settings": {
+            "gap": 10
+          },
+          "blocks": {
+            "h": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Une question ?</p>",
+                "type_preset": "h6",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal",
+                "text_color": "#9B6F2B"
+              }
+            },
+            "t": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href=\"mailto:mmefofana.boutique@gmail.com\">mmefofana.boutique@gmail.com</a></p><p>Réponse sous 48 h.</p>",
+                "type_preset": "rte",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal"
+              }
+            },
+            "b": {
+              "type": "button",
+              "settings": {
+                "label": "Écris-moi",
+                "link": "https://linktr.ee/marviejustine121",
+                "style_class": "button-secondary",
+                "open_in_new_tab": true
+              }
+            },
+            "pay": {
+              "type": "payment-icons",
+              "settings": {}
+            }
+          },
+          "block_order": [
+            "h",
+            "t",
+            "b",
+            "pay"
+          ]
+        }
+      },
+      "block_order": [
+        "brand",
+        "menu_shop",
+        "menu_help",
+        "contact"
+      ]
+    },
+    "utilities": {
+      "type": "footer-utilities",
+      "settings": {
+        "section_width": "page-width",
+        "gap": 24,
+        "background_color": "#EEE6D4",
+        "divider_thickness": 1,
+        "divider_color": "#E1D7C2",
+        "padding-block-start": 16,
+        "padding-block-end": 20
+      },
+      "blocks": {
+        "copyright": {
+          "type": "footer-copyright",
+          "settings": {
+            "show_powered_by": false,
+            "font_size": "0.75rem",
+            "case": "none"
+          }
+        },
+        "policy_list": {
+          "type": "footer-policy-list",
+          "settings": {
+            "font_size": "0.75rem",
+            "case": "none"
+          }
+        }
+      },
+      "block_order": [
+        "copyright",
+        "policy_list"
+      ]
+    }
+  },
+  "order": [
+    "footer",
+    "utilities"
+  ]
+}

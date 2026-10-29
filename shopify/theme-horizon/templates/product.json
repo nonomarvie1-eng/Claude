@@ -1,0 +1,388 @@
+{
+  "sections": {
+    "main": {
+      "type": "product-information",
+      "settings": {
+        "content_width": "content-center-aligned",
+        "desktop_media_position": "left",
+        "equal_columns": false,
+        "limit_details_width": true,
+        "gap": 56,
+        "padding-block-start": 24,
+        "padding-block-end": 48
+      },
+      "blocks": {
+        "media-gallery": {
+          "type": "_product-media-gallery",
+          "static": true,
+          "settings": {
+            "media_presentation": "carousel",
+            "media_columns": "one",
+            "image_gap": 8,
+            "large_first_image": true,
+            "icons_style": "arrows_large",
+            "slideshow_controls_style": "thumbnails",
+            "slideshow_mobile_controls_style": "dots",
+            "thumbnail_position": "bottom",
+            "aspect_ratio": "1",
+            "media_fit": "cover",
+            "media_radius": 8,
+            "constrain_to_viewport": true,
+            "zoom": true,
+            "hide_variants": false
+          }
+        },
+        "product-details": {
+          "type": "_product-details",
+          "static": true,
+          "settings": {
+            "gap": 20,
+            "sticky_details_desktop": true,
+            "details_position": "flex-start"
+          },
+          "blocks": {
+            "eyebrow": {
+              "type": "text",
+              "settings": {
+                "text": "<p>{{ closest.product.type }}</p>",
+                "type_preset": "h6",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal",
+                "text_color": "#9B6F2B"
+              }
+            },
+            "title": {
+              "type": "text",
+              "settings": {
+                "text": "<h1>{{ closest.product.title }}</h1>",
+                "type_preset": "h3",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal"
+              }
+            },
+            "price": {
+              "type": "price",
+              "settings": {
+                "type_preset": "h4",
+                "show_tax_info": false,
+                "show_installments": false
+              }
+            },
+            "tva": {
+              "type": "text",
+              "settings": {
+                "text": "<p>TVA non applicable, art. 293 B du CGI. Frais de livraison calculés au paiement.</p>",
+                "type_preset": "custom",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal",
+                "text_color": "#5E6158",
+                "font_size": "0.75rem"
+              }
+            },
+            "divider": {
+              "type": "_divider",
+              "settings": {
+                "thickness": 1,
+                "divider_color": "#E1D7C2",
+                "width_percent": 100
+              }
+            },
+            "variants": {
+              "type": "variant-picker",
+              "settings": {
+                "variant_style": "buttons",
+                "show_swatches": false,
+                "alignment": "left"
+              }
+            },
+            "stock": {
+              "type": "product-inventory",
+              "settings": {
+                "inventory_threshold": 5,
+                "show_inventory_quantity": true,
+                "text_color": "#9B6F2B"
+              }
+            },
+            "buy": {
+              "type": "buy-buttons",
+              "settings": {
+                "stacking": true,
+                "show_pickup_availability": false,
+                "gift_card_form": true
+              },
+              "blocks": {
+                "quantity": {
+                  "type": "quantity",
+                  "static": true
+                },
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {
+                    "style_class": "button"
+                  }
+                },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "static": true
+                }
+              }
+            },
+            "reassurance": {
+              "type": "group",
+              "settings": {
+                "content_direction": "row",
+                "vertical_on_mobile": false,
+                "gap": 10,
+                "background_color": "#EEE6D4",
+                "border_radius": 6,
+                "padding-block-start": 12,
+                "padding-block-end": 12,
+                "padding-inline-start": 14,
+                "padding-inline-end": 14
+              },
+              "blocks": {
+                "a": {
+                  "type": "icon",
+                  "settings": {
+                    "icon": "truck",
+                    "width": 18,
+                    "icon_color": "#17301F"
+                  }
+                },
+                "b": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Expédié depuis Lyon sous 2 jours · Livraison offerte dès 110 €</p>",
+                    "type_preset": "custom",
+                    "alignment": "left",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "font_size": "0.875rem"
+                  }
+                }
+              },
+              "block_order": [
+                "a",
+                "b"
+              ]
+            },
+            "description": {
+              "type": "text",
+              "settings": {
+                "text": "{{ closest.product.description }}",
+                "type_preset": "rte",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal"
+              }
+            },
+            "accordion": {
+              "type": "accordion",
+              "settings": {
+                "icon": "plus",
+                "dividers": true,
+                "divider_color": "#E1D7C2",
+                "type_preset": "h6"
+              },
+              "blocks": {
+                "carac": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Caractéristiques",
+                    "icon": "ruler",
+                    "width": 20,
+                    "open_by_default": true
+                  },
+                  "blocks": {
+                    "c": {
+                      "type": "custom-liquid",
+                      "settings": {
+                        "custom_liquid": "{%- assign c = closest.product.metafields.custom.caracteristiques.value -%}{%- if c != blank -%}<ul style=\"margin:0;padding-left:1.1em;display:grid;gap:.35em\">{%- assign lines = c | newline_to_br | split: '<br />' -%}{%- for l in lines -%}{%- assign l = l | strip -%}{%- if l != blank -%}<li>{{ l }}</li>{%- endif -%}{%- endfor -%}</ul>{%- endif -%}"
+                      }
+                    }
+                  },
+                  "block_order": [
+                    "c"
+                  ]
+                },
+                "livraison": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Livraison",
+                    "icon": "truck",
+                    "width": 20,
+                    "open_by_default": false
+                  },
+                  "blocks": {
+                    "t": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Expédition depuis Lyon sous 2 jours ouvrés, par Mondial Relay en Point Relais ou à domicile (3 à 5 jours). Frais selon le poids, affichés au paiement. <strong>Offerte dès 110 € d’achats.</strong></p>",
+                        "type_preset": "rte",
+                        "alignment": "left",
+                        "width": "100%",
+                        "max_width": "normal"
+                      }
+                    }
+                  },
+                  "block_order": [
+                    "t"
+                  ]
+                },
+                "retours": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Retours",
+                    "icon": "return",
+                    "width": 20,
+                    "open_by_default": false
+                  },
+                  "blocks": {
+                    "t": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>14 jours après réception pour changer d’avis. Tous les produits peuvent être repris. <a href=\"/pages/livraison-et-retours\">Voir les conditions</a>.</p>",
+                        "type_preset": "rte",
+                        "alignment": "left",
+                        "width": "100%",
+                        "max_width": "normal"
+                      }
+                    }
+                  },
+                  "block_order": [
+                    "t"
+                  ]
+                },
+                "artisanat": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Une pièce artisanale",
+                    "icon": "heart",
+                    "width": 20,
+                    "open_by_default": false
+                  },
+                  "blocks": {
+                    "t": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Chaque pièce est faite à la main : de légères différences de forme, de teinte ou de veinage avec les photos sont normales et font son authenticité.</p>",
+                        "type_preset": "rte",
+                        "alignment": "left",
+                        "width": "100%",
+                        "max_width": "normal"
+                      }
+                    }
+                  },
+                  "block_order": [
+                    "t"
+                  ]
+                }
+              },
+              "block_order": [
+                "carac",
+                "livraison",
+                "retours",
+                "artisanat"
+              ]
+            }
+          },
+          "block_order": [
+            "eyebrow",
+            "title",
+            "price",
+            "tva",
+            "divider",
+            "variants",
+            "stock",
+            "buy",
+            "reassurance",
+            "description",
+            "accordion"
+          ]
+        }
+      },
+      "block_order": []
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "product": "{{ closest.product }}",
+        "recommendation_type": "related",
+        "layout_type": "carousel",
+        "carousel_on_mobile": true,
+        "max_products": 4,
+        "columns": 4,
+        "mobile_columns": "2",
+        "columns_gap": 16,
+        "rows_gap": 24,
+        "icons_style": "arrow",
+        "icons_shape": "circle",
+        "section_width": "page-width",
+        "gap": 28,
+        "padding-block-start": 48,
+        "padding-block-end": 72
+      },
+      "blocks": {
+        "title": {
+          "type": "text",
+          "settings": {
+            "text": "<h2>Tu aimeras aussi</h2>",
+            "type_preset": "h3",
+            "alignment": "left",
+            "width": "100%",
+            "max_width": "normal"
+          }
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 6
+          },
+          "blocks": {
+            "gallery": {
+              "type": "_product-card-gallery",
+              "settings": {
+                "image_ratio": "square",
+                "border_radius": 8
+              }
+            },
+            "title": {
+              "type": "product-title",
+              "settings": {
+                "type_preset": "rte",
+                "font": "var(--font-heading--family)",
+                "font_size": "1.125rem",
+                "padding-block-start": 6
+              }
+            },
+            "price": {
+              "type": "price",
+              "settings": {
+                "type_preset": "paragraph",
+                "show_tax_info": false,
+                "show_installments": false
+              }
+            }
+          },
+          "block_order": [
+            "gallery",
+            "title",
+            "price"
+          ]
+        }
+      },
+      "block_order": [
+        "title"
+      ]
+    }
+  },
+  "order": [
+    "main",
+    "recommendations"
+  ]
+}

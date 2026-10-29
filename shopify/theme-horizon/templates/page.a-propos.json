@@ -1,0 +1,180 @@
+{
+  "sections": {
+    "about": {
+      "type": "media-with-content",
+      "settings": {
+        "media_position": "right",
+        "media_width": "medium",
+        "media_height": "100svh",
+        "section_width": "full-width",
+        "extend_media": true
+      },
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/mme-fofana.jpg",
+            "image_position": "cover"
+          }
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "eyebrow": {
+              "type": "text",
+              "settings": {
+                "text": "<p>À propos</p>",
+                "type_preset": "h6",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal",
+                "text_color": "#9B6F2B"
+              }
+            },
+            "title": {
+              "type": "text",
+              "settings": {
+                "text": "<h1>Française et ivoirienne de cœur</h1>",
+                "type_preset": "h2",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "normal"
+              }
+            },
+            "body": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana. Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique.</p><p>J’ai découvert la Côte d’Ivoire pour la première fois en 2019, à l’âge de 16 ans. Depuis, j’y suis retournée à plusieurs reprises et j’ai développé un véritable attachement à ses cultures, à sa cuisine et à ses traditions. À travers mon mari, mes amies sénégalaises, maliennes et mes rencontres, j’ai aussi découvert de nombreuses autres spécialités africaines qui inspirent aujourd’hui ma cuisine.</p><p>Sur mes réseaux sociaux, je partage mes recettes, mes découvertes et des moments de mon quotidien avec une communauté qui grandit chaque jour.</p><p><strong>La Boutique de Mme Fofana est le prolongement naturel de cet univers.</strong> J’ai voulu vous faire découvrir les objets que j’utilise chez moi, les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher, en Côte d’Ivoire et ailleurs.</p><p>Cette sélection évoluera au fil de mes découvertes, avec de nouveaux produits, des nouveautés et des offres à retrouver régulièrement.</p>",
+                "type_preset": "rte",
+                "alignment": "left",
+                "width": "100%",
+                "max_width": "narrow"
+              }
+            },
+            "buttons": {
+              "type": "group",
+              "settings": {
+                "content_direction": "row",
+                "gap": 12,
+                "width": "fit-content"
+              },
+              "blocks": {
+                "shop": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Découvrir la boutique",
+                    "link": "shopify://collections/all",
+                    "style_class": "button"
+                  }
+                },
+                "tiktok": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Me suivre sur TikTok",
+                    "link": "https://www.tiktok.com/@jujufofana",
+                    "style_class": "button-secondary",
+                    "open_in_new_tab": true
+                  }
+                }
+              },
+              "block_order": [
+                "shop",
+                "tiktok"
+              ]
+            }
+          },
+          "block_order": [
+            "eyebrow",
+            "title",
+            "body",
+            "buttons"
+          ]
+        }
+      },
+      "block_order": []
+    },
+    "newsletter": {
+      "type": "section",
+      "settings": {
+        "horizontal_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "background_color": "#17301F",
+        "padding-block-start": 72,
+        "padding-block-end": 72
+      },
+      "blocks": {
+        "eyebrow": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Newsletter</p>",
+            "type_preset": "h6",
+            "alignment": "center",
+            "width": "100%",
+            "max_width": "normal",
+            "text_color": "#C9A15A"
+          }
+        },
+        "title": {
+          "type": "text",
+          "settings": {
+            "text": "<h2>Envie de découvrir les prochaines nouveautés ?</h2>",
+            "type_preset": "h2",
+            "alignment": "center",
+            "width": "100%",
+            "max_width": "narrow",
+            "text_color": "#F6F1E6"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Nouveaux produits, offres et actualités de la boutique, directement dans votre boîte mail.</p>",
+            "type_preset": "paragraph",
+            "alignment": "center",
+            "width": "100%",
+            "max_width": "normal",
+            "text_color": "#F6F1E6"
+          }
+        },
+        "form": {
+          "type": "email-signup",
+          "settings": {
+            "width": "custom",
+            "custom_width": 50,
+            "border_style": "all",
+            "input_style": "custom",
+            "border_radius": 4,
+            "input_background_color": "#FFFCF5",
+            "input_text_color": "#1D1D1A",
+            "input_border_color": "#FFFCF5",
+            "style_class": "button-custom",
+            "custom_button_background": "#C9A15A",
+            "custom_button_text": "#17301F",
+            "custom_button_border": "#C9A15A",
+            "display_type": "text",
+            "label": "Je m'inscris",
+            "integrated_button": false
+          }
+        }
+      },
+      "block_order": [
+        "eyebrow",
+        "title",
+        "text",
+        "form"
+      ]
+    }
+  },
+  "order": [
+    "about",
+    "newsletter"
+  ]
+}
