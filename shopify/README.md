@@ -1,7 +1,28 @@
 # Passage sur Shopify – La Boutique de Mme Fofana
 
 Tout ce qu'il faut pour créer la boutique Shopify à partir du site actuel (`index.html`).
-Rien n'a encore été envoyé dans Shopify : le connecteur Shopify n'était pas connecté à la session.
+Boutique : **mmefofana.myshopify.com** (La boutique de Mme Fofana, EUR, forfait Basic).
+
+## État dans Shopify (29 octobre 2026)
+
+Fait automatiquement avec le connecteur Shopify :
+
+- [x] Métadonnée produit `custom.caracteristiques` (texte multiligne, lisible par la boutique)
+- [x] 7 produits créés avec photos (19), poids, stock, caractéristiques ; 5 en ligne, 2 grands mortiers en brouillon ; tous visibles sur la Boutique en ligne
+- [x] Collections automatiques Cuisine (5 produits) et Service de table (2), publiées
+- [x] Livraison France : 14 tarifs Mondial Relay (Point Relais et Domicile par tranche de poids). Les anciens tarifs Shopify (Standard 7,99 €, gratuit dès 65 €, Express) et les zones International et UE ont été supprimés
+- [x] Remise automatique « Livraison offerte dès 110 € » (France)
+- [x] Pages Mentions légales, CGV, Livraison et retours, Politique de confidentialité, À propos (modèle `a-propos`)
+- [x] Menu principal : Accueil, Boutique, À propos, Contact (Linktree)
+- [x] Thème « Mme Fofana » importé, **non publié**
+
+Reste à faire à la main dans l'admin Shopify :
+
+- [ ] Boutique en ligne › Thèmes : prévisualiser « Mme Fofana » puis **Publier** (le connecteur ne peut pas publier un thème)
+- [ ] Réglages › Politiques : coller les textes de `pages/` (le connecteur n'a pas le droit de modifier les politiques)
+- [ ] Réglages › Taxes : vérifier que la TVA n'est pas facturée (franchise en base)
+- [ ] Installer l'application Sendcloud ou Mondial Relay pour le choix du Point Relais au paiement
+- [ ] Mettre le vrai poids de la grande taille Côte d'Ivoire (0 g actuellement)
 
 ## Contenu
 
