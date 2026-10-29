@@ -1,0 +1,46 @@
+{%- comment -%} Banderole qui défile en continu (s'arrête au survol et si l'appareil demande moins d'animations). {%- endcomment -%}
+{%- capture items -%}
+  {%- for block in section.blocks -%}
+    <span class="mq-item" {{ block.shopify_attributes }}>{{ block.settings.text }}</span><span class="mq-sep" aria-hidden="true">✦</span>
+  {%- endfor -%}
+{%- endcapture -%}
+<div class="mq" style="--mq-speed: {{ section.settings.speed }}s">
+  <div class="mq-track">
+    <div class="mq-group">{{ items }}{{ items }}</div>
+    <div class="mq-group" aria-hidden="true">{{ items }}{{ items }}</div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .mq{background:var(--green);color:#F6F1E6;overflow:hidden;border-bottom:1px solid var(--green2)}
+  .mq-track{display:flex;width:max-content;animation:mq-scroll var(--mq-speed,35s) linear infinite}
+  .mq:hover .mq-track{animation-play-state:paused}
+  .mq-group{display:flex;align-items:center;flex-shrink:0}
+  .mq-item{font:500 12.5px/1 var(--b);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;padding:15px 0}
+  .mq-sep{color:var(--gold);font-size:11px;padding:0 26px}
+  @keyframes mq-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){.mq-track{animation:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Banderole défilante",
+  "settings": [
+    { "type": "range", "id": "speed", "label": "Durée d'un tour (secondes)", "min": 10, "max": 80, "step": 5, "default": 35 }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Livraison offerte dès 110 €" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Banderole défilante", "blocks": [
+    { "type": "message", "settings": { "text": "Pièces artisanales de Côte d'Ivoire" } },
+    { "type": "message", "settings": { "text": "Expédié depuis Lyon sous 2 jours" } },
+    { "type": "message", "settings": { "text": "Livraison offerte dès 110 €" } }
+  ] }]
+}
+{% endschema %}

@@ -40,31 +40,62 @@
       "type": "featured-collection",
       "settings": {
         "label": "Ma sélection",
-        "title": "Les Trésors de Chez Nous",
+        "title": "Des objets, des histoires, des savoir-faire",
         "limit": 8,
         "show_sold_out": true,
         "button_label": "Voir toute la boutique"
       }
     },
-    "about": {
-      "type": "about",
+    "marquee": {
+      "type": "marquee",
       "settings": {
-        "label": "À propos",
-        "title": "Française et ivoirienne de cœur",
-        "text": "<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana. Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique.</p><p>J’ai découvert la Côte d’Ivoire pour la première fois en 2019, à l’âge de 16 ans. Depuis, j’y suis retournée à plusieurs reprises et j’ai développé un véritable attachement à ses cultures, à sa cuisine et à ses traditions. À travers mon mari, mes amies sénégalaises, maliennes et mes rencontres, j’ai aussi découvert de nombreuses autres spécialités africaines qui inspirent aujourd’hui ma cuisine.</p><p>Sur mes réseaux sociaux, je partage mes recettes, mes découvertes et des moments de mon quotidien avec une communauté qui grandit chaque jour.</p><p><strong>La Boutique de Mme Fofana est le prolongement naturel de cet univers.</strong> J’ai voulu vous faire découvrir les objets que j’utilise chez moi, les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher, en Côte d’Ivoire et ailleurs.</p><p>Cette sélection évoluera au fil de mes découvertes, avec de nouveaux produits, des nouveautés et des offres à retrouver régulièrement.</p>",
-        "book_title": "Envie de découvrir les prochaines nouveautés ?",
-        "book_text": "<p>Inscrivez-vous à la newsletter juste en dessous pour être informé(e) des nouveaux produits, des offres et des actualités de la boutique.</p>",
-        "button_label": "Me suivre sur TikTok",
-        "button_link": "https://www.tiktok.com/@jujufofana",
-        "soft": true,
-        "full": true
-      }
+        "speed": 35
+      },
+      "blocks": {
+        "m0": {
+          "type": "message",
+          "settings": {
+            "text": "Pièces artisanales de Côte d'Ivoire"
+          }
+        },
+        "m1": {
+          "type": "message",
+          "settings": {
+            "text": "Expédié depuis Lyon sous 2 jours"
+          }
+        },
+        "m2": {
+          "type": "message",
+          "settings": {
+            "text": "Mondial Relay en Point Relais ou à domicile"
+          }
+        },
+        "m3": {
+          "type": "message",
+          "settings": {
+            "text": "Livraison offerte dès 110 €"
+          }
+        },
+        "m4": {
+          "type": "message",
+          "settings": {
+            "text": "Traditions, créations & art de vivre"
+          }
+        }
+      },
+      "block_order": [
+        "m0",
+        "m1",
+        "m2",
+        "m3",
+        "m4"
+      ]
     }
   },
   "order": [
     "hero",
+    "marquee",
     "strip",
-    "selection",
-    "about"
+    "selection"
   ]
 }
