@@ -18,7 +18,8 @@
       {%- endfor -%}
       <div class="sum">
         <div class="sub"><span>Sous-total</span><span>{{ cart.total_price | money }}</span></div>
-        <p class="cart-note">Frais de livraison calculés à l'étape suivante, selon le poids de la commande.</p>
+        <div data-shipest></div>
+        <p class="cart-note">Le montant exact de la livraison est confirmé au paiement.</p>
         <div class="btns">
           <button class="btn o" type="submit" name="update">Mettre à jour</button>
           <button class="btn gold grow" type="submit" name="checkout">Passer au paiement</button>

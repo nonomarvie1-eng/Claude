@@ -23,8 +23,24 @@
     if (o) { var x = $('#cx'); if (x) x.focus({ preventScroll: true }); }
   }
   function msg(t) { var m = $('#cmsg'); if (m) m.textContent = t || ''; }
+  /* Estimation des frais de livraison en France, selon le poids des articles (grammes).
+     Mêmes tranches que les tarifs Shopify : [poids max des articles, Point Relais, Domicile]. */
+  var SHIP_FR = [[200, 415, 750], [700, 455, 950], [1700, 635, 1100], [2700, 675, 1635], [4700, 1340, 1635], [9700, 1340, 2500], [14700, 2100, 3150]];
+  function shipEstimate(cart) {
+    var boxes = $$('[data-shipest]'); if (!boxes.length) return;
+    var html = '';
+    var free = F.freeShipping || 0;
+    var r = cart && SHIP_FR.filter(function (t) { return cart.total_weight <= t[0]; })[0];
+    if (!cart || !cart.item_count) html = '';
+    else if (free && cart.total_price >= free) html = '<p class="shipest"><b>Livraison en France : offerte</b></p>';
+    else html = r
+      ? '<p class="shipest"><b>Livraison estimée en France</b><span>Point Relais ou Locker : ' + money(r[1]) + '</span><span>À domicile : ' + money(r[2]) + '</span><small>Autres pays : tarif affiché au paiement.</small></p>'
+      : '<p class="shipest"><b>Colis de plus de 15 kg</b><span>Écrivez-nous pour un devis de livraison.</span></p>';
+    boxes.forEach(function (b) { b.innerHTML = html; });
+  }
   function render(cart) {
     F.cart = cart;
+    shipEstimate(cart);
     var cn = $('#cn'); if (cn) cn.textContent = cart.item_count;
     var L = $('#lines'); if (!L) return;
     L.innerHTML = cart.items.length ? cart.items.map(function (it) {
@@ -60,7 +76,7 @@
     return post(F.routes.change, { id: key, quantity: q }).then(render)
       .catch(function (e) { msg('Stock insuffisant pour ajouter cette quantité.'); console.error('Panier :', e); });
   }
-  if (dr && F.cart) render(F.cart);
+  if (dr && F.cart) render(F.cart); else if (F.cart) shipEstimate(F.cart);
   var cb = $('#cb');
   if (cb && dr) cb.addEventListener('click', function (e) { if (document.body.classList.contains('tpl-cart')) return; e.preventDefault(); openCart(true); });
   if ($('#cx')) $('#cx').addEventListener('click', function () { openCart(false); });

@@ -4,8 +4,9 @@
   <div class="dh"><h2>Ton panier</h2><button class="x" type="button" id="cx" aria-label="Fermer">×</button></div>
   <div class="lines" id="lines"></div>
   <div class="sub"><span>Sous-total</span><span id="st">{{ cart.total_price | money }}</span></div>
+  <div data-shipest></div>
   <div id="fship"></div>
-  <p class="cart-note">Paiement sécurisé. Frais de livraison calculés à l'étape suivante, selon le poids de la commande.</p>
+  <p class="cart-note">Paiement sécurisé. Le montant exact de la livraison est confirmé au paiement.</p>
   <a class="btn gold full" id="pay" href="/checkout">Passer au paiement</a>
   <p class="cmsg" id="cmsg" role="status"></p>
 </aside>
