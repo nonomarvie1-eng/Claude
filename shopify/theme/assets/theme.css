@@ -315,3 +315,4 @@ details p,details ul{margin:12px 0 0;color:var(--mut)}details ul{padding-left:20
 }
 .vx{display:none!important}
 .sec.sel{padding-top:40px}@media(min-width:1000px){.sec.sel{padding-top:64px}}
+@media(max-width:759px){.sec.sel .sech{flex-direction:column;align-items:center;text-align:center}.sec.sel .sech>div{width:100%}.sec.sel .sech .more{display:none}}
