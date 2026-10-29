@@ -232,7 +232,8 @@ product = template([
                                     'buy': {'type': 'buy-buttons', 'settings': {'stacking': True, 'show_pickup_availability': False, 'gift_card_form': True},
                                             'blocks': {'quantity': {'type': 'quantity', 'static': True},
                                                        'add-to-cart': {'type': 'add-to-cart', 'static': True, 'settings': {'style_class': 'button'}},
-                                                       'accelerated-checkout': {'type': 'accelerated-checkout', 'static': True}}},
+                                                       'accelerated-checkout': {'type': 'accelerated-checkout', 'static': True}},
+                                            'block_order': []},
                                     'reassurance': group([
                                         ('a', {'type': 'icon', 'settings': {'icon': 'truck', 'width': 18, 'icon_color': G}}),
                                         ('b', text('<p>Expédié depuis Lyon sous 2 jours · Livraison offerte dès 110 €</p>', preset='custom', font_size='0.875rem')),
