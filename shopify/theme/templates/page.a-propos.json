@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "about": {
+      "type": "about",
+      "settings": {
+        "label": "À propos",
+        "title": "Française et ivoirienne de cœur",
+        "text": "<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana. Française d’origine, je suis passionnée par les cultures du monde et particulièrement par les richesses de l’Afrique.</p><p>J’ai découvert la Côte d’Ivoire pour la première fois en 2019, à l’âge de 16 ans. Depuis, j’y suis retournée à plusieurs reprises et j’ai développé un véritable attachement à ses cultures, à sa cuisine et à ses traditions. À travers mon mari, mes amies sénégalaises, maliennes et mes rencontres, j’ai aussi découvert de nombreuses autres spécialités africaines qui inspirent aujourd’hui ma cuisine.</p><p>Sur mes réseaux sociaux, je partage mes recettes, mes découvertes et des moments de mon quotidien avec une communauté qui grandit chaque jour.</p><p><strong>La Boutique de Mme Fofana est le prolongement naturel de cet univers.</strong> J’ai voulu vous faire découvrir les objets que j’utilise chez moi, les ustensiles qui m’accompagnent en cuisine et les pièces artisanales que je prends plaisir à dénicher, en Côte d’Ivoire et ailleurs.</p><p>Cette sélection évoluera au fil de mes découvertes, avec de nouveaux produits, des nouveautés et des offres à retrouver régulièrement.</p>",
+        "book_title": "Envie de découvrir les prochaines nouveautés ?",
+        "book_text": "<p>Inscrivez-vous à la newsletter juste en dessous pour être informé(e) des nouveaux produits, des offres et des actualités de la boutique.</p>",
+        "button_label": "",
+        "button_link": "https://www.tiktok.com/@jujufofana",
+        "soft": false,
+        "full": false
+      }
+    }
+  },
+  "order": [
+    "about"
+  ]
+}

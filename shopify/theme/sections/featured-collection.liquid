@@ -1,0 +1,42 @@
+{%- liquid
+  assign col = section.settings.collection
+  if col == blank
+    assign col = collections.all
+  endif
+-%}
+<section class="sec">
+  <div class="w">
+    <div class="sech">
+      <div>
+        {%- if section.settings.label != blank %}<span class="lbl">{{ section.settings.label }}</span>{% endif %}
+        <h2>{{ section.settings.title }}</h2>
+      </div>
+      <a class="more" href="{{ col.url }}">Tout voir</a>
+    </div>
+    <div class="cgrid center">
+      {%- for product in col.products limit: section.settings.limit -%}
+        {%- if product.available or section.settings.show_sold_out -%}
+          {% render 'product-card', product: product %}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.button_label != blank -%}
+      <div class="btns" style="justify-content:center;margin-top:48px"><a class="btn xl" href="{{ col.url }}">{{ section.settings.button_label }} <span aria-hidden="true">→</span></a></div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sélection de produits",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Surtitre", "default": "Ma sélection" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Les Trésors de Chez Nous" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Vide = tous les produits." },
+    { "type": "range", "id": "limit", "label": "Nombre maximum de produits", "min": 2, "max": 24, "step": 1, "default": 8 },
+    { "type": "checkbox", "id": "show_sold_out", "label": "Afficher les produits en rupture", "default": true },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "Voir toute la boutique" }
+  ],
+  "presets": [{ "name": "Sélection de produits" }]
+}
+{% endschema %}

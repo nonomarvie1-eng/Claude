@@ -1,0 +1,152 @@
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign start = current.featured_media.id | default: product.featured_media.id
+  assign images = product.media | where: 'media_type', 'image'
+  assign tall = false
+  if product.featured_media.aspect_ratio < 0.9
+    assign tall = true
+  endif
+  assign spec = product.metafields.custom.caracteristiques.value
+-%}
+<div class="has-sbar" data-product id="pp-{{ section.id }}">
+  <div class="w" style="padding-top:26px">
+    <div class="crumb"><a href="{{ routes.all_products_collection_url }}">Boutique</a>{% if product.type != blank %} / {{ product.type }}{% endif %}</div>
+    <div class="det2">
+      <div class="gal">
+        <div class="im{% if tall %} tall{% endif %}" id="big">
+          {%- for m in images -%}
+            {%- liquid
+              assign cls = ''
+              if m.id == start
+                assign cls = 'on'
+              endif
+            -%}
+            {{ m | image_url: width: 1200 | image_tag: alt: product.title, class: cls, loading: 'eager', widths: '500, 800, 1000, 1200', sizes: '(min-width: 860px) 50vw, 100vw', data-mid: m.id }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag }}
+          {%- endfor -%}
+          {%- if images.size > 1 -%}
+            <button class="ga prev" data-gal="-1" type="button" aria-label="Photo précédente">{% render 'icon', name: 'prev' %}</button>
+            <button class="ga next" data-gal="1" type="button" aria-label="Photo suivante">{% render 'icon', name: 'next' %}</button>
+            <div class="dots" aria-hidden="true">{% for m in images %}<i{% if m.id == start %} class="on"{% endif %}></i>{% endfor %}</div>
+          {%- endif -%}
+        </div>
+        {%- if images.size > 1 -%}
+          <div class="th">
+            {%- for m in images -%}
+              <button type="button"{% if m.id == start %} class="on"{% endif %} data-thumb="{{ m.id }}" aria-label="Photo {{ forloop.index }}">{{ m | image_url: width: 160 | image_tag: alt: '', loading: 'lazy' }}</button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="info">
+        {%- if product.type != blank %}<span class="cat">{{ product.type }}</span>{% endif %}
+        <span class="stag st-in" data-soldtag{% if current.available %} hidden{% endif %}>Rupture de stock</span>
+        <h1>{{ product.title }}</h1>
+        <div class="pr3" data-price>{{ current.price | money }}</div>
+        <div class="lead2 rte">{{ product.description }}</div>
+
+        {%- unless product.has_only_default_variant -%}
+          <div class="szw">
+            {%- if product.options.size == 1 -%}
+              <div class="szl"><span>{{ product.options.first }}</span><b data-vlabel>{{ current.title }}</b></div>
+              <div class="szs" role="group" aria-label="{{ product.options.first | escape }}">
+                {%- for v in product.variants -%}
+                  <button type="button" class="sz{% if v.id == current.id %} on{% endif %}{% unless v.available %} off{% endunless %}" data-vid="{{ v.id }}" aria-pressed="{% if v.id == current.id %}true{% else %}false{% endif %}"{% unless v.available %} disabled title="Rupture de stock"{% endunless %}>{{ v.title }}</button>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              <select class="szsel" data-vselect aria-label="Choisir une option">
+                {%- for v in product.variants -%}
+                  <option value="{{ v.id }}"{% if v.id == current.id %} selected{% endif %}{% unless v.available %} disabled{% endunless %}>{{ v.title }}{% unless v.available %} (rupture){% endunless %}</option>
+                {%- endfor -%}
+              </select>
+            {%- endif -%}
+          </div>
+        {%- endunless -%}
+
+        <div data-buybox{% unless current.available %} hidden{% endunless %}>
+          {%- form 'product', product, id: 'pf', novalidate: 'novalidate' -%}
+            <input type="hidden" name="id" value="{{ current.id }}" data-vinput>
+            <div class="buy">
+              <div class="qty"><button type="button" data-pq="-1" aria-label="Moins">−</button><span data-qtyv>1</span><button type="button" data-pq="1" aria-label="Plus">+</button></div>
+              <button class="btn gold grow" type="submit" name="add">Ajouter au panier</button>
+            </div>
+          {%- endform -%}
+        </div>
+
+        <div class="nbox" id="notify" data-notifybox{% if current.available %} hidden{% endif %}>
+          <span class="nlb">Bientôt disponible</span>
+          <h3>Être prévenu(e) de sa disponibilité</h3>
+          {%- form 'contact', id: 'nt' -%}
+            {%- if form.posted_successfully? -%}
+              <p class="ntm" role="status">Merci ! Je vous préviens par e-mail dès que ce produit est disponible.</p>
+            {%- else -%}
+              <p>Renseignez votre adresse e-mail : vous recevrez un seul message, dès que ce produit sera disponible.</p>
+              <input type="hidden" name="contact[body]" value="Alerte disponibilité : {{ product.title | escape }} – {{ current.title | escape }}" data-nbody>
+              <div class="nbar">
+                <input type="email" name="contact[email]" required placeholder="Votre e-mail" aria-label="Votre adresse e-mail" autocomplete="email">
+                <button class="btn gold" type="submit">Me prévenir</button>
+              </div>
+              {%- if form.errors %}<p class="ntm" role="status">Cette adresse e-mail semble incorrecte.</p>{% endif -%}
+            {%- endif -%}
+            <small>Votre adresse est utilisée uniquement à cette fin. <a href="/pages/politique-de-confidentialite">Confidentialité</a></small>
+          {%- endform -%}
+        </div>
+
+        <ul class="trust">
+          <li>{% render 'icon', name: 'lock' %}<div><b>Paiement sécurisé</b><span>Règle par carte en toute confiance.</span></div></li>
+          <li>{% render 'icon', name: 'box' %}<div><b>Préparation soignée</b><span>Emballé avec attention avant l'envoi.</span></div></li>
+        </ul>
+        {%- if spec != blank -%}
+          {%- assign lines = spec | newline_to_br | strip_newlines | split: '<br />' -%}
+          <details open>
+            <summary>Caractéristiques</summary>
+            <ul class="spec">
+              {%- for l in lines -%}
+                {%- assign l = l | strip -%}
+                {%- if l == blank %}{% continue %}{% endif -%}
+                {%- if l contains ' : ' -%}
+                  {%- assign k = l | split: ' : ' | first -%}
+                  {%- assign val = l | remove_first: k | remove_first: ' : ' -%}
+                  <li><span>{{ k }}</span><b>{{ val }}</b></li>
+                {%- else -%}
+                  <li><b>{{ l }}</b></li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </details>
+        {%- endif -%}
+        <details>
+          <summary>Livraison et paiement</summary>
+          {{ section.settings.shipping_text }}
+        </details>
+      </div>
+    </div>
+  </div>
+  <div class="sbar">
+    <div><b>{{ product.title }}</b><span data-price>{{ current.price | money }}</span></div>
+    <button class="btn gold" type="submit" form="pf" data-sbuy{% unless current.available %} hidden{% endunless %}>Ajouter</button>
+    <button class="btn gold" type="button" data-notify{% if current.available %} hidden{% endif %}>Me prévenir</button>
+  </div>
+  <script type="application/json" data-product-json>
+    {
+      "start": {{ start | json }},
+      "variants": [
+        {%- for v in product.variants -%}
+          {"id": {{ v.id }}, "title": {{ v.title | json }}, "available": {{ v.available }}, "price": {{ v.price | money | json }}, "media": {{ v.featured_media.id | json }}, "max": {% if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' %}{{ v.inventory_quantity }}{% else %}99{% endif %}}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+</div>
+
+{% schema %}
+{
+  "name": "Fiche produit",
+  "settings": [
+    { "type": "richtext", "id": "shipping_text", "label": "Texte « Livraison et paiement »", "default": "<p>Le paiement se fait en ligne, par carte bancaire, sur la page de paiement sécurisée. Les frais de livraison sont affichés avant la validation de la commande. <a href=\"/pages/livraison-et-retours\">Livraison et retours</a></p>" }
+  ]
+}
+{% endschema %}

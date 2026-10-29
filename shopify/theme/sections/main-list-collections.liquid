@@ -1,0 +1,22 @@
+<div class="shophead"><div class="w"><div class="crumb"><a href="{{ routes.root_url }}">Accueil</a> / Catégories</div><h1>{{ section.settings.title }}</h1></div></div>
+<section class="sec">
+  <div class="ctiles">
+    {%- for c in collections -%}
+      {%- if c.handle == 'frontpage' or c.products_count == 0 %}{% continue %}{% endif -%}
+      {%- assign img = c.featured_image | default: c.products.first.featured_media.preview_image -%}
+      <a class="ctile" href="{{ c.url }}">
+        <span class="carch">{% if img %}{{ img | image_url: width: 700 | image_tag: alt: c.title, loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 760px) 330px, 50vw' }}{% endif %}</span>
+        <b>{{ c.title }}</b><i>{{ c.products_count }} produit{% if c.products_count > 1 %}s{% endif %}</i>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Catégories",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Nos catégories" }
+  ]
+}
+{% endschema %}

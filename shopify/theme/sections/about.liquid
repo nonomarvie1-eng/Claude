@@ -1,0 +1,52 @@
+{%- liquid
+  assign cls = 'page-ab'
+  if section.settings.full
+    assign cls = 'sec page-ab full'
+  endif
+  if section.settings.soft
+    assign cls = cls | append: ' soft'
+  endif
+-%}
+<section class="{{ cls }}">
+  <div class="w">
+    <div class="ab{% unless section.settings.full %} pad{% endunless %}">
+      <div class="ph">
+        {%- if section.settings.image -%}
+          {{ section.settings.image | image_url: width: 1200 | image_tag: alt: section.settings.image.alt, loading: 'lazy', widths: '450, 700, 900, 1200', sizes: '(min-width: 1000px) 50vw, 100vw' }}
+        {%- else -%}
+          <img src="{{ 'mme-fofana.jpg' | asset_url }}" alt="Mme Fofana" width="900" height="1169" loading="lazy">
+        {%- endif -%}
+      </div>
+      <div>
+        {%- if section.settings.label != blank %}<span class="lbl">{{ section.settings.label }}</span>{% endif %}
+        <h2>{{ section.settings.title }}</h2>
+        {{ section.settings.text }}
+        {%- if section.settings.book_title != blank -%}
+          <div class="book"><h3>{{ section.settings.book_title }}</h3>{{ section.settings.book_text }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          <a class="btn o" href="{{ section.settings.button_link }}" target="_blank" rel="noopener">{{ section.settings.button_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "À propos",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Photo", "info": "Sans photo, le portrait du site est utilisé." },
+    { "type": "text", "id": "label", "label": "Surtitre", "default": "À propos" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Française et ivoirienne de cœur" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Je m’appelle Justine Fofana, connue sous le nom de Mme Fofana.</p>" },
+    { "type": "text", "id": "book_title", "label": "Encadré : titre", "default": "Envie de découvrir les prochaines nouveautés ?" },
+    { "type": "richtext", "id": "book_text", "label": "Encadré : texte", "default": "<p>Inscrivez-vous à la newsletter juste en dessous pour être informé(e) des nouveaux produits, des offres et des actualités de la boutique.</p>" },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "Me suivre sur TikTok" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+    { "type": "checkbox", "id": "soft", "label": "Fond doux", "default": true },
+    { "type": "checkbox", "id": "full", "label": "Photo pleine hauteur sur ordinateur", "default": true }
+  ],
+  "presets": [{ "name": "À propos" }]
+}
+{% endschema %}

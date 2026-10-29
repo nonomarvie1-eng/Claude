@@ -1,0 +1,36 @@
+<div class="w cartp">
+  <h1>Ton panier</h1>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" id="cartform">
+      {%- for item in cart.items -%}
+        <div class="li">
+          <div class="t">{% if item.image %}{{ item.image | image_url: width: 160 | image_tag: alt: '' }}{% endif %}</div>
+          <div class="n"><a href="{{ item.url }}">{{ item.product.title }}</a>{% unless item.product.has_only_default_variant %}<small>{{ item.variant.title }}</small>{% endunless %}<small>{{ item.final_price | money }}</small></div>
+          <div>
+            <div class="tt">{{ item.final_line_price | money }}</div>
+            <div class="q">
+              <label class="sr-only" for="q-{{ forloop.index }}">Quantité</label>
+              <input id="q-{{ forloop.index }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0" style="width:64px;padding:6px;border:1.5px solid var(--line);border-radius:3px">
+              <a href="{{ item.url_to_remove }}" aria-label="Retirer {{ item.product.title | escape }}">×</a>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+      <div class="sum">
+        <div class="sub"><span>Sous-total</span><span>{{ cart.total_price | money }}</span></div>
+        <p class="cart-note">Frais de livraison calculés à l'étape suivante, selon le poids de la commande.</p>
+        <div class="btns">
+          <button class="btn o" type="submit" name="update">Mettre à jour</button>
+          <button class="btn gold grow" type="submit" name="checkout">Passer au paiement</button>
+        </div>
+      </div>
+    </form>
+  {%- else -%}
+    <p class="empty">Ton panier est vide. Choisis un produit dans la boutique.</p>
+    <a class="btn" href="{{ routes.all_products_collection_url }}">Voir la boutique</a>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Panier", "settings": [] }
+{% endschema %}

@@ -1,0 +1,73 @@
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+  assign legal = linklists[section.settings.legal_menu]
+-%}
+<footer class="ft">
+  <span class="ftc" aria-hidden="true"></span>
+  <div class="w">
+    <div class="fg">
+      <div class="fl">
+        <span class="sc">{{ section.settings.logo_top }}</span><b>{{ section.settings.logo_main }}</b><i>{{ section.settings.logo_tagline }}</i>
+        {% render 'france-afrique' %}
+      </div>
+      <div class="fln">
+        <h4>Liens utiles</h4>
+        {%- if menu.links.size > 0 -%}
+          {%- for l in menu.links -%}<a href="{{ l.url }}">{{ l.title }}</a>{%- endfor -%}
+        {%- else -%}
+          <a href="{{ routes.root_url }}">Accueil</a><a href="{{ routes.all_products_collection_url }}">Boutique</a><a href="/pages/a-propos">À propos</a>{% if section.settings.contact_url != blank %}<a href="{{ section.settings.contact_url }}" target="_blank" rel="noopener">Contact</a>{% endif %}
+        {%- endif -%}
+      </div>
+      <div>
+        <h4>Suivez-moi</h4>
+        <div class="soc">
+          {%- if settings.social_instagram != blank %}<a href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>{% endif -%}
+          {%- if settings.social_tiktok != blank %}<a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>{% endif -%}
+          {%- if settings.social_snapchat != blank %}<a href="{{ settings.social_snapchat }}" target="_blank" rel="noopener" aria-label="Snapchat">{% render 'icon', name: 'snapchat' %}</a>{% endif -%}
+          {%- if settings.social_facebook != blank %}<a href="{{ settings.social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook">{% render 'icon', name: 'facebook' %}</a>{% endif -%}
+        </div>
+      </div>
+      <div class="nlc">
+        <h4>{{ section.settings.nl_title }}</h4>
+        <p>{{ section.settings.nl_text }}</p>
+        {%- form 'customer', id: 'nl' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="nl">
+            <input type="email" name="contact[email]" required maxlength="120" autocomplete="email" placeholder="Votre adresse e-mail" aria-label="Adresse e-mail">
+            <button type="submit">S'inscrire</button>
+          </div>
+          {%- if form.posted_successfully? -%}<p role="status" style="margin-top:10px">Merci, c'est noté !</p>{%- endif -%}
+          {%- if form.errors -%}<p role="status" style="margin-top:10px">L'inscription n'a pas fonctionné. Vérifiez votre adresse e-mail.</p>{%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+    <div class="fb">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. Tous droits réservés.</span>
+      <span class="fbl">
+        {%- if legal.links.size > 0 -%}
+          {%- for l in legal.links -%}<a href="{{ l.url }}">{{ l.title }}</a>{%- endfor -%}
+        {%- else -%}
+          <a href="/pages/mentions-legales">Mentions légales</a><a href="/pages/conditions-generales-de-vente">CGV</a><a href="/pages/livraison-et-retours">Livraison et retours</a><a href="/pages/politique-de-confidentialite">Politique de confidentialité</a>
+        {%- endif -%}
+      </span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "class": "section-footer",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "text", "id": "logo_top", "label": "Logo : ligne manuscrite", "default": "La Boutique de" },
+    { "type": "text", "id": "logo_main", "label": "Logo : nom", "default": "Mme Fofana" },
+    { "type": "text", "id": "logo_tagline", "label": "Logo : slogan", "default": "Ustensiles & art de vivre africains" },
+    { "type": "link_list", "id": "menu", "label": "Menu « Liens utiles »", "info": "Sans menu : Accueil, Boutique, À propos, Contact." },
+    { "type": "url", "id": "contact_url", "label": "Lien Contact (si pas de menu)", "default": "https://linktr.ee/marviejustine121" },
+    { "type": "link_list", "id": "legal_menu", "label": "Menu des pages légales", "info": "Sans menu : mentions légales, CGV, livraison et retours, confidentialité." },
+    { "type": "text", "id": "nl_title", "label": "Newsletter : titre", "default": "Newsletter" },
+    { "type": "text", "id": "nl_text", "label": "Newsletter : texte", "default": "Recevez mes nouveautés et offres exclusives." }
+  ]
+}
+{% endschema %}

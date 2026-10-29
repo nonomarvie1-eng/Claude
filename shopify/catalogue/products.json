@@ -1,0 +1,302 @@
+[
+  {
+    "handle": "plateau-afrique",
+    "title": "Plateau décoratif artisanal en bois – Forme Afrique",
+    "status": "ACTIVE",
+    "product_type": "Service de table",
+    "collection": "Service de table",
+    "vendor": "La Boutique de Mme Fofana",
+    "description_html": "<p>Un plateau artisanal en bois sculpté en forme d'Afrique, pour servir vos apéritifs, fruits ou petites bouchées. Existe avec 1 ou 2 compartiments.</p>",
+    "option_name": "Compartiments",
+    "caracteristiques": [
+      "Bois sculpté, pièce artisanale",
+      "Forme d'Afrique",
+      "Compartiments : 1 ou 2"
+    ],
+    "variants": [
+      {
+        "sku": "plateau-afrique",
+        "option": "1 compartiment",
+        "price": "32.90",
+        "weight_g": 470,
+        "stock": 3,
+        "images": [
+          {
+            "file": "plateau-afrique-1-compartiment.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-afrique-1-compartiment.jpg"
+          },
+          {
+            "file": "plateau-afrique-dessus.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-afrique-dessus.jpg"
+          }
+        ]
+      },
+      {
+        "sku": "plateau-afrique-2",
+        "option": "2 compartiments",
+        "price": "32.90",
+        "weight_g": 470,
+        "stock": 1,
+        "images": [
+          {
+            "file": "plateau-afrique-2-compartiments.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-afrique-2-compartiments.jpg"
+          },
+          {
+            "file": "plateau-afrique-dessus.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-afrique-dessus.jpg"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "handle": "assiette-cote-divoire",
+    "title": "Plateau décoratif artisanal en bois – Forme Côte d’Ivoire",
+    "status": "ACTIVE",
+    "product_type": "Service de table",
+    "collection": "Service de table",
+    "vendor": "La Boutique de Mme Fofana",
+    "description_html": "<p>Un plateau artisanal en bois aux compartiments sculptés, pour servir et présenter vos plats avec un clin d'œil à la Côte d'Ivoire. Existe en deux tailles : moyenne et grande.</p>",
+    "option_name": "Taille",
+    "caracteristiques": [
+      "Bois sculpté, pièce artisanale",
+      "Compartiments sculptés",
+      "Inspirée de la Côte d'Ivoire",
+      "Tailles : moyenne et grande",
+      "Dimensions (moyenne) : 26 × 24 cm"
+    ],
+    "variants": [
+      {
+        "sku": "assiette-cote-divoire",
+        "option": "Moyenne",
+        "price": "29.90",
+        "weight_g": 430,
+        "stock": 2,
+        "images": [
+          {
+            "file": "plateau-cote-divoire-moyen-1.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-cote-divoire-moyen-1.jpg"
+          },
+          {
+            "file": "plateau-cote-divoire-moyen-2.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-cote-divoire-moyen-2.jpg"
+          }
+        ]
+      },
+      {
+        "sku": "assiette-cote-divoire-grande",
+        "option": "Grande",
+        "price": "29.90",
+        "weight_g": 0,
+        "stock": 0,
+        "images": [
+          {
+            "file": "plateau-cote-divoire-grand-1.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-cote-divoire-grand-1.jpg"
+          },
+          {
+            "file": "plateau-cote-divoire-grand-2.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/plateau-cote-divoire-grand-2.jpg"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "handle": "talier-pilon",
+    "title": "Talier en aluminium avec pilon",
+    "status": "ACTIVE",
+    "product_type": "Cuisine",
+    "collection": "Cuisine",
+    "vendor": "La Boutique de Mme Fofana",
+    "description_html": "<p>Retrouvez les saveurs authentiques de la cuisine ivoirienne avec ce talier traditionnel accompagné de son pilon en bois. Idéal pour écraser les condiments, les piments, l'ail, les tomates et les aubergines cuites, il vous accompagne dans la préparation de délicieuses sauces maison.</p>",
+    "option_name": null,
+    "caracteristiques": [
+      "Origine : Côte d'Ivoire",
+      "Matière du talier : Aluminium",
+      "Matière du pilon : Bois",
+      "Largeur du talier avec poignées : 26 cm",
+      "Hauteur du talier : 9 cm",
+      "Hauteur du pilon : 11 cm",
+      "Largeur du pilon : 5 cm"
+    ],
+    "variants": [
+      {
+        "sku": "talier-pilon",
+        "option": null,
+        "price": "24.90",
+        "weight_g": 940,
+        "stock": 5,
+        "images": [
+          {
+            "file": "talier-pilon-1.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/talier-pilon-1.jpg"
+          },
+          {
+            "file": "talier-pilon-2.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/talier-pilon-2.jpg"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "handle": "mortier-bois",
+    "title": "Mortier artisanal en bois avec pilon",
+    "status": "ACTIVE",
+    "product_type": "Cuisine",
+    "collection": "Cuisine",
+    "vendor": "La Boutique de Mme Fofana",
+    "description_html": "<p>Retrouvez les saveurs authentiques de la cuisine ivoirienne avec ce mortier traditionnel en bois accompagné de son pilon. Idéal pour piler le foutou, il permet également d'écraser et de travailler différents aliments pour vos préparations maison. Pratique et authentique, il vous accompagne dans la réalisation de vos recettes traditionnelles et vous permet de retrouver le plaisir des gestes culinaires d'autrefois.</p>",
+    "option_name": null,
+    "caracteristiques": [
+      "Origine : Côte d'Ivoire",
+      "Matière : Bois",
+      "Diamètre du mortier : 26 cm",
+      "Hauteur du pilon : 22 cm",
+      "Largeur du pilon : 6 cm",
+      "Contenu : Mortier avec son pilon"
+    ],
+    "variants": [
+      {
+        "sku": "mortier-bois",
+        "option": null,
+        "price": "34.90",
+        "weight_g": 1200,
+        "stock": 6,
+        "images": [
+          {
+            "file": "mortier-bois-1.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/mortier-bois-1.jpg"
+          },
+          {
+            "file": "mortier-bois-2.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/mortier-bois-2.jpg"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "handle": "mortier-bois-rouge",
+    "title": "Mortier traditionnel sculpté avec pilon",
+    "status": "ACTIVE",
+    "product_type": "Cuisine",
+    "collection": "Cuisine",
+    "vendor": "La Boutique de Mme Fofana",
+    "description_html": "<p>Découvrez ce magnifique mortier et pilon traditionnel, fabriqué artisanalement en Côte d'Ivoire, symbole du savoir-faire africain. Robuste et authentique, cet ensemble est idéal pour piler, écraser et broyer vos ingrédients afin de préparer vos recettes traditionnelles : épices, condiments et bien plus encore. Sa fabrication artisanale lui confère un charme unique, avec des finitions qui témoignent d'un véritable travail à la main. Un indispensable de la cuisine africaine, qui allie authenticité, tradition et savoir-faire ivoirien. Chaque pièce étant faite à la main, la taille varie légèrement d'un mortier à l'autre : certains sont un peu plus petits, d'autres un peu plus grands.</p>",
+    "option_name": null,
+    "caracteristiques": [
+      "Origine : Côte d'Ivoire",
+      "Fabrication : artisanale",
+      "Composition : 1 mortier + 1 pilon",
+      "Utilisation : piler, écraser et broyer les ingrédients",
+      "Style : traditionnel africain",
+      "Matière : Bois",
+      "Dimensions du mortier : environ 33 × 33 × 13 cm",
+      "Dimensions du pilon : environ 55 × 8 × 7 cm",
+      "Poids du mortier : environ 1 à 1,5 kg",
+      "Poids du pilon : environ 1,1 kg",
+      "Taille variable : pièce faite à la main, la taille réelle peut différer légèrement de celle indiquée"
+    ],
+    "variants": [
+      {
+        "sku": "mortier-bois-rouge",
+        "option": null,
+        "price": "44.90",
+        "weight_g": 2600,
+        "stock": 5,
+        "images": [
+          {
+            "file": "mortier-sculpte-1.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/mortier-sculpte-1.jpg"
+          },
+          {
+            "file": "mortier-sculpte-2.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/mortier-sculpte-2.jpg"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "handle": "grand-mortier",
+    "title": "Grand mortier traditionnel en bois avec pilon – Côte d’Ivoire",
+    "status": "DRAFT",
+    "product_type": "Cuisine",
+    "collection": "Cuisine",
+    "vendor": "La Boutique de Mme Fofana",
+    "description_html": "<p>Retrouvez toute l’authenticité de la cuisine ivoirienne avec ce grand mortier traditionnel en bois, accompagné de son long pilon. Idéal pour piler le foutou, notamment à base de banane plantain ou de manioc, il permet de travailler les aliments pour obtenir une texture homogène et savoureuse. Massif, robuste et stable grâce à sa base épaisse, ce mortier est parfaitement adapté aux préparations généreuses. Un véritable incontournable pour retrouver les gestes et les saveurs de la cuisine traditionnelle ivoirienne.</p>",
+    "option_name": null,
+    "caracteristiques": [
+      "Origine : Côte d'Ivoire",
+      "Matière : Bois",
+      "Contenu : Mortier avec son long pilon"
+    ],
+    "variants": [
+      {
+        "sku": "grand-mortier",
+        "option": null,
+        "price": "54.90",
+        "weight_g": 5000,
+        "stock": 2,
+        "images": [
+          {
+            "file": "grand-mortier-1.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/grand-mortier-1.jpg"
+          },
+          {
+            "file": "grand-mortier-2.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/grand-mortier-2.jpg"
+          },
+          {
+            "file": "grand-mortier-3.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/grand-mortier-3.jpg"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "handle": "mortier-massif",
+    "title": "Imposant mortier traditionnel de Côte d'Ivoire – Bois massif",
+    "status": "DRAFT",
+    "product_type": "Cuisine",
+    "collection": "Cuisine",
+    "vendor": "La Boutique de Mme Fofana",
+    "description_html": "<p>Magnifique et énorme mortier traditionnel originaire de Côte d'Ivoire, entièrement sculpté dans un bois massif, épais et particulièrement lourd. Cette pièce artisanale se distingue par ses dimensions imposantes, sa forme généreuse et arrondie, ainsi que ses belles teintes brun-rouge chaleureuses. Son pourtour est orné de fines rainures sculptées qui lui apportent du caractère et témoignent du savoir-faire artisanal africain. Très lourd et extrêmement robuste, ce mortier est une pièce authentique au charme rustique, présentant une belle patine et quelques traces d'usage qui renforcent son caractère. Idéal comme objet de collection, élément de décoration ethnique ou pièce maîtresse dans un intérieur. Une pièce spectaculaire, massive et pleine de caractère, qui ne passe pas inaperçue !</p>",
+    "option_name": null,
+    "caracteristiques": [
+      "Origine : Côte d'Ivoire",
+      "Matière : bois massif, épais et très lourd",
+      "Fabrication : artisanale, entièrement sculptée",
+      "Teinte : brun-rouge, avec patine et traces d'usage",
+      "Détail : fines rainures sculptées sur le pourtour",
+      "Idéal : collection, décoration ethnique ou pièce maîtresse"
+    ],
+    "variants": [
+      {
+        "sku": "mortier-massif",
+        "option": null,
+        "price": "64.90",
+        "weight_g": 10000,
+        "stock": 1,
+        "images": [
+          {
+            "file": "mortier-massif-1.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/mortier-massif-1.jpg"
+          },
+          {
+            "file": "mortier-massif-2.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/mortier-massif-2.jpg"
+          },
+          {
+            "file": "mortier-massif-3.jpg",
+            "url": "https://raw.githubusercontent.com/nonomarvie1-eng/Claude/claude/shopify-fofana/shopify/images/mortier-massif-3.jpg"
+          }
+        ]
+      }
+    ]
+  }
+]

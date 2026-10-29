@@ -1,0 +1,31 @@
+<div class="strip">
+  <div class="w">
+    {%- for block in section.blocks -%}
+      <div {{ block.shopify_attributes }}>{% render 'icon', name: block.settings.icon %}<span>{{ block.settings.text }}</span></div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bande de confiance",
+  "max_blocks": 3,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Argument",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icône", "default": "lock", "options": [
+          { "value": "lock", "label": "Cadenas" }, { "value": "box", "label": "Colis" }, { "value": "chat", "label": "Bulle" }, { "value": "truck", "label": "Camion" }, { "value": "heart", "label": "Cœur" }
+        ] },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Paiement sécurisé" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Bande de confiance", "blocks": [
+    { "type": "item", "settings": { "icon": "lock", "text": "Paiement sécurisé" } },
+    { "type": "item", "settings": { "icon": "box", "text": "Pièces sélectionnées avec soin" } },
+    { "type": "item", "settings": { "icon": "chat", "text": "Une question ? Écris-moi" } }
+  ] }]
+}
+{% endschema %}

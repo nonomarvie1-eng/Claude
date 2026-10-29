@@ -1,0 +1,26 @@
+{
+  "profil": "Général",
+  "zone": { "nom": "France", "pays": ["FR"] },
+  "note": "Tranches sur le poids des produits (sans emballage) : chaque borne du site est diminuée des 300 g d'emballage. Ne pas ajouter de poids d'emballage dans Shopify en plus, sinon il serait compté deux fois.",
+  "tarifs": [
+    { "nom": "Mondial Relay – Point Relais", "tranches_kg": [
+      { "min": 0,     "max": 0.2,  "prix": 4.15 },
+      { "min": 0.201, "max": 0.7,  "prix": 4.55 },
+      { "min": 0.701, "max": 1.7,  "prix": 6.35 },
+      { "min": 1.701, "max": 2.7,  "prix": 6.75 },
+      { "min": 2.701, "max": 4.7,  "prix": 13.40 },
+      { "min": 4.701, "max": 9.7,  "prix": 13.40 },
+      { "min": 9.701, "max": 14.7, "prix": 21.00 }
+    ] },
+    { "nom": "Mondial Relay – Domicile", "tranches_kg": [
+      { "min": 0,     "max": 0.2,  "prix": 7.50 },
+      { "min": 0.201, "max": 0.7,  "prix": 9.50 },
+      { "min": 0.701, "max": 1.7,  "prix": 11.00 },
+      { "min": 1.701, "max": 2.7,  "prix": 16.35 },
+      { "min": 2.701, "max": 4.7,  "prix": 16.35 },
+      { "min": 4.701, "max": 9.7,  "prix": 25.00 },
+      { "min": 9.701, "max": 14.7, "prix": 31.50 }
+    ] }
+  ],
+  "livraison_offerte": { "type": "remise automatique « livraison gratuite »", "pays": ["FR"], "minimum_commande_eur": 110, "a_confirmer": true }
+}

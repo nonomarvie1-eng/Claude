@@ -1,0 +1,25 @@
+<div class="shophead"><div class="w"><div class="crumb"><a href="{{ routes.root_url }}">Accueil</a> / Recherche</div><h1>Recherche</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="fs" style="max-width:480px;margin:14px 0 0">
+    <input type="hidden" name="type" value="product">
+    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Rechercher un produit" aria-label="Rechercher un produit">
+  </form>
+</div></div>
+<div class="w" style="padding:30px 22px 80px">
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      <p class="count">{{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %} pour « {{ search.terms | escape }} »</p>
+      <div class="cgrid" style="margin-top:22px">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}{% render 'product-card', product: item %}{%- endif -%}
+        {%- else -%}
+          <div class="none"><p>Aucun produit ne correspond à ta recherche.</p><a class="btn o sm" href="{{ routes.all_products_collection_url }}">Voir toute la boutique</a></div>
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}<div class="pag">{{ paginate | default_pagination }}</div>{%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Recherche", "settings": [] }
+{% endschema %}

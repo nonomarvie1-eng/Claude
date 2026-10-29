@@ -1,0 +1,11 @@
+<div class="w ctr">
+  <div class="big404" aria-hidden="true">404</div>
+  <span class="lbl">Page introuvable</span>
+  <h1>Cette page n'existe pas</h1>
+  <p>Le lien est peut-être incorrect, ou la page a été déplacée. Retournez à l'accueil ou découvrez les produits de la boutique.</p>
+  <div class="btns" style="justify-content:center"><a class="btn" href="{{ routes.root_url }}">Retour à l'accueil</a><a class="btn o" href="{{ routes.all_products_collection_url }}">Voir la boutique</a></div>
+</div>
+
+{% schema %}
+{ "name": "Page introuvable", "settings": [] }
+{% endschema %}

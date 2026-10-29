@@ -1,0 +1,34 @@
+{%- comment -%} Carte produit (grille boutique et accueil). Paramètre : product. {%- endcomment -%}
+{%- liquid
+  assign first = product.featured_media
+  assign second = product.media[1]
+  assign pos = ''
+  if first.aspect_ratio < 0.9
+    assign pos = 'object-position:50% 90%'
+  endif
+-%}
+<article class="pcard">
+  <div class="pshape">
+    <a class="pimg" href="{{ product.url }}" aria-label="Voir {{ product.title | escape }}" tabindex="-1">
+      {%- if first -%}
+        {{ first | image_url: width: 900 | image_tag: class: 'a', alt: product.title, loading: 'lazy', widths: '360, 540, 720, 900', sizes: '(min-width: 900px) 25vw, 50vw', style: pos }}
+      {%- endif -%}
+      {%- if second -%}
+        {{ second | image_url: width: 900 | image_tag: class: 'b', alt: '', loading: 'lazy', widths: '360, 540, 720, 900', sizes: '(min-width: 900px) 25vw, 50vw', style: pos }}
+      {%- endif -%}
+    </a>
+    {%- unless product.available %}<span class="stag">Rupture de stock</span>{% endunless -%}
+  </div>
+  <div class="pbody">
+    {%- if product.type != blank %}<span class="pcat">{{ product.type }}</span>{% endif %}
+    <h3 class="pname"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+    <div class="pprice">{% if product.price_varies %}Dès {% endif %}{{ product.price_min | money }}</div>
+    {%- if product.available == false -%}
+      <a class="btn gold sm full" href="{{ product.url }}">Rupture de stock</a>
+    {%- elsif product.has_only_default_variant == false -%}
+      <a class="btn gold sm full" href="{{ product.url }}">Choisir</a>
+    {%- else -%}
+      <button class="btn gold sm full" type="button" data-add="{{ product.selected_or_first_available_variant.id }}">Ajouter au panier</button>
+    {%- endif -%}
+  </div>
+</article>

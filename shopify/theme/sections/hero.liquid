@@ -1,0 +1,31 @@
+<section class="hero">
+  {%- if section.settings.image -%}
+    {{ section.settings.image | image_url: width: 1600 | image_tag: class: 'hbg', alt: section.settings.image.alt, loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200, 1600', sizes: '(min-width: 900px) 63vw, 100vw' }}
+  {%- else -%}
+    <img class="hbg" src="{{ 'hero-panier.jpg' | asset_url }}" alt="Panier tressé garni de produits africains : mortier en bois, épices, tissu wax et huile" width="1200" height="1336" fetchpriority="high">
+  {%- endif -%}
+  <div class="w hin">
+    {%- if section.settings.eyebrow != blank %}<p class="eyebrow">{{ section.settings.eyebrow | newline_to_br }}</p>{% endif %}
+    <span class="gl"></span>
+    <h1>{{ section.settings.title }}</h1>
+    {%- if section.settings.text != blank %}<div class="hs">{{ section.settings.text }}</div>{% endif %}
+    {%- if section.settings.button_label != blank -%}
+      <a class="btn gold" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }} <span aria-hidden="true">→</span></a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Grande photo d'accueil",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Photo", "info": "Sans photo, celle du panier tressé du site est utilisée." },
+    { "type": "textarea", "id": "eyebrow", "label": "Surtitre", "default": "Mon univers,\ndans votre cuisine" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "La Boutique de Mme Fofana" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Une sélection de mes indispensables et de mes découvertes, pour retrouver chez vous les saveurs que j'aime partager.</p>" },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "Découvrir la boutique" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" }
+  ],
+  "presets": [{ "name": "Grande photo d'accueil" }]
+}
+{% endschema %}

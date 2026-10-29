@@ -1,0 +1,31 @@
+{%- liquid
+  assign col = section.settings.collection
+  if col == blank
+    assign col = collections.all
+  endif
+  assign shown = 0
+-%}
+<div class="w">
+  <div class="rel">
+    <h2>{{ section.settings.title }}</h2>
+    <div class="cgrid center">
+      {%- for p in col.products -%}
+        {%- if p.id == product.id %}{% continue %}{% endif -%}
+        {%- if shown >= section.settings.limit %}{% break %}{% endif -%}
+        {% render 'product-card', product: p %}
+        {%- assign shown = shown | plus: 1 -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tu aimeras aussi",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Tu aimeras aussi" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Vide = tous les produits." },
+    { "type": "range", "id": "limit", "label": "Nombre de produits", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

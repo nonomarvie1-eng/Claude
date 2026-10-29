@@ -1,0 +1,11 @@
+{%- comment -%} Tiroir panier, rempli par assets/theme.js. {%- endcomment -%}
+<div class="ov" id="ov"></div>
+<aside class="dr" id="dr" aria-label="Panier" aria-hidden="true">
+  <div class="dh"><h2>Ton panier</h2><button class="x" type="button" id="cx" aria-label="Fermer">×</button></div>
+  <div class="lines" id="lines"></div>
+  <div class="sub"><span>Sous-total</span><span id="st">{{ cart.total_price | money }}</span></div>
+  <div id="fship"></div>
+  <p class="cart-note">Paiement sécurisé. Frais de livraison calculés à l'étape suivante, selon le poids de la commande.</p>
+  <a class="btn gold full" id="pay" href="/checkout">Passer au paiement</a>
+  <p class="cmsg" id="cmsg" role="status"></p>
+</aside>

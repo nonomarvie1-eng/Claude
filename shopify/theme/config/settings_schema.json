@@ -1,0 +1,47 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Mme Fofana",
+    "theme_version": "1.0.0",
+    "theme_author": "La Boutique de Mme Fofana",
+    "theme_documentation_url": "https://github.com/nonomarvie1-eng/Claude",
+    "theme_support_url": "https://github.com/nonomarvie1-eng/Claude"
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      { "type": "color", "id": "color_bg", "label": "Fond", "default": "#F6F1E6" },
+      { "type": "color", "id": "color_soft", "label": "Fond doux (sections)", "default": "#EEE6D4" },
+      { "type": "color", "id": "color_card", "label": "Fond des cartes", "default": "#FFFCF5" },
+      { "type": "color", "id": "color_ink", "label": "Texte", "default": "#1D1D1A" },
+      { "type": "color", "id": "color_mut", "label": "Texte secondaire", "default": "#5E6158" },
+      { "type": "color", "id": "color_line", "label": "Traits", "default": "#E1D7C2" },
+      { "type": "color", "id": "color_green", "label": "Vert", "default": "#17301F" },
+      { "type": "color", "id": "color_green2", "label": "Vert foncé", "default": "#10201A" },
+      { "type": "color", "id": "color_gold", "label": "Or", "default": "#C9A15A" },
+      { "type": "color", "id": "color_goldt", "label": "Or (texte)", "default": "#9B6F2B" }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      { "type": "checkbox", "id": "free_shipping_on", "label": "Afficher la jauge « livraison offerte »", "default": true },
+      { "type": "number", "id": "free_shipping_threshold", "label": "Livraison offerte à partir de (€)", "default": 110, "info": "Doit correspondre à la remise « livraison offerte » créée dans Shopify." }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "url", "id": "social_snapchat", "label": "Snapchat" },
+      { "type": "url", "id": "social_facebook", "label": "Facebook" }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Image (32 × 32 px)", "info": "Sans image, un « F » doré sur fond vert est utilisé." }
+    ]
+  }
+]

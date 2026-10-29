@@ -1,0 +1,11 @@
+<article class="w pg">
+  <p class="crumb"><a href="{{ blog.url }}">{{ blog.title }}</a></p>
+  <h1>{{ article.title }}</h1>
+  <p class="count">{{ article.published_at | date: '%d/%m/%Y' }}</p>
+  {%- if article.image -%}<div style="margin:24px 0">{{ article.image | image_url: width: 1200 | image_tag: alt: article.title, widths: '600, 900, 1200', sizes: '(min-width: 780px) 780px, 100vw' }}</div>{%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+</article>
+
+{% schema %}
+{ "name": "Article", "settings": [] }
+{% endschema %}

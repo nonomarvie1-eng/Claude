@@ -1,0 +1,133 @@
+{%- liquid
+  assign is_all = false
+  if collection.handle == 'all' or collection.handle == blank
+    assign is_all = true
+  endif
+  assign active_count = 0
+  for f in collection.filters
+    assign active_count = active_count | plus: f.active_values.size
+    if f.type == 'price_range'
+      if f.min_value.value != blank or f.max_value.value != blank
+        assign active_count = active_count | plus: 1
+      endif
+    endif
+  endfor
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+-%}
+<div class="shophead">
+  <div class="w">
+    <div class="crumb"><a href="{{ routes.root_url }}">Accueil</a> / {% if is_all %}Boutique{% else %}<a href="{{ routes.all_products_collection_url }}">Boutique</a> / {{ collection.title }}{% endif %}</div>
+    <h1>{% if is_all %}{{ section.settings.all_title }}{% else %}{{ collection.title }}{% endif %}</h1>
+    <div class="rte">{% if is_all or collection.description == blank %}<p>{{ section.settings.all_text }}</p>{% else %}{{ collection.description }}{% endif %}</div>
+  </div>
+</div>
+<div class="w">
+  {%- paginate collection.products by section.settings.per_page -%}
+  <div class="shop">
+    <aside class="fpanel" id="fpanel" aria-label="Filtres">
+      <div class="fs">
+        <h4>Recherche</h4>
+        <form action="{{ routes.search_url }}" method="get" role="search">
+          <input type="hidden" name="type" value="product">
+          <input type="search" name="q" placeholder="Rechercher un produit" aria-label="Rechercher un produit">
+        </form>
+      </div>
+      <div class="fs">
+        <h4>Catégories</h4>
+        <a class="ck{% if is_all %} on{% endif %}" href="{{ routes.all_products_collection_url }}"><i class="dot"></i><span>Tous les produits</span><small>{{ collections.all.products_count }}</small></a>
+        {%- liquid
+          assign cats = section.settings.categories
+          if cats == blank
+            assign cats = collections
+          endif
+        -%}
+        {%- for c in cats -%}
+          {%- if c.handle == 'all' or c.handle == 'frontpage' or c.products_count == 0 %}{% continue %}{% endif -%}
+          <a class="ck{% if c.handle == collection.handle %} on{% endif %}" href="{{ c.url }}"><i class="dot"></i><span>{{ c.title }}</span><small>{{ c.products_count }}</small></a>
+        {%- endfor -%}
+      </div>
+      {%- if collection.filters.size > 0 -%}
+        <form id="ff" action="{{ collection.url }}" method="get">
+          <input type="hidden" name="sort_by" value="{{ sort_by }}">
+          {%- for f in collection.filters -%}
+            <div class="fs">
+              <h4>{{ f.label }}</h4>
+              {%- case f.type -%}
+                {%- when 'price_range' -%}
+                  <div class="prr">
+                    <input type="number" name="{{ f.min_value.param_name }}" value="{{ f.min_value.value | money_without_currency | replace: ',', '.' }}" placeholder="0" min="0" step="1" aria-label="Prix minimum">
+                    <span>à</span>
+                    <input type="number" name="{{ f.max_value.param_name }}" value="{{ f.max_value.value | money_without_currency | replace: ',', '.' }}" placeholder="{{ f.range_max | money_without_currency | replace: ',', '.' }}" min="0" step="1" aria-label="Prix maximum">
+                  </div>
+                {%- else -%}
+                  {%- for v in f.values -%}
+                    <label class="ck"><input type="checkbox" name="{{ v.param_name }}" value="{{ v.value }}"{% if v.active %} checked{% endif %}{% if v.count == 0 and v.active == false %} disabled{% endif %}><span>{{ v.label }}</span><small>{{ v.count }}</small></label>
+                  {%- endfor -%}
+              {%- endcase -%}
+            </div>
+          {%- endfor -%}
+          <noscript><button class="btn o sm full" type="submit">Filtrer</button></noscript>
+        </form>
+      {%- endif -%}
+      <a class="btn o sm full" href="{{ collection.url }}">Réinitialiser</a>
+    </aside>
+    <div class="smain">
+      <div class="stool">
+        <button class="fbtn" type="button" data-ftoggle aria-controls="fpanel">{% render 'icon', name: 'filter' %}Filtrer{% if active_count > 0 %} <b>{{ active_count }}</b>{% endif %}</button>
+        <span class="count">{{ collection.products_count }} produit{% if collection.products_count > 1 %}s{% endif %}</span>
+        <label class="sortl">Trier
+          <select data-sort>
+            {%- for o in collection.sort_options -%}
+              <option value="{{ o.value }}"{% if o.value == sort_by %} selected{% endif %}>{{ o.name }}</option>
+            {%- endfor -%}
+          </select>
+        </label>
+      </div>
+      {%- if active_count > 0 -%}
+        <div class="achips">
+          {%- for f in collection.filters -%}
+            {%- for v in f.active_values -%}<a class="ac" href="{{ v.url_to_remove }}">{{ v.label }} <span aria-hidden="true">×</span><span class="sr-only">Retirer</span></a>{%- endfor -%}
+            {%- if f.type == 'price_range' -%}
+              {%- if f.min_value.value != blank or f.max_value.value != blank -%}
+                <a class="ac" href="{{ f.url_to_remove }}">{% if f.min_value.value %}{{ f.min_value.value | money }}{% else %}0 €{% endif %} – {% if f.max_value.value %}{{ f.max_value.value | money }}{% else %}{{ f.range_max | money }}{% endif %} <span aria-hidden="true">×</span></a>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <a class="clr" href="{{ collection.url }}?sort_by={{ sort_by }}">Tout effacer</a>
+        </div>
+      {%- endif -%}
+      <div class="cgrid">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- else -%}
+          <div class="none"><p>Aucun produit ne correspond à ta recherche.</p><a class="btn o sm" href="{{ collection.url }}">Réinitialiser les filtres</a></div>
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}
+        <nav class="pag" aria-label="Pages">
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link %}<a href="{{ part.url }}">{{ part.title }}</a>{% elsif part.title == paginate.current_page %}<span class="current" aria-current="page">{{ part.title }}</span>{% else %}<span>{{ part.title }}</span>{% endif -%}
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+    </div>
+  </div>
+  {%- endpaginate -%}
+  <div class="reass">
+    <div>{% render 'icon', name: 'lock' %}<p style="margin:0"><b>Paiement sécurisé</b><span>Règle par carte en toute confiance.</span></p></div>
+    <div>{% render 'icon', name: 'box' %}<p style="margin:0"><b>Préparation soignée</b><span>Chaque pièce est emballée avec attention.</span></p></div>
+    <div>{% render 'icon', name: 'chat' %}<p style="margin:0"><b>Une question ?</b><span>Écris-moi, je réponds.</span></p></div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Boutique",
+  "settings": [
+    { "type": "text", "id": "all_title", "label": "Titre de « tous les produits »", "default": "Les Trésors de Chez Nous" },
+    { "type": "text", "id": "all_text", "label": "Texte de « tous les produits »", "default": "Ustensiles et art de vivre africains." },
+    { "type": "collection_list", "id": "categories", "label": "Catégories affichées", "info": "Vide = toutes les collections qui contiennent des produits." },
+    { "type": "range", "id": "per_page", "label": "Produits par page", "min": 6, "max": 48, "step": 6, "default": 24 }
+  ]
+}
+{% endschema %}
