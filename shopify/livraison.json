@@ -3,7 +3,7 @@
   "zone": { "nom": "France", "pays": ["FR"] },
   "note": "Tranches sur le poids des produits (sans emballage) : chaque borne du site est diminuée des 300 g d'emballage. Ne pas ajouter de poids d'emballage dans Shopify en plus, sinon il serait compté deux fois.",
   "tarifs": [
-    { "nom": "Mondial Relay – Point Relais", "tranches_kg": [
+    { "nom": "Livraison en Point Relais", "tranches_kg": [
       { "min": 0,     "max": 0.2,  "prix": 4.15 },
       { "min": 0.201, "max": 0.7,  "prix": 4.55 },
       { "min": 0.701, "max": 1.7,  "prix": 6.35 },
