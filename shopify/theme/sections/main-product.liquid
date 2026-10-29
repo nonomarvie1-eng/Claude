@@ -7,6 +7,18 @@
     assign tall = true
   endif
   assign spec = product.metafields.custom.caracteristiques.value
+  # Photos propres à l'option choisie (métadonnée de variante custom.photos) ; vide = toutes les photos
+  assign cur_ids = ''
+  for f in current.metafields.custom.photos.value
+    assign cur_ids = cur_ids | append: ',' | append: f.id | append: ','
+  endfor
+  if cur_ids != ''
+    assign key = ',' | append: start | append: ','
+    unless cur_ids contains key
+      assign first_id = cur_ids | remove_first: ',' | split: ',' | first
+      assign start = first_id | plus: 0
+    endunless
+  endif
 -%}
 <div class="has-sbar" data-product id="pp-{{ section.id }}">
   <div class="w" style="padding-top:26px">
@@ -17,6 +29,11 @@
           {%- for m in images -%}
             {%- liquid
               assign cls = ''
+              assign key = ',' | append: m.id | append: ','
+              if cur_ids != '' and cur_ids contains key
+              elsif cur_ids != ''
+                assign cls = 'vx'
+              endif
               if m.id == start
                 assign cls = 'on'
               endif
@@ -28,13 +45,14 @@
           {%- if images.size > 1 -%}
             <button class="ga prev" data-gal="-1" type="button" aria-label="Photo précédente">{% render 'icon', name: 'prev' %}</button>
             <button class="ga next" data-gal="1" type="button" aria-label="Photo suivante">{% render 'icon', name: 'next' %}</button>
-            <div class="dots" aria-hidden="true">{% for m in images %}<i{% if m.id == start %} class="on"{% endif %}></i>{% endfor %}</div>
+            <div class="dots" aria-hidden="true">{% for m in images %}{% assign key = ',' | append: m.id | append: ',' %}<i data-dot="{{ m.id }}" class="{% if m.id == start %}on{% endif %}{% if cur_ids != '' %}{% unless cur_ids contains key %} vx{% endunless %}{% endif %}"></i>{% endfor %}</div>
           {%- endif -%}
         </div>
         {%- if images.size > 1 -%}
           <div class="th">
             {%- for m in images -%}
-              <button type="button"{% if m.id == start %} class="on"{% endif %} data-thumb="{{ m.id }}" aria-label="Photo {{ forloop.index }}">{{ m | image_url: width: 160 | image_tag: alt: '', loading: 'lazy' }}</button>
+              {%- assign key = ',' | append: m.id | append: ',' -%}
+              <button type="button" class="{% if m.id == start %}on{% endif %}{% if cur_ids != '' %}{% unless cur_ids contains key %} vx{% endunless %}{% endif %}" data-thumb="{{ m.id }}" aria-label="Photo {{ forloop.index }}">{{ m | image_url: width: 160 | image_tag: alt: '', loading: 'lazy' }}</button>
             {%- endfor -%}
           </div>
         {%- endif -%}
@@ -135,7 +153,7 @@
       "start": {{ start | json }},
       "variants": [
         {%- for v in product.variants -%}
-          {"id": {{ v.id }}, "title": {{ v.title | json }}, "available": {{ v.available }}, "price": {{ v.price | money | json }}, "media": {{ v.featured_media.id | json }}, "max": {% if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' %}{{ v.inventory_quantity }}{% else %}99{% endif %}}{% unless forloop.last %},{% endunless %}
+          {"id": {{ v.id }}, "title": {{ v.title | json }}, "available": {{ v.available }}, "price": {{ v.price | money | json }}, "media": {{ v.featured_media.id | json }}, "photos": [{% for f in v.metafields.custom.photos.value %}{{ f.id }}{% unless forloop.last %},{% endunless %}{% endfor %}], "max": {% if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' %}{{ v.inventory_quantity }}{% else %}99{% endif %}}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ]
     }
