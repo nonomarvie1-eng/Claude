@@ -16,6 +16,12 @@ Fait automatiquement avec le connecteur Shopify :
 - [x] Menu principal : Accueil, Boutique, À propos, Contact (Linktree)
 - [x] Thème « Mme Fofana » importé, **non publié**
 
+Livraison internationale (marché « Étranger », Point Relais Mondial Relay uniquement, tarifs repris de l'ancien site) :
+- Belgique, Luxembourg, Pays-Bas : 4,60 € à 26,00 €
+- Espagne, Portugal, Italie : 6,60 € à 28,80 €
+- Pologne : 7,20 € à 29,50 €
+- Allemagne : aucun tarif (l'ancien site ne livrait pas l'Allemagne)
+
 Reste à faire à la main dans l'admin Shopify :
 
 - [ ] Boutique en ligne › Thèmes : prévisualiser « Mme Fofana » puis **Publier** (le connecteur ne peut pas publier un thème)
