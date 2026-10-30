@@ -205,6 +205,23 @@ def main():
     for l in lignes:
         l["etf"] = etf_par_mois.get(l["mois"])
 
+    # Retour sur 2026 avant le début du suivi (même robot, appliqué aux mois déjà passés)
+    retro, avant_r, rv, ev, dca, dca_verse = [], decision(R, "2025-12"), CAPITAL_FICTIF, CAPITAL_FICTIF, 0.0, 0.0
+    m = "2026-01"
+    while m < DEBUT_SUIVI:
+        w = decision(R, m)
+        r = resultat_mois(R, w, avant_r, m)
+        avant_r = w
+        e = (1 + R["Actions US"][m]) / (1 + R["Euro"][m]) - 1 if m in R["Actions US"] and m in R["Euro"] else None
+        if r is not None:
+            rv *= 1 + r
+        if e is not None:
+            ev *= 1 + e
+            dca_verse += VERSEMENT_ETF
+            dca = (dca + VERSEMENT_ETF) * (1 + e)
+        retro.append({"mois": m, "robot": r, "etf": e})
+        m = mois_suivant(m)
+
     mois, robot, actions = historique(R)
     melange = [0.8 * a + 0.2 * b for a, b in zip(actions, robot)]
     D = {
@@ -214,6 +231,7 @@ def main():
         "live": {"debut": DEBUT_SUIVI, "capital": CAPITAL_FICTIF, "valeur": round(valeur, 2),
                  "lignes": lignes, "maj": aujourd_hui.isoformat(),
                  "etf": {"versement": VERSEMENT_ETF, "verse": verse, "valeur": round(etf_valeur, 2)}},
+        "retro": {"lignes": retro, "robot": round(rv, 2), "etf": round(ev, 2), "dca": round(dca, 2), "dcaVerse": dca_verse},
     }
     gabarit = open(os.path.join(ICI, "template.html"), encoding="utf-8").read()
     page = gabarit.replace("__DATA__", json.dumps(D, ensure_ascii=False, separators=(",", ":")))

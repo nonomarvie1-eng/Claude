@@ -88,6 +88,24 @@ td.g{color:var(--gain)} td.l{color:var(--loss)}
   </section>
 
   <section class="panel">
+    <span class="eyebrow">Retour sur 2026</span>
+    <h2>Janvier → octobre 2026 : qui a gagné ?</h2>
+    <p>Le même robot, appliqué aux mois de 2026 déjà passés, face à l'ETF. Les mois sans résultat attendent encore les données publiques.</p>
+    <div class="ends" style="grid-template-columns:1fr 1fr">
+      <div class="end"><i style="background:var(--accent)"></i><b id="rtRobot"></b><span>Robot · 1 000 € placés en janvier</span></div>
+      <div class="end"><i style="background:var(--stock)"></i><b id="rtEtf"></b><span>ETF · 1 000 € placés en janvier</span></div>
+    </div>
+    <p id="rtDca" class="key"></p>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Mois</th><th>Robot</th><th>ETF</th></tr></thead>
+      <tbody id="rtRows"></tbody>
+    </table>
+    </div>
+    <p class="hint">Ce n'est pas un vrai test : j'ai choisi les règles du robot en connaissant déjà ces mois-là. Le vrai test, c'est le suivi en direct au-dessus.</p>
+  </section>
+
+  <section class="panel">
     <h2>Ses 3 règles</h2>
     <ol class="rules">
       <li><span class="n">1</span><span><b>Il regarde 7 marchés</b> : les actions américaines, les obligations américaines, l'or, le pétrole, l'euro, le yen et la livre.</span></li>
@@ -213,10 +231,18 @@ $("lvN").textContent = L.lignes.filter(r => r.resultat != null).length;
 $("lvMaj").textContent = new Date(L.maj + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 $("etfVal").textContent = eurf(L.etf.valeur);
 $("etfSub").textContent = `Plan ETF · ${nf.format(L.etf.versement)} € par mois, ${nf.format(L.etf.verse)} € versés`;
-const pc = v => v == null ? ["", "en attente"] : [v >= 0 ? "g" : "l", (v >= 0 ? "+" : "−") + Math.abs(v * 100).toFixed(1).replace(".", ",") + " %"];
+const pc = v => { if (v == null) return ["", "en attente"]; const x = Math.round(v * 1000) / 10; return x === 0 ? ["", "0,0 %"] : [x > 0 ? "g" : "l", (x > 0 ? "+" : "−") + Math.abs(x).toFixed(1).replace(".", ",") + " %"]; };
 $("lvRows").innerHTML = [...L.lignes].reverse().map(r => {
   const [c1, t1] = pc(r.resultat), [c2, t2] = pc(r.etf);
   return `<tr><td>${mlab(r.mois)}</td><td class="${c1}">${t1}</td><td class="${c2}">${t2}</td><td>${r.resultat != null ? eurf(r.valeur) : "–"}</td></tr>`;
+}).join("");
+const RT = D.retro;
+$("rtRobot").textContent = eurf(RT.robot);
+$("rtEtf").textContent = eurf(RT.etf);
+$("rtDca").innerHTML = `Avec ton plan de ${nf.format(L.etf.versement)} € par mois : <b>${eurf(RT.dca)}</b> pour ${nf.format(RT.dcaVerse)} € versés.`;
+$("rtRows").innerHTML = RT.lignes.map(r => {
+  const [c1, t1] = pc(r.robot), [c2, t2] = pc(r.etf);
+  return `<tr><td>${mlab(r.mois)}</td><td class="${c1}">${t1}</td><td class="${c2}">${t2}</td></tr>`;
 }).join("");
 draw(); read(null);
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(draw, 120); });
