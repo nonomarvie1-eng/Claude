@@ -123,6 +123,18 @@ def decision(R, mois):
     return w
 
 
+def filet(R, mois):
+    """Filet de sécurité : "ETF" si l'indice (dividendes compris) est au-dessus
+    de sa moyenne des 10 derniers mois connus, sinon "cash"."""
+    ks = [x for x in sorted(R["Actions US"]) if x < mois]
+    niveau, niveaux = 1.0, []
+    for k in ks:
+        niveau *= 1 + R["Actions US"][k]
+        niveaux.append(niveau)
+    dix = niveaux[-10:]
+    return "ETF" if dix[-1] > sum(dix) / len(dix) else "cash"
+
+
 def resultat_mois(R, w, w_avant, mois):
     if not all(mois in R[n] for n in MARCHES):
         return None
@@ -170,6 +182,7 @@ def main():
             "decide_le": aujourd_hui.isoformat(),
             "donnees_jusqu_a": {n: max(R[n]) for n in MARCHES},
             "poids": {n: round(x, 4) for n, x in w.items()},
+            "filet": filet(R, mois_courant),
         })
         journal.sort(key=lambda e: e["mois"])
         json.dump(journal, open(chemin_journal, "w"), ensure_ascii=False, indent=1)
@@ -190,36 +203,54 @@ def main():
     def mois_suivant(m):
         a, mm = int(m[:4]), int(m[5:]) + 1
         return f"{a + (mm == 13)}-{1 if mm == 13 else mm:02d}"
-    etf_lignes, etf_val, verse, m = [], 0.0, 0.0, DEBUT_SUIVI
+    # Plan avec filet de sécurité : mêmes 150 € par mois, mais tout passe en cash
+    # quand l'indice est sous sa moyenne des 10 derniers mois (décision notée dans le journal).
+    def rendement_etf(m):
+        if m in R["Actions US"] and m in R["Euro"]:
+            return (1 + R["Actions US"][m]) / (1 + R["Euro"][m]) - 1
+        return None
+    choix_filet = {e["mois"]: e.get("filet", "ETF") for e in journal}
+    etf_lignes, etf_val, fil_val, verse, fini, m = [], 0.0, 0.0, 0.0, 0.0, DEBUT_SUIVI
+    pos = "ETF"
     while m <= mois_courant:
         verse += VERSEMENT_ETF
-        r_etf = None
-        if m in R["Actions US"] and m in R["Euro"]:
-            r_etf = (1 + R["Actions US"][m]) / (1 + R["Euro"][m]) - 1
+        pos = choix_filet.get(m, pos)
+        r_etf = rendement_etf(m)
+        r_fil = None
+        if r_etf is not None:
+            r_fil = r_etf if pos == "ETF" else 0.0
             etf_val = (etf_val + VERSEMENT_ETF) * (1 + r_etf)
-        etf_lignes.append({"mois": m, "resultat": r_etf})
+            fil_val = (fil_val + VERSEMENT_ETF) * (1 + r_fil)
+            fini += VERSEMENT_ETF
+        etf_lignes.append({"mois": m, "resultat": r_etf, "filet": r_fil, "pos": pos})
         m = mois_suivant(m)
-    deja_fini = sum(VERSEMENT_ETF for l in etf_lignes if l["resultat"] is not None)
-    etf_valeur = etf_val + (verse - deja_fini)  # les mois en attente comptent à leur prix d'achat
-    etf_par_mois = {l["mois"]: l["resultat"] for l in etf_lignes}
+    etf_valeur = etf_val + (verse - fini)  # les mois en attente comptent à leur prix d'achat
+    fil_valeur = fil_val + (verse - fini)
+    par_mois = {l["mois"]: l for l in etf_lignes}
     for l in lignes:
-        l["etf"] = etf_par_mois.get(l["mois"])
+        p = par_mois.get(l["mois"], {})
+        l["etf"], l["filet"], l["pos"] = p.get("resultat"), p.get("filet"), p.get("pos")
 
     # Retour sur 2026 avant le début du suivi (même robot, appliqué aux mois déjà passés)
     retro, avant_r, rv, ev, dca, dca_verse = [], decision(R, "2025-12"), CAPITAL_FICTIF, CAPITAL_FICTIF, 0.0, 0.0
+    fv, fdca = CAPITAL_FICTIF, 0.0
     m = "2026-01"
     while m < DEBUT_SUIVI:
         w = decision(R, m)
         r = resultat_mois(R, w, avant_r, m)
         avant_r = w
-        e = (1 + R["Actions US"][m]) / (1 + R["Euro"][m]) - 1 if m in R["Actions US"] and m in R["Euro"] else None
+        e = rendement_etf(m)
+        p = filet(R, m)
+        f = None if e is None else (e if p == "ETF" else 0.0)
         if r is not None:
             rv *= 1 + r
         if e is not None:
             ev *= 1 + e
+            fv *= 1 + f
             dca_verse += VERSEMENT_ETF
             dca = (dca + VERSEMENT_ETF) * (1 + e)
-        retro.append({"mois": m, "robot": r, "etf": e})
+            fdca = (fdca + VERSEMENT_ETF) * (1 + f)
+        retro.append({"mois": m, "robot": r, "etf": e, "filet": f, "pos": p})
         m = mois_suivant(m)
 
     mois, robot, actions = historique(R)
@@ -230,8 +261,10 @@ def main():
         "wMois": journal[-1]["mois"],
         "live": {"debut": DEBUT_SUIVI, "capital": CAPITAL_FICTIF, "valeur": round(valeur, 2),
                  "lignes": lignes, "maj": aujourd_hui.isoformat(),
-                 "etf": {"versement": VERSEMENT_ETF, "verse": verse, "valeur": round(etf_valeur, 2)}},
-        "retro": {"lignes": retro, "robot": round(rv, 2), "etf": round(ev, 2), "dca": round(dca, 2), "dcaVerse": dca_verse},
+                 "etf": {"versement": VERSEMENT_ETF, "verse": verse, "valeur": round(etf_valeur, 2)},
+                 "filet": {"valeur": round(fil_valeur, 2), "pos": journal[-1].get("filet", "ETF")}},
+        "retro": {"lignes": retro, "robot": round(rv, 2), "etf": round(ev, 2), "dca": round(dca, 2), "dcaVerse": dca_verse,
+                  "filet": round(fv, 2), "filetDca": round(fdca, 2)},
     }
     gabarit = open(os.path.join(ICI, "template.html"), encoding="utf-8").read()
     page = gabarit.replace("__DATA__", json.dumps(D, ensure_ascii=False, separators=(",", ":")))
@@ -243,6 +276,7 @@ def main():
     print(f"Décision {journal[-1]['mois']} : " + ", ".join(f"{n} {x*100:+.0f} %" for n, x in journal[-1]["poids"].items()))
     print(f"Portefeuille fictif : {valeur:.2f} € ({sum(1 for l in lignes if l['resultat'] is not None)} mois terminés)")
     print(f"Plan ETF fictif : {etf_valeur:.2f} € pour {verse:.0f} € versés")
+    print(f"Plan avec filet : {fil_valeur:.2f} € pour {verse:.0f} € versés (ce mois : {journal[-1].get('filet')})")
 
 
 if __name__ == "__main__":

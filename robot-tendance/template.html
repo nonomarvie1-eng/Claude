@@ -72,37 +72,40 @@ td.g{color:var(--gain)} td.l{color:var(--loss)}
   <section class="panel" id="live">
     <span class="eyebrow">Suivi en direct · argent fictif</span>
     <h2>Le vrai test a commencé</h2>
-    <p>Depuis <span id="lvStart"></span>, deux portefeuilles fictifs avancent côte à côte, sur des prix que personne ne connaissait à l'avance.</p>
-    <div class="ends" style="grid-template-columns:1fr 1fr">
-      <div class="end"><i style="background:var(--accent)"></i><b id="lvVal"></b><span>Robot · 1 000 € placés au départ</span></div>
+    <p>Depuis <span id="lvStart"></span>, trois portefeuilles fictifs avancent côte à côte, sur des prix que personne ne connaissait à l'avance.</p>
+    <div class="ends">
+      <div class="end"><i style="background:var(--accent)"></i><b id="lvVal"></b><span>Robot · 1 000 € au départ</span></div>
       <div class="end"><i style="background:var(--stock)"></i><b id="etfVal"></b><span id="etfSub"></span></div>
+      <div class="end"><i style="background:var(--mix)"></i><b id="filVal"></b><span id="filSub"></span></div>
     </div>
+    <p class="key" id="filNow"></p>
     <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>Mois</th><th>Robot</th><th>ETF</th><th>Valeur robot</th></tr></thead>
+      <thead><tr><th>Mois</th><th>Robot</th><th>ETF</th><th>Filet</th></tr></thead>
       <tbody id="lvRows"></tbody>
     </table>
     </div>
-    <p class="hint">Le plan ETF est simulé avec la bourse américaine (S&amp;P 500, dividendes compris), convertie en euros. Elle pèse environ 70 % d'un ETF monde comme celui de ton futur PEA. <span id="lvN"></span> mois terminés pour l'instant.</p>
+    <p class="hint">Le plan ETF est simulé avec la bourse américaine (S&amp;P 500, dividendes compris), convertie en euros. Elle pèse environ 70 % d'un ETF monde comme celui de ton futur PEA. Le filet de sécurité investit les mêmes 150 € par mois, mais garde tout en cash quand la bourse passe sous sa moyenne des 10 derniers mois. <span id="lvN"></span> mois terminés pour l'instant.</p>
     <p class="hint">Les résultats d'un mois arrivent environ un mois plus tard, le temps que les données publiques soient mises à jour. Dernière mise à jour : <span id="lvMaj"></span>.</p>
   </section>
 
   <section class="panel">
     <span class="eyebrow">Retour sur 2026</span>
     <h2>Janvier → octobre 2026 : qui a gagné ?</h2>
-    <p>Le même robot, appliqué aux mois de 2026 déjà passés, face à l'ETF. Les mois sans résultat attendent encore les données publiques.</p>
-    <div class="ends" style="grid-template-columns:1fr 1fr">
-      <div class="end"><i style="background:var(--accent)"></i><b id="rtRobot"></b><span>Robot · 1 000 € placés en janvier</span></div>
-      <div class="end"><i style="background:var(--stock)"></i><b id="rtEtf"></b><span>ETF · 1 000 € placés en janvier</span></div>
+    <p>Le même robot et le filet de sécurité, appliqués aux mois de 2026 déjà passés, face à l'ETF. Les mois sans résultat attendent encore les données publiques.</p>
+    <div class="ends">
+      <div class="end"><i style="background:var(--accent)"></i><b id="rtRobot"></b><span>Robot · 1 000 € en janvier</span></div>
+      <div class="end"><i style="background:var(--stock)"></i><b id="rtEtf"></b><span>ETF · 1 000 € en janvier</span></div>
+      <div class="end"><i style="background:var(--mix)"></i><b id="rtFil"></b><span>Filet · 1 000 € en janvier</span></div>
     </div>
     <p id="rtDca" class="key"></p>
     <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>Mois</th><th>Robot</th><th>ETF</th></tr></thead>
+      <thead><tr><th>Mois</th><th>Robot</th><th>ETF</th><th>Filet</th></tr></thead>
       <tbody id="rtRows"></tbody>
     </table>
     </div>
-    <p class="hint">Ce n'est pas un vrai test : j'ai choisi les règles du robot en connaissant déjà ces mois-là. Le vrai test, c'est le suivi en direct au-dessus.</p>
+    <p class="hint">Ce n'est pas un vrai test : j'ai choisi ces règles en connaissant déjà ces mois-là. Le vrai test, c'est le suivi en direct au-dessus.</p>
   </section>
 
   <section class="panel">
@@ -232,17 +235,24 @@ $("lvMaj").textContent = new Date(L.maj + "T12:00:00").toLocaleDateString("fr-FR
 $("etfVal").textContent = eurf(L.etf.valeur);
 $("etfSub").textContent = `Plan ETF · ${nf.format(L.etf.versement)} € par mois, ${nf.format(L.etf.verse)} € versés`;
 const pc = v => { if (v == null) return ["", "en attente"]; const x = Math.round(v * 1000) / 10; return x === 0 ? ["", "0,0 %"] : [x > 0 ? "g" : "l", (x > 0 ? "+" : "−") + Math.abs(x).toFixed(1).replace(".", ",") + " %"]; };
+const fil = (v, pos) => pos === "cash" && v != null ? ["", "cash"] : pc(v);
+$("filVal").textContent = eurf(L.filet.valeur);
+$("filSub").textContent = `Filet · ${nf.format(L.etf.versement)} € par mois`;
+$("filNow").innerHTML = L.filet.pos === "ETF"
+  ? `Filet de sécurité ce mois-ci : <b>investi dans l'ETF</b>, la bourse est au-dessus de sa moyenne.`
+  : `Filet de sécurité ce mois-ci : <b>en cash</b>, la bourse est passée sous sa moyenne.`;
 $("lvRows").innerHTML = [...L.lignes].reverse().map(r => {
-  const [c1, t1] = pc(r.resultat), [c2, t2] = pc(r.etf);
-  return `<tr><td>${mlab(r.mois)}</td><td class="${c1}">${t1}</td><td class="${c2}">${t2}</td><td>${r.resultat != null ? eurf(r.valeur) : "–"}</td></tr>`;
+  const [c1, t1] = pc(r.resultat), [c2, t2] = pc(r.etf), [c3, t3] = fil(r.filet, r.pos);
+  return `<tr><td>${mlab(r.mois)}</td><td class="${c1}">${t1}</td><td class="${c2}">${t2}</td><td class="${c3}">${t3}</td></tr>`;
 }).join("");
 const RT = D.retro;
 $("rtRobot").textContent = eurf(RT.robot);
 $("rtEtf").textContent = eurf(RT.etf);
-$("rtDca").innerHTML = `Avec ton plan de ${nf.format(L.etf.versement)} € par mois : <b>${eurf(RT.dca)}</b> pour ${nf.format(RT.dcaVerse)} € versés.`;
+$("rtFil").textContent = eurf(RT.filet);
+$("rtDca").innerHTML = `Avec ton plan de ${nf.format(L.etf.versement)} € par mois, pour ${nf.format(RT.dcaVerse)} € versés : <b>${eurf(RT.dca)}</b> avec l'ETF, <b>${eurf(RT.filetDca)}</b> avec le filet.`;
 $("rtRows").innerHTML = RT.lignes.map(r => {
-  const [c1, t1] = pc(r.robot), [c2, t2] = pc(r.etf);
-  return `<tr><td>${mlab(r.mois)}</td><td class="${c1}">${t1}</td><td class="${c2}">${t2}</td></tr>`;
+  const [c1, t1] = pc(r.robot), [c2, t2] = pc(r.etf), [c3, t3] = fil(r.filet, r.pos);
+  return `<tr><td>${mlab(r.mois)}</td><td class="${c1}">${t1}</td><td class="${c2}">${t2}</td><td class="${c3}">${t3}</td></tr>`;
 }).join("");
 draw(); read(null);
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(draw, 120); });
