@@ -72,17 +72,18 @@ td.g{color:var(--gain)} td.l{color:var(--loss)}
   <section class="panel" id="live">
     <span class="eyebrow">Suivi en direct · argent fictif</span>
     <h2>Le vrai test a commencé</h2>
-    <p>Depuis <span id="lvStart"></span>, le robot décide chaque mois avec des règles figées, sur des prix qu'il n'a jamais vus. Portefeuille fictif de départ : 1 000 €.</p>
+    <p>Depuis <span id="lvStart"></span>, deux portefeuilles fictifs avancent côte à côte, sur des prix que personne ne connaissait à l'avance.</p>
     <div class="ends" style="grid-template-columns:1fr 1fr">
-      <div class="end"><b id="lvVal"></b><span>valeur actuelle du portefeuille fictif</span></div>
-      <div class="end"><b id="lvN"></b><span>mois terminés</span></div>
+      <div class="end"><i style="background:var(--accent)"></i><b id="lvVal"></b><span>Robot · 1 000 € placés au départ</span></div>
+      <div class="end"><i style="background:var(--stock)"></i><b id="etfVal"></b><span id="etfSub"></span></div>
     </div>
     <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>Mois</th><th>Décidé le</th><th>Résultat</th><th>Valeur</th></tr></thead>
+      <thead><tr><th>Mois</th><th>Robot</th><th>ETF</th><th>Valeur robot</th></tr></thead>
       <tbody id="lvRows"></tbody>
     </table>
     </div>
+    <p class="hint">Le plan ETF est simulé avec la bourse américaine (S&amp;P 500, dividendes compris), convertie en euros. Elle pèse environ 70 % d'un ETF monde comme celui de ton futur PEA. <span id="lvN"></span> mois terminés pour l'instant.</p>
     <p class="hint">Les résultats d'un mois arrivent environ un mois plus tard, le temps que les données publiques soient mises à jour. Dernière mise à jour : <span id="lvMaj"></span>.</p>
   </section>
 
@@ -210,10 +211,12 @@ $("lvStart").textContent = mlab(L.debut);
 $("lvVal").textContent = eurf(L.valeur);
 $("lvN").textContent = L.lignes.filter(r => r.resultat != null).length;
 $("lvMaj").textContent = new Date(L.maj + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+$("etfVal").textContent = eurf(L.etf.valeur);
+$("etfSub").textContent = `Plan ETF · ${nf.format(L.etf.versement)} € par mois, ${nf.format(L.etf.verse)} € versés`;
+const pc = v => v == null ? ["", "en attente"] : [v >= 0 ? "g" : "l", (v >= 0 ? "+" : "−") + Math.abs(v * 100).toFixed(1).replace(".", ",") + " %"];
 $("lvRows").innerHTML = [...L.lignes].reverse().map(r => {
-  const done = r.resultat != null, cls = done ? (r.resultat >= 0 ? "g" : "l") : "";
-  const res = done ? (r.resultat >= 0 ? "+" : "−") + Math.abs(r.resultat * 100).toFixed(1).replace(".", ",") + " %" : "en attente";
-  return `<tr><td>${mlab(r.mois)}</td><td>${new Date(r.decide_le + "T12:00:00").toLocaleDateString("fr-FR")}</td><td class="${cls}">${res}</td><td>${done ? eurf(r.valeur) : "–"}</td></tr>`;
+  const [c1, t1] = pc(r.resultat), [c2, t2] = pc(r.etf);
+  return `<tr><td>${mlab(r.mois)}</td><td class="${c1}">${t1}</td><td class="${c2}">${t2}</td><td>${r.resultat != null ? eurf(r.valeur) : "–"}</td></tr>`;
 }).join("");
 draw(); read(null);
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(draw, 120); });

@@ -7,7 +7,8 @@ Levier total plafonné à 2.
 Utilisation : python3 robot.py
   1. télécharge les dernières données publiques
   2. note la décision du mois en cours dans journal.json (si pas déjà fait)
-  3. calcule le portefeuille fictif de 1 000 €
+  3. calcule le portefeuille fictif de 1 000 € du robot, et à côté un plan ETF fictif
+     de 150 € par mois (ce que donnerait un PEA investi chaque mois)
   4. reconstruit page.html
 """
 import csv, io, json, math, os, sys, urllib.request
@@ -30,6 +31,7 @@ LEVIER_MAX = 2.0
 FRAIS = 0.001
 DEBUT_SUIVI = "2026-11"
 CAPITAL_FICTIF = 1000.0
+VERSEMENT_ETF = 150.0  # plan ETF : versement mensuel fictif
 
 
 def telecharger(chemin):
@@ -182,6 +184,27 @@ def main():
                        "valeur": round(valeur, 2) if r is not None else None})
         avant = e["poids"]
 
+    # Plan ETF fictif : 150 € investis chaque début de mois.
+    # Simulé avec le S&P 500 (dividendes compris) converti en euros,
+    # car il n'existe pas de données publiques gratuites de l'indice monde.
+    def mois_suivant(m):
+        a, mm = int(m[:4]), int(m[5:]) + 1
+        return f"{a + (mm == 13)}-{1 if mm == 13 else mm:02d}"
+    etf_lignes, etf_val, verse, m = [], 0.0, 0.0, DEBUT_SUIVI
+    while m <= mois_courant:
+        verse += VERSEMENT_ETF
+        r_etf = None
+        if m in R["Actions US"] and m in R["Euro"]:
+            r_etf = (1 + R["Actions US"][m]) / (1 + R["Euro"][m]) - 1
+            etf_val = (etf_val + VERSEMENT_ETF) * (1 + r_etf)
+        etf_lignes.append({"mois": m, "resultat": r_etf})
+        m = mois_suivant(m)
+    deja_fini = sum(VERSEMENT_ETF for l in etf_lignes if l["resultat"] is not None)
+    etf_valeur = etf_val + (verse - deja_fini)  # les mois en attente comptent à leur prix d'achat
+    etf_par_mois = {l["mois"]: l["resultat"] for l in etf_lignes}
+    for l in lignes:
+        l["etf"] = etf_par_mois.get(l["mois"])
+
     mois, robot, actions = historique(R)
     melange = [0.8 * a + 0.2 * b for a, b in zip(actions, robot)]
     D = {
@@ -189,7 +212,8 @@ def main():
         "w": {n: round(x * 100) for n, x in journal[-1]["poids"].items()},
         "wMois": journal[-1]["mois"],
         "live": {"debut": DEBUT_SUIVI, "capital": CAPITAL_FICTIF, "valeur": round(valeur, 2),
-                 "lignes": lignes, "maj": aujourd_hui.isoformat()},
+                 "lignes": lignes, "maj": aujourd_hui.isoformat(),
+                 "etf": {"versement": VERSEMENT_ETF, "verse": verse, "valeur": round(etf_valeur, 2)}},
     }
     gabarit = open(os.path.join(ICI, "template.html"), encoding="utf-8").read()
     page = gabarit.replace("__DATA__", json.dumps(D, ensure_ascii=False, separators=(",", ":")))
@@ -200,6 +224,7 @@ def main():
     print(f"Historique {mois[0]} -> {mois[-1]} : {an:.1f} % par an")
     print(f"Décision {journal[-1]['mois']} : " + ", ".join(f"{n} {x*100:+.0f} %" for n, x in journal[-1]["poids"].items()))
     print(f"Portefeuille fictif : {valeur:.2f} € ({sum(1 for l in lignes if l['resultat'] is not None)} mois terminés)")
+    print(f"Plan ETF fictif : {etf_valeur:.2f} € pour {verse:.0f} € versés")
 
 
 if __name__ == "__main__":
