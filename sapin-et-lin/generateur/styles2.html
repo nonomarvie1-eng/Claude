@@ -1,0 +1,196 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:GV;src:url(fonts/great-vibes-latin-400-normal.woff2)}
+@font-face{font-family:CG;font-weight:500;src:url(fonts/cormorant-garamond-latin-500-normal.woff2)}
+@font-face{font-family:CG;font-weight:600;src:url(fonts/cormorant-garamond-latin-600-normal.woff2)}
+html,body{margin:0;padding:0;background:transparent}
+svg{display:block}
+</style></head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+// Styles « Rouge traditionnel » et « Nuit etoilee », pour la boule (fmt=boule) ou le mug (fmt=mug)
+const q = new URLSearchParams(location.search);
+const style = q.get('style') || 'rouge';
+const fmt = q.get('fmt') || 'boule';
+const name = q.get('name') ?? 'Emma';
+const title = q.get('title') || 'JOYEUX NOËL';
+const icon = q.get('icon') || 'diamond';
+const yearTxt = q.get('year') || '2026';
+const W = fmt === 'mug' ? 2409 : 2000, H = fmt === 'mug' ? 1169 : 2000;
+const svg = document.getElementById('s');
+svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent = svg) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e); return e;
+}
+let seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const pending = [];
+
+function drawIcon(g, kind, x, y, f, bg, s = 1) {
+  const P = (d) => el('path', { d, fill: f, transform: `translate(${x} ${y}) scale(${s})` }, g);
+  if (kind === 'diamond') P('M0,-15 L15,0 L0,15 L-15,0Z');
+  else if (kind === 'star') P('M0,-26 Q4,-4 26,0 Q4,4 0,26 Q-4,4 -26,0 Q-4,-4 0,-26Z');
+  else if (kind === 'heart') P('M0,18 C-30,-2 -26,-26 -12,-26 C-4,-26 0,-18 0,-12 C0,-18 4,-26 12,-26 C26,-26 30,-2 0,18Z');
+  else if (kind === 'house') { P('M-20,20 L-20,-4 L0,-24 L20,-4 L20,20Z');
+    el('rect', { x: -6, y: 4, width: 12, height: 16, fill: bg, transform: `translate(${x} ${y}) scale(${s})` }, g); }
+  else if (kind === 'paw') { const t = `translate(${x} ${y}) scale(${s})`;
+    el('ellipse', { cx: 0, cy: 8, rx: 14, ry: 12, fill: f, transform: t }, g);
+    for (const [dx, dy] of [[-17, -8], [-6, -19], [6, -19], [17, -8]])
+      el('ellipse', { cx: dx, cy: dy, rx: 5.5, ry: 7, fill: f, transform: t }, g); }
+}
+
+// textes : s = echelle (1 pour la boule, ~0.6 pour le mug)
+function texts(o) {
+  const { cx, s } = o, g = el('g', {});
+  const t1 = el('text', { x: cx + 14 * s, y: o.titleY, 'text-anchor': 'middle', fill: o.title,
+    'font-family': 'CG', 'font-weight': 600, 'font-size': 112 * s, 'letter-spacing': 32 * s }, g);
+  t1.textContent = title;
+  const ly = o.titleY + 80 * s;
+  el('line', { x1: cx - 250 * s, y1: ly, x2: cx - 46 * s, y2: ly, stroke: o.title, 'stroke-width': 4 * s }, g);
+  el('line', { x1: cx + 46 * s, y1: ly, x2: cx + 250 * s, y2: ly, stroke: o.title, 'stroke-width': 4 * s }, g);
+  drawIcon(g, icon, cx, ly, o.title, o.bg, s);
+  let t2 = null;
+  if (name) {
+    t2 = el('text', { x: cx, y: o.nameY, 'text-anchor': 'middle', fill: o.name, 'font-family': 'GV', 'font-size': 410 * s }, g);
+    t2.textContent = name;
+  }
+  const t3 = el('text', { x: cx + 18 * s, y: o.yearY, 'text-anchor': 'middle', fill: o.year,
+    'font-family': 'CG', 'font-weight': 600, 'font-size': 92 * s, 'letter-spacing': 40 * s }, g);
+  t3.textContent = yearTxt;
+  pending.push(() => {
+    for (const [t, max, fs, ls] of [[t1, o.titleMax || 1300, 112, 32], [t3, 1000, 92, 40], [t2, o.nameMax || 1380, 410, 0]]) {
+      if (!t) continue;
+      const w = t.getBBox().width;
+      if (w > max * s) { const k = max * s / w; t.setAttribute('font-size', fs * s * k); if (ls) t.setAttribute('letter-spacing', ls * s * k); }
+    }
+  });
+}
+function flake(g, x, y, r, color, w = 5) {
+  for (let i = 0; i < 6; i++) {
+    const a = i * Math.PI / 3, dx = Math.cos(a), dy = Math.sin(a);
+    el('line', { x1: x, y1: y, x2: x + dx * r, y2: y + dy * r, stroke: color, 'stroke-width': w, 'stroke-linecap': 'round' }, g);
+    for (const sd of [-1, 1]) {
+      const bx = x + dx * r * 0.58, by = y + dy * r * 0.58, b = a + sd * 0.75;
+      el('line', { x1: bx, y1: by, x2: bx + Math.cos(b) * r * 0.32, y2: by + Math.sin(b) * r * 0.32, stroke: color, 'stroke-width': w * 0.85, 'stroke-linecap': 'round' }, g);
+    }
+  }
+}
+function star4(g, x, y, s, color) {
+  el('path', { d: `M${x},${y-s} Q${x+s*.15},${y-s*.15} ${x+s},${y} Q${x+s*.15},${y+s*.15} ${x},${y+s} Q${x-s*.15},${y+s*.15} ${x-s},${y} Q${x-s*.15},${y-s*.15} ${x},${y-s}Z`, fill: color }, g);
+}
+function holly(g, x, y, s) {
+  const t = `translate(${x} ${y}) scale(${s})`, gg = el('g', { transform: t }, g);
+  for (const sd of [-1, 1]) {
+    el('path', { d: `M0,0 C${sd*60},-70 ${sd*170},-60 ${sd*215},-10 C${sd*170},10 ${sd*150},50 ${sd*95},30 C${sd*70},60 ${sd*30},40 0,0Z`, fill: '#2f6a46' }, gg);
+    el('path', { d: `M0,0 Q${sd*110},-20 ${sd*200},-12`, stroke: '#1f4a31', 'stroke-width': 4, fill: 'none' }, gg);
+  }
+  for (const [dx, dy] of [[-26, -8], [26, -8], [0, -40]]) {
+    el('circle', { cx: dx, cy: dy, r: 26, fill: '#d23b33', stroke: '#7a1714', 'stroke-width': 3 }, gg);
+    el('circle', { cx: dx - 8, cy: dy - 9, r: 7, fill: '#fff', opacity: .5 }, gg);
+  }
+}
+const GOLD = '#e8cc8a', CREAM = '#fbf6ea';
+
+// ======================= ROUGE =======================
+function rouge() {
+  const defs = el('defs', {});
+  const rg = el('radialGradient', { id: 'rg', cx: '50%', cy: '45%', r: fmt === 'mug' ? '80%' : '65%' }, defs);
+  el('stop', { offset: '0%', 'stop-color': '#b8403c' }, rg); el('stop', { offset: '100%', 'stop-color': '#86201f' }, rg);
+  el('rect', { x: 0, y: 0, width: W, height: H, fill: 'url(#rg)' });
+  const g = el('g', {});
+  const bg = '#a0302d';
+  if (fmt === 'boule') {
+    const C = 1000, n = 16;
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI / 2 + (i + 0.5) * 2 * Math.PI / n;
+      if (Math.abs(((a + Math.PI / 2 + Math.PI) % (2 * Math.PI)) - Math.PI) < 0.32) continue;
+      const big = i % 2 === 0;
+      flake(g, C + Math.cos(a) * 800, C + Math.sin(a) * 800, big ? 52 : 34, '#f6efdf', big ? 6 : 5);
+    }
+    el('circle', { cx: C, cy: C, r: 700, fill: 'none', stroke: GOLD, 'stroke-width': 4, 'stroke-dasharray': '2 18', 'stroke-linecap': 'round' }, g);
+    texts({ cx: C, s: 1, titleY: 640, nameY: 1130, yearY: 1330, title: GOLD, name: CREAM, year: GOLD, bg, titleMax: 1060, nameMax: 1250 });
+    holly(g, C, 1470, 1);
+  } else {
+    // flocons repartis autour des deux panneaux de texte
+    seed = 3;
+    const panels = [W * 0.25, W * 0.75];
+    const placed = [];
+    for (let i = 0; i < 2000 && placed.length < 34; i++) {
+      const x = 40 + rnd() * (W - 80), y = 60 + rnd() * (H - 120);
+      if (panels.some(c => Math.abs(x - c) < 470 && y > 90 && y < 1000)) continue;
+      if (placed.some(([a, b]) => Math.hypot(a - x, b - y) < 150)) continue;   // pas de flocons colles
+      placed.push([x, y]);
+      flake(g, x, y, 18 + rnd() * 16, '#f6efdf', 4);
+    }
+    for (const c of panels) {
+      texts({ cx: c, s: 0.6, titleY: 250, nameY: 560, yearY: 690, title: GOLD, name: CREAM, year: GOLD, bg });
+      holly(g, c, 830, 0.75);
+    }
+  }
+}
+
+// ======================= NUIT ETOILEE =======================
+function house(g, x, base, w, h, roof) {
+  el('path', { d: `M${x},${base} L${x},${base - h} L${x + w / 2},${base - h - roof} L${x + w},${base - h} L${x + w},${base}Z`, fill: '#101a2e' }, g);
+  el('path', { d: `M${x - 8},${base - h + 4} L${x + w / 2},${base - h - roof - 6} L${x + w + 8},${base - h + 4}`, fill: 'none', stroke: '#e9eef5', 'stroke-width': 12, 'stroke-linejoin': 'round' }, g);
+  el('rect', { x: x + w * 0.3, y: base - h * 0.62, width: w * 0.16, height: w * 0.16, fill: '#f2c76a' }, g);
+  el('rect', { x: x + w * 0.56, y: base - h * 0.62, width: w * 0.16, height: w * 0.16, fill: '#f2c76a' }, g);
+}
+function tree(g, x, base, h) {
+  for (let k = 0; k < 3; k++) {
+    const tw = h * (0.55 - k * 0.12), ty = base - k * h * 0.28;
+    el('path', { d: `M${x - tw / 2},${ty} L${x},${ty - h * 0.42} L${x + tw / 2},${ty}Z`, fill: '#14304a' }, g);
+  }
+}
+function village(g, ox) {   // groupe de 4 maisons + 2 sapins, base a y=1600 (coordonnees boule)
+  tree(g, ox + 560, 1600, 230); house(g, ox + 640, 1610, 170, 150, 95); house(g, ox + 830, 1595, 140, 190, 90);
+  house(g, ox + 990, 1600, 190, 140, 100); house(g, ox + 1200, 1610, 150, 170, 85); tree(g, ox + 1420, 1605, 250);
+}
+function nuit() {
+  const defs = el('defs', {});
+  const lg = el('linearGradient', { id: 'lg', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  el('stop', { offset: '0%', 'stop-color': '#16223a' }, lg); el('stop', { offset: '100%', 'stop-color': '#2b3d63' }, lg);
+  el('rect', { x: 0, y: 0, width: W, height: H, fill: 'url(#lg)' });
+  const g = el('g', {}), bg = '#1d2a44';
+  if (fmt === 'boule') {
+    const C = 1000; seed = 9;
+    for (let i = 0; i < 70; i++) {
+      const x = 120 + rnd() * 1760, y = 260 + rnd() * 1150;
+      if (Math.abs(x - C) < 700 && y > 520 && y < 1360) continue;
+      el('circle', { cx: x, cy: y, r: 3 + rnd() * 5, fill: '#f3e3b0', opacity: 0.5 + rnd() * 0.5 }, g);
+    }
+    for (const [x, y, s] of [[420, 520, 30], [1600, 640, 24], [300, 1150, 20], [1720, 1180, 28], [760, 360, 18]]) star4(g, x, y, s, GOLD);
+    el('circle', { cx: 1540, cy: 420, r: 70, fill: '#f6e7b8' }, g); el('circle', { cx: 1575, cy: 395, r: 62, fill: '#1a2742' }, g);
+    const v = el('g', { transform: 'translate(0 45)' }, g);
+    el('path', { d: 'M0,1640 C300,1560 600,1600 1000,1580 C1400,1560 1700,1600 2000,1560 L2000,2000 L0,2000Z', fill: '#e9eef5' }, v);
+    village(v, 0);
+    el('path', { d: 'M0,1600 C350,1655 650,1625 1000,1640 C1350,1655 1650,1620 2000,1650 L2000,2000 L0,2000Z', fill: '#f4f7fb' }, v);
+    texts({ cx: C, s: 1, titleY: 630, nameY: 1080, yearY: 1255, title: GOLD, name: CREAM, year: GOLD, bg });
+  } else {
+    seed = 9;
+    const panels = [W * 0.25, W * 0.75];
+    for (let i = 0; i < 110; i++) {
+      const x = 20 + rnd() * (W - 40), y = 40 + rnd() * 800;
+      if (panels.some(c => Math.abs(x - c) < 440 && y > 150 && y < 720)) continue;
+      el('circle', { cx: x, cy: y, r: 2 + rnd() * 4, fill: '#f3e3b0', opacity: 0.5 + rnd() * 0.5 }, g);
+    }
+    for (const [x, y, s] of [[140, 300, 18], [1205, 220, 22], [1205, 620, 14], [2280, 380, 18], [880, 140, 12], [1530, 160, 12]]) star4(g, x, y, s, GOLD);
+    el('circle', { cx: 1205, cy: 420, r: 46, fill: '#f6e7b8' }, g); el('circle', { cx: 1228, cy: 404, r: 41, fill: '#1e2c48' }, g);
+    // village tout autour du mug, a l'echelle 0.45
+    const v = el('g', { transform: `translate(0 ${1010 - 1600 * 0.45}) scale(0.45)` }, g);
+    el('path', { d: `M0,1640 C700,1560 1400,1610 2700,1580 C4000,1560 4700,1600 ${W / 0.45},1570 L${W / 0.45},2600 L0,2600Z`, fill: '#e9eef5' }, v);
+    for (const ox of [-560, 900, 2050, 3500, 4700]) village(v, ox);
+    el('path', { d: `M0,1600 C900,1655 1800,1625 2700,1640 C3600,1655 4500,1620 ${W / 0.45},1650 L${W / 0.45},2600 L0,2600Z`, fill: '#f4f7fb' }, v);
+    for (const c of panels)
+      texts({ cx: c, s: 0.6, titleY: 230, nameY: 520, yearY: 640, title: GOLD, name: CREAM, year: GOLD, bg });
+  }
+}
+
+({ rouge, nuit })[style]();
+document.fonts.ready.then(() => { pending.forEach(f => f()); setTimeout(() => document.body.setAttribute('data-ready', '1'), 50); });
+</script>
+</body></html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:GV;src:url(fonts/great-vibes-latin-400-normal.woff2)}
+@font-face{font-family:CG;font-weight:500;src:url(fonts/cormorant-garamond-latin-500-normal.woff2)}
+@font-face{font-family:CG;font-weight:600;src:url(fonts/cormorant-garamond-latin-600-normal.woff2)}
+html,body{margin:0;padding:0;background:transparent}
+svg{display:block}
+</style></head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+const q = new URLSearchParams(location.search);
+const theme = q.get('theme') || 'blanc';
+const name = q.get('name') ?? 'Emma';
+const W = 2409, H = 1169;            // 20,4 x 9,9 cm a 300 dpi
+const T = {
+  blanc: { bg: null, title: '#a8792e', name: '#1f3d2c', year: '#a8792e',
+           needles: ['#1f3d2c', '#2f5a40', '#3d6b4c'], stem: '#5a4632',
+           berry: '#a3312f', star: '#b8893a' },
+  vert:  { bg: '#1f3d2c', title: '#d4b26a', name: '#f6efdf', year: '#d4b26a',
+           needles: ['#8fb59a', '#a9c9b1', '#6f9a7a'], stem: '#a98b62',
+           berry: '#d0473f', star: '#d4b26a' }
+}[theme];
+
+const svg = document.getElementById('s');
+svg.setAttribute('width', W); svg.setAttribute('height', H);
+svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent = svg) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e); return e;
+}
+// petit generateur pseudo-aleatoire stable
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+if (T.bg) el('rect', { x: 0, y: 0, width: W, height: H, fill: T.bg });
+
+function bez(p0, p1, p2, t) {
+  const u = 1 - t;
+  return [u*u*p0[0] + 2*u*t*p1[0] + t*t*p2[0], u*u*p0[1] + 2*u*t*p1[1] + t*t*p2[1]];
+}
+function bezTan(p0, p1, p2, t) {
+  const dx = 2*(1-t)*(p1[0]-p0[0]) + 2*t*(p2[0]-p1[0]);
+  const dy = 2*(1-t)*(p1[1]-p0[1]) + 2*t*(p2[1]-p1[1]);
+  const l = Math.hypot(dx, dy); return [dx/l, dy/l];
+}
+// branche de sapin : tige courbe + aiguilles de chaque cote, qui s'affinent vers la pointe
+function branch(g, p0, p1, p2, Lmax, n) {
+  el('path', { d: `M${p0} Q${p1} ${p2}`, fill: 'none', stroke: T.stem,
+               'stroke-width': 4, 'stroke-linecap': 'round' }, g);
+  for (let i = 0; i < n; i++) {
+    const t = 0.04 + 0.94 * i / (n - 1);
+    const [x, y] = bez(p0, p1, p2, t);
+    const [tx, ty] = bezTan(p0, p1, p2, t);
+    const L = Lmax * (1 - 0.55 * t) * (0.85 + 0.3 * rnd());
+    for (const side of [-1, 1]) {
+      const a = side * (0.62 + 0.18 * rnd());        // angle par rapport a la tige
+      const dx = tx * Math.cos(a) - ty * Math.sin(a);
+      const dy = tx * Math.sin(a) + ty * Math.cos(a);
+      const c = T.needles[Math.floor(rnd() * T.needles.length)];
+      el('line', { x1: x.toFixed(1), y1: y.toFixed(1),
+                   x2: (x + dx * L).toFixed(1), y2: (y + dy * L).toFixed(1),
+                   stroke: c, 'stroke-width': 3.6, 'stroke-linecap': 'round' }, g);
+    }
+  }
+  // aiguilles de bout de branche
+  const [tx, ty] = bezTan(p0, p1, p2, 1);
+  for (const a of [-0.25, 0, 0.25]) {
+    const dx = tx * Math.cos(a) - ty * Math.sin(a), dy = tx * Math.sin(a) + ty * Math.cos(a);
+    el('line', { x1: p2[0], y1: p2[1], x2: p2[0] + dx * Lmax * 0.4, y2: p2[1] + dy * Lmax * 0.4,
+                 stroke: T.needles[0], 'stroke-width': 3.6, 'stroke-linecap': 'round' }, g);
+  }
+}
+function berries(g, cx, cy, r) {
+  for (const [ox, oy, k] of [[-r*1.05, r*0.15, 1], [r*1.05, r*0.15, 1], [0, -r*0.85, 1.08]]) {
+    el('circle', { cx: cx + ox, cy: cy + oy, r: r * k, fill: T.berry }, g);
+    el('circle', { cx: cx + ox - r*0.35, cy: cy + oy - r*0.35, r: r * 0.28,
+                   fill: '#fff', opacity: 0.45 }, g);
+  }
+}
+function star(g, x, y, s) {
+  el('path', { d: `M${x},${y-s} Q${x},${y} ${x+s},${y} Q${x},${y} ${x},${y+s} Q${x},${y} ${x-s},${y} Q${x},${y} ${x},${y-s}Z`,
+               fill: T.star }, g);
+}
+
+function panel(cx) {
+  const g = el('g', {});
+  // titre
+  const t1 = el('text', { x: cx, y: 250, 'text-anchor': 'middle', fill: T.title,
+    'font-family': 'CG', 'font-weight': 600, 'font-size': 64, 'letter-spacing': 22 }, g);
+  t1.textContent = 'JOYEUX NOËL';
+  // filets + losange sous le titre
+  const ly = 300;
+  el('line', { x1: cx - 150, y1: ly, x2: cx - 22, y2: ly, stroke: T.title, 'stroke-width': 2.4 }, g);
+  el('line', { x1: cx + 22, y1: ly, x2: cx + 150, y2: ly, stroke: T.title, 'stroke-width': 2.4 }, g);
+  el('path', { d: `M${cx},${ly-9} L${cx+9},${ly} L${cx},${ly+9} L${cx-9},${ly}Z`, fill: T.title }, g);
+  // prenom
+  if (name) {
+    const t2 = el('text', { x: cx, y: 565, 'text-anchor': 'middle', fill: T.name,
+      'font-family': 'GV', 'font-size': 250 }, g);
+    t2.textContent = name;
+    // prenom long : on reduit la taille pour rester dans 7,5 cm de large
+    document.fonts.ready.then(() => {
+      const w = t2.getBBox().width, max = 885;
+      if (w > max) t2.setAttribute('font-size', Math.floor(250 * max / w));
+    });
+  }
+  // annee
+  const t3 = el('text', { x: cx + 12, y: 700, 'text-anchor': 'middle', fill: T.year,
+    'font-family': 'CG', 'font-weight': 500, 'font-size': 52, 'letter-spacing': 24 }, g);
+  t3.textContent = '2026';
+  // guirlande : deux branches qui partent du centre bas et remontent en arc
+  const by = 905;
+  // branches principales, en arc
+  seed = 11; branch(g, [cx - 18, by], [cx - 250, by + 40], [cx - 410, by - 135], 70, 34);
+  seed = 23; branch(g, [cx + 18, by], [cx + 250, by + 40], [cx + 410, by - 135], 70, 34);
+  // petites branches vers le bas, pour donner du volume
+  seed = 37; branch(g, [cx - 40, by + 8], [cx - 120, by + 60], [cx - 205, by + 55], 40, 13);
+  seed = 41; branch(g, [cx + 40, by + 8], [cx + 120, by + 60], [cx + 205, by + 55], 40, 13);
+  berries(g, cx, by + 2, 18);
+  // quelques etoiles discretes
+  star(g, cx - 330, 380, 13); star(g, cx + 345, 410, 10);
+  star(g, cx - 380, 560, 8);  star(g, cx + 390, 600, 13);
+}
+// meme motif sur les deux faces du mug (droitier ou gaucher)
+panel(W * 0.25); panel(W * 0.75);
+document.fonts.ready.then(() => document.body.setAttribute('data-ready', '1'));
+</script>
+</body></html>

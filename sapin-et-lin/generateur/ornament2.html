@@ -1,0 +1,157 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:GV;src:url(fonts/great-vibes-latin-400-normal.woff2)}
+@font-face{font-family:CG;font-weight:500;src:url(fonts/cormorant-garamond-latin-500-normal.woff2)}
+@font-face{font-family:CG;font-weight:600;src:url(fonts/cormorant-garamond-latin-600-normal.woff2)}
+html,body{margin:0;padding:0;background:transparent}
+svg{display:block}
+</style></head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+const q = new URLSearchParams(location.search);
+const theme = q.get('theme') || 'blanc';
+const name = q.get('name') ?? 'Emma';
+const title = q.get('title') || 'JOYEUX NOËL';
+const icon = q.get('icon') || 'diamond';
+const yearTxt = q.get('year') || '2026';
+const W = 2000, H = 2000;            // boule ronde, carre 2000 px (>600 dpi)
+const T = {
+  blanc: { bg: null, title: '#a8792e', name: '#1f3d2c', year: '#a8792e',
+           needles: ['#1f3d2c', '#2f5a40', '#3d6b4c'], stem: '#5a4632',
+           berry: '#a3312f', star: '#b8893a' },
+  vert:  { bg: '#1f3d2c', title: '#d4b26a', name: '#f6efdf', year: '#d4b26a',
+           needles: ['#8fb59a', '#a9c9b1', '#6f9a7a'], stem: '#a98b62',
+           berry: '#d0473f', star: '#d4b26a' }
+}[theme];
+
+const svg = document.getElementById('s');
+svg.setAttribute('width', W); svg.setAttribute('height', H);
+svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent = svg) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e); return e;
+}
+// petit generateur pseudo-aleatoire stable
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+if (T.bg) el('rect', { x: 0, y: 0, width: W, height: H, fill: T.bg });
+
+function bez(p0, p1, p2, t) {
+  const u = 1 - t;
+  return [u*u*p0[0] + 2*u*t*p1[0] + t*t*p2[0], u*u*p0[1] + 2*u*t*p1[1] + t*t*p2[1]];
+}
+function bezTan(p0, p1, p2, t) {
+  const dx = 2*(1-t)*(p1[0]-p0[0]) + 2*t*(p2[0]-p1[0]);
+  const dy = 2*(1-t)*(p1[1]-p0[1]) + 2*t*(p2[1]-p1[1]);
+  const l = Math.hypot(dx, dy); return [dx/l, dy/l];
+}
+// branche de sapin : tige courbe + aiguilles de chaque cote, qui s'affinent vers la pointe
+function branch(g, p0, p1, p2, Lmax, n) {
+  el('path', { d: `M${p0} Q${p1} ${p2}`, fill: 'none', stroke: T.stem,
+               'stroke-width': 4, 'stroke-linecap': 'round' }, g);
+  for (let i = 0; i < n; i++) {
+    const t = 0.04 + 0.94 * i / (n - 1);
+    const [x, y] = bez(p0, p1, p2, t);
+    const [tx, ty] = bezTan(p0, p1, p2, t);
+    const L = Lmax * (1 - 0.55 * t) * (0.85 + 0.3 * rnd());
+    for (const side of [-1, 1]) {
+      const a = side * (0.62 + 0.18 * rnd());        // angle par rapport a la tige
+      const dx = tx * Math.cos(a) - ty * Math.sin(a);
+      const dy = tx * Math.sin(a) + ty * Math.cos(a);
+      const c = T.needles[Math.floor(rnd() * T.needles.length)];
+      el('line', { x1: x.toFixed(1), y1: y.toFixed(1),
+                   x2: (x + dx * L).toFixed(1), y2: (y + dy * L).toFixed(1),
+                   stroke: c, 'stroke-width': 3.6, 'stroke-linecap': 'round' }, g);
+    }
+  }
+  // aiguilles de bout de branche
+  const [tx, ty] = bezTan(p0, p1, p2, 1);
+  for (const a of [-0.25, 0, 0.25]) {
+    const dx = tx * Math.cos(a) - ty * Math.sin(a), dy = tx * Math.sin(a) + ty * Math.cos(a);
+    el('line', { x1: p2[0], y1: p2[1], x2: p2[0] + dx * Lmax * 0.4, y2: p2[1] + dy * Lmax * 0.4,
+                 stroke: T.needles[0], 'stroke-width': 3.6, 'stroke-linecap': 'round' }, g);
+  }
+}
+function berries(g, cx, cy, r) {
+  for (const [ox, oy, k] of [[-r*1.05, r*0.15, 1], [r*1.05, r*0.15, 1], [0, -r*0.85, 1.08]]) {
+    el('circle', { cx: cx + ox, cy: cy + oy, r: r * k, fill: T.berry }, g);
+    el('circle', { cx: cx + ox - r*0.35, cy: cy + oy - r*0.35, r: r * 0.28,
+                   fill: '#fff', opacity: 0.45 }, g);
+  }
+}
+function star(g, x, y, s) {
+  el('path', { d: `M${x},${y-s} Q${x},${y} ${x+s},${y} Q${x},${y} ${x},${y+s} Q${x},${y} ${x-s},${y} Q${x},${y} ${x},${y-s}Z`,
+               fill: T.star }, g);
+}
+
+
+
+// petits symboles dores entre les deux filets
+function drawIcon(g, kind, x, y) {
+  const f = T.title;
+  if (kind === 'diamond') {
+    el('path', { d: `M${x},${y-14} L${x+14},${y} L${x},${y+14} L${x-14},${y}Z`, fill: f }, g);
+  } else if (kind === 'star') {
+    const s = 26;
+    el('path', { d: `M${x},${y-s} Q${x+4},${y-4} ${x+s},${y} Q${x+4},${y+4} ${x},${y+s} Q${x-4},${y+4} ${x-s},${y} Q${x-4},${y-4} ${x},${y-s}Z`, fill: f }, g);
+  } else if (kind === 'heart') {
+    el('path', { d: `M${x},${y+18} C${x-30},${y-2} ${x-26},${y-26} ${x-12},${y-26} C${x-4},${y-26} ${x},${y-18} ${x},${y-12} C${x},${y-18} ${x+4},${y-26} ${x+12},${y-26} C${x+26},${y-26} ${x+30},${y-2} ${x},${y+18}Z`, fill: f }, g);
+  } else if (kind === 'house') {
+    el('path', { d: `M${x-20},${y+20} L${x-20},${y-4} L${x},${y-24} L${x+20},${y-4} L${x+20},${y+20}Z`, fill: f }, g);
+    el('rect', { x: x - 6, y: y + 4, width: 12, height: 16, fill: T.bg || '#ffffff' }, g);
+  } else if (kind === 'paw') {
+    el('ellipse', { cx: x, cy: y + 8, rx: 14, ry: 12, fill: f }, g);
+    for (const [dx, dy] of [[-17, -8], [-6, -19], [6, -19], [17, -8]])
+      el('ellipse', { cx: x + dx, cy: y + dy, rx: 5.5, ry: 7, fill: f }, g);
+  }
+}
+function ornament() {
+  const g = el('g', { transform: 'translate(1000 1020) scale(1.16) translate(-1000 -1020)' });
+  const cx = 1000;
+  const t1 = el('text', { x: cx + 14, y: 640, 'text-anchor': 'middle', fill: T.title,
+    'font-family': 'CG', 'font-weight': 600, 'font-size': 100, 'letter-spacing': 30 }, g);
+  t1.textContent = title;
+  document.fonts.ready.then(() => {           // titre long : on resserre
+    const w = t1.getBBox().width, max = 1180;
+    if (w > max) { const k = max / w; t1.setAttribute('font-size', Math.floor(100 * k));
+      t1.setAttribute('letter-spacing', Math.floor(30 * k)); t1.setAttribute('x', cx + 14 * k); }
+  });
+  const ly = 715;
+  el('line', { x1: cx - 230, y1: ly, x2: cx - 44, y2: ly, stroke: T.title, 'stroke-width': 3.6 }, g);
+  el('line', { x1: cx + 44, y1: ly, x2: cx + 230, y2: ly, stroke: T.title, 'stroke-width': 3.6 }, g);
+  drawIcon(g, icon, cx, ly);
+  if (name) {
+    const t2 = el('text', { x: cx, y: 1095, 'text-anchor': 'middle', fill: T.name,
+      'font-family': 'GV', 'font-size': 360 }, g);
+    t2.textContent = name;
+    document.fonts.ready.then(() => {
+      const w = t2.getBBox().width, max = 1250;
+      if (w > max) t2.setAttribute('font-size', Math.floor(360 * max / w));
+    });
+  }
+  const t3 = el('text', { x: cx + 18, y: 1270, 'text-anchor': 'middle', fill: T.year,
+    'font-family': 'CG', 'font-weight': 500, 'font-size': 82, 'letter-spacing': 36 }, g);
+  t3.textContent = yearTxt;
+  document.fonts.ready.then(() => {
+    const w = t3.getBBox().width, max = 900;
+    if (w > max) { const k = max / w; t3.setAttribute('font-size', Math.floor(82 * k)); t3.setAttribute('letter-spacing', Math.floor(36 * k)); }
+  });
+  // guirlande, mise a l'echelle de la boule
+  const by = 1500;
+  g2 = el('g', { transform: `translate(${cx} ${by}) scale(1.25) translate(${-cx} ${-by})` }, g);
+  seed = 11; branch(g2, [cx - 18, by], [cx - 250, by + 40], [cx - 410, by - 135], 70, 34);
+  seed = 23; branch(g2, [cx + 18, by], [cx + 250, by + 40], [cx + 410, by - 135], 70, 34);
+  seed = 37; branch(g2, [cx - 40, by + 8], [cx - 120, by + 60], [cx - 205, by + 55], 40, 13);
+  seed = 41; branch(g2, [cx + 40, by + 8], [cx + 120, by + 60], [cx + 205, by + 55], 40, 13);
+  berries(g2, cx, by + 2, 18);
+  star(g, cx - 560, 900, 18); star(g, cx + 570, 870, 14);
+  star(g, cx - 500, 1180, 12); star(g, cx + 520, 1210, 18);
+}
+let g2; ornament();
+document.fonts.ready.then(() => document.body.setAttribute('data-ready', '1'));
+</script>
+</body></html>
