@@ -1,0 +1,24 @@
+[
+ {
+  "mois": "2026-11",
+  "decide_le": "2026-10-30",
+  "donnees_jusqu_a": {
+   "Actions US": "2026-09",
+   "Obligations US": "2026-08",
+   "Or": "2026-09",
+   "Pétrole": "2026-09",
+   "Euro": "2026-09",
+   "Yen": "2026-09",
+   "Livre sterling": "2026-09"
+  },
+  "poids": {
+   "Actions US": 0.1383,
+   "Obligations US": -0.2747,
+   "Or": 0.101,
+   "Pétrole": 0.1045,
+   "Euro": -0.6523,
+   "Yen": 0.1501,
+   "Livre sterling": -0.2217
+  }
+ }
+]

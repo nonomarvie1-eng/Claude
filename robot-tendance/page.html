@@ -1,0 +1,220 @@
+<title>Robot Tendance</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout : une seule colonne qui se lit comme un rapport court — règles, courbe, krachs, limites, positions. */
+:root{
+  --bg:#EEF1F4; --panel:#FFFFFF; --ink:#16212C; --muted:#5B6875; --line:#D6DDE4;
+  --accent:#2C55C9; --stock:#8A96A3; --mix:#B87412; --gain:#1C7F55; --loss:#BC3A33;
+  --gain-soft:rgba(28,127,85,.10); --loss-soft:rgba(188,58,51,.10);
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1318; --panel:#161D25; --ink:#E5EAF0; --muted:#94A1AE; --line:#29333E;
+  --accent:#86A3FF; --stock:#7F8B97; --mix:#E2A74B; --gain:#4FC18C; --loss:#EF7A72;
+  --gain-soft:rgba(79,193,140,.13); --loss-soft:rgba(239,122,114,.13); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1318; --panel:#161D25; --ink:#E5EAF0; --muted:#94A1AE; --line:#29333E;
+  --accent:#86A3FF; --stock:#7F8B97; --mix:#E2A74B; --gain:#4FC18C; --loss:#EF7A72;
+  --gain-soft:rgba(79,193,140,.13); --loss-soft:rgba(239,122,114,.13); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding-block:20px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1,h2{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,8vw,42px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:22px;font-weight:800}
+p{margin:0}
+.lede{color:var(--muted)}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.rules{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.rules li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.rules .n{font-family:var(--f-mono);font-weight:600;color:var(--panel);background:var(--accent);border-radius:8px;height:28px;display:grid;place-items:center;font-size:14px}
+.ends{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.end{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.end b{font-family:var(--f-mono);font-size:19px;font-variant-numeric:tabular-nums}
+.end span{font-size:12.5px;color:var(--muted);line-height:1.3}
+.end i{display:block;width:18px;height:4px;border-radius:2px;margin-bottom:4px}
+svg{width:100%;display:block}
+.ax{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+.readout{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);min-height:3em;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:9px 6px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{font-size:12.5px;color:var(--muted);font-weight:700}
+td{font-family:var(--f-mono);font-size:14px;white-space:nowrap}
+td:first-child{white-space:normal;font-family:var(--f-body)}
+td.g{color:var(--gain)} td.l{color:var(--loss)}
+.key{font-size:15px}
+.key li{margin-bottom:6px}
+.pos{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:110px 1fr 54px;gap:8px;align-items:center;font-size:14.5px}
+.bar{height:12px;background:var(--bg);border-radius:6px;position:relative;overflow:hidden}
+.bar span{position:absolute;top:0;bottom:0;border-radius:6px}
+.row b{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.hint{font-size:13.5px;color:var(--muted)}
+.foot{font-size:12.5px;color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px;padding-top:8px">
+    <span class="eyebrow">Version 2 · testée de 2000 à 2026</span>
+    <h1>Robot Tendance</h1>
+    <p class="lede">Un robot qui suit la tendance sur 7 marchés à la fois. Il prend une seule décision par mois. Voici ce qu'il aurait fait avec 1 000 € depuis l'an 2000, et comment il se débrouille en direct.</p>
+  </header>
+
+  <section class="panel" id="live">
+    <span class="eyebrow">Suivi en direct · argent fictif</span>
+    <h2>Le vrai test a commencé</h2>
+    <p>Depuis <span id="lvStart"></span>, le robot décide chaque mois avec des règles figées, sur des prix qu'il n'a jamais vus. Portefeuille fictif de départ : 1 000 €.</p>
+    <div class="ends" style="grid-template-columns:1fr 1fr">
+      <div class="end"><b id="lvVal"></b><span>valeur actuelle du portefeuille fictif</span></div>
+      <div class="end"><b id="lvN"></b><span>mois terminés</span></div>
+    </div>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Mois</th><th>Décidé le</th><th>Résultat</th><th>Valeur</th></tr></thead>
+      <tbody id="lvRows"></tbody>
+    </table>
+    </div>
+    <p class="hint">Les résultats d'un mois arrivent environ un mois plus tard, le temps que les données publiques soient mises à jour. Dernière mise à jour : <span id="lvMaj"></span>.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Ses 3 règles</h2>
+    <ol class="rules">
+      <li><span class="n">1</span><span><b>Il regarde 7 marchés</b> : les actions américaines, les obligations américaines, l'or, le pétrole, l'euro, le yen et la livre.</span></li>
+      <li><span class="n">2</span><span><b>Une fois par mois</b>, pour chaque marché, il regarde si le prix a monté sur le dernier mois, sur 3 mois et sur 12 mois. Trois hausses : il parie franchement à la hausse. Trois baisses : franchement à la baisse. Entre les deux : il mise moins.</span></li>
+      <li><span class="n">3</span><span><b>Il mise moins sur ce qui bouge beaucoup</b> (le pétrole) et plus sur ce qui bouge peu (les obligations). Levier maximum : 2, très loin du 1:250 du live.</span></li>
+    </ol>
+    <p class="hint">Ces règles viennent d'études publiées par des chercheurs. Je ne les ai pas ajustées pour que le résultat soit joli.</p>
+  </section>
+
+  <section class="panel">
+    <h2>1 000 € placés en janvier 2000</h2>
+    <div class="ends" id="ends"></div>
+    <div class="readout" id="read"></div>
+    <svg id="chart" height="240" role="img" aria-label="Évolution de 1 000 euros de 2000 à 2026"></svg>
+    <p class="hint">Touche la courbe pour voir une date précise.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Pendant les krachs</h2>
+    <p>C'est là que le robot sert vraiment : quand la bourse s'effondre, il a souvent déjà parié à la baisse.</p>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Année</th><th>Actions seules</th><th>Robot seul</th><th>80 % actions + 20 % robot</th></tr></thead>
+      <tbody>
+        <tr><td>2002 (bulle internet)</td><td class="l">−20 %</td><td class="g">+22 %</td><td class="l">−13 %</td></tr>
+        <tr><td>2008 (crise financière)</td><td class="l">−39 %</td><td class="g">+55 %</td><td class="l">−25 %</td></tr>
+        <tr><td>2022 (inflation)</td><td class="l">−15 %</td><td class="g">+16 %</td><td class="l">−9 %</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Ce qu'il faut savoir</h2>
+    <ul class="key" style="margin:0;padding-left:20px">
+      <li><b>Seul, il gagne un peu moins que les actions</b> : 8,0 % par an contre 8,5 % par an.</li>
+      <li><b>Mais il est beaucoup plus calme.</b> Sa pire chute : −13 %, contre −49 % pour les actions. Il a perdu de l'argent 6 années sur 27, jamais plus de 4 %.</li>
+      <li><b>Depuis 2012, il fait 6,3 % par an</b>, pendant que la bourse américaine a fait 15 % par an. C'était une période exceptionnelle pour les actions.</li>
+      <li><b>Le mélange est le meilleur des deux.</b> 80 % actions + 20 % robot : 8,7 % par an, plus que les actions seules, avec une pire chute de −35 % au lieu de −49 %.</li>
+      <li><b>Une part de chance reste possible.</b> J'ai testé trois idées et gardé la meilleure. Le seul vrai test, c'est l'avenir : le suivre en argent fictif.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>Ce que j'ai testé pour la version 2</h2>
+    <p class="hint">Ma règle, fixée avant de voir les résultats : je garde une idée seulement si elle fait mieux de 2000 à 2011 <b>et</b> de 2012 à 2026.</p>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Idée</th><th>2000–2011</th><th>2012–2026</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Version 1 (12 mois seulement)</td><td>8,1 %/an</td><td>3,4 %/an</td><td>–</td></tr>
+        <tr><td>Regarder 3 durées (1, 3, 12 mois)</td><td class="g">10,1 %/an</td><td class="g">6,3 %/an</td><td class="g">Gardée</td></tr>
+        <tr><td>Ajouter 3 devises (franc suisse, dollar canadien, dollar australien)</td><td class="l">6,3 %/an</td><td class="l">1,3 %/an</td><td class="l">Rejetée</td></tr>
+        <tr><td>Actions : hausse ou cash, jamais de pari à la baisse</td><td class="l">7,7 %/an</td><td class="g">4,0 %/an</td><td class="l">Rejetée</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="hint">Ajouter des devises n'aide pas : ce sont des marchés qui se ressemblent trop. Ce qui protège, c'est la variété (actions, obligations, or, pétrole), pas le nombre.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Ce que le robot détient ce mois-ci</h2>
+    <p class="hint"><span id="wMois"></span>. En pourcentage de ton capital. À droite : il parie à la hausse. À gauche : à la baisse.</p>
+    <div class="pos" id="pos"></div>
+    <p class="hint">Le total dépasse 100 % parce que le robot utilise son petit levier, réparti sur 7 marchés.</p>
+  </section>
+
+  <p class="foot">Données mensuelles publiques : S&amp;P 500 dividendes compris, taux à 10 ans américains, or, pétrole WTI, taux de change de la Réserve fédérale. Frais de 0,1 % par mouvement inclus. Simplifications : prix au comptant plutôt que contrats à terme, intérêts du cash non comptés. Les résultats passés ne garantissent rien pour l'avenir.</p>
+</div>
+
+<script>
+const D = {"m":["2000-01","2000-02","2000-03","2000-04","2000-05","2000-06","2000-07","2000-08","2000-09","2000-10","2000-11","2000-12","2001-01","2001-02","2001-03","2001-04","2001-05","2001-06","2001-07","2001-08","2001-09","2001-10","2001-11","2001-12","2002-01","2002-02","2002-03","2002-04","2002-05","2002-06","2002-07","2002-08","2002-09","2002-10","2002-11","2002-12","2003-01","2003-02","2003-03","2003-04","2003-05","2003-06","2003-07","2003-08","2003-09","2003-10","2003-11","2003-12","2004-01","2004-02","2004-03","2004-04","2004-05","2004-06","2004-07","2004-08","2004-09","2004-10","2004-11","2004-12","2005-01","2005-02","2005-03","2005-04","2005-05","2005-06","2005-07","2005-08","2005-09","2005-10","2005-11","2005-12","2006-01","2006-02","2006-03","2006-04","2006-05","2006-06","2006-07","2006-08","2006-09","2006-10","2006-11","2006-12","2007-01","2007-02","2007-03","2007-04","2007-05","2007-06","2007-07","2007-08","2007-09","2007-10","2007-11","2007-12","2008-01","2008-02","2008-03","2008-04","2008-05","2008-06","2008-07","2008-08","2008-09","2008-10","2008-11","2008-12","2009-01","2009-02","2009-03","2009-04","2009-05","2009-06","2009-07","2009-08","2009-09","2009-10","2009-11","2009-12","2010-01","2010-02","2010-03","2010-04","2010-05","2010-06","2010-07","2010-08","2010-09","2010-10","2010-11","2010-12","2011-01","2011-02","2011-03","2011-04","2011-05","2011-06","2011-07","2011-08","2011-09","2011-10","2011-11","2011-12","2012-01","2012-02","2012-03","2012-04","2012-05","2012-06","2012-07","2012-08","2012-09","2012-10","2012-11","2012-12","2013-01","2013-02","2013-03","2013-04","2013-05","2013-06","2013-07","2013-08","2013-09","2013-10","2013-11","2013-12","2014-01","2014-02","2014-03","2014-04","2014-05","2014-06","2014-07","2014-08","2014-09","2014-10","2014-11","2014-12","2015-01","2015-02","2015-03","2015-04","2015-05","2015-06","2015-07","2015-08","2015-09","2015-10","2015-11","2015-12","2016-01","2016-02","2016-03","2016-04","2016-05","2016-06","2016-07","2016-08","2016-09","2016-10","2016-11","2016-12","2017-01","2017-02","2017-03","2017-04","2017-05","2017-06","2017-07","2017-08","2017-09","2017-10","2017-11","2017-12","2018-01","2018-02","2018-03","2018-04","2018-05","2018-06","2018-07","2018-08","2018-09","2018-10","2018-11","2018-12","2019-01","2019-02","2019-03","2019-04","2019-05","2019-06","2019-07","2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08","2020-09","2020-10","2020-11","2020-12","2021-01","2021-02","2021-03","2021-04","2021-05","2021-06","2021-07","2021-08","2021-09","2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"],"sp":[999,974,1012,1027,998,1029,1038,1048,1036,982,975,943,947,927,843,846,904,883,859,842,747,771,810,822,819,792,831,802,779,733,654,662,630,622,663,656,655,613,621,654,688,727,732,731,754,769,778,802,842,851,837,846,824,847,829,817,840,841,881,905,893,908,905,884,895,915,931,934,937,912,948,969,983,983,997,1005,998,971,978,1000,1025,1062,1084,1107,1115,1132,1104,1150,1189,1194,1200,1150,1185,1221,1162,1177,1099,1082,1053,1098,1126,1078,1013,1034,984,786,718,716,708,661,623,700,746,768,777,840,871,892,910,931,943,916,970,1010,951,917,915,923,954,998,1023,1061,1098,1132,1120,1144,1152,1110,1144,1025,1017,1048,1067,1083,1135,1182,1216,1216,1178,1165,1199,1239,1277,1274,1238,1265,1319,1350,1386,1406,1471,1454,1502,1505,1523,1556,1616,1640,1656,1654,1699,1702,1728,1784,1810,1803,1835,1786,1888,1900,1879,1932,1933,1950,1969,1961,1959,1912,1826,1904,1960,1939,1814,1805,1919,1973,1967,1988,2054,2078,2069,2059,2084,2166,2197,2253,2293,2289,2328,2369,2393,2399,2438,2505,2545,2618,2745,2666,2668,2624,2675,2731,2775,2842,2890,2779,2722,2571,2615,2767,2821,2926,2881,2922,3034,2939,3029,3030,3164,3242,3350,3354,2721,2838,3005,3200,3311,3506,3484,3544,3684,3841,3948,4046,4080,4325,4358,4437,4573,4673,4669,4690,4912,4925,4824,4685,4643,4648,4283,4139,4158,4426,4104,3978,4188,4188,4246,4379,4266,4437,4469,4690,4872,4823,4893,4632,4845,5096,5233,5466,5646,5590,5731,5936,6078,6021,6186,6382,6542,6640,6614,6689,6304,5964,6462,6714,7020,7154,7359,7539,7554,7690,7785,7756,7497,7848,8372,8425,8472,8743],"ro":[1019,1019,970,981,991,975,964,1003,983,989,1015,995,999,1014,1087,1056,1024,1034,1029,1026,1092,1106,1101,1106,1117,1111,1086,1078,1119,1209,1257,1280,1327,1313,1285,1348,1422,1434,1396,1394,1391,1414,1341,1312,1323,1339,1373,1456,1499,1507,1524,1443,1445,1413,1408,1387,1405,1448,1524,1548,1491,1513,1478,1403,1380,1419,1438,1435,1461,1469,1509,1538,1566,1531,1532,1610,1676,1592,1600,1622,1655,1690,1737,1731,1732,1743,1737,1744,1748,1749,1749,1709,1739,1808,1835,1831,1889,1938,2054,1954,1971,1996,1957,1970,2055,2381,2592,2845,2932,2878,2844,2735,2789,2813,2803,2828,2943,2958,3076,2938,2888,2871,2878,2937,2816,2830,2783,2850,2866,3017,2963,3011,2952,2998,3043,3151,3113,3119,3198,3399,3411,3149,3155,3165,3207,3185,3124,3096,3094,3058,3065,2981,3017,2990,2985,3042,3111,3132,3204,3273,3407,3381,3525,3478,3509,3486,3515,3634,3548,3470,3459,3444,3443,3527,3435,3454,3626,3715,3899,4037,4233,4156,4280,4053,4082,3999,4053,3972,4028,3915,3934,3901,3978,3939,3766,3801,3716,3878,3984,3951,3928,3891,4034,4251,4147,4221,4209,4201,4202,4264,4269,4163,4088,4120,4150,4237,4494,4403,4414,4294,4295,4322,4350,4432,4471,4408,4409,4394,4233,4175,4248,4348,4353,4295,4401,4571,4555,4437,4349,4421,4384,4505,4620,4673,4388,4415,4600,4752,4579,4604,4517,4672,4658,4801,4864,4860,4971,4900,4907,4888,4988,5100,5092,5020,5065,5101,5393,5870,5771,6013,5979,6053,6353,6448,5916,5834,6021,5886,5755,5827,5749,5847,5910,5907,5993,5957,5677,5814,5750,5818,6018,6299,6191,6142,5964,6249,6533,6323,6239,6312,6273,6299,6199,6737,6694,6846,6654,6660,6935,7378,7489,7719,7935,7935,7956,7770,7836,7923,7745,7801],"mx":[1003,983,1005,1018,997,1019,1024,1040,1027,985,984,954,959,945,890,888,932,915,895,880,812,835,868,879,879,854,884,858,845,819,755,765,741,731,767,768,775,737,741,772,804,843,839,834,856,872,885,918,959,969,959,956,937,954,936,923,946,953,999,1024,1005,1022,1015,985,992,1015,1033,1035,1041,1020,1058,1080,1097,1092,1105,1123,1126,1090,1097,1120,1148,1186,1211,1231,1238,1256,1230,1272,1307,1311,1317,1267,1302,1344,1296,1308,1247,1238,1227,1257,1285,1244,1179,1201,1164,1014,962,978,976,920,876,955,1010,1035,1044,1114,1155,1179,1208,1218,1228,1198,1255,1301,1229,1196,1190,1204,1238,1296,1318,1361,1393,1433,1424,1460,1464,1422,1464,1361,1353,1365,1385,1403,1460,1507,1536,1533,1495,1478,1513,1545,1586,1581,1545,1577,1638,1671,1715,1742,1820,1801,1864,1862,1884,1913,1975,2013,2019,2008,2050,2052,2077,2140,2154,2149,2201,2166,2286,2314,2315,2359,2375,2366,2388,2370,2375,2319,2243,2307,2364,2339,2228,2214,2307,2364,2347,2388,2464,2483,2472,2457,2499,2604,2622,2685,2721,2717,2753,2801,2823,2815,2842,2909,2950,3030,3185,3098,3102,3044,3091,3148,3191,3266,3316,3204,3151,3009,3029,3162,3222,3333,3293,3321,3439,3380,3461,3443,3551,3633,3724,3748,3201,3319,3435,3618,3748,3950,3901,3959,4069,4235,4327,4440,4481,4696,4746,4801,4920,5002,5019,5060,5250,5247,5170,5058,5080,5174,4831,4742,4754,5011,4769,4666,4786,4773,4856,4957,4832,4999,5015,5230,5403,5360,5437,5199,5341,5589,5696,5912,6109,6117,6220,6388,6474,6487,6688,6815,6933,7033,7002,7071,6723,6549,6979,7228,7451,7567,7802,8054,8092,8258,8386,8361,8142,8408,8872,8937,8936,9178],"w":{"Actions US":14,"Obligations US":-27,"Or":10,"Pétrole":10,"Euro":-65,"Yen":15,"Livre sterling":-22},"wMois":"2026-11","live":{"debut":"2026-11","capital":1000.0,"valeur":1000.0,"lignes":[{"mois":"2026-11","decide_le":"2026-10-30","resultat":null,"valeur":null}],"maj":"2026-10-30"}};
+const $ = id => document.getElementById(id);
+const nf = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+const MOIS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+const mlab = m => MOIS[+m.slice(5) - 1] + " " + m.slice(0, 4);
+const SERIES = [
+  { k: "sp", label: "Actions seules", color: "--stock", w: 1.6 },
+  { k: "ro", label: "Robot seul", color: "--accent", w: 2.2 },
+  { k: "mx", label: "80 % actions + 20 % robot", color: "--mix", w: 2 }
+];
+$("ends").innerHTML = SERIES.map(s => `<div class="end"><i style="background:var(${s.color})"></i><b>${nf.format(D[s.k][D[s.k].length - 1])} €</b><span>${s.label}</span></div>`).join("");
+
+function draw() {
+  const svg = $("chart"), W = Math.max(svg.getBoundingClientRect().width || 340, 260), H = 240;
+  const L = 46, R = 8, T = 10, B = 24, iw = W - L - R, ih = H - T - B, n = D.m.length;
+  const hi = Math.max(...D.sp, ...D.ro, ...D.mx) * 1.05;
+  const x = i => L + i / (n - 1) * iw, y = v => T + ih - v / hi * ih;
+  let g = "";
+  for (let t = 0; t <= hi; t += 2000) {
+    g += `<line x1="${L}" x2="${W - R}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" style="stroke:var(--line)"/>`;
+    g += `<text class="ax" x="${L - 6}" y="${(y(t) + 4).toFixed(1)}" text-anchor="end">${t ? nf.format(t / 1000) + " k€" : "0"}</text>`;
+  }
+  D.m.forEach((m, i) => { if (m.endsWith("-01") && (+m.slice(0, 4)) % 5 === 0) g += `<text class="ax" x="${x(i).toFixed(1)}" y="${H - 6}" text-anchor="middle">${m.slice(0, 4)}</text>`; });
+  for (const s of SERIES) g += `<path d="${D[s.k].map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join("")}" style="fill:none;stroke:var(${s.color})" stroke-width="${s.w}" stroke-linejoin="round"/>`;
+  g += `<line id="cur" y1="${T}" y2="${T + ih}" style="stroke:var(--muted)" stroke-dasharray="2 3" visibility="hidden"/>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g; svg._g = { L, iw, n, x };
+}
+function read(i) {
+  if (i == null) i = D.m.length - 1;
+  $("read").innerHTML = `${mlab(D.m[i])}<br>Actions ${nf.format(D.sp[i])} € · Robot ${nf.format(D.ro[i])} € · Mélange ${nf.format(D.mx[i])} €`;
+}
+const svg = $("chart");
+const mv = e => { const g = svg._g; if (!g) return; const r = svg.getBoundingClientRect();
+  const px = (e.clientX - r.left) / r.width * svg.viewBox.baseVal.width; const i = Math.round((px - g.L) / g.iw * (g.n - 1));
+  if (i < 0 || i >= g.n) return; const c = $("cur"); c.setAttribute("x1", g.x(i)); c.setAttribute("x2", g.x(i)); c.setAttribute("visibility", "visible"); read(i); };
+svg.addEventListener("pointermove", mv); svg.addEventListener("pointerdown", mv);
+svg.addEventListener("pointerleave", () => { const c = $("cur"); if (c) c.setAttribute("visibility", "hidden"); read(null); });
+
+const LBL = { "Actions US": "Actions US", "Obligations US": "Obligations", "Or": "Or", "Pétrole": "Pétrole", "Euro": "Euro", "Yen": "Yen", "Livre sterling": "Livre" };
+const maxW = Math.max(...Object.values(D.w).map(Math.abs), 1);
+$("pos").innerHTML = Object.entries(D.w).map(([k, v]) => {
+  const half = 50, len = Math.abs(v) / maxW * half;
+  const left = v >= 0 ? half : half - len;
+  return `<div class="row"><span>${LBL[k] || k}</span><div class="bar"><span style="left:${left}%;width:${len}%;background:var(${v >= 0 ? "--gain" : "--loss"})"></span><span style="left:50%;width:1px;background:var(--muted);border-radius:0"></span></div><b>${v > 0 ? "+" : ""}${v} %</b></div>`;
+}).join("");
+
+$("wMois").textContent = "Positions pour " + mlab(D.wMois);
+const L = D.live, eurf = v => v.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+$("lvStart").textContent = mlab(L.debut);
+$("lvVal").textContent = eurf(L.valeur);
+$("lvN").textContent = L.lignes.filter(r => r.resultat != null).length;
+$("lvMaj").textContent = new Date(L.maj + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+$("lvRows").innerHTML = [...L.lignes].reverse().map(r => {
+  const done = r.resultat != null, cls = done ? (r.resultat >= 0 ? "g" : "l") : "";
+  const res = done ? (r.resultat >= 0 ? "+" : "−") + Math.abs(r.resultat * 100).toFixed(1).replace(".", ",") + " %" : "en attente";
+  return `<tr><td>${mlab(r.mois)}</td><td>${new Date(r.decide_le + "T12:00:00").toLocaleDateString("fr-FR")}</td><td class="${cls}">${res}</td><td>${done ? eurf(r.valeur) : "–"}</td></tr>`;
+}).join("");
+draw(); read(null);
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(draw, 120); });
+</script>
