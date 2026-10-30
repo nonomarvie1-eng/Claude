@@ -1,0 +1,161 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#000}svg{display:block}</style></head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2320" height="1740" viewBox="0 0 2320 1740">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="55%" r="75%">
+    <stop offset="0%" stop-color="#2c5139"/><stop offset="55%" stop-color="#1c3a27"/><stop offset="100%" stop-color="#0d1f14"/>
+  </radialGradient>
+  <filter id="blur1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+  <filter id="blur2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
+  <filter id="blur3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="22"/><feOffset dx="26" dy="38"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.55"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="6"/><feOffset dx="5" dy="8"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <radialGradient id="gloss" cx="32%" cy="26%" r="62%">
+    <stop offset="0%" stop-color="#fff" stop-opacity=".55"/><stop offset="35%" stop-color="#fff" stop-opacity=".12"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="edge" cx="45%" cy="40%" r="58%">
+    <stop offset="78%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".28"/>
+  </radialGradient>
+  <linearGradient id="satin" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0%" stop-color="#6e1716"/><stop offset="35%" stop-color="#b8322f"/><stop offset="55%" stop-color="#d4534d"/><stop offset="100%" stop-color="#7c1b19"/>
+  </linearGradient>
+  <radialGradient id="vig" cx="50%" cy="50%" r="72%">
+    <stop offset="60%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".45"/>
+  </radialGradient>
+  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#ffd98a" stop-opacity=".35"/><stop offset="100%" stop-color="#ffd98a" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+</svg>
+<script>
+const svg = document.getElementById('s'), NS = 'http://www.w3.org/2000/svg';
+const W = 2320, H = 1740;
+function el(tag, a, p = svg) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; }
+let seed = 3; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// ---------- fond + lumieres floues (bokeh) ----------
+el('rect', { x: 0, y: 0, width: W, height: H, fill: 'url(#bg)' });
+el('ellipse', { cx: 1160, cy: 900, rx: 900, ry: 650, fill: 'url(#glow)' });
+const bokeh = el('g', {});
+const warm = ['#ffd27a', '#ffe3a6', '#f4a95b', '#ffcf8a', '#fff1cf'];
+seed = 21;
+for (let i = 0; i < 95; i++) {
+  const r = 14 + rnd() ** 2 * 95, x = rnd() * W, y = 220 + rnd() * 1480;
+  const f = r > 60 ? 'url(#blur3)' : r > 30 ? 'url(#blur2)' : 'url(#blur1)';
+  el('circle', { cx: x, cy: y, r, fill: warm[Math.floor(rnd() * warm.length)], opacity: (r > 60 ? 0.08 + rnd() * 0.22 : 0.15 + rnd() * 0.45).toFixed(2), filter: f }, bokeh);
+}
+// petites etincelles nettes
+for (let i = 0; i < 40; i++) {
+  el('circle', { cx: rnd() * W, cy: 250 + rnd() * 1450, r: 1.5 + rnd() * 2.5, fill: '#fff4d6', opacity: (0.35 + rnd() * 0.5).toFixed(2) }, bokeh);
+}
+
+// ---------- branches de sapin ----------
+function bez(p0, p1, p2, t) { const u = 1 - t; return [u*u*p0[0] + 2*u*t*p1[0] + t*t*p2[0], u*u*p0[1] + 2*u*t*p1[1] + t*t*p2[1]]; }
+function tan(p0, p1, p2, t) { const dx = 2*(1-t)*(p1[0]-p0[0]) + 2*t*(p2[0]-p1[0]), dy = 2*(1-t)*(p1[1]-p0[1]) + 2*t*(p2[1]-p1[1]); const l = Math.hypot(dx, dy); return [dx/l, dy/l]; }
+function branch(g, p0, p1, p2, L, n, pal, w = 5) {
+  el('path', { d: `M${p0} Q${p1} ${p2}`, fill: 'none', stroke: '#4a3a28', 'stroke-width': w + 1, 'stroke-linecap': 'round' }, g);
+  for (let i = 0; i < n; i++) {
+    const t = 0.03 + 0.95 * i / (n - 1), [x, y] = bez(p0, p1, p2, t), [tx, ty] = tan(p0, p1, p2, t);
+    const len = L * (1 - 0.5 * t) * (0.8 + 0.4 * rnd());
+    for (const s of [-1, 1]) for (const extra of [0, 0.32]) {
+      const a = s * (0.55 + extra + 0.15 * rnd());
+      const dx = tx * Math.cos(a) - ty * Math.sin(a), dy = tx * Math.sin(a) + ty * Math.cos(a);
+      const k = Math.min(pal.length - 1, Math.floor(rnd() * pal.length + t * 1.2));
+      el('line', { x1: x.toFixed(1), y1: y.toFixed(1), x2: (x + dx * len * (1 - extra * .4)).toFixed(1), y2: (y + dy * len * (1 - extra * .4)).toFixed(1),
+        stroke: pal[k], 'stroke-width': w, 'stroke-linecap': 'round' }, g);
+    }
+  }
+}
+const pals = [['#0e2a1a', '#163a24', '#1f4b2e'], ['#1a4129', '#255a37', '#2f6b43', '#3f7d52'], ['#2a5e3b', '#3a7449', '#4f8a5c', '#6aa173']];
+function berries(g, x, y, r) {
+  for (const [dx, dy, k] of [[-r, r * .2, 1], [r, r * .25, .95], [0, -r * .8, 1.05], [r * .2, r * 1.1, .9]]) {
+    el('circle', { cx: x + dx, cy: y + dy, r: r * k, fill: '#b5231f' }, g);
+    el('circle', { cx: x + dx - r * .3, cy: y + dy - r * .3, r: r * .28, fill: '#fff', opacity: .55 }, g);
+  }
+}
+function cone(g, x, y, s, rot) {
+  const c = el('g', { transform: `translate(${x} ${y}) rotate(${rot}) scale(${s})` }, g);
+  el('ellipse', { cx: 0, cy: 0, rx: 46, ry: 80, fill: '#5b3d22' }, c);
+  for (let r = -60; r <= 60; r += 20) for (let k = -1; k <= 1; k++) {
+    const w = 44 * Math.sqrt(1 - (r / 82) ** 2);
+    el('path', { d: `M${k * w * .6 - 16},${r} q16,22 32,0`, fill: '#7a5431', stroke: '#3c2814', 'stroke-width': 3 }, c);
+  }
+}
+// guirlande du haut : plusieurs couches de branches
+function garland(yBase, layerPal, count, s0) {
+  const g = el('g', { filter: 'url(#soft)' }); seed = s0;
+  for (let i = 0; i < count; i++) {
+    const x = -100 + (W + 200) * (i + rnd() * .6) / count, y = yBase + rnd() * 40 - 20;
+    const dir = rnd() < .5 ? -1 : 1, len = 260 + rnd() * 220;
+    const p2 = [x + dir * len, y + 60 + rnd() * 120], p1 = [x + dir * len * .5, y - 20 + rnd() * 30];
+    branch(g, [x, y], p1, p2, 58 + rnd() * 18, 22, layerPal, 5);
+  }
+  return g;
+}
+garland(10, pals[0], 16, 31);
+garland(60, pals[1], 18, 47);
+garland(105, pals[2], 14, 59);
+
+// ---------- boules ----------
+function ornament(img, cx, cy, d, ropeTop) {
+  const g = el('g', {});
+  // ruban de satin
+  el('rect', { x: cx - 13, y: ropeTop, width: 26, height: cy - d / 2 - ropeTop + 26, fill: 'url(#satin)', filter: 'url(#soft)' }, g);
+  const o = el('g', { filter: 'url(#shadow)' }, g);
+  const cid = 'c' + Math.round(cx);
+  const cp = el('clipPath', { id: cid }, svg.querySelector('defs')); el('circle', { cx, cy, r: d / 2 }, cp);
+  el('image', { href: img, x: cx - d / 2, y: cy - d / 2, width: d, height: d, 'clip-path': `url(#${cid})`, preserveAspectRatio: 'xMidYMid slice' }, o);
+  el('circle', { cx, cy, r: d / 2, fill: 'url(#edge)' }, o);
+  el('circle', { cx, cy, r: d / 2, fill: 'url(#gloss)' }, o);
+  el('circle', { cx, cy, r: d / 2 - 2, fill: 'none', stroke: '#fff', 'stroke-opacity': .35, 'stroke-width': 3 }, o);
+  // trou + boucle du ruban
+  const hy = cy - d / 2 + d * .045;
+  el('circle', { cx, cy: hy, r: d * .02, fill: '#0f2417' }, g);
+  el('path', { d: `M${cx - 13},${hy - 4} Q${cx},${hy + 30} ${cx + 13},${hy - 4}`, fill: 'none', stroke: '#9a2a27', 'stroke-width': 14, 'stroke-linecap': 'round' }, g);
+  // noeud au sommet
+  const b = el('g', { transform: `translate(${cx} ${ropeTop + 6})`, filter: 'url(#soft)' }, g);
+  el('path', { d: 'M0,0 C-70,-55 -95,25 -10,12Z', fill: 'url(#satin)' }, b);
+  el('path', { d: 'M0,0 C70,-55 95,25 10,12Z', fill: 'url(#satin)' }, b);
+  el('path', { d: 'M-6,8 L-38,80 L-22,74 L-14,92 Z', fill: '#8e2422' }, b);
+  el('path', { d: 'M6,8 L38,80 L22,74 L14,92 Z', fill: '#8e2422' }, b);
+  el('ellipse', { cx: 0, cy: 4, rx: 15, ry: 13, fill: '#c13c37' }, b);
+}
+const P = 'file:///tmp/claude-0/-home-user-Claude/3486f18b-b407-52a3-a9b4-c673a4796124/scratchpad/mug/';
+ornament(P + 'final/boule-couple-rouge-apercu.png', 560, 860, 500, 150);
+ornament(P + 'final/boule-bebe-nuit-apercu.png', 1770, 930, 520, 150);
+ornament('file:///tmp/claude-0/-home-user-Claude/3486f18b-b407-52a3-a9b4-c673a4796124/scratchpad/hero2/boule-classique.png', 1165, 1000, 640, 160);
+
+// ---------- premier plan : branches, baies et pommes de pin en bas ----------
+const fg = el('g', { filter: 'url(#soft)' }); seed = 77;
+for (const [x, y, dir] of [[-40, 1760, 1], [80, 1790, 1], [2360, 1760, -1], [2240, 1800, -1], [-60, 1600, 1], [2380, 1620, -1]]) {
+  const len = 420 + rnd() * 160;
+  branch(fg, [x, y], [x + dir * len * .45, y - 140 - rnd() * 60], [x + dir * len, y - 250 - rnd() * 120], 64, 24, pals[1 + (rnd() < .5 ? 1 : 0)], 5);
+}
+cone(fg, 240, 1600, 1.1, -25); cone(fg, 2080, 1590, 1.0, 30);
+berries(fg, 400, 1560, 17); berries(fg, 1920, 1540, 16); berries(fg, 300, 1470, 13);
+// quelques baies dans la guirlande du haut
+const tb = el('g', { filter: 'url(#soft)' });
+for (const [x, y] of [[300, 120], [860, 150], [1460, 130], [2010, 150], [1160, 60]]) berries(tb, x, y, 15);
+
+// ---------- neige legere ----------
+const snow = el('g', {}); seed = 91;
+for (let i = 0; i < 120; i++) {
+  const r = 2 + rnd() ** 3 * 9;
+  el('circle', { cx: rnd() * W, cy: 180 + rnd() * 1500, r, fill: '#ffffff', opacity: (0.25 + rnd() * 0.5).toFixed(2), filter: r > 6 ? 'url(#blur1)' : '' }, snow);
+}
+el('rect', { x: 0, y: 0, width: W, height: H, fill: 'url(#vig)' });
+
+Promise.resolve()
+  .then(() => setTimeout(() => document.body.setAttribute("data-ready", "1"), 1500));
+</script>
+</body></html>
