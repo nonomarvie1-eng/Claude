@@ -54,3 +54,6 @@ Raison : le fondateur joue au tennis et le regarde → contenu crédible sans vi
 ## D-011 — 2026-11-04 — Kit de cordage abandonné
 Le fondateur ne sait pas corder, ne souhaite pas apprendre et joue occasionnellement, pour le plaisir. Or l'avantage de cette piste reposait sur une expertise crédible (tutoriels, conseils) face à des clients exigeants. Sans elle, il ne reste qu'un produit lourd, cher, à risque de retours, vendu face à des spécialistes (Tennispro, Tennis Warehouse). → **Rejeté.**
 Constat honnête : après 3 recherches (14 pistes produits, 4 modèles d'approvisionnement), aucune piste ne combine demande prouvée + différenciation + économie unitaire compatible avec le profil (débutant, sans visage, sans expertise métier, 500–1 000 €). Le choix de la suite revient au fondateur (options dans NEXT_ACTIONS.md).
+
+## D-012 — 2026-11-04 — Recherche hors tennis : une piste à tester
+Marque de designs dédiée à une race de chien, imprimée à la demande en Europe (`RAPPORT_DECISION_04_AUTRES_UNIVERS.md`). C'est le risque en capital le plus faible trouvé, mais avec une marge faible (CPA max 8–18 €) : la croissance devra venir du contenu et de la communauté, pas de la pub. Moto, auto, bricolage, fitness et tapis gaming rejetés.
