@@ -2,7 +2,7 @@
 
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
-## ⚠️ 2026-11-04 — Option C choisie → piste « marque par race de chien » (D-012). EN ATTENTE : le fondateur a-t-il un chien / une race préférée ? Accepte-t-il de payer un illustrateur (~100–250 €) ?
+## ⚠️ 2026-11-04 — Test « berger australien » (D-013). Prochaines actions du fondateur : 1) créer les comptes Instagram + TikTok (gratuit) ; 2) générer les 5 premières illustrations avec `BRIEF_DESIGN_BERGER_AUSTRALIEN.md` ; 3) me proposer 3 noms de marque, je vérifie la disponibilité. Suivi : `PLAN_TEST_30J.md`, `TABLEAU_TEST.csv`.
 
 ## 0. (caduc) Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
 1. ⛔ **Devis CJ (votre compte gratuit, aucun paiement)** : aiguiseur « 4 angles, disques 360/600 + céramique, support magnétique » et kit crochet amigurumi. Il me faut : prix unitaire, port France DDP, délai, poids. **C'est le test décisif pour l'aiguiseur** : il faut ~15 € rendu pour une qualité correcte.

@@ -57,3 +57,9 @@ Constat honnête : après 3 recherches (14 pistes produits, 4 modèles d'approvi
 
 ## D-012 — 2026-11-04 — Recherche hors tennis : une piste à tester
 Marque de designs dédiée à une race de chien, imprimée à la demande en Europe (`RAPPORT_DECISION_04_AUTRES_UNIVERS.md`). C'est le risque en capital le plus faible trouvé, mais avec une marge faible (CPA max 8–18 €) : la croissance devra venir du contenu et de la communauté, pas de la pub. Moto, auto, bricolage, fitness et tapis gaming rejetés.
+
+## D-013 — 2026-11-04 — Race choisie et designs par IA
+- Le fondateur n'a pas de chien et ne paiera pas d'illustrateur. Designs générés par IA puis **retravaillés** : une image IA brute est probablement non protégée en France, donc copiable par un concurrent.
+- Race choisie sur données : **berger australien** (~14 600 naissances LOF en 2025, 4 robes distinctes → personnalisation). Plan B : golden retriever.
+- Étape suivante à coût nul : compte Instagram/TikTok pendant 30 jours (`PLAN_TEST_30J.md`), décision selon les demandes d'achat spontanées.
+- Risque signalé : sans chien ni lien personnel avec la race, le ton doit rester juste. S'appuyer sur la communauté (avec autorisations) plutôt que de feindre une expérience de propriétaire.
