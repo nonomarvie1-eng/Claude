@@ -2,7 +2,10 @@
 
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
-## 0. Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
+## ⚠️ 2026-11-04 (nuit) — Les 3 pistes sont rejetées (D-008). Les actions ci-dessous sur l'aiguiseur et le crochet sont caduques.
+Prochaine action : recherche n°2 avec les nouveaux critères (stock UE, personnalisation, produit absent d'AliExpress). Aucun compte CJ ni Amazon nécessaire.
+
+## 0. (caduc) Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
 1. ⛔ **Devis CJ (votre compte gratuit, aucun paiement)** : aiguiseur « 4 angles, disques 360/600 + céramique, support magnétique » et kit crochet amigurumi. Il me faut : prix unitaire, port France DDP, délai, poids. **C'est le test décisif pour l'aiguiseur** : il faut ~15 € rendu pour une qualité correcte.
 2. **Relevé Amazon.fr manuel (10 min)** : pour « aiguiseur à rouleau » et « kit crochet débutant », noter les 5 premiers résultats non sponsorisés : prix, note, nombre d'avis, mention « X achetés le mois dernier ». Une capture d'écran suffit.
 3. Optionnel : ajouter `*.service-public.gouv.fr` aux domaines autorisés (vérification officielle des seuils TVA).
