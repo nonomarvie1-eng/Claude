@@ -2,7 +2,11 @@
 
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
-## ⚠️ 2026-11-04 — Niche tennis (D-010). Piste : kit de cordage à domicile. EN ATTENTE : réponses du fondateur (sait-il corder ? fréquence et prix du cordage dans son club), puis devis Alibaba avec accord.
+## ⚠️ 2026-11-04 — Kit de cordage rejeté (D-011). DÉCISION DU FONDATEUR ATTENDUE parmi :
+- A. Audience d'abord : compte tennis sans visage (fan, culture tennis), 0 € de budget, produit choisi ensuite selon les réactions. Lent (plusieurs mois).
+- B. Marque « tennis lifestyle » en impression à la demande (designs originaux, sans marques déposées), test à petit budget.
+- C. Recherche hors tennis sur un autre centre d'intérêt.
+- D. Mettre le projet en pause et garder le capital.
 Prochaine action : recherche n°2 avec les nouveaux critères (stock UE, personnalisation, produit absent d'AliExpress). Aucun compte CJ ni Amazon nécessaire.
 
 ## 0. (caduc) Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
