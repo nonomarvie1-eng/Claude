@@ -3,7 +3,6 @@
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
 ## ⚠️ 2026-11-04 — Option C choisie → piste « marque par race de chien » (D-012). EN ATTENTE : le fondateur a-t-il un chien / une race préférée ? Accepte-t-il de payer un illustrateur (~100–250 €) ?
-Prochaine action : recherche n°2 avec les nouveaux critères (stock UE, personnalisation, produit absent d'AliExpress). Aucun compte CJ ni Amazon nécessaire.
 
 ## 0. (caduc) Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
 1. ⛔ **Devis CJ (votre compte gratuit, aucun paiement)** : aiguiseur « 4 angles, disques 360/600 + céramique, support magnétique » et kit crochet amigurumi. Il me faut : prix unitaire, port France DDP, délai, poids. **C'est le test décisif pour l'aiguiseur** : il faut ~15 € rendu pour une qualité correcte.
