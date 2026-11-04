@@ -1,0 +1,11 @@
+produit,scenario,prix_ttc,cout_fournisseur,livraison,droit_douane_ue,frais_traitement_ue,tva_import_taux,frais_paiement_pct,frais_paiement_fixe,provision_retours_pct,emballage_insert,statut_donnees
+aiguiseur_rouleau,pessimiste,49.90,20.00,9.00,3.00,2.00,0.20,0.015,0.25,0.08,0.50,"Prix fournisseur et livraison NON VERIFIES (estimations). Droit 3 EUR verifie (sources presse/douane). Frais traitement UE montant inconnu."
+aiguiseur_rouleau,central,59.90,15.00,8.00,3.00,1.00,0.20,0.015,0.25,0.06,0.50,"Estimation de travail"
+aiguiseur_rouleau,optimiste,64.90,12.00,7.00,3.00,0.00,0.20,0.015,0.25,0.04,0.50,"Estimation de travail favorable"
+kit_crochet_debutant,pessimiste,29.90,9.00,6.00,3.00,2.00,0.20,0.015,0.25,0.06,0.80,"Prix fournisseur NON VERIFIE. Insert QR code video inclus dans emballage_insert"
+kit_crochet_debutant,central,34.90,7.00,5.00,3.00,1.00,0.20,0.015,0.25,0.05,0.80,"Estimation de travail"
+kit_crochet_debutant,optimiste,34.90,5.00,4.50,3.00,0.00,0.20,0.015,0.25,0.03,0.80,"Estimation de travail favorable"
+kit_crochet_lot2,central,54.90,14.00,6.50,3.00,1.00,0.20,0.015,0.25,0.05,1.00,"Lot de 2 kits = 1 seule categorie tarifaire -> 1 seul droit de 3 EUR (a confirmer)"
+pressuriseur_padel,pessimiste,29.90,10.00,7.00,3.00,2.00,0.20,0.015,0.25,0.08,0.50,"Prix fournisseur NON VERIFIE. Risque etancheite = retours"
+pressuriseur_padel,central,34.90,8.00,6.00,3.00,1.00,0.20,0.015,0.25,0.06,0.50,"Estimation de travail"
+pressuriseur_padel,optimiste,39.90,6.00,5.00,3.00,0.00,0.20,0.015,0.25,0.04,0.50,"Estimation de travail favorable"

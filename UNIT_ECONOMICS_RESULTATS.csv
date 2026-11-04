@@ -1,0 +1,11 @@
+produit,scenario,prix_ttc,tva_import,cout_rendu_client,frais_paiement,provision_retours_sav,marge_contributive_avant_pub,taux_marge_contributive,cpa_max_equilibre,roas_equilibre,cpa_cible,roas_cible,commandes_mois_pour_couvrir_fixes,commandes_mois_pour_10k_CA,resultat_mois_a_10k_CA_si_cpa_cible
+aiguiseur_rouleau,pessimiste,49.9,6.4,40.9,1.0,3.99,4.01,0.08,4.01,12.45,2.41,20.74,30.2,200.0,273.0
+aiguiseur_rouleau,central,59.9,5.2,32.7,1.15,3.59,22.46,0.375,22.46,2.67,13.47,4.45,5.4,167.0,1451.0
+aiguiseur_rouleau,optimiste,64.9,4.4,26.9,1.22,2.6,34.18,0.527,34.18,1.9,20.51,3.16,3.5,154.0,2058.0
+kit_crochet_debutant,pessimiste,29.9,3.6,24.4,0.7,1.79,3.01,0.101,3.01,9.94,1.8,16.57,40.3,334.0,354.0
+kit_crochet_debutant,central,34.9,3.0,19.8,0.77,1.75,12.58,0.361,12.58,2.77,7.55,4.62,9.6,287.0,1394.0
+kit_crochet_debutant,optimiste,34.9,2.5,15.8,0.77,1.05,17.28,0.495,17.28,2.02,10.37,3.37,7.0,287.0,1932.0
+kit_crochet_lot2,central,54.9,4.7,30.2,1.07,2.75,20.88,0.38,20.88,2.63,12.53,4.38,5.8,182.0,1473.0
+pressuriseur_padel,pessimiste,29.9,4.0,26.5,0.7,2.39,0.31,0.01,0.31,96.61,0.19,161.01,391.8,334.0,-7.0
+pressuriseur_padel,central,34.9,3.4,21.9,0.77,2.09,10.13,0.29,10.13,3.44,6.08,5.74,12.0,287.0,1113.0
+pressuriseur_padel,optimiste,39.9,2.8,17.3,0.85,1.6,20.16,0.505,20.16,1.98,12.09,3.3,6.0,251.0,1972.0
