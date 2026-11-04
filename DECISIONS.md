@@ -63,3 +63,13 @@ Marque de designs dédiée à une race de chien, imprimée à la demande en Euro
 - Race choisie sur données : **berger australien** (~14 600 naissances LOF en 2025, 4 robes distinctes → personnalisation). Plan B : golden retriever.
 - Étape suivante à coût nul : compte Instagram/TikTok pendant 30 jours (`PLAN_TEST_30J.md`), décision selon les demandes d'achat spontanées.
 - Risque signalé : sans chien ni lien personnel avec la race, le ton doit rester juste. S'appuyer sur la communauté (avec autorisations) plutôt que de feindre une expérience de propriétaire.
+
+## D-014 — 2026-11-04 — Leçon de l'exemple « Lanoxie » (déboucheur en poudre)
+Exemple montré par le fondateur (vidéo TikTok d'un coach) : produit banal de résolution de problème, consommable, marque propre, prix Alibaba 0,62–0,84 € l'unité dès 50 pièces, ~40 pubs Meta actives (FR, BE, CA), ~15 000 visites/mois (estimation Trendtrack, non vérifiée).
+**Ce qu'on retient (le fondateur a raison) :** un produit « ennuyeux » peut fonctionner s'il règle un problème, se rachète, porte une vraie marque et que la vente est bien faite. Notre filtre ne doit pas exiger un produit révolutionnaire.
+**Ce qu'on ne copie pas :**
+- Produit chimique : déboucheurs généralement classés dangereux (pictogramme corrosif, « Danger »), étiquetage CLP en français, code UFI et déclaration aux centres antipoison obligatoires. L'allégation « désinfecte » relève a priori du règlement biocides : vérification séparée nécessaire. Transport aérien de matières dangereuses restreint. Coût et risque juridique trop élevés pour nous.
+- Avis Trustpilot partagés (« toujours bouché », accusation de faux avis) : la pub ne prouve ni la satisfaction ni la rentabilité.
+- Les chiffres viennent d'une vidéo de coach qui vend une formation : biais du survivant.
+**Changement de modèle à envisager :** prix de gros très bas (50 pièces < 50 €) → un **micro-stock en marque propre** (étiquette FR, stock en France) devient abordable pour des consommables bon marché. C'est ce qui distingue ces marques d'AliExpress : marque, livraison rapide depuis la France, service. Décision du fondateur attendue (accepter 100–200 € de stock ?).
+Sources : [Trustpilot Lanoxie](https://uk.trustpilot.com/review/lanoxie.com), [Your Europe — CLP](https://europa.eu/youreurope/business/product-requirements/chemicals/classification-labelling-packaging/index_fr.htm), [EcoMundo — PCN/UFI](https://ecomundo.eu/blog/declaration-pcn-melanges-dangereux-ufi), [INRS](https://www.inrs.fr/risques/classification-etiquetage-produits-chimiques/ce-qu-il-faut-retenir.html).
