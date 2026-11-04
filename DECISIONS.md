@@ -47,3 +47,6 @@ Source : captures Google Shopping France fournies par le fondateur (relevé : `d
 - BigBuy / grossistes UE : rejetés (abonnement 69–120 €/mois + ~90 € d'inscription, produits vendus partout).
 - Impression à la demande UE (Gelato/Printful) : seule voie qui rend la comparaison de prix impossible, mais niches génériques saturées (ex. affiches de course : The Post Trace à 18 €).
 - La niche doit partir d'une expertise ou d'une passion du fondateur. Question posée au fondateur. Détail : `RAPPORT_DECISION_02.md`.
+
+## D-010 — 2026-11-04 — Niche tennis retenue comme terrain de recherche
+Raison : le fondateur joue au tennis et le regarde → contenu crédible sans visage. Piste n°1 à vérifier : **kit de cordage à domicile** (`RAPPORT_DECISION_03_TENNIS.md`). Viable seulement avec un prix usine ~100 € pour la machine. Surgrips, appareil de rebond et pressuriseur rejetés ; vêtements et cadeaux personnalisés en veille.

@@ -2,7 +2,7 @@
 
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
-## ⚠️ 2026-11-04 (nuit) — 3 pistes rejetées (D-008), recherche n°2 faite (D-009). EN ATTENTE : centres d'intérêt et compétences du fondateur pour choisir la niche.
+## ⚠️ 2026-11-04 — Niche tennis (D-010). Piste : kit de cordage à domicile. EN ATTENTE : réponses du fondateur (sait-il corder ? fréquence et prix du cordage dans son club), puis devis Alibaba avec accord.
 Prochaine action : recherche n°2 avec les nouveaux critères (stock UE, personnalisation, produit absent d'AliExpress). Aucun compte CJ ni Amazon nécessaire.
 
 ## 0. (caduc) Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
