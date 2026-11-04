@@ -2,7 +2,13 @@
 
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
-## 1. Débloquer les données (le principal facteur limitant aujourd'hui)
+## 0. Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
+1. ⛔ **Devis CJ (votre compte gratuit, aucun paiement)** : aiguiseur « 4 angles, disques 360/600 + céramique, support magnétique » et kit crochet amigurumi. Il me faut : prix unitaire, port France DDP, délai, poids. **C'est le test décisif pour l'aiguiseur** : il faut ~15 € rendu pour une qualité correcte.
+2. **Relevé Amazon.fr manuel (10 min)** : pour « aiguiseur à rouleau » et « kit crochet débutant », noter les 5 premiers résultats non sponsorisés : prix, note, nombre d'avis, mention « X achetés le mois dernier ». Une capture d'écran suffit.
+3. Optionnel : ajouter `*.service-public.gouv.fr` aux domaines autorisés (vérification officielle des seuils TVA).
+4. Expert-comptable : poser la question du régime « dropshipping avec minoration de la base à l'importation » (cité par la douane).
+
+## 1. Débloquer les données (fait le 2026-11-04 — voir PROJECT.md pour ce qui reste bloqué)
 - ⛔ **Autoriser des domaines réseau** dans les réglages de l'environnement cloud (voir PROJECT.md) : amazon.fr, aliexpress, cjdropshipping.com, trends.google.com, facebook.com (Ad Library), douane.gouv.fr, service-public.fr. Coût : 0 €. Effet : je pourrai relever prix, avis, publicités actives et textes officiels moi-même.
 - À défaut, **10 minutes de votre côté** : créer un compte gratuit CJdropshipping (aucun paiement) et me copier pour « rolling knife sharpener » et « beginner crochet kit » : prix produit, prix de livraison France (option DDP), délai. Je n'ai pas le droit de créer ce compte à votre place.
 

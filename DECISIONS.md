@@ -16,3 +16,9 @@ Filtre de douche (promesse anticalcaire non tenue selon test indépendant), masq
 
 ## D-005 — 2026-11-04 — Le client ne paiera jamais de frais à la livraison
 Toute offre devra être en DDP (droits et TVA réglés en amont). Un client qui reçoit une demande de paiement du transporteur = remboursement, mauvais avis et risque de litige.
+
+## D-006 — 2026-11-04 (soir) — L'aiguiseur passe sous le seuil avec les prix réels
+Données AliExpress relevées : un modèle de qualité correcte coûte 28–32 $ (prix public), les basiques 4–7 $. Avec ce coût, marge 18 % à 59,90 € et 28 % à 69,90 € (CPA max 10–20 €). Seuil fixé : 35 % et CPA max ≥ 20 €. → Piste maintenue **uniquement** si un devis fournisseur (CJ ou usine) donne ~15 € rendu pour une qualité vérifiée. Sinon, abandon.
+
+## D-007 — 2026-11-04 (soir) — Pas de contournement des protections anti-robot
+Amazon.fr bloque les requêtes automatisées : relevé à faire manuellement (10 min) plutôt que de contourner.

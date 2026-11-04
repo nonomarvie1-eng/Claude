@@ -85,3 +85,16 @@ Objectif 10 000 €/mois : ~167 commandes/mois à 59,90 €. Résultat estimé e
 3. Avec votre accord : 2 échantillons, test qualité selon un protocole écrit à l'avance.
 4. Validation comptable TVA/REP, responsable UE (GPSR) identifié.
 5. Seulement ensuite : marque, puis boutique.
+
+---
+
+## Addendum — 2026-11-04 (soir), après ouverture du réseau
+- **AliExpress** (60 annonces relevées par produit, `data/`) :
+  - Les aiguiseurs à rouleau sont massivement vendus : basiques à 4–7 $ avec 3K à 10K+ ventes, coffrets corrects à 28–32 $, « style Tumbler » à 55 $.
+  - Avec un coût d'achat réaliste, la marge tombe à **18 % (59,90 €) – 28 % (69,90 €)**, sous le seuil de 35 %.
+  - → La piste aiguiseur ne survit que si un devis fournisseur donne ~15 € pour une qualité vérifiée.
+- **Kits crochet** : 4–15 $, déjà vendus « avec vidéos » (en anglais), volumes modestes. Marge 36 % mais CPA max ~12,60 € → lot obligatoire.
+- **Douane** : le tableau officiel cite un régime « dropshipping avec minoration de la base à l'importation » → question prioritaire pour un expert-comptable.
+- **Toujours bloqués** : Amazon.fr (anti-robot, non contourné), CJ (compte requis), Google Trends, Meta Ad Library.
+
+**Décision mise à jour :** toujours aucun produit validé. Les deux pistes sont affaiblies. Si le devis CJ de l'aiguiseur ne passe pas le seuil, je recommande d'élargir la recherche à des fournisseurs avec stock dans l'UE : pas de droit de 3 € et livraison en 2–5 jours, ce qui serait un vrai avantage face à AliExpress.

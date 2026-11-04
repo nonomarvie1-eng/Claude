@@ -58,3 +58,30 @@ Détail dans `COMPETITORS.md`. 15 marques réellement identifiées (US, DE, ES, 
 - Publicités actives (Meta Ad Library, TikTok Creative Center) : non consultables.
 - Prix fournisseurs CJ / AliExpress / 1688 et frais de port réels vers la France.
 - Montant exact du handling fee UE.
+
+---
+
+## 5. Données relevées directement — 2026-11-04 (soir, après ouverture réseau)
+
+### 5.1 AliExpress (relevés bruts : `data/aliexpress_*.csv`, 60 annonces par requête)
+**Aiguiseur à rouleau** (`rolling knife sharpener`, fr.aliexpress.com) :
+- Prix affichés 1,09 $ à 117,79 $. Les 1,09 $ sont très probablement des prix d'appât « nouvel acheteur » → ignorés.
+- Modèles basiques 2 angles : ~4–7 $ ; plusieurs annonces à **3K+, 4K+, 10K+ ventes**.
+- Modèles « coffret 4–5 angles, plusieurs disques » : **28–32 $** (une annonce à 10K+ ventes, une à 6K+).
+- « Tumbler style » système complet : **55,66 $** (969 ventes) ; 88–93 $ pour les haut de gamme.
+- **Conséquence :** la demande mondiale est réelle, mais un client français peut acheter le même objet sur AliExpress 2 à 10 fois moins cher que notre prix visé. Notre différence doit venir de la qualité vérifiée, de la livraison et du service, pas de l'objet.
+
+**Kit crochet débutant** (`beginner crochet kit amigurumi`) :
+- Kits unitaires **~4–15 $**, plusieurs mentionnent déjà « step-by-step video tutorials » (en anglais).
+- Volumes affichés modestes : surtout des dizaines à quelques centaines de ventes (max 700+ pour un kit tortue) → demande en ligne plus faible que l'aiguiseur.
+
+Note : les ventes affichées sont mondiales et cumulées ; ce n'est pas une mesure de la demande française.
+
+### 5.2 Douane — tableau officiel « Taxe sur les petits colis (article 22 du PLF 2026) »
+Source : [douane.gouv.fr — PDF](https://www.douane.gouv.fr/sites/default/files/2025-12/18/Tableau_taxe_petits_colis.pdf) (lu le 2026-11-04).
+- Assiette : chaque désignation au niveau de la nomenclature à 6 chiffres, pour les colis < 150 € déclarés en H7.
+- Le tableau mentionne explicitement un cas **« dropshipping avec minoration de la base à l'importation »**, avec redevable assujetti à la TVA. → Il existe un traitement TVA spécifique au dropshipping : **question n°1 pour l'expert-comptable**.
+- Cette taxe nationale est suspendue depuis le 1er juillet 2026 au profit du droit UE de 3 € (cf. 1.1), mais la logique « par code SH à 6 chiffres » est la même.
+
+### 5.3 Non obtenu malgré l'ouverture réseau
+Amazon.fr (anti-robot, non contourné), CJ (compte requis), Google Trends (page dynamique), Meta Ad Library (403), Légifrance/economie.gouv (403), service-public (redirection vers un domaine non autorisé).

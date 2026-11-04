@@ -19,7 +19,7 @@ Dernière mise à jour : 2026-11-04
 |---|---|
 | Dépôt git | Vide au départ (README seul). Branche `claude/dropshipping-market-research-2xgb7b`. |
 | Recherche web (WebSearch) | **Disponible** — renvoie des résumés de résultats + URL. |
-| Lecture directe de pages (WebFetch / curl) | **Bloquée** par la politique réseau de la session (testé : amazon.fr, aliexpress.com, cjdropshipping.com, trends.google.com, facebook.com/ads/library, douane.gouv.fr, economie.gouv.fr, service-public.fr, reddit.com, tumblerware.com). |
+| Lecture directe de pages (curl) | Domaines autorisés le 2026-11-04 (soir). Résultat des tests : **AliExpress OK** (données relevées dans `data/`), **douane.gouv.fr OK**. **Amazon.fr** : protection anti-robot → non contournée (règle du projet). **CJ** : recherche réservée aux comptes connectés. **Google Trends** : page dynamique, non exploitable. **Meta Ad Library, legifrance, economie.gouv** : 403. **service-public** redirige vers `service-public.gouv.fr` (non autorisé). |
 | Similarweb, TrendTrack, Meta Ad Library, TikTok Creative Center, outils SEO | **Non accessibles** (aucun connecteur, réseau bloqué). |
 | Shopify, CJ, AliExpress (comptes) | **Aucun compte connecté.** |
 | Python 3.13 | Disponible (calculs dans `tools/`). |
