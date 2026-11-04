@@ -98,3 +98,10 @@ Objectif 10 000 €/mois : ~167 commandes/mois à 59,90 €. Résultat estimé e
 - **Toujours bloqués** : Amazon.fr (anti-robot, non contourné), CJ (compte requis), Google Trends, Meta Ad Library.
 
 **Décision mise à jour :** toujours aucun produit validé. Les deux pistes sont affaiblies. Si le devis CJ de l'aiguiseur ne passe pas le seuil, je recommande d'élargir la recherche à des fournisseurs avec stock dans l'UE : pas de droit de 3 € et livraison en 2–5 jours, ce qui serait un vrai avantage face à AliExpress.
+
+---
+
+## Addendum 2 — Google Shopping France (captures du fondateur)
+Aucune des trois pistes restantes ne survit (détail : `DECISIONS.md` D-008, `data/google_shopping_2026-11-04.csv`). Le marché répond à la question « pourquoi nous ? » à notre place : le même objet est déjà vendu par plusieurs boutiques françaises et par AliExpress, dans la même bannière, à un prix 4 à 10 fois plus bas.
+
+**Décision : ne pas lancer. Changer de modèle de sourcing avant de chercher un produit.** Prochaine recherche : fournisseurs européens acceptant le dropshipping, et produits personnalisables fabriqués dans l'UE.

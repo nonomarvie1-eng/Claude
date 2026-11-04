@@ -22,3 +22,16 @@ Données AliExpress relevées : un modèle de qualité correcte coûte 28–32 $
 
 ## D-007 — 2026-11-04 (soir) — Pas de contournement des protections anti-robot
 Amazon.fr bloque les requêtes automatisées : relevé à faire manuellement (10 min) plutôt que de contourner.
+
+## D-008 — 2026-11-04 (nuit) — Les trois pistes restantes sont rejetées
+Source : captures Google Shopping France fournies par le fondateur (relevé : `data/google_shopping_2026-11-04.csv`).
+- **Aiguiseur** : au moins 4 boutiques françaises paient déjà des pubs sur le même produit générique (mêmes photos), et AliExpress s'affiche dans le même carrousel à 4,79–14,69 €.
+- **Kit crochet** : Mypeluchic occupe exactement notre positionnement (5 annonces, 29,99–49,90 €). Nature & Découvertes vend aussi des kits débutant « avec vidéos ».
+- **Pressuriseur padel** : premium (Bounce ~90–100 €) et entrée de gamme (~20 €, Decathlon, Amazon, AliExpress) déjà pris.
+
+**Leçon :** un produit générique chinois vendu en France se retrouve à côté de sa propre version AliExpress sur Google Shopping. Avec le droit de 3 € et des délais de 6–14 jours, ce modèle n'offre pas de raison crédible de nous choisir.
+
+**Nouveaux critères pour la prochaine recherche** (au moins un obligatoire) :
+1. **Stock en Europe** (fournisseur UE qui accepte le dropshipping) : pas de droit de 3 €, livraison en 2–5 jours, un vrai avantage face à AliExpress.
+2. **Personnalisation** (gravure, prénom, contenu sur mesure) : la comparaison de prix devient impossible.
+3. **Produit absent d'AliExpress** sous la même forme (fabricant ou artisan européen).
