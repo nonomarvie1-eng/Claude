@@ -35,3 +35,15 @@ Source : captures Google Shopping France fournies par le fondateur (relevé : `d
 1. **Stock en Europe** (fournisseur UE qui accepte le dropshipping) : pas de droit de 3 €, livraison en 2–5 jours, un vrai avantage face à AliExpress.
 2. **Personnalisation** (gravure, prénom, contenu sur mesure) : la comparaison de prix devient impossible.
 3. **Produit absent d'AliExpress** sous la même forme (fabricant ou artisan européen).
+
+## D-009 — 2026-11-04 — Recherche n°2 : modèles d'approvisionnement
+- AliExpress avec stock UE : utile pour la logistique seulement. Le client voit la même annonce AliExpress, elle aussi livrée vite.
+- BigBuy / grossistes UE : rejetés (abonnement 69–120 €/mois + ~90 € d'inscription, produits vendus partout).
+- Impression à la demande UE (Gelato/Printful) : seule voie qui rend la comparaison de prix impossible, mais niches génériques saturées (ex. affiches de course : The Post Trace à 18 €).
+- La niche doit partir d'une expertise ou d'une passion du fondateur. Question posée au fondateur. Détail : `RAPPORT_DECISION_02.md`.
+
+## D-009 — 2026-11-04 — Recherche n°2 : modèles d'approvisionnement
+- AliExpress avec stock UE : utile pour la logistique seulement. Le client voit la même annonce AliExpress, elle aussi livrée vite.
+- BigBuy / grossistes UE : rejetés (abonnement 69–120 €/mois + ~90 € d'inscription, produits vendus partout).
+- Impression à la demande UE (Gelato/Printful) : seule voie qui rend la comparaison de prix impossible, mais niches génériques saturées (ex. affiches de course : The Post Trace à 18 €).
+- La niche doit partir d'une expertise ou d'une passion du fondateur. Question posée au fondateur. Détail : `RAPPORT_DECISION_02.md`.
