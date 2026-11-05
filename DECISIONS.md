@@ -221,3 +221,6 @@ Le Petit Toutou, Château Tokyo, Passeport, Avenue Tokyo (version plate validée
 
 ## D-045 — 2026-11-06 — Plaque de Noël validée : « Lettre au Père Noël »
 Lettre manuscrite des années 1950 écrite par le chien, timbre et cachet « Pôle Nord », photo ancienne avec bonnet scotchée, empreinte de patte. Textes exacts. Personnalisable : prénom, 3 vœux, date du cachet. Date limite de commande pour Noël ≈ 1er décembre (délai 15–22 j).
+
+## D-046 — 2026-11-06 — 6 mises en situation réalisées (visuels de pub et boutique)
+`designs/mises_en_situation/` : salon (Petit Toutou), cuisine (Château, avec cotes 20×30 cm), entrée (Passeport), porte (Avenue), bureau (Magazine), cheminée (Noël). Défauts : Château montre de vraies étiquettes de vin factices (« Château Saint-Martin ») — acceptable mais attention règles alcool Meta ; vis/trous à confirmer avec l'échantillon. Mention obligatoire sur la boutique : « Mise en situation non contractuelle » jusqu'aux vraies photos.
