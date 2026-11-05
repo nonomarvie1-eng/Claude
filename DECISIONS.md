@@ -182,3 +182,7 @@ Conséquences :
 
 ## D-036 — 2026-11-06 — Virage : plaques humoristiques à concept (le texte est la vedette)
 Le fondateur rejette le style « Attention chien » même premium. Nouveaux concepts validés en principe (`designs/concepts_humour_v1.png`) : **Avis de recherche**, **Affiche de film**, **Accréditation officielle**, **Bienvenue chez…**. Choix recommandé : Avis de recherche en produit vedette (le plus drôle et le plus partageable), Accréditation en n°2 (champs personnalisables). Problème restant : rendu « trop IA » (lisse, brillant, uniforme). Piste : style d'affiche imprimée à l'ancienne (palette limitée, grain, trame, touches de pinceau) plutôt que photoréalisme ; la crédibilité « réelle » viendra des photos du vrai produit.
+
+## D-037 — 2026-11-06 — Sélection des 5 plaques de lancement (sur 10 concepts)
+Retenues : **Recherché**, **Max contre l'Aspirateur** (boxe), **Règlement de la maison**, **Accréditation officielle**, **Certificat du meilleur chien du monde**. En réserve : Affiche de film, Météo, Bienvenue. Écartées : Bistrot, Horaires.
+À corriger : les 6 nouvelles sont générées en format étroit (~1:2,6) au lieu de 2:3 → à refaire une par une en 2:3. Prévoir des textes au féminin (« gentille fille », « Directrice »). Pour la personnalisation, faire laisser vides les zones contenant le prénom.
