@@ -127,3 +127,6 @@ Rendu jugé nettement plus désirable que nos versions faites en code. Fichier d
 
 ## D-025 — 2026-11-05 — Chaîne de fabrication validée
 Modèle ChatGPT au cartouche vide + `tools/ecrire_prenom.py` (police Lobster, encre bleu-vert, texture conservée) → fichier d'impression 20×30 cm à 300 dpi en quelques secondes, prénoms longs gérés (testé avec « Marguerite »). Visuel de pub : `designs/pub_golden_v2.jpg`. Pour tenir la promesse « l'apparence peut être modifiée », il faut d'autres races : créer un modèle vide par race avec le même prompt ChatGPT.
+
+## D-026 — 2026-11-05 — Gamme de lancement : 5 races
+Modèles au cartouche vide dans `designs/modeles/` : golden retriever, berger australien bleu merle, bouledogue français fauve, staffie bringé, labrador noir (races parmi les plus nombreuses en France). Même cadre et même cartouche pour toutes → `tools/ecrire_prenom.py` fonctionne sans réglage. Visuel de pub multi-races : `designs/pub_races_v1.jpg`.
