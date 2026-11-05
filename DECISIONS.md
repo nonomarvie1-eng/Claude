@@ -138,3 +138,6 @@ Recherche web : aucun homonyme trouvé pour « Gâté Pourri », « Rouille & Mo
 Résultats (captures du fondateur, data.inpi.fr) : marque « POURRI GÂTÉ » n° 4841225, enregistrée le 07/02/2022, classe 25 (vêtements) uniquement ; marque « POURRI GATE » n° 3382246 (classes 18, 25, 28) **expirée** ; société « POURRIS GATES » (commerce d'habillement, 2020).
 Analyse : en droit des marques, la protection est limitée aux produits désignés (principe de spécialité). Nos plaques relèvent des classes 6/20 → a priori pas de conflit. Risque si l'on vend un jour des **vêtements** sous ce nom (classe 25 = conflit direct).
 Décision : **Gâté Pourri retenu** pour les plaques, avec la règle : jamais de textile sous ce nom. Avant tout dépôt de marque (après les premières ventes), faire valider par un conseil en propriété industrielle.
+
+## D-029 — 2026-11-05 — Domaine gatepourri.fr disponible
+IONOS : gatepourri.fr disponible, 6 € TTC la 1re année (prix barré 11 € HT, renouvellement à vérifier). Ne pas prendre le « pack multi-extensions » (prix barré 167 €/an au renouvellement). Achat seul du .fr possible maintenant pour sécuriser le nom (dépense de 6 € soumise à l'accord du fondateur) ; désactiver le renouvellement automatique tant que le projet n'est pas validé.
