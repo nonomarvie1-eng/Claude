@@ -297,3 +297,6 @@ Règle : toute image de mise en scène est vérifiée à l'échelle avant public
 
 ## D-059 — 2026-11-06 — Premier écran épuré
 Retour du fondateur : premier écran « brouillon » (décor trop présent, plaques petites, étiquette sur le chien). Image d'accueil recadrée sur les 3 plaques + la tête du chien (`hero_trio_v3.jpg`, carrée sur mobile), étiquette retirée de l'image, « 20 × 30 cm » passé dans le petit titre, phrase raccourcie. Bouton « Créer sa plaque » à 747 px sur un écran de 844 px.
+
+## D-060 — 2026-11-06 — Retour à l'image entière, bas du premier écran réorganisé
+Le fondateur préfère l'image entière (3 plaques + console + shiba, `gp-hero-trio-v2`) : le défaut venait du bas trop serré. Image remise sans étiquette par-dessus ; dessous, centré et aéré : phrase, « 34,90 € · Livraison offerte », bouton pleine largeur, lien « Comment ça marche ? » centré.
