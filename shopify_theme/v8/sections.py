@@ -130,7 +130,7 @@ HERO = f"""
  <div><span class="gp-kicker">Plaques en métal personnalisées</span>
   <h1>Son portrait.<br>Ses bêtises.<br><em>Sur une plaque.</em></h1></div>
  <div class="gp-heroimg">
-  <img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-hero-mur-trio.jpg?v=1793912234&width=900" alt="Trois plaques en métal Gâté Pourri accrochées dans une entrée, un shiba assis en dessous" width="1122" height="1189" fetchpriority="high">
+  <img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-hero-trio-v2.jpg?v=1793913000&width=900" alt="Trois plaques en métal Gâté Pourri de 20 × 30 cm au-dessus d'une console, un shiba assis devant" width="1122" height="1195" fetchpriority="high">
   <span class="gp-wall__tag">Plaques en métal · 20 × 30 cm</span>
  </div>
  <div class="gp-hero__txt">
@@ -176,11 +176,12 @@ ETAPES = """
 CHEZVOUS = f"""
 <div class="gp"><section class="gp-sec"><div class="gp-wrap">
  <span class="gp-kicker">Chez vous</span>
- <h2 class="gp-h2">Au salon, dans la cuisine, sur la cheminée</h2>
+ <h2 class="gp-h2">Dans l'entrée, le salon ou la cuisine</h2>
  <div class="gp-strip">
   <figure><img src="{img('toutou_m',700)}" alt="Plaque Le Petit Toutou accrochée dans un salon" loading="lazy" width="700" height="700"><figcaption>Le Petit Toutou, dans un salon</figcaption></figure>
+  <figure><img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-avenue-entree.jpg?v=1793913000&width=700" alt="Plaque Avenue dans une entrée, au-dessus d'un panier pour chien" loading="lazy" width="700" height="700"><figcaption>Avenue, dans l'entrée</figcaption></figure>
   <figure><img src="{img('chateau_m',700)}" alt="Plaque Château dans une cuisine, avec ses dimensions 20 × 30 cm" loading="lazy" width="700" height="700"><figcaption>Château : format 20 × 30 cm</figcaption></figure>
-  <figure><img src="{img('noel_m',700)}" alt="Plaque Lettre au Père Noël sur une cheminée" loading="lazy" width="700" height="700"><figcaption>Lettre au Père Noël, sur la cheminée</figcaption></figure>
+  <figure><img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-noel-cadeau.jpg?v=1793913000&width=700" alt="Plaque Lettre au Père Noël en cadeau, un shiba couché à côté" loading="lazy" width="700" height="875"><figcaption>Lettre au Père Noël, à offrir</figcaption></figure>
  </div>
  <p class="gp-note">Images d'illustration. La plaque est plate : les rivets, l'usure et les reliefs sont imprimés.</p>
 </div></section></div>

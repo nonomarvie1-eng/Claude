@@ -287,3 +287,10 @@ Le fondateur trouvait le montage d'accueil peu vendeur et peu clair sur la mati�
 - (1) recadrée en image principale de l'accueil (`designs/ia_marketing/hero_mur_trio.jpg`), étiquette « Plaques en métal · 20 × 30 cm ».
 - (2) dans « La plaque, en détail » (légende « image d'illustration ») et en 2e image de la fiche Le Petit Toutou.
 Envoi direct depuis la session vers Shopify (téléversement préparé + fileCreate) : plus besoin de passer par le sélecteur de fichiers.
+
+## D-058 — 2026-11-06 — Images à l'échelle réelle (20 × 30 cm)
+Le fondateur a relevé que les plaques de la 1re image d'accueil paraissaient bien plus grandes que 20 × 30 cm (risque de déception et de retours). Nouvelle consigne ChatGPT avec repères de taille (interrupteur, console de 120 cm, chien). Nouvelles images retenues après contrôle de l'échelle :
+- 3 plaques au-dessus d'une console avec un shiba (≈ 21 × 33 cm d'après la console) → image principale de l'accueil (`gp-hero-trio-v2`).
+- Avenue dans une entrée (≈ 19 × 28 cm d'après le panier) → 2e image de la fiche Avenue + bande « Chez vous ».
+- Lettre au Père Noël en cadeau (faute « madeleines » corrigée) → 2e image de la fiche (version carrée) + bande « Chez vous » (remplace la cheminée).
+Règle : toute image de mise en scène est vérifiée à l'échelle avant publication.
