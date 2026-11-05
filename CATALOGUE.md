@@ -23,5 +23,5 @@ Boutique : au départ 10–15 combinaisons mises en avant ; le reste via le choi
 ## État au 2026-11-05 — modèles à deux zones vides (`designs/modeles2/`)
 Chiens (jardin) : golden retriever, berger australien bleu merle, bouledogue français fauve, staffie bringé, labrador noir.
 Chats (jardin) : tigré, maine coon, british gris, noir. Bonus : chat tigré avec bonnet (jardin).
-Noël : golden retriever (salon de Noël). À refaire : chat tigré dans le **salon** de Noël (ChatGPT a gardé le jardin).
+Noël : golden retriever (salon de Noël). Chat tigré de Noël (salon) : fait.
 Total : 10 modèles × ~5 phrases = ~50 plaques possibles, sans nouvelle image.
