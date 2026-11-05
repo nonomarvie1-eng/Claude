@@ -212,3 +212,6 @@ Principe retenu pour la collection : « réel » = fidèle au support imité (jo
 - Petit Toutou v2 : inchangé, validé.
 - Magazine : à faire.
 Règle : pour un fichier d'impression, demander une image plate, cadrée bord à bord, sans décor autour ni reflets ; les versions « photographiées » servent aux pubs.
+
+## D-043 — 2026-11-06 — Château Tokyo v4 validé
+Étiquette de grand cru clairement reconnaissable + chien gravé rehaussé de roux (reconnaissable) + point parasite supprimé. Collection validée : Le Petit Toutou, Château, Passeport ; Avenue en attente de sa version plate ; magazine optionnel.
