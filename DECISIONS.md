@@ -192,3 +192,6 @@ Constat : un design généré par IA est copiable par n'importe qui en quelques 
 Positionnement proposé : **« la plaque qui raconte VOTRE chien »** = portrait d'après la photo du client + texte écrit à partir de ses vraies bêtises (court questionnaire : surnom, bêtise préférée, objet volé, ennemi juré, manie) + concept humoristique (Recherché, Boxe, Règlement…) + aperçu validé avant impression.
 Coût : ~10 min par commande (portrait ChatGPT + texte + contrôle) → compatible avec 2 h/jour au volume d'un test ; justifie 34,90–39,90 €.
 Prochaine étape : test de faisabilité avec la photo d'un vrai chien (avec accord du propriétaire) avant de construire la boutique.
+
+## D-039 — 2026-11-06 — Test « portrait d'après photo » : concluant sur la ressemblance
+Photo d'un shiba (harnais noir, queue enroulée) → plaque « Recherché » western : chien reconnaissable (pelage, harnais, queue, masque blanc), style affiche gravée nettement moins « IA ». Défauts : ChatGPT a recopié les crochets, mis les prénoms en minuscules, laissé une faute (« madelaine ») et une tournure bancale (« Pour manger »). → Règle : **ChatGPT dessine, notre outil écrit les textes variables** (zones laissées vides), textes relus avant impression.
