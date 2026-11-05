@@ -294,3 +294,6 @@ Le fondateur a relevé que les plaques de la 1re image d'accueil paraissaient bi
 - Avenue dans une entrée (≈ 19 × 28 cm d'après le panier) → 2e image de la fiche Avenue + bande « Chez vous ».
 - Lettre au Père Noël en cadeau (faute « madeleines » corrigée) → 2e image de la fiche (version carrée) + bande « Chez vous » (remplace la cheminée).
 Règle : toute image de mise en scène est vérifiée à l'échelle avant publication.
+
+## D-059 — 2026-11-06 — Premier écran épuré
+Retour du fondateur : premier écran « brouillon » (décor trop présent, plaques petites, étiquette sur le chien). Image d'accueil recadrée sur les 3 plaques + la tête du chien (`hero_trio_v3.jpg`, carrée sur mobile), étiquette retirée de l'image, « 20 × 30 cm » passé dans le petit titre, phrase raccourcie. Bouton « Créer sa plaque » à 747 px sur un écran de 844 px.

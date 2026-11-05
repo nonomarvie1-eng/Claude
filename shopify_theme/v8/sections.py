@@ -47,7 +47,7 @@ HOME_CSS = """
 .gp-hero h1{font-size:clamp(28px,7.6vw,58px);line-height:1.04;font-weight:800}
 .gp-hero h1 em{font-style:normal;color:var(--accent)}
 .gp-heroimg{position:relative;margin:12px -18px 4px}
-.gp-heroimg img{width:100%;height:auto;display:block}
+.gp-heroimg img{width:100%;height:auto;display:block;aspect-ratio:1/1;object-fit:cover;object-position:50% 15%}
 .gp-wall{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:4%;margin:12px -18px 6px;padding:22px 18px 40px;background:radial-gradient(ellipse at 50% 0%,#fbf6ec 0%,#efe4d0 70%,#e6d8bf 100%)}
 .gp-sign{position:relative;border-radius:9px;overflow:hidden;line-height:0;box-shadow:0 1px 2px rgba(40,28,15,.35),0 14px 22px -10px rgba(40,28,15,.55),0 30px 40px -24px rgba(40,28,15,.35)}
 .gp-sign img{width:100%;height:auto;display:block}
@@ -107,6 +107,7 @@ HOME_CSS = """
 @media(min-width:750px){
  .gp-hero{padding:40px 0 48px}
  .gp-hero__grid{grid-template-columns:1fr 1fr;align-items:center;gap:40px}
+ .gp-heroimg img{aspect-ratio:auto}
  .gp-hero__grid .gp-heroimg{grid-column:2;grid-row:1/span 2;margin:0;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(27,42,74,.5)}
  .gp-hero__txt{margin-top:18px}
  .gp-grid{grid-template-columns:repeat(4,1fr);gap:18px}
@@ -127,17 +128,16 @@ def nbsp(html):
 
 HERO = f"""
 <div class="gp"><section class="gp-hero"><div class="gp-wrap gp-hero__grid">
- <div><span class="gp-kicker">Plaques en métal personnalisées</span>
+ <div><span class="gp-kicker">Plaques en métal · 20 × 30 cm</span>
   <h1>Son portrait.<br>Ses bêtises.<br><em>Sur une plaque.</em></h1></div>
  <div class="gp-heroimg">
-  <img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-hero-trio-v2.jpg?v=1793913000&width=900" alt="Trois plaques en métal Gâté Pourri de 20 × 30 cm au-dessus d'une console, un shiba assis devant" width="1122" height="1195" fetchpriority="high">
-  <span class="gp-wall__tag">Plaques en métal · 20 × 30 cm</span>
+  <img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-hero-trio-v3.jpg?v=1793913332&width=900" alt="Trois plaques en métal Gâté Pourri au-dessus d'une console, un shiba devant" width="740" height="830" fetchpriority="high">
  </div>
  <div class="gp-hero__txt">
-  <p>Une photo de votre chien suffit&nbsp;: on en fait une plaque unique, avec son prénom et ses bêtises.</p>
+  <p>Une photo suffit&nbsp;: on en fait sa plaque, avec son prénom et ses bêtises.</p>
   <div class="gp-buy"><span class="gp-buy__price">34,90 €<small>Livraison offerte</small></span>
    <a class="gp-btn" href="#plaques">Créer sa plaque</a></div>
-  <p class="gp-hero__more"><a href="#comment">Comment ça marche&nbsp;?</a></p>
+  <p class="gp-hero__more"><a href="#comment">Comment ça marche ?</a></p>
  </div>
 </div></section></div>
 """
