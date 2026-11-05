@@ -186,3 +186,9 @@ Le fondateur rejette le style « Attention chien » même premium. Nouveaux conc
 ## D-037 — 2026-11-06 — Sélection des 5 plaques de lancement (sur 10 concepts)
 Retenues : **Recherché**, **Max contre l'Aspirateur** (boxe), **Règlement de la maison**, **Accréditation officielle**, **Certificat du meilleur chien du monde**. En réserve : Affiche de film, Météo, Bienvenue. Écartées : Bistrot, Horaires.
 À corriger : les 6 nouvelles sont générées en format étroit (~1:2,6) au lieu de 2:3 → à refaire une par une en 2:3. Prévoir des textes au féminin (« gentille fille », « Directrice »). Pour la personnalisation, faire laisser vides les zones contenant le prénom.
+
+## D-038 — 2026-11-06 — Comment se démarquer vraiment : personnalisation profonde, pas seulement le design
+Constat : un design généré par IA est copiable par n'importe qui en quelques minutes ; la différenciation par le seul style ne tient pas.
+Positionnement proposé : **« la plaque qui raconte VOTRE chien »** = portrait d'après la photo du client + texte écrit à partir de ses vraies bêtises (court questionnaire : surnom, bêtise préférée, objet volé, ennemi juré, manie) + concept humoristique (Recherché, Boxe, Règlement…) + aperçu validé avant impression.
+Coût : ~10 min par commande (portrait ChatGPT + texte + contrôle) → compatible avec 2 h/jour au volume d'un test ; justifie 34,90–39,90 €.
+Prochaine étape : test de faisabilité avec la photo d'un vrai chien (avec accord du propriétaire) avant de construire la boutique.
