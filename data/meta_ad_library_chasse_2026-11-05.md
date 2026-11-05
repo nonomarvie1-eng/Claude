@@ -39,3 +39,16 @@ Lecture : sur chaque carte, la date « Début de diffusion » affichée au-dessu
 | Joybuy | Marketplace (JD.com) | 02/09/2026 | — | Géant, hors sujet |
 
 **Conclusion :** deux signaux convergent vers le **cadeau personnalisé** (Free Vibes, Printerval, Izimelo), et un format durable apparaît (puzzle bois thématique, 14 mois). Le collier gravé reste le meilleur candidat, désormais avec une preuve française (Free Vibes).
+
+## Mot-clé « cadeau personnalisé »
+| Annonceur | Produit | Début | Durée | Note |
+|---|---|---|---|---|
+| Il était une fois toi | Livre illustré personnalisé pour enfant (l'enfant est le héros) | 14/10/2026 | ~3 sem., 3 pubs même contenu | Récent |
+| **GRAAZIE** (graazie.com) | Bijoux à graver (mots, initiales, dates), diamant | **17/04/2025** | **~19 mois** | Bijou gravé = durable ; positionnement premium |
+| **Cadeau drôle personnalisé** → evridwearcustom.fr | Plaque métal « Attention, une accro aux plantes vit ici » + prénom + avatar dessiné modifiable | **03/06/2025** | **~17 mois**, 2 pubs même contenu | Modèle impression à la demande ; AliExpress plaques métal photo 20×30 cm ~5,75 $ |
+| Artquarelle.fr | Photo client → aquarelle personnalisée (moto, paysage), aperçu gratuit avant achat | 26/08/2026 | ~2,5 mois | Création numérique + impression |
+| Version Femina / cuvee-privee.com | Vigne et vin à son nom | 28/01/2026 | ~9 mois | Exclu : alcool |
+| **CaseCompany** (casecompany.paris) | Coques de téléphone personnalisées photos | **11/04/2023** | **~3,5 ans** | Très durable ; compatibilité des modèles |
+
+## Synthèse des 4 séries
+Les pubs les plus anciennes hors santé/beauté sont **toutes des cadeaux personnalisés** : CaseCompany (3,5 ans), GRAAZIE (19 mois), plaques evridwear (17 mois), Iconic Puzzles (14 mois). Marché large et fragmenté : chaque acteur tient **un produit + un angle**. → La catégorie est validée ; reste à choisir un produit et un angle où nous sommes crédibles.

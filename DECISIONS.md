@@ -109,3 +109,6 @@ Répartition : je cherche et chiffre les candidats ; le fondateur vérifie la Me
 
 ## D-019 — 2026-11-05 — Recherche n°6 : un seul candidat passe le filtre
 Collier gravé portrait/prénom d'animal en dropshipping (sans stock) : marge estimée 18,81 € après cotisations (pessimiste 7,21 €). Kit anti-poils, râteau et serviettes auto rejetés (marges de 6 à 11 €). Enseignement : il faut des produits très légers, personnalisés ou à forte valeur perçue, vendus ≥ 40–45 €. Détail : `RAPPORT_DECISION_06.md`.
+
+## D-020 — 2026-11-05 — Catégorie retenue : le cadeau personnalisé
+Preuve par la Meta Ad Library (4 séries de captures) : hors santé/beauté, les pubs qui durent le plus (14 mois à 3,5 ans) vendent toutes des cadeaux personnalisés. Avantages pour nous : pas de comparaison de prix, pas de stock (fabrication à la commande), règles simples, contenu facile sans visage, l'IA aide à créer les visuels. Trois candidats finalistes : pendentif gravé, plaque métal humoristique avec avatar, portrait/aquarelle d'animal à partir d'une photo. Choix final à faire avec le fondateur.
