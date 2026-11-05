@@ -1,0 +1,72 @@
+{
+ "sections": {
+  "hero": {
+   "type": "custom-liquid",
+   "settings": {
+    "custom_liquid": "<style>.gp-w{max-width:1150px;margin:0 auto}.gp-k{display:block;text-align:center;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#b8893a;margin-bottom:8px;font-weight:700}.gp-h{font-family:Georgia,'Times New Roman',serif;color:#1b2a4a;font-size:clamp(28px,5vw,42px);line-height:1.1;margin:0 0 8px;text-align:center}.gp-s{color:#5f5d57;text-align:center;margin:0 auto 26px;font-size:16px;max-width:640px}.gp-hero{display:grid;grid-template-columns:1fr 1.1fr;gap:34px;align-items:center}.gp-hero .k{display:block;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#b8893a;font-weight:700;margin-bottom:12px}.gp-hero h1{font-family:Georgia,'Times New Roman',serif;color:#1b2a4a;font-size:clamp(32px,4.8vw,56px);line-height:1.05;margin:0 0 16px}.gp-hero h1 em{color:#7a1e1e}.gp-hero p{color:#4d4a44;font-size:17px;line-height:1.55;margin:0 0 24px;max-width:460px}.gp-btn{display:inline-block;padding:15px 26px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;background:#7a1e1e;color:#fff}.gp-btn2{display:inline-block;padding:15px 22px;font-weight:600;font-size:15px;color:#1b2a4a;text-decoration:underline}.gp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gp-grid a{display:block;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#efe6d3;box-shadow:0 12px 26px rgba(27,42,74,.15)}.gp-grid img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}.gp-grid a:hover img{transform:scale(1.05)}@media(max-width:800px){.gp-hero{grid-template-columns:1fr;gap:20px;text-align:center}.gp-hero p{margin:0 auto 18px;font-size:15px}.gp-hero .im{order:-1}.gp-grid{gap:8px}}</style><div class='gp-w gp-hero'><div><span class='k'>Plaques vintage personnalisées</span><h1>Votre chien mérite <em>sa propre plaque.</em></h1><p>Envoyez-nous une photo de votre chien et ses pires bêtises. On en fait une plaque vintage unique, avec son portrait, son prénom et son histoire.</p><a class='gp-btn' href='/collections/nos-plaques-personnalisees'>Créer sa plaque</a><a class='gp-btn2' href='#comment'>Comment ça marche ?</a></div><div class='im'><div class='gp-grid'>{% for p in collections['nos-plaques-personnalisees'].products limit: 4 %}{% if p.featured_image %}<a href='{{ p.url }}'>{{ p.featured_image | image_url: width: 700 | image_tag: loading: 'eager', alt: p.title }}</a>{% endif %}{% endfor %}</div></div></div>",
+    "background_color": "#f5eedc",
+    "section_width": "page-width",
+    "padding-block-start": 28,
+    "padding-block-end": 36
+   }
+  },
+  "trust": {
+   "type": "custom-liquid",
+   "settings": {
+    "custom_liquid": "<style>.gp-tr{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1150px;margin:0 auto}.gp-tr div{background:#fff;border:1px solid #eadfca;border-radius:14px;padding:14px 16px}.gp-tr b{display:block;color:#1b2a4a;font-size:14px;margin-bottom:2px}.gp-tr span{color:#6b6a64;font-size:13px}@media(max-width:800px){.gp-tr{grid-template-columns:1fr 1fr;gap:10px}}</style><div class='gp-tr'><div><b>🐾 Le portrait de VOTRE chien</b><span>Réalisé à partir de votre photo</span></div><div><b>✅ Aperçu avant impression</b><span>On n'imprime qu'après votre accord</span></div><div><b>🚚 Livraison offerte</b><span>En France, avec suivi</span></div><div><b>💬 Une question ?</b><span>Réponse sous 24 h</span></div></div>",
+    "background_color": "#fbf7ee",
+    "section_width": "page-width",
+    "padding-block-start": 20,
+    "padding-block-end": 20
+   }
+  },
+  "collection": {
+   "type": "custom-liquid",
+   "settings": {
+    "custom_liquid": "<style>.gp-w{max-width:1150px;margin:0 auto}.gp-k{display:block;text-align:center;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#b8893a;margin-bottom:8px;font-weight:700}.gp-h{font-family:Georgia,'Times New Roman',serif;color:#1b2a4a;font-size:clamp(28px,5vw,42px);line-height:1.1;margin:0 0 8px;text-align:center}.gp-s{color:#5f5d57;text-align:center;margin:0 auto 26px;font-size:16px;max-width:640px}.gp-pl{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.gp-pl a{text-decoration:none;color:#1b2a4a;display:block}.gp-pl .im{aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#efe6d3}.gp-pl img{width:100%;height:100%;object-fit:cover;transition:transform .4s}.gp-pl a:hover img{transform:scale(1.04)}.gp-pl b{display:block;font-family:Georgia,serif;font-size:18px;margin:10px 0 2px;line-height:1.25}.gp-pl span{color:#7a1e1e;font-weight:700}@media(max-width:800px){.gp-pl{grid-template-columns:1fr 1fr;gap:12px}.gp-pl b{font-size:15px}}</style><div class='gp-w'><span class='gp-k'>La collection</span><h2 class='gp-h'>Choisissez son histoire</h2><p class='gp-s'>Une une de journal, une plaque de rue parisienne, une étiquette de grand cru… Chaque plaque est faite pour un seul chien : le vôtre.</p><div class='gp-pl'>{% for p in collections['nos-plaques-personnalisees'].products %}<a href='{{ p.url }}'><div class='im'>{% if p.featured_image %}{{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title }}{% endif %}</div><b>{{ p.title | split: ' – ' | first }}</b><span>{{ p.price | money }}</span></a>{% endfor %}</div></div>",
+    "background_color": "#ffffff",
+    "section_width": "page-width",
+    "padding-block-start": 48,
+    "padding-block-end": 44
+   }
+  },
+  "steps": {
+   "type": "custom-liquid",
+   "settings": {
+    "custom_liquid": "<style>.gp-w{max-width:1150px;margin:0 auto}.gp-k{display:block;text-align:center;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#b8893a;margin-bottom:8px;font-weight:700}.gp-h{font-family:Georgia,'Times New Roman',serif;color:#1b2a4a;font-size:clamp(28px,5vw,42px);line-height:1.1;margin:0 0 8px;text-align:center}.gp-s{color:#5f5d57;text-align:center;margin:0 auto 26px;font-size:16px;max-width:640px}.gp-st{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.gp-st div{background:#fff;border-radius:16px;padding:24px;text-align:center;border:1px solid #eadfca}.gp-st i{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:#1b2a4a;color:#fff;font-style:normal;font-family:Georgia,serif;font-size:21px;margin-bottom:10px}.gp-st b{display:block;color:#1b2a4a;font-size:17px;margin-bottom:6px}.gp-st p{margin:0;color:#5f5d57;font-size:14.5px}@media(max-width:800px){.gp-st{grid-template-columns:1fr;gap:10px}}</style><div class='gp-w' id='comment'><span class='gp-k'>Simple comme un « assis »</span><h2 class='gp-h'>Comment ça marche ?</h2><p class='gp-s'>Votre plaque unique en 3 étapes.</p><div class='gp-st'><div><i>1</i><b>Choisissez votre plaque</b><p>Journal, plaque de rue, étiquette de grand cru ou lettre au Père Noël.</p></div><div><i>2</i><b>Parlez-nous de votre chien</b><p>Après la commande, envoyez-nous une photo, son prénom et ses bêtises préférées.</p></div><div><i>3</i><b>Validez votre aperçu</b><p>On vous envoie le design sous 48 h. On n'imprime qu'après votre accord.</p></div></div></div>",
+    "background_color": "#f5eedc",
+    "section_width": "page-width",
+    "padding-block-start": 48,
+    "padding-block-end": 48
+   }
+  },
+  "story": {
+   "type": "custom-liquid",
+   "settings": {
+    "custom_liquid": "<style>.gp-w{max-width:1150px;margin:0 auto}.gp-k{display:block;text-align:center;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#b8893a;margin-bottom:8px;font-weight:700}.gp-h{font-family:Georgia,'Times New Roman',serif;color:#1b2a4a;font-size:clamp(28px,5vw,42px);line-height:1.1;margin:0 0 8px;text-align:center}.gp-s{color:#5f5d57;text-align:center;margin:0 auto 26px;font-size:16px;max-width:640px}.gp-story{max-width:760px;margin:0 auto;text-align:center}.gp-story p{color:#4d4a44;font-size:17px;line-height:1.65;margin:0 0 14px}</style><div class='gp-story'><span class='gp-k'>Pourquoi Gâté Pourri</span><h2 class='gp-h'>Parce qu'un chien gâté mérite mieux qu'un mug avec un prénom</h2><p>Votre chien a une personnalité : le voleur de chaussettes, le maître du canapé, le terroriste de la télécommande. On a voulu des cadeaux qui racontent vraiment <strong>son</strong> histoire, avec humour et tendresse.</p><p>Chaque plaque est créée à partir de la photo de votre chien, puis imprimée sur aluminium avec un effet vintage. Un objet qui fait sourire tous ceux qui passent la porte.</p></div>",
+    "background_color": "#ffffff",
+    "section_width": "page-width",
+    "padding-block-start": 52,
+    "padding-block-end": 52
+   }
+  },
+  "faq": {
+   "type": "custom-liquid",
+   "settings": {
+    "custom_liquid": "<style>.gp-w{max-width:1150px;margin:0 auto}.gp-k{display:block;text-align:center;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#b8893a;margin-bottom:8px;font-weight:700}.gp-h{font-family:Georgia,'Times New Roman',serif;color:#1b2a4a;font-size:clamp(28px,5vw,42px);line-height:1.1;margin:0 0 8px;text-align:center}.gp-s{color:#5f5d57;text-align:center;margin:0 auto 26px;font-size:16px;max-width:640px}.gp-faq{max-width:760px;margin:0 auto}.gp-faq details{border-bottom:1px solid #e3d8c3;padding:6px 0}.gp-faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;padding:12px 0;font-weight:700;color:#1b2a4a;font-size:16px}.gp-faq summary::-webkit-details-marker{display:none}.gp-faq summary::after{content:'+';color:#7a1e1e;font-size:22px;line-height:1}.gp-faq details[open] summary::after{content:'−'}.gp-faq p{margin:0 0 14px;color:#5f5d57;line-height:1.55}</style><div class='gp-faq'><span class='gp-k'>Vos questions</span><h2 class='gp-h' style='margin-bottom:18px'>Questions fréquentes</h2><details><summary>Est-ce que ce sera vraiment mon chien ?</summary><p>Oui. Le portrait est réalisé à partir de votre photo. Vous recevez un aperçu avant l'impression et vous pouvez demander une correction.</p></details><details><summary>Comment j'envoie la photo de mon chien ?</summary><p>Juste après votre commande, nous vous écrivons par e-mail. Il suffit de répondre avec une photo bien éclairée de votre chien (la tête bien visible), son prénom et ses bêtises préférées.</p></details><details><summary>Ma photo n'est pas parfaite, c'est grave ?</summary><p>Pas forcément. Si elle ne permet pas un bon portrait, on vous en demande une autre. Si ça ne fonctionne vraiment pas, on vous rembourse.</p></details><details><summary>En quelle matière est la plaque ?</summary><p>Aluminium imprimé, 20 × 30 cm. L'effet vintage (rivets, usure, reliefs) est imprimé : la plaque est plate. Elle est conçue pour l'intérieur.</p></details><details><summary>Quand vais-je la recevoir ?</summary><p>Environ 3 semaines après la validation de votre aperçu. Pour Noël, commandez avant le 1er décembre.</p></details><details><summary>Ça marche pour les chats ?</summary><p>Oui ! Indiquez-le simplement quand vous nous envoyez la photo.</p></details></div>",
+    "background_color": "#fbf7ee",
+    "section_width": "page-width",
+    "padding-block-start": 48,
+    "padding-block-end": 56
+   }
+  }
+ },
+ "order": [
+  "hero",
+  "trust",
+  "collection",
+  "steps",
+  "story",
+  "faq"
+ ]
+}

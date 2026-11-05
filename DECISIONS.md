@@ -241,3 +241,6 @@ Restent à faire : images (envoi via le sélecteur Shopify), nom de la boutique 
 
 ## D-049 — 2026-11-06 — Images ajoutées aux 4 fiches Shopify
 8 images envoyées par le fondateur, identifiées par taille de fichier : mise en situation en image principale, design à plat en 2e image, textes alternatifs renseignés. Produits toujours en brouillon.
+
+## D-050 — 2026-11-06 — Site refait : identité « La Gazette Gâté Pourri »
+Le fondateur rejette un premier site trop proche de l'ancien (Sapin & Lin). Nouveau thème « Gâté Pourri – Gazette » (copie non publiée, ex-v6) : papier ancien #f3ead6, encre #1a1a1a, rouge tampon #8b1a1a, Playfair Display + Old Standard TT ; accueil en journal (manchette, « la une », garanties, « petites annonces » = collection, « mode d'emploi », « courrier des lecteurs » = FAQ). Fiche produit nettoyée (bouton Printify et widget d'avis d'exemple Judge.me retirés). Pages créées : Livraison, FAQ, Notre histoire ; menus refaits. Pages légales non modifiables par l'API (droit manquant) → textes dans `POLITIQUES_A_COLLER.md`. Thème à activer par le fondateur dans l'admin ; produits encore en brouillon (invisibles en aperçu).
