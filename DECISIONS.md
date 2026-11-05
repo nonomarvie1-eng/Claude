@@ -144,3 +144,16 @@ IONOS : gatepourri.fr disponible, 6 € TTC la 1re année (prix barré 11 € HT
 
 ## D-030 — 2026-11-05 — Rendu de la phrase validé par le fondateur
 `tools/generer_plaque.py` : phrase en Abril Fatface, posée lettre par lettre sur l'arc mesuré de la banderole (flèche 100 px), lettres inclinées selon la courbe, espaces conservés, hauteur de lettre fixe. Prénom en Lobster dans le cartouche. Réglage figé pour tous les modèles à deux zones vides (`designs/modeles2/`). Phrases ≤ ~22 caractères recommandées.
+
+## D-031 — 2026-11-06 — Contre-expertise n°2 (ChatGPT) sur Gâté Pourri : adoptée
+**Corrections adoptées :**
+1. **Règle d'arrêt publicitaire** : « moins de 3 ventes après 150 € » était une erreur (3 ventes = 50 € par vente, très déficitaire). Nouvelle règle : coût par vente cible ≤ 9 € (1 plaque) / ≤ 15 € (duo), en gardant ~5 € par commande. Après 150 € : si le coût par vente dépasse 20 €, on coupe ; entre la cible et 20 €, on change la vidéo ou l'offre avant de remettre de l'argent. Seuils provisoires jusqu'au devis.
+2. **Duo** : 54,90 € = -31 % pour ~6 € de marge en plus. Tester 59,90 € et 64,90 € après devis. Duo = une seule adresse de livraison.
+3. **Descriptions honnêtes** : « illustration de la race et de la couleur choisies + prénom », pas « portrait de votre animal ». « Plaque en aluminium imprimée, style vintage, effet patiné », pas « émaillée ». Pas d'usage extérieur promis avant d'avoir des éléments sur la tenue aux UV et à la pluie.
+4. **Devis à demander** : 1 plaque livrée en France, puis 2 plaques dans le même colis, poste par poste. Demander aussi un devis à un imprimeur européen en direct.
+5. **Échantillons** : 1 modèle clair (golden) + 1 sombre (labrador noir), 1 prénom court + 1 long avec accent. Vérifier : netteté, accents, couleurs, patine, matériau réel (alu ou acier), rigidité, emballage, délai réel.
+6. **Fiabilité de la personnalisation** : registre des commandes (n°, modèle, phrase, prénom, fichier, suivi) + limite de caractères + aperçu avant validation. Conditions écrites de réimpression du vendeur.
+7. **Marque** : la seule différence de classes ne suffit pas à écarter un risque de confusion. Avant d'investir dans le nom (au-delà du domaine à 6 €) : lire les libellés exacts des marques proches, et idéalement un avis d'un conseil en propriété industrielle.
+8. **TVA à l'import** : faire confirmer le montage par le service des impôts des entreprises (SIE).
+9. **Budget** : réserve ≥ 200 € ; dépenses initiales limitées aux échantillons, une boutique simple et le premier test.
+**Nuance** : l'ancienneté d'une pub reste un indice, pas une preuve de rentabilité (déjà noté en D-016/D-020).

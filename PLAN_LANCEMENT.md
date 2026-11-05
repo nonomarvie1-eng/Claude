@@ -33,8 +33,8 @@ Les designs : générés par IA puis retravaillés (Canva) — une base par race
 
 ## Critères d'arrêt
 - Échantillons de mauvaise qualité chez les 2 vendeurs → on cherche un autre fournisseur avant tout lancement.
-- Après 150 € de pub : moins de 3 ventes → on arrête la pub et on revoit l'offre.
-- Coût par vente durablement > 20 € (offre à 2 plaques) → pas de hausse du budget.
+- Après 150 € de pub : coût par vente > 20 € → on coupe ; entre la cible (9 € seule / 15 € duo) et 20 € → on change la vidéo ou l'offre avant de remettre de l'argent (D-031).
+- Pas de hausse du budget tant que le coût par vente n'est pas sous la cible sur au moins 20 ventes.
 
 ## Obligations avant la première vente
 Statut micro-entrepreneur actif ; mentions légales, CGV, politique de retour (objet personnalisé : exclusion du droit de rétractation à vérifier — art. L221-28 C. conso — mais garantie légale de conformité toujours due) ; délais de livraison affichés ; responsable UE / informations fabricant (GPSR) demandés au fournisseur.
