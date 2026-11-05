@@ -195,3 +195,7 @@ Prochaine étape : test de faisabilité avec la photo d'un vrai chien (avec acco
 
 ## D-039 — 2026-11-06 — Test « portrait d'après photo » : concluant sur la ressemblance
 Photo d'un shiba (harnais noir, queue enroulée) → plaque « Recherché » western : chien reconnaissable (pelage, harnais, queue, masque blanc), style affiche gravée nettement moins « IA ». Défauts : ChatGPT a recopié les crochets, mis les prénoms en minuscules, laissé une faute (« madelaine ») et une tournure bancale (« Pour manger »). → Règle : **ChatGPT dessine, notre outil écrit les textes variables** (zones laissées vides), textes relus avant impression.
+
+## D-040 — 2026-11-06 — Collection « formats français détournés » : revue critique
+Classement : 1) Le Petit Toutou (une de journal) — le plus drôle et le moins « IA » ; 2) Avenue (plaque de rue parisienne) — le plus « vrai objet », idéal porte ; 3) Château (étiquette de vin) — le plus chic/cadeau ; 4) Passeport — le plus simple à personnaliser ; 5) Toutou Match — drôle mais **risque juridique** (parodie reconnaissable du logo Paris Match, marque déposée) → renommer et changer la mise en page.
+Défauts communs : chien trop photoréaliste et brillant sur Toutou Match et Château (collé sur le décor) ; vérifier les fautes dans le texte de ChatGPT (« télécommande ») ; versions avec zones vides nécessaires pour la production. Château : vigilance sur les règles publicitaires Meta liées à l'alcool.
