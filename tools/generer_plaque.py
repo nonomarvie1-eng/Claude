@@ -13,22 +13,32 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
 
 FONTS = Path(__file__).parent / "fonts"
 F_PRENOM = str(FONTS / "Lobster-Regular.ttf")
-F_PHRASE = str(FONTS / "DMSerifDisplay-Regular.ttf")
+F_PHRASE = str(FONTS / "AbrilFatface-Regular.ttf")
+F_PHRASE_CONDENSEE = str(FONTS / "Oswald.ttf")
 W, H = 2362, 3543
 ZONE_PRENOM = (275, 1130, 750, 1325)   # coordonnées dans le modèle 1024x1536
-ZONE_PHRASE = (150, 262, 880, 352)
+ZONE_PHRASE = (122, 294, 902, 352)
 ENCRE = (22, 52, 56)
+
+
+def _font(path, size):
+    f = ImageFont.truetype(path, size)
+    try:
+        f.set_variation_by_name("Bold")
+    except Exception:
+        pass
+    return f
 
 
 def _fit(draw, text, path, max_w, max_h, start):
     size = start
     while size > 30:
-        f = ImageFont.truetype(path, size)
+        f = _font(path, size)
         l, t, r, b = draw.textbbox((0, 0), text, font=f, anchor="mm")
         if r - l <= max_w and b - t <= max_h:
             return f
         size -= 4
-    return ImageFont.truetype(path, size)
+    return _font(path, size)
 
 
 def _ecrire(big, zone, texte, police, ratio_h, epaisseur=0):
@@ -47,11 +57,44 @@ def _ecrire(big, zone, texte, police, ratio_h, epaisseur=0):
     big.alpha_composite(layer)
 
 
+def _ecrire_compresse(big, texte, ligne_base=818, hauteur_cap=118, x0=300, x1=2062, compression_min=0.5):
+    """Phrase en police à empattements grasse : hauteur de lettre fixe, compressée horizontalement pour tenir.
+    Coordonnées en pixels du fichier final 2362x3543."""
+    zw = x1 - x0
+    size = 200
+    while True:
+        f = _font(F_PHRASE, size)
+        cap = f.getbbox("H")
+        if cap[3] - cap[1] <= hauteur_cap:
+            break
+        size -= 2
+    while True:
+        tw = f.getlength(texte)
+        if tw * compression_min <= zw or size < 60:
+            break
+        size -= 4
+        f = _font(F_PHRASE, size)
+    asc, desc = f.getmetrics()
+    pad = 40
+    calque = Image.new("RGBA", (int(tw) + 2 * pad, asc + desc + 2 * pad), (0, 0, 0, 0))
+    cd = ImageDraw.Draw(calque)
+    cd.text((pad + 5, pad + 6), texte, font=f, fill=(255, 240, 200, 150))
+    cd.text((pad, pad), texte, font=f, fill=ENCRE + (255,), stroke_width=3, stroke_fill=ENCRE + (255,))
+    largeur_cible = min(int(tw), zw)
+    calque = calque.resize((largeur_cible + 2 * pad, calque.height), Image.LANCZOS)
+    pos = (int(W / 2 - calque.width / 2), int(ligne_base - asc - pad))
+    layer = Image.new("RGBA", big.size, (0, 0, 0, 0))
+    layer.paste(calque, pos, calque)
+    tex = big.convert("L").point(lambda v: 255 if v > 200 else int(150 + v * 0.5))
+    layer.putalpha(ImageChops.multiply(layer.split()[3], tex))
+    big.alpha_composite(layer)
+
+
 def main(modele, prenom, phrase, out):
     base = Image.open(modele).convert("RGB")
     big = base.resize((W, H), Image.LANCZOS).filter(ImageFilter.UnsharpMask(radius=2, percent=60, threshold=2)).convert("RGBA")
     if phrase != "-":
-        _ecrire(big, ZONE_PHRASE, phrase.upper(), F_PHRASE, 0.78, epaisseur=2)
+        _ecrire_compresse(big, phrase.upper())
     _ecrire(big, ZONE_PRENOM, prenom, F_PRENOM, 0.8)
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     big.convert("RGB").save(out, dpi=(300, 300))
