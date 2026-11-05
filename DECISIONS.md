@@ -179,3 +179,6 @@ Conséquences :
 
 ## D-035 — 2026-11-06 — Coût réel livré confirmé : 13,00 € TTC par plaque
 Écran de paiement AliExpress : 4,69 € + livraison 2,32 € + frais d'import estimés 5,99 € (droits + traitement + TVA, payés à la commande, rien à la livraison) = **13,00 €**. Marge avant pub ≈ 11 € à 29,90 €, ≈ 15 € à 34,90 €. Échantillon A commandé.
+
+## D-036 — 2026-11-06 — Virage : plaques humoristiques à concept (le texte est la vedette)
+Le fondateur rejette le style « Attention chien » même premium. Nouveaux concepts validés en principe (`designs/concepts_humour_v1.png`) : **Avis de recherche**, **Affiche de film**, **Accréditation officielle**, **Bienvenue chez…**. Choix recommandé : Avis de recherche en produit vedette (le plus drôle et le plus partageable), Accréditation en n°2 (champs personnalisables). Problème restant : rendu « trop IA » (lisse, brillant, uniforme). Piste : style d'affiche imprimée à l'ancienne (palette limitée, grain, trame, touches de pinceau) plutôt que photoréalisme ; la crédibilité « réelle » viendra des photos du vrai produit.
