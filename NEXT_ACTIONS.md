@@ -1,5 +1,13 @@
 # NEXT ACTIONS
 
+## 🛒 2026-11-05 — Commande des échantillons (accord du fondateur : oui, ~15 €)
+Annonces (AliExpress, relevé du 2026-11-05) :
+- A : https://fr.aliexpress.com/item/3256809643227801.html — plaque aluminium photo personnalisée, ~4,67 $, 1 000+ ventes, note 4,9
+- B : https://fr.aliexpress.com/item/3256806738688984.html — plaque métal personnalisée, 419 ventes, note 4,9 (prix réel à voir sur la page)
+Taille 20×30 cm, livraison suivie vers la France. Même fichier envoyé aux deux pour comparer.
+Fichier : illustration IA envoyée par le fondateur → `python3 tools/make_plaque.py <image> "<prénom>" "<phrase>" designs/<sortie>.png`.
+Grille de test à la réception : netteté du texte, fidélité des couleurs, épaisseur et rigidité, angles et trous, emballage, délai réel commande→livraison, frais éventuels à la livraison (aucun accepté).
+
 ## ✅ 2026-11-05 — PRODUIT CHOISI : plaque personnalisée chien/chat (D-022) — suivre `PLAN_LANCEMENT.md`
 1. Fondateur : commander 2 échantillons chez 2 vendeurs AliExpress différents (~15 € au total) — accord donné ?
 2. Fondateur : inscription micro-entreprise sur autoentrepreneur.urssaf.fr (gratuit).
