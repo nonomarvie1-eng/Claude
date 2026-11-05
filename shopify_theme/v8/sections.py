@@ -46,6 +46,8 @@ HOME_CSS = """
 .gp-hero__grid{display:grid;gap:0}
 .gp-hero h1{font-size:clamp(28px,7.6vw,58px);line-height:1.04;font-weight:800}
 .gp-hero h1 em{font-style:normal;color:var(--accent)}
+.gp-heroimg{position:relative;margin:12px -18px 4px}
+.gp-heroimg img{width:100%;height:auto;display:block}
 .gp-wall{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:4%;margin:12px -18px 6px;padding:22px 18px 40px;background:radial-gradient(ellipse at 50% 0%,#fbf6ec 0%,#efe4d0 70%,#e6d8bf 100%)}
 .gp-sign{position:relative;border-radius:9px;overflow:hidden;line-height:0;box-shadow:0 1px 2px rgba(40,28,15,.35),0 14px 22px -10px rgba(40,28,15,.55),0 30px 40px -24px rgba(40,28,15,.35)}
 .gp-sign img{width:100%;height:auto;display:block}
@@ -86,6 +88,9 @@ HOME_CSS = """
 .gp-strip img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:14px;display:block}
 .gp-strip figcaption{font-size:13px;color:var(--soft);margin-top:6px}
 /* Le produit */
+.gp-fig{margin:16px 0 0}
+.gp-fig img{width:100%;height:auto;border-radius:16px;display:block}
+.gp-fig figcaption{font-size:13px;color:var(--soft);margin-top:6px}
 .gp-spec{display:grid;gap:0;margin-top:16px;border-top:1px solid var(--line)}
 .gp-spec div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
 .gp-spec dt,.gp-spec b{font-weight:700}
@@ -102,7 +107,7 @@ HOME_CSS = """
 @media(min-width:750px){
  .gp-hero{padding:40px 0 48px}
  .gp-hero__grid{grid-template-columns:1fr 1fr;align-items:center;gap:40px}
- .gp-hero__grid .gp-wall{grid-column:2;grid-row:1/span 2;margin:0;border-radius:24px;padding:44px 28px 60px}
+ .gp-hero__grid .gp-heroimg{grid-column:2;grid-row:1/span 2;margin:0;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(27,42,74,.5)}
  .gp-hero__txt{margin-top:18px}
  .gp-grid{grid-template-columns:repeat(4,1fr);gap:18px}
  .gp-steps{grid-template-columns:repeat(3,1fr)}
@@ -124,10 +129,8 @@ HERO = f"""
 <div class="gp"><section class="gp-hero"><div class="gp-wrap gp-hero__grid">
  <div><span class="gp-kicker">Plaques en métal personnalisées</span>
   <h1>Son portrait.<br>Ses bêtises.<br><em>Sur une plaque.</em></h1></div>
- <div class="gp-wall">
-  <div class="gp-sign l"><img src="{img('avenue_d',400)}" alt="" width="400" height="600"></div>
-  <div class="gp-sign c"><img src="{img('toutou_d',500)}" alt="Plaque en métal Le Petit Toutou accrochée au mur" width="500" height="750" fetchpriority="high"></div>
-  <div class="gp-sign r"><img src="{img('chateau_d',400)}" alt="" width="400" height="600"></div>
+ <div class="gp-heroimg">
+  <img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-hero-mur-trio.jpg?v=1793912234&width=900" alt="Trois plaques en métal Gâté Pourri accrochées dans une entrée, un shiba assis en dessous" width="1122" height="1189" fetchpriority="high">
   <span class="gp-wall__tag">Plaques en métal · 20 × 30 cm</span>
  </div>
  <div class="gp-hero__txt">
@@ -187,6 +190,7 @@ PRODUIT = """
 <div class="gp" style="background:var(--cream,#f7f0e3)"><section class="gp-sec"><div class="gp-wrap gp-two">
  <div><span class="gp-kicker">Ce que vous recevez</span>
  <h2 class="gp-h2">La plaque, en détail</h2>
+ <figure class="gp-fig"><img src="https://cdn.shopify.com/s/files/1/1109/7712/2629/files/gp-main-petit-toutou.jpg?v=1793912234&width=800" alt="Plaque en aluminium Le Petit Toutou tenue en main : fine, coins arrondis, reflet métallique" loading="lazy" width="800" height="800"><figcaption>Fine, légère, coins arrondis (image d'illustration).</figcaption></figure>
  <dl class="gp-spec">
   <div><dt>Matière</dt><span>Aluminium imprimé</span></div>
   <div><dt>Format</dt><span>20 × 30 cm, vertical</span></div>

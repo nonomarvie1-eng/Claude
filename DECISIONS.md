@@ -281,3 +281,9 @@ Retour du fondateur sur la vraie fiche (image plein écran, titre énorme, « Fo
 - En-tête : type de plaque en petit (« Plaque de rue parisienne · métal »), titre court (« Avenue »), prix, pastilles, description courte (2 phrases).
 - Formulaire : bouton « 📷 Ajouter sa photo » avec aperçu de la photo choisie et message si elle manque.
 - Bouton « Ajouter au panier » orange ; quantité, sélecteur « Format », barre d'achat flottante (qui pouvait contourner le formulaire) et paiement express masqués/désactivés.
+
+## D-057 — 2026-11-06 — Images ChatGPT du fondateur sur le site
+Le fondateur trouvait le montage d'accueil peu vendeur et peu clair sur la matière. Il a généré avec ChatGPT (consignes fournies) : (1) les 3 plaques au mur d'une entrée avec un shiba, (2) la plaque Le Petit Toutou tenue en main (tranche fine, coins arrondis, reflet).
+- (1) recadrée en image principale de l'accueil (`designs/ia_marketing/hero_mur_trio.jpg`), étiquette « Plaques en métal · 20 × 30 cm ».
+- (2) dans « La plaque, en détail » (légende « image d'illustration ») et en 2e image de la fiche Le Petit Toutou.
+Envoi direct depuis la session vers Shopify (téléversement préparé + fileCreate) : plus besoin de passer par le sélecteur de fichiers.
