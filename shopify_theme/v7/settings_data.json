@@ -1,0 +1,26 @@
+{
+ "current": {
+  "logo_height": 40,
+  "logo_height_mobile": 30,
+  "type_body_font": "dm_sans_n4",
+  "type_subheading_font": "dm_sans_n5",
+  "type_heading_font": "poppins_n7",
+  "type_accent_font": "poppins_n7",
+  "page_width": "narrow",
+  "palette_primary_button_background": "#e5451f",
+  "palette_primary_button_text": "#ffffff",
+  "palette_primary_button_border": "#e5451f",
+  "button_border_radius_primary": 100,
+  "button_border_radius_secondary": 100,
+  "cart_type": "drawer",
+  "show_add_discount_code": true,
+  "card_corner_radius": 16,
+  "content_for_index": [],
+  "color_palette": {
+   "background": "#ffffff",
+   "foreground": "#1d1a2f",
+   "color1": "#5b5870",
+   "color2": "#ece7e2"
+  }
+ }
+}
