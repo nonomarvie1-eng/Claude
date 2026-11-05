@@ -231,3 +231,10 @@ Lettre manuscrite des années 1950 écrite par le chien, timbre et cachet « Pô
 - **Description honnête** : « plaque en aluminium imprimée, effet vintage ». Rivets, reliefs et émail sont imprimés, pas réels. Pas d'usage extérieur promis tant que le fournisseur ne l'a pas confirmé (Avenue présentée à l'intérieur ou « près de la porte, à l'abri »).
 - **Échelle** : photo de l'échantillon tenu en main dès réception.
 - **Fichiers d'impression** : designs plats seuls, sans décor, ombres ni cotes.
+
+## D-048 — 2026-11-06 — Boutique Shopify « Sapin & Lin » reconvertie en Gâté Pourri
+Boutique connectée : sapin-et-lin.myshopify.com (plan Basic, EUR). Avec l'accord du fondateur :
+- 16 anciens produits de Noël (Printify) **archivés** (récupérables, non supprimés).
+- 4 plaques créées **en brouillon** à 34,90 € : Le Petit Toutou (gid 16346479755589), Avenue (16346479853893), Château (16346479886661), Lettre au Père Noël (16346479952197).
+- Collection manuelle « Nos plaques personnalisées » créée (gid 710332481861).
+Restent à faire : images (envoi via le sélecteur Shopify), nom de la boutique et domaine (admin uniquement, non modifiable par l'API), pages légales (SIRET requis), champs de personnalisation, anciennes collections de Noël à masquer.
