@@ -157,3 +157,9 @@ IONOS : gatepourri.fr disponible, 6 € TTC la 1re année (prix barré 11 € HT
 8. **TVA à l'import** : faire confirmer le montage par le service des impôts des entreprises (SIE).
 9. **Budget** : réserve ≥ 200 € ; dépenses initiales limitées aux échantillons, une boutique simple et le premier test.
 **Nuance** : l'ancienneté d'une pub reste un indice, pas une preuve de rentabilité (déjà noté en D-016/D-020).
+
+## D-032 — 2026-11-06 — Réponses des vendeurs, plan d'échantillons
+- hohappyme Official Store : maquette conforme (sans marges blanches), recommande la livraison « AliExpress Standard » payante, délai annoncé **5 à 25 jours** vers la France. Prix 20×30, matériau et réimpression : non précisés.
+- FORJN-DECOR Store : « je peux imprimer vos images directement », renvoie vers une annonce à 8,39 €.
+- Plan : 1 échantillon chez chacun (A golden « Max » chez hohappyme ; B labrador noir « Héloïse » chez FORJN), fichiers générés par notre outil pour tester le rendu réel du texte. Plafond : ~10 € livrée par plaque.
+- Conséquence du délai 5–25 j : promesse « livré pour Noël » impossible à tenir de façon fiable cette année → vendre pour Noël avec une **date limite prudente** ou un message « carte cadeau / plaque après les fêtes » ; décision après réception des échantillons.

@@ -1,1 +1,3 @@
 date,numero_commande,client_prenom,modele,phrase,prenom_animal,quantite,fichier_impression,apercu_envoye_client,fournisseur,numero_commande_fournisseur,suivi,statut,notes
+2026-11-06,ECH-A,interne,golden_jardin,UN CHIEN GÂTÉ VIT ICI,Max,1,designs/echantillons/A_golden_max.png,n/a,hohappyme Official Store,,,a commander,echantillon modele clair
+2026-11-06,ECH-B,interne,labrador_noir_jardin,VOLEUSE DE CHAUSSETTES,Héloïse,1,designs/echantillons/B_labrador_heloise.png,n/a,FORJN-DECOR Store,,,a commander,echantillon modele sombre + prenom long avec accents
