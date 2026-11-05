@@ -130,3 +130,6 @@ Modèle ChatGPT au cartouche vide + `tools/ecrire_prenom.py` (police Lobster, en
 
 ## D-026 — 2026-11-05 — Gamme de lancement : 5 races
 Modèles au cartouche vide dans `designs/modeles/` : golden retriever, berger australien bleu merle, bouledogue français fauve, staffie bringé, labrador noir (races parmi les plus nombreuses en France). Même cadre et même cartouche pour toutes → `tools/ecrire_prenom.py` fonctionne sans réglage. Visuel de pub multi-races : `designs/pub_races_v1.jpg`.
+
+## D-027 — 2026-11-05 — Noms de marque présélectionnés
+Recherche web : aucun homonyme trouvé pour « Gâté Pourri », « Rouille & Moustache », « La Patte Rétro » (proches sans conflit direct : série jeunesse « Chien Pourri », chaussures « M. Moustache », animalerie « Patte Blanche »). Recommandation : **Gâté Pourri** (prolonge le slogan « Un chien gâté vit ici », humour affectueux). Plan B : Rouille & Moustache (s'étend aux chats). Vérifications restant au fondateur (accès bloqué ici) : base des marques INPI (data.inpi.fr, classes 6, 20 et 21) et disponibilité du domaine. Dépôt INPI (~190 € pour une classe) reporté après les premières ventes.
