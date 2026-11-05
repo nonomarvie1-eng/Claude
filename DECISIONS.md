@@ -224,3 +224,10 @@ Lettre manuscrite des années 1950 écrite par le chien, timbre et cachet « Pô
 
 ## D-046 — 2026-11-06 — 6 mises en situation réalisées (visuels de pub et boutique)
 `designs/mises_en_situation/` : salon (Petit Toutou), cuisine (Château, avec cotes 20×30 cm), entrée (Passeport), porte (Avenue), bureau (Magazine), cheminée (Noël). Défauts : Château montre de vraies étiquettes de vin factices (« Château Saint-Martin ») — acceptable mais attention règles alcool Meta ; vis/trous à confirmer avec l'échantillon. Mention obligatoire sur la boutique : « Mise en situation non contractuelle » jusqu'aux vraies photos.
+
+## D-047 — 2026-11-06 — Contre-expertise ChatGPT sur la collection : adoptée
+- **Lancement avec 3 plaques** : Le Petit Toutou, Avenue, Château (+ Lettre au Père Noël en saisonnier jusqu'au 1er déc.). Passeport et Magazine en réserve.
+- **Promesse = portrait d'après la photo du client** (c'est ce que montrent les visuels). Process : photo + questionnaire → portrait ChatGPT → aperçu validé par le client avant impression. Si la photo est inexploitable : on demande une autre photo, sinon remboursement.
+- **Description honnête** : « plaque en aluminium imprimée, effet vintage ». Rivets, reliefs et émail sont imprimés, pas réels. Pas d'usage extérieur promis tant que le fournisseur ne l'a pas confirmé (Avenue présentée à l'intérieur ou « près de la porte, à l'abri »).
+- **Échelle** : photo de l'échantillon tenu en main dès réception.
+- **Fichiers d'impression** : designs plats seuls, sans décor, ombres ni cotes.
