@@ -1,5 +1,13 @@
 # NEXT ACTIONS
 
+## 🔎 2026-11-05 — Chasse aux produits « qui marchent » (tous univers) — méthode Meta Ad Library
+Signal le plus fiable disponible gratuitement : une pub **active depuis 2 mois ou plus** et une page qui a **plusieurs pubs** = l'annonceur continue à payer, donc il gagne probablement de l'argent.
+Réglages : facebook.com/ads/library → France → Toutes les publicités → mots-clés ci-dessous (avec guillemets).
+Mots-clés typiques des boutiques e-commerce : « livraison offerte » ; « satisfait ou remboursé » ; « achetés » « offert » ; « offre limitée » ; « -50% » ; « rupture de stock » ; « commandez maintenant ».
+Pour chaque produit intéressant, capturer : image du produit, nom du site, date « Début de la diffusion », mention « X publicités utilisent ce contenu » s'il y en a.
+Ignorer : grandes marques/enseignes, vêtements avec tailles, cosmétiques, compléments alimentaires, électronique, produits chimiques.
+Je trie ensuite : marge ≥ 15 € après cotisations, prix fournisseur AliExpress, règles, saturation.
+
 ## ⭐ 2026-11-05 — Meilleur candidat : collier gravé portrait/prénom d'animal (D-019)
 1. Fondateur : Meta Ad Library (France) — « collier personnalisé chien », « collier portrait animal », « bijou photo chien chat » ; Google Shopping — « collier portrait chien ». Envoyer des captures.
 2. Avec accord : 2 échantillons de 2 fournisseurs (~10–20 €) gravés avec la photo d'un vrai animal.
