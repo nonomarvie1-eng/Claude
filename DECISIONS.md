@@ -204,3 +204,11 @@ Défauts communs : chien trop photoréaliste et brillant sur Toutou Match et Ch�
 Version « vraie une de journal photographiée » (papier jauni, encre baveuse, photo de presse en trame) jugée la plus authentique et la moins « IA » de toutes. Chien reconnaissable (silhouette, harnais, queue). Personnalisation : prénom (gros titre), bêtise (sous-titre), date (adoption ou anniversaire du chien à la place de « Lundi 14 avril 1930 »).
 Points à vérifier : bords déchirés près du bord de la plaque (rendu à l'impression), perte des couleurs (noir et blanc) → proposer peut-être une légère teinte sépia.
 Principe retenu pour la collection : « réel » = fidèle au support imité (journal, émail, étiquette gravée), pas un chien photoréaliste.
+
+## D-042 — 2026-11-06 — Collection v2 « réaliste » : revue
+- Château v2 (chien gravé intégré, légère teinte) : excellent, le plus premium. Validé.
+- Passeport v2 (photo d'identité agrafée, machine à écrire, tampons) : excellent, très authentique. Validé.
+- Avenue v2 : magnifique mais c'est une **photo d'une plaque sur un mur** (mur en pierre autour, reflets d'immeubles). Inutilisable comme fichier d'impression (on imprimerait le mur et de faux reflets). → Garder comme visuel de pub ; refaire une version plate bord à bord pour l'impression.
+- Petit Toutou v2 : inchangé, validé.
+- Magazine : à faire.
+Règle : pour un fichier d'impression, demander une image plate, cadrée bord à bord, sans décor autour ni reflets ; les versions « photographiées » servent aux pubs.
