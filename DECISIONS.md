@@ -199,3 +199,8 @@ Photo d'un shiba (harnais noir, queue enroulée) → plaque « Recherché » wes
 ## D-040 — 2026-11-06 — Collection « formats français détournés » : revue critique
 Classement : 1) Le Petit Toutou (une de journal) — le plus drôle et le moins « IA » ; 2) Avenue (plaque de rue parisienne) — le plus « vrai objet », idéal porte ; 3) Château (étiquette de vin) — le plus chic/cadeau ; 4) Passeport — le plus simple à personnaliser ; 5) Toutou Match — drôle mais **risque juridique** (parodie reconnaissable du logo Paris Match, marque déposée) → renommer et changer la mise en page.
 Défauts communs : chien trop photoréaliste et brillant sur Toutou Match et Château (collé sur le décor) ; vérifier les fautes dans le texte de ChatGPT (« télécommande ») ; versions avec zones vides nécessaires pour la production. Château : vigilance sur les règles publicitaires Meta liées à l'alcool.
+
+## D-041 — 2026-11-06 — Produit vedette : « Le Petit Toutou », version photo de presse 1930
+Version « vraie une de journal photographiée » (papier jauni, encre baveuse, photo de presse en trame) jugée la plus authentique et la moins « IA » de toutes. Chien reconnaissable (silhouette, harnais, queue). Personnalisation : prénom (gros titre), bêtise (sous-titre), date (adoption ou anniversaire du chien à la place de « Lundi 14 avril 1930 »).
+Points à vérifier : bords déchirés près du bord de la plaque (rendu à l'impression), perte des couleurs (noir et blanc) → proposer peut-être une légère teinte sépia.
+Principe retenu pour la collection : « réel » = fidèle au support imité (journal, émail, étiquette gravée), pas un chien photoréaliste.
