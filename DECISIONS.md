@@ -124,3 +124,6 @@ Le design proposé par ChatGPT est jugé meilleur que nos v1/v2 (médaillon du p
 
 ## D-024 — 2026-11-05 — Design final : ChatGPT v2 (jardin, plaque vintage patinée)
 Rendu jugé nettement plus désirable que nos versions faites en code. Fichier d'impression : `designs/plaque_finale_max_impression.png` (agrandi de 1024×1536 à 2362×3543, netteté vérifiée sur un zoom du visage). Pour la vente : obtenir une version au cartouche vide afin d'écrire le prénom proprement, et vérifier sur l'échantillon que l'effet « rouille » imprimé ne passe pas pour un défaut.
+
+## D-025 — 2026-11-05 — Chaîne de fabrication validée
+Modèle ChatGPT au cartouche vide + `tools/ecrire_prenom.py` (police Lobster, encre bleu-vert, texture conservée) → fichier d'impression 20×30 cm à 300 dpi en quelques secondes, prénoms longs gérés (testé avec « Marguerite »). Visuel de pub : `designs/pub_golden_v2.jpg`. Pour tenir la promesse « l'apparence peut être modifiée », il faut d'autres races : créer un modèle vide par race avec le même prompt ChatGPT.
