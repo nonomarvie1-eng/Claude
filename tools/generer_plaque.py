@@ -57,20 +57,12 @@ def _ecrire(big, zone, texte, police, ratio_h, epaisseur=0):
     big.alpha_composite(layer)
 
 
-def _cintrer(calque, fleche):
-    """Courbe le texte en arche : centre en haut, extrémités abaissées de `fleche` pixels."""
-    w, h = calque.size
-    out = Image.new("RGBA", (w, h + fleche), (0, 0, 0, 0))
-    cx = w / 2
-    for x in range(0, w, 2):
-        dy = int(round(fleche * ((x + 1 - cx) / cx) ** 2))
-        out.paste(calque.crop((x, 0, x + 2, h)), (x, dy))
-    return out
-
-
-def _ecrire_compresse(big, texte, ligne_base=800, fleche=55, hauteur_cap=118, x0=300, x1=2062, compression_min=0.5):
-    """Phrase en police à empattements grasse : hauteur de lettre fixe, compressée horizontalement pour tenir.
-    Coordonnées en pixels du fichier final 2362x3543."""
+def _ecrire_compresse(big, texte, ligne_base=790, fleche=100, demi_largeur=881,
+                      hauteur_cap=118, x0=300, x1=2062):
+    """Phrase posée lettre par lettre sur l'arc du bandeau (mesuré sur les modèles) :
+    centre en haut, extrémités abaissées de `fleche` px, chaque lettre inclinée selon la courbe.
+    Police à empattements grasse, compressée horizontalement si besoin. Coordonnées du fichier 2362x3543."""
+    import math
     zw = x1 - x0
     size = 200
     while True:
@@ -79,25 +71,50 @@ def _ecrire_compresse(big, texte, ligne_base=800, fleche=55, hauteur_cap=118, x0
         if cap[3] - cap[1] <= hauteur_cap:
             break
         size -= 2
+    def largeurs(fnt):
+        adv = [fnt.getlength(texte[: i + 1]) - fnt.getlength(texte[:i]) for i in range(len(texte))]
+        adv = [max(a, fnt.size * 0.42) if ch == " " else a for a, ch in zip(adv, texte)]
+        lettres = sum(a for a, ch in zip(adv, texte) if ch != " ")
+        espaces = sum(a for a, ch in zip(adv, texte) if ch == " ")
+        return adv, lettres, espaces
+
+    # les espaces gardent 90 % de leur largeur, seules les lettres sont compressées
     while True:
-        tw = f.getlength(texte)
-        if tw * compression_min <= zw or size < 60:
+        adv, lettres, espaces = largeurs(f)
+        c = min(1.0, (zw - espaces) / lettres)
+        if c >= 0.62 or size <= 60:
             break
         size -= 4
         f = _font(F_PHRASE, size)
+    tw = lettres * c + espaces
     asc, desc = f.getmetrics()
-    pad = 40
-    calque = Image.new("RGBA", (int(tw) + 2 * pad, asc + desc + 2 * pad), (0, 0, 0, 0))
-    cd = ImageDraw.Draw(calque)
-    cd.text((pad + 5, pad + 6), texte, font=f, fill=(255, 240, 200, 150))
-    cd.text((pad, pad), texte, font=f, fill=ENCRE + (255,), stroke_width=3, stroke_fill=ENCRE + (255,))
-    largeur_cible = min(int(tw), zw)
-    calque = calque.resize((largeur_cible + 2 * pad, calque.height), Image.LANCZOS)
-    # flèche proportionnelle à la largeur du texte (une phrase courte se courbe moins)
-    calque = _cintrer(calque, int(fleche * (largeur_cible / zw) ** 2))
-    pos = (int(W / 2 - calque.width / 2), int(ligne_base - asc - pad))
+    cxp = W / 2
+
+    def y_arc(x):
+        return ligne_base + fleche * ((x - cxp) / demi_largeur) ** 2
+
+    def pente(x):
+        return 2 * fleche * (x - cxp) / demi_largeur ** 2
+
     layer = Image.new("RGBA", big.size, (0, 0, 0, 0))
-    layer.paste(calque, pos, calque)
+    x = cxp - tw / 2
+    pad = 60
+    for i, ch in enumerate(texte):
+        avance = adv[i] * (c if ch != " " else 1.0)
+        if ch != " ":
+            gw = int(f.getlength(ch)) + 2 * pad
+            gh = asc + desc + 2 * pad
+            g = Image.new("RGBA", (gw, gh), (0, 0, 0, 0))
+            gd = ImageDraw.Draw(g)
+            gd.text((pad + 5, pad + 6), ch, font=f, fill=(255, 240, 200, 150))
+            gd.text((pad, pad), ch, font=f, fill=ENCRE + (255,), stroke_width=2, stroke_fill=ENCRE + (255,))
+            g = g.resize((max(1, int((gw - 2 * pad) * c) + 2 * pad), gh), Image.LANCZOS)
+            xc = x + avance / 2
+            ang = math.degrees(math.atan(pente(xc)))
+            pivot = (g.width / 2, pad + asc)
+            g = g.rotate(-ang, resample=Image.BICUBIC, center=pivot)
+            layer.paste(g, (int(xc - pivot[0]), int(y_arc(xc) - pivot[1])), g)
+        x += avance
     tex = big.convert("L").point(lambda v: 255 if v > 200 else int(150 + v * 0.5))
     layer.putalpha(ImageChops.multiply(layer.split()[3], tex))
     big.alpha_composite(layer)
