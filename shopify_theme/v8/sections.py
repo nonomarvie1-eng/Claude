@@ -46,11 +46,13 @@ HOME_CSS = """
 .gp-hero__grid{display:grid;gap:0}
 .gp-hero h1{font-size:clamp(28px,7.6vw,58px);line-height:1.04;font-weight:800}
 .gp-hero h1 em{font-style:normal;color:var(--accent)}
-.gp-fan{position:relative;height:clamp(210px,62vw,470px);margin:2px auto 4px;width:100%;max-width:440px}
-.gp-fan img{position:absolute;top:50%;left:50%;height:auto;border-radius:6px;box-shadow:0 18px 34px -16px rgba(27,42,74,.55)}
-.gp-fan .c{width:44%;transform:translate(-50%,-50%);z-index:3}
-.gp-fan .l{width:38%;transform:translate(-118%,-46%) rotate(-8deg);z-index:2}
-.gp-fan .r{width:38%;transform:translate(18%,-46%) rotate(8deg);z-index:2}
+.gp-wall{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:4%;margin:12px -18px 6px;padding:22px 18px 40px;background:radial-gradient(ellipse at 50% 0%,#fbf6ec 0%,#efe4d0 70%,#e6d8bf 100%)}
+.gp-sign{position:relative;border-radius:9px;overflow:hidden;line-height:0;box-shadow:0 1px 2px rgba(40,28,15,.35),0 14px 22px -10px rgba(40,28,15,.55),0 30px 40px -24px rgba(40,28,15,.35)}
+.gp-sign img{width:100%;height:auto;display:block}
+.gp-sign::after{content:'';position:absolute;inset:0;border-radius:9px;background:linear-gradient(118deg,rgba(255,255,255,0) 28%,rgba(255,255,255,.30) 42%,rgba(255,255,255,0) 56%),linear-gradient(180deg,rgba(255,255,255,.10),rgba(0,0,0,.06));box-shadow:inset 0 0 0 1px rgba(255,255,255,.45),inset 0 0 0 2.5px rgba(0,0,0,.10);pointer-events:none}
+.gp-sign.c{width:38%;z-index:2}
+.gp-sign.l,.gp-sign.r{width:27%;margin-top:9%}
+.gp-wall__tag{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);white-space:nowrap;background:#fff;color:var(--ink);font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;box-shadow:0 4px 12px -6px rgba(0,0,0,.3)}
 .gp-hero__txt p{font-size:16px;color:var(--soft);max-width:480px}
 .gp-buy{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:12px}
 .gp-buy__price{font-family:'Poppins',sans-serif;font-weight:700;font-size:17px}
@@ -62,7 +64,9 @@ HOME_CSS = """
 .gp-card{display:flex;flex-direction:column;text-decoration:none;border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}
 .gp-card:hover{transform:translateY(-3px);box-shadow:0 16px 34px -20px rgba(27,42,74,.45)}
 .gp-card__img{position:relative;aspect-ratio:4/5;background:var(--cream);display:flex;align-items:center;justify-content:center;padding:14px}
-.gp-card__img img{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 10px 20px -10px rgba(27,42,74,.5)}
+.gp-card__img .gp-sign{display:block;height:100%;border-radius:7px}
+.gp-card__img .gp-sign::after{border-radius:7px}
+.gp-card__img .gp-sign img{height:100%;width:auto;max-width:100%}
 .gp-tag{position:absolute;bottom:8px;right:8px;z-index:2;background:var(--sun);color:var(--ink);border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700}
 .gp-card__body{padding:12px 12px 14px;display:flex;flex-direction:column;gap:2px;flex:1}
 .gp-card__body h3{font-size:16px;font-weight:700}
@@ -98,7 +102,7 @@ HOME_CSS = """
 @media(min-width:750px){
  .gp-hero{padding:40px 0 48px}
  .gp-hero__grid{grid-template-columns:1fr 1fr;align-items:center;gap:40px}
- .gp-hero__grid .gp-fan{grid-column:2;grid-row:1/span 2;height:470px;max-width:520px;margin:0}
+ .gp-hero__grid .gp-wall{grid-column:2;grid-row:1/span 2;margin:0;border-radius:24px;padding:44px 28px 60px}
  .gp-hero__txt{margin-top:18px}
  .gp-grid{grid-template-columns:repeat(4,1fr);gap:18px}
  .gp-steps{grid-template-columns:repeat(3,1fr)}
@@ -118,16 +122,17 @@ def nbsp(html):
 
 HERO = f"""
 <div class="gp"><section class="gp-hero"><div class="gp-wrap gp-hero__grid">
- <div><span class="gp-kicker">Plaques personnalisées pour chiens</span>
+ <div><span class="gp-kicker">Plaques en métal personnalisées</span>
   <h1>Son portrait.<br>Ses bêtises.<br><em>Sur une plaque.</em></h1></div>
- <div class="gp-fan" aria-hidden="true">
-  <img class="l" src="{img('avenue_d',500)}" alt="" width="500" height="750">
-  <img class="r" src="{img('chateau_d',500)}" alt="" width="500" height="750">
-  <img class="c" src="{img('toutou_d',600)}" alt="Plaque Le Petit Toutou : un chien en une du journal" width="600" height="900" fetchpriority="high">
+ <div class="gp-wall">
+  <div class="gp-sign l"><img src="{img('avenue_d',400)}" alt="" width="400" height="600"></div>
+  <div class="gp-sign c"><img src="{img('toutou_d',500)}" alt="Plaque en métal Le Petit Toutou accrochée au mur" width="500" height="750" fetchpriority="high"></div>
+  <div class="gp-sign r"><img src="{img('chateau_d',400)}" alt="" width="400" height="600"></div>
+  <span class="gp-wall__tag">Plaques en métal · 20 × 30 cm</span>
  </div>
  <div class="gp-hero__txt">
-  <p>Une photo de votre chien suffit&nbsp;: on en fait une plaque vintage unique, avec son prénom et ses bêtises.</p>
-  <div class="gp-buy"><span class="gp-buy__price">34,90 €<small>Livraison offerte en France</small></span>
+  <p>Une photo de votre chien suffit&nbsp;: on en fait une plaque unique, avec son prénom et ses bêtises.</p>
+  <div class="gp-buy"><span class="gp-buy__price">34,90 €<small>Livraison offerte</small></span>
    <a class="gp-btn" href="#plaques">Créer sa plaque</a></div>
   <p class="gp-hero__more"><a href="#comment">Comment ça marche&nbsp;?</a></p>
  </div>
@@ -136,7 +141,7 @@ HERO = f"""
 
 def card(key, name, pitch, tag=""):
     t = f'<span class="gp-tag">{tag}</span>' if tag else ""
-    return f"""<a class="gp-card" href="{H[key]}"><div class="gp-card__img">{t}<img src="{img(key+'_d',500)}" alt="Plaque {name} personnalisée, vue de face" loading="lazy" width="500" height="750"></div>
+    return f"""<a class="gp-card" href="{H[key]}"><div class="gp-card__img">{t}<span class="gp-sign"><img src="{img(key+'_d',500)}" alt="Plaque en métal {name} personnalisée, vue de face" loading="lazy" width="500" height="750"></span></div>
  <div class="gp-card__body"><h3>{name}</h3><p>{pitch}</p><div class="gp-card__foot"><span>34,90 €</span><span>Créer →</span></div></div></a>"""
 
 PLAQUES = f"""
@@ -243,3 +248,13 @@ def preuve(exemples):
  <h2 class="gp-h2">De la photo à la plaque</h2>
  <div class="gp-proof">{pairs}</div>
 </div></section></div>""")
+
+def page_404():
+    return nbsp(f"""<div class="gp"><section class="gp-sec"><div class="gp-wrap" style="text-align:center">
+ <span class="gp-kicker">Oups</span>
+ <h1 class="gp-h2">Cette page s'est fait la malle.</h1>
+ <p class="gp-lead" style="margin:10px auto 22px">Le lien est peut-être erroné, ou la page n'existe plus. Nos plaques, elles, sont toujours là.</p>
+ <a class="gp-btn" href="/">Retour à l'accueil</a>
+</div></section></div>""") + PLAQUES_NBSP()
+def PLAQUES_NBSP():
+    return nbsp(PLAQUES).replace('id="plaques"','')

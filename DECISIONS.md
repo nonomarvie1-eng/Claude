@@ -265,3 +265,9 @@ Suite à une critique détaillée (validée par le fondateur) du site v7 :
 - Avenue : la mise en scène sur une façade extérieure est retirée de la fiche et de l'accueil (fichier conservé dans Shopify → Fichiers) en attendant une mise en scène d'intérieur.
 - Style regroupé dans `assets/gate-pourri.css` (plus d'envois légers).
 - Non faits, avec la raison : nom de la boutique (pas modifiable par l'API → fondateur), fixation et contenu du colis (non vérifiés : l'annonce AliExpress est bloquée pour moi → question au vendeur + échantillon), avant/après (vraies photos nécessaires ; section prête dans `sections.py`). Liste d'actions : `A_FAIRE_SITE.md`.
+
+## D-054 — 2026-11-06 — Visuel d'accueil « plaques au mur » + page 404 en français
+Retour du fondateur sur l'aperçu réel : les plaques inclinées ressemblaient à des feuilles A4, et « Créer » menait à « Page not found » (produits en brouillon, page 404 en anglais avec des t-shirts d'exemple).
+- Accueil : 3 plaques droites accrochées sur un fond de mur, coins arrondis, reflet métallique, ombre portée, étiquette « Plaques en métal · 20 × 30 cm » ; titre au-dessus « Plaques en métal personnalisées ». Bouton « Créer sa plaque » à 623 px du haut sur mobile (779 au départ). Même effet métal sur les vignettes de la collection.
+- Page 404 : refaite en français (« Cette page s'est fait la malle. ») avec retour à l'accueil et les 4 plaques.
+- Fiches : restent introuvables tant que les produits sont en brouillon → décision du fondateur (mot de passe + activation).
