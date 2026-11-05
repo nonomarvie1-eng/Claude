@@ -88,3 +88,70 @@ KEYINFO = """
 """
 def key_block():
     return nbsp(KEYINFO)
+
+# --- v9 : en-tête de fiche, description courte, champ photo soigné ---
+HEAD = """
+{{ 'gate-pourri.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign h = product.handle
+  if h contains 'petit-toutou'
+    assign gp_k = 'Une de journal · plaque en métal'
+    assign gp_t = 'Le Petit Toutou'
+  elsif h contains 'avenue'
+    assign gp_k = 'Plaque de rue parisienne · métal'
+    assign gp_t = 'Avenue'
+  elsif h contains 'chateau'
+    assign gp_k = 'Étiquette de grand cru · métal'
+    assign gp_t = 'Château'
+  elsif h contains 'pere-noel'
+    assign gp_k = "Lettre d'autrefois · métal"
+    assign gp_t = 'Lettre au Père Noël'
+  else
+    assign gp_k = 'Plaque en métal personnalisée'
+    assign gp_t = product.title
+  endif
+-%}
+<div class="gp gp-head"><span class="gp-kicker">{{ gp_k }}</span><h1>{{ gp_t }}</h1><p class="gp-head__sub">Personnalisée avec le portrait de votre chien</p></div>
+"""
+KEY2 = """
+<div class="gp"><ul class="gp-key">
+ <li>📐 20 × 30 cm, aluminium</li>
+ <li>🚚 Livraison offerte</li>
+ <li>⏱️ Environ 3 semaines après validation</li>
+</ul>
+<div class="gp-desc">{{ product.description }}</div></div>
+"""
+PHOTO_OLD = """ <div class="gp-f gp-photo"><label for="gp-photo">Sa photo</label>
+  <input type="file" id="gp-photo" name="properties[Photo]" form="{{ fid }}" accept="image/jpeg,image/png,image/heic,image/webp" required>"""
+PHOTO_NEW = """ <div class="gp-f gp-photo" id="gp-photo-box"><span class="gp-photo__t">Sa photo</span>
+  <label for="gp-photo" class="gp-photo__btn"><span class="gp-photo__ic">📷</span><span id="gp-photo-label">Ajouter sa photo</span></label>
+  <img id="gp-photo-prev" class="gp-photo__prev" alt="" hidden>
+  <input type="file" id="gp-photo" class="gp-vh" name="properties[Photo]" form="{{ fid }}" accept="image/*" required>
+  <p class="gp-photo__err" id="gp-photo-err" hidden>Ajoutez une photo de votre chien pour continuer.</p>"""
+PHOTO_JS = """
+<script>
+(function(){var i=document.getElementById('gp-photo');if(!i)return;var b=document.getElementById('gp-photo-box'),l=document.getElementById('gp-photo-label'),p=document.getElementById('gp-photo-prev'),e=document.getElementById('gp-photo-err');
+ i.addEventListener('change',function(){var f=i.files&&i.files[0];if(!f)return;e.hidden=true;b.classList.remove('is-err');b.classList.add('is-ok');l.textContent='Photo ajoutée · changer';try{p.src=URL.createObjectURL(f);p.hidden=false;}catch(x){}});
+ i.addEventListener('invalid',function(){e.hidden=false;b.classList.add('is-err');b.scrollIntoView({behavior:'smooth',block:'center'});});})();
+</script>
+"""
+PDP_CSS = """
+.gp-head .gp-kicker{margin-bottom:4px}
+.gp-head h1{font-size:30px;line-height:1.1;font-weight:800}
+.gp-head__sub{color:var(--soft);font-size:15px;margin-top:4px}
+.gp-desc{margin-top:14px;font-size:15px;color:#3d4660}
+.gp-desc p{margin:0 0 8px}
+.gp-desc h3{font-family:'Poppins',sans-serif;font-size:15px;margin:12px 0 4px;color:#1b2a4a}
+.gp-desc ul{margin:0;padding-left:18px}
+.gp-desc em{color:#56607a;font-size:13px}
+.gp [hidden]{display:none!important}
+.gp-vh{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;overflow:hidden;clip:rect(0 0 0 0)}
+.gp-photo{position:relative}
+.gp-photo__t{display:block;font-weight:700;font-size:14.5px;margin-bottom:8px}
+.gp-photo__btn{display:inline-flex!important;align-items:center;gap:8px;background:#1b2a4a;color:#fff!important;border-radius:999px;padding:12px 20px;font-family:'Poppins',sans-serif;font-weight:700;font-size:15px!important;cursor:pointer;margin:0!important}
+.gp-photo__prev{display:block;margin:12px auto 0;width:110px;height:110px;object-fit:cover;border-radius:12px;border:3px solid #fff;box-shadow:0 6px 16px -8px rgba(0,0,0,.4)}
+.gp-photo.is-ok{border-color:#3a8f5c;border-style:solid}
+.gp-photo.is-err{border-color:#e5451f;border-style:solid;background:#fff6f3}
+.gp-photo__err{color:#c9381a;font-size:13.5px;font-weight:700;margin-top:8px!important}
+quantity-selector-component,.quantity-label{display:none!important}
+"""

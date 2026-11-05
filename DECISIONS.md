@@ -274,3 +274,10 @@ Retour du fondateur sur l'aperçu réel : les plaques inclinées ressemblaient �
 
 ## D-055 — 2026-11-06 — Boutique protégée par mot de passe, 4 plaques actives
 Mot de passe de la boutique activé par le fondateur (vérifié via l'API). Les 4 plaques passent en « actif » et sont publiées sur la Boutique en ligne (stock non suivi → jamais « épuisé »). Le site reste invisible au public. Prochaine étape : test du formulaire (prénom, champs, photo) jusqu'au panier ; nom de la boutique toujours « Sapin & Lin ».
+
+## D-056 — 2026-11-06 — Fiche produit refaite
+Retour du fondateur sur la vraie fiche (image plein écran, titre énorme, « Format 20 × 30 cm » inutile, bouton blanc, quantité, description mal mise en forme).
+- Nouvelles images carrées « plaque en métal au mur » (générées à partir des designs, `designs/fiches_carrees/`) en 1re position ; galerie en carrousel carré avec points ; images à plat retirées des fiches (fichiers conservés, toujours utilisés sur l'accueil).
+- En-tête : type de plaque en petit (« Plaque de rue parisienne · métal »), titre court (« Avenue »), prix, pastilles, description courte (2 phrases).
+- Formulaire : bouton « 📷 Ajouter sa photo » avec aperçu de la photo choisie et message si elle manque.
+- Bouton « Ajouter au panier » orange ; quantité, sélecteur « Format », barre d'achat flottante (qui pouvait contourner le formulaire) et paiement express masqués/désactivés.
