@@ -141,3 +141,6 @@ Décision : **Gâté Pourri retenu** pour les plaques, avec la règle : jamais d
 
 ## D-029 — 2026-11-05 — Domaine gatepourri.fr disponible
 IONOS : gatepourri.fr disponible, 6 € TTC la 1re année (prix barré 11 € HT, renouvellement à vérifier). Ne pas prendre le « pack multi-extensions » (prix barré 167 €/an au renouvellement). Achat seul du .fr possible maintenant pour sécuriser le nom (dépense de 6 € soumise à l'accord du fondateur) ; désactiver le renouvellement automatique tant que le projet n'est pas validé.
+
+## D-030 — 2026-11-05 — Rendu de la phrase validé par le fondateur
+`tools/generer_plaque.py` : phrase en Abril Fatface, posée lettre par lettre sur l'arc mesuré de la banderole (flèche 100 px), lettres inclinées selon la courbe, espaces conservés, hauteur de lettre fixe. Prénom en Lobster dans le cartouche. Réglage figé pour tous les modèles à deux zones vides (`designs/modeles2/`). Phrases ≤ ~22 caractères recommandées.
