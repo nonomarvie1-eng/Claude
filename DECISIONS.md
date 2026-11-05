@@ -121,3 +121,6 @@ Le fondateur me confie le choix. Décision : plaque alu personnalisée (race, ro
 
 ## D-023 — 2026-11-05 — Design retenu : style ChatGPT, reproduit dans notre outil (v3)
 Le design proposé par ChatGPT est jugé meilleur que nos v1/v2 (médaillon du prénom sur le poitrail, bandeau ATTENTION en arc, ruban bas). Mais l'image ChatGPT fait 1024×1536 px (~130 dpi à 20×30 cm) et devrait être regénérée à chaque commande, avec un risque de fautes. → Style reproduit dans `tools/make_plaque_v3.py` à 300 dpi, avec prénom, phrase et titre modifiables en quelques secondes. Fichier échantillon : `designs/plaque_v3_max.png`.
+
+## D-024 — 2026-11-05 — Design final : ChatGPT v2 (jardin, plaque vintage patinée)
+Rendu jugé nettement plus désirable que nos versions faites en code. Fichier d'impression : `designs/plaque_finale_max_impression.png` (agrandi de 1024×1536 à 2362×3543, netteté vérifiée sur un zoom du visage). Pour la vente : obtenir une version au cartouche vide afin d'écrire le prénom proprement, et vérifier sur l'échantillon que l'effet « rouille » imprimé ne passe pas pour un défaut.
