@@ -42,3 +42,5 @@ plaque_prix_concurrent,24.99,24.99,4.69,2.32,3.00,2.00,0.20,0.015,0.25,0.05,0.00
 plaque_prix_concurrent,29.90,29.90,4.69,2.32,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"Prix intermediaire"
 plaque_prix_concurrent,34.90,34.90,4.69,2.32,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"Prix intermediaire haut"
 duo_prix_concurrent,44.90,44.90,9.38,3.00,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"2 plaques meme colis"
+plaque_cout_reel_total,29.90,29.90,4.69,2.32,0.00,5.99,0.00,0.015,0.25,0.05,0.00,"Total REEL paye AliExpress 2026-11-06 : 13,00 EUR TTC (4,69 + port 2,32 + frais d'import 5,99 incluant droits, traitement et TVA). Aucun frais a la livraison"
+plaque_cout_reel_total,34.90,34.90,4.69,2.32,0.00,5.99,0.00,0.015,0.25,0.05,0.00,"Idem"

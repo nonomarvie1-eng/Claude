@@ -176,3 +176,6 @@ Conséquences :
 - À ajouter si possible : **plusieurs animaux sur une plaque** (leur argument fort).
 - Ne pas copier leurs prix barrés : en France, une réduction annoncée doit se référer au prix le plus bas pratiqué dans les 30 jours précédents (art. L112-1-1 C. conso, directive Omnibus) ; un faux prix barré est une pratique trompeuse.
 - Réalité à assumer : un acteur installé (305 produits, avis) occupe déjà le créneau. Notre test dira si notre style suffit à vendre à 29,90 €.
+
+## D-035 — 2026-11-06 — Coût réel livré confirmé : 13,00 € TTC par plaque
+Écran de paiement AliExpress : 4,69 € + livraison 2,32 € + frais d'import estimés 5,99 € (droits + traitement + TVA, payés à la commande, rien à la livraison) = **13,00 €**. Marge avant pub ≈ 11 € à 29,90 €, ≈ 15 € à 34,90 €. Échantillon A commandé.
