@@ -163,3 +163,6 @@ IONOS : gatepourri.fr disponible, 6 € TTC la 1re année (prix barré 11 € HT
 - FORJN-DECOR Store : « je peux imprimer vos images directement », renvoie vers une annonce à 8,39 €.
 - Plan : 1 échantillon chez chacun (A golden « Max » chez hohappyme ; B labrador noir « Héloïse » chez FORJN), fichiers générés par notre outil pour tester le rendu réel du texte. Plafond : ~10 € livrée par plaque.
 - Conséquence du délai 5–25 j : promesse « livré pour Noël » impossible à tenir de façon fiable cette année → vendre pour Noël avec une **date limite prudente** ou un message « carte cadeau / plaque après les fêtes » ; décision après réception des échantillons.
+
+## D-033 — 2026-11-06 — Prix réel fournisseur : la marge s'améliore
+Panier AliExpress hohappyme : 4,69 € (promo 11.11) + Standard 2,32 € = **7,01 €** (variante « 20×30 cm vertical, infos personnalisées »). Avec droit 3 € + traitement 2 € + TVA import supposés : marge avant pub **≈ 18 €** à 39,90 € (≈ 17 € hors promo), **≈ 28 €** pour un duo à 59,90 €. Coût de pub max par vente à l'équilibre : ~17–18 € (1 plaque), ~28 € (duo). À confirmer : montant des frais d'importation affiché au paiement.
