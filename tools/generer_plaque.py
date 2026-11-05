@@ -57,7 +57,18 @@ def _ecrire(big, zone, texte, police, ratio_h, epaisseur=0):
     big.alpha_composite(layer)
 
 
-def _ecrire_compresse(big, texte, ligne_base=818, hauteur_cap=118, x0=300, x1=2062, compression_min=0.5):
+def _cintrer(calque, fleche):
+    """Courbe le texte en arche : centre en haut, extrémités abaissées de `fleche` pixels."""
+    w, h = calque.size
+    out = Image.new("RGBA", (w, h + fleche), (0, 0, 0, 0))
+    cx = w / 2
+    for x in range(0, w, 2):
+        dy = int(round(fleche * ((x + 1 - cx) / cx) ** 2))
+        out.paste(calque.crop((x, 0, x + 2, h)), (x, dy))
+    return out
+
+
+def _ecrire_compresse(big, texte, ligne_base=800, fleche=55, hauteur_cap=118, x0=300, x1=2062, compression_min=0.5):
     """Phrase en police à empattements grasse : hauteur de lettre fixe, compressée horizontalement pour tenir.
     Coordonnées en pixels du fichier final 2362x3543."""
     zw = x1 - x0
@@ -82,6 +93,8 @@ def _ecrire_compresse(big, texte, ligne_base=818, hauteur_cap=118, x0=300, x1=20
     cd.text((pad, pad), texte, font=f, fill=ENCRE + (255,), stroke_width=3, stroke_fill=ENCRE + (255,))
     largeur_cible = min(int(tw), zw)
     calque = calque.resize((largeur_cible + 2 * pad, calque.height), Image.LANCZOS)
+    # flèche proportionnelle à la largeur du texte (une phrase courte se courbe moins)
+    calque = _cintrer(calque, int(fleche * (largeur_cible / zw) ** 2))
     pos = (int(W / 2 - calque.width / 2), int(ligne_base - asc - pad))
     layer = Image.new("RGBA", big.size, (0, 0, 0, 0))
     layer.paste(calque, pos, calque)
