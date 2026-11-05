@@ -25,3 +25,17 @@ Lecture : sur chaque carte, la date « Début de diffusion » affichée au-dessu
 
 **Constat :** les pubs les plus anciennes visent des problèmes de santé ou de beauté (chute de cheveux, articulations, pieds, sécurité des seniors), avec des promesses fortes. Ce sont précisément les catégories exclues pour risque juridique : allégations de santé contrôlées par la DGCCRF, dossier cosmétique obligatoire (personne responsable, rapport de sécurité, notification CPNP), conformité CE pour l'électronique.
 **Décision :** garder ces exclusions. Orienter la chasse vers les catégories non réglementées : cadeaux personnalisés, maison, animaux, voiture.
+
+## Mot-clé « idée cadeau »
+| Annonceur | Produit | Début | Durée | Verdict |
+|---|---|---|---|---|
+| **Iconic Puzzles FR** (iconic-puzzles.fr) | Puzzles en bois, pièces aux formes uniques, thème football (logos de clubs) | **21/08/2025** | **~14,5 mois** | Format intéressant (puzzle bois « fan de… », AliExpress 4–7,50 $, jusqu'à 4K+ ventes). **Logos de clubs = contrefaçon probable** si pas de licence → copier le format seulement, avec des thèmes libres. Puzzles : vérifier le statut « jouet » (avertissement 14+). |
+| Holzkern | Bijoux pierre/nacre/bois | 09/09/2026 | ~2 mois | Grande marque autrichienne |
+| Bell'anesse | Cosmétiques au lait d'ânesse | 09/11/2025 | ~12 mois | Exclu : cosmétique |
+| **Free Vibes** (freevibes.fr) | **Pendentif acier gravé du prénom en runes vikings**, satisfait ou remboursé | 16/08/2026 | ~2,5 mois, plusieurs versions | **Valide notre piste « bijou gravé personnalisé »** en France. AliExpress : pendentifs runes personnalisés ~2,45 $ (57 ventes) |
+| la.maison_s | Institut head spa à Rouen | 30/01/2026 | — | Service local, hors sujet |
+| Printerval | Chaussettes avec le visage de son chat | 14/07/2026 | ~4 mois | Grosse plateforme d'impression à la demande ; confirme l'attrait « visage de mon animal » |
+| Izimelo (izimelo.com) | Chanson personnalisée créée par IA (produit numérique), « +66 000 personnes » | 06/07/2026 | ~4 mois | Produit numérique : pas de stock ni de livraison. Piste à part |
+| Joybuy | Marketplace (JD.com) | 02/09/2026 | — | Géant, hors sujet |
+
+**Conclusion :** deux signaux convergent vers le **cadeau personnalisé** (Free Vibes, Printerval, Izimelo), et un format durable apparaît (puzzle bois thématique, 14 mois). Le collier gravé reste le meilleur candidat, désormais avec une preuve française (Free Vibes).
