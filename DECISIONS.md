@@ -166,3 +166,13 @@ IONOS : gatepourri.fr disponible, 6 € TTC la 1re année (prix barré 11 € HT
 
 ## D-033 — 2026-11-06 — Prix réel fournisseur : la marge s'améliore
 Panier AliExpress hohappyme : 4,69 € (promo 11.11) + Standard 2,32 € = **7,01 €** (variante « 20×30 cm vertical, infos personnalisées »). Avec droit 3 € + traitement 2 € + TVA import supposés : marge avant pub **≈ 18 €** à 39,90 € (≈ 17 € hors promo), **≈ 28 €** pour un duo à 59,90 €. Coût de pub max par vente à l'équilibre : ~17–18 € (1 plaque), ~28 € (duo). À confirmer : montant des frais d'importation affiché au paiement.
+
+## D-034 — 2026-11-06 — Concurrent direct identifié : evridwearcustom.fr vend déjà des plaques chiens/chats à 24,99 €
+Relevé du fondateur : 305 produits, best-seller « Attention zone patrouillée par » (chiens et chats personnalisés, plusieurs animaux par plaque) à **24,99 €** (prix barré 42,99 €), 32 avis ; « accro aux plantes » 37 avis ; « Cette propriété est protégée par » (berger australien) 24,99 €. Style cartoon 3D, plusieurs animaux possibles.
+Conséquences :
+- Notre 39,90 € est trop cher face au même concept à 24,99 €.
+- Marges à notre coût réel : 24,99 € → 6 € (pub quasi impossible) ; 29,90 € → 10 € ; 34,90 € → 14 € ; duo 44,90 € → 16 €.
+- **Décision provisoire : prix 29,90 € livraison offerte**, duo 44,90 €. On se distingue par le style (illustration réaliste, plaque vintage patinée), pas par le prix.
+- À ajouter si possible : **plusieurs animaux sur une plaque** (leur argument fort).
+- Ne pas copier leurs prix barrés : en France, une réduction annoncée doit se référer au prix le plus bas pratiqué dans les 30 jours précédents (art. L112-1-1 C. conso, directive Omnibus) ; un faux prix barré est une pratique trompeuse.
+- Réalité à assumer : un acteur installé (305 produits, avis) occupe déjà le créneau. Notre test dira si notre style suffit à vendre à 29,90 €.

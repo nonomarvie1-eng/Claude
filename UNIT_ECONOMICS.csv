@@ -38,3 +38,7 @@ plaque_chien_perso_x2,central,49.90,9.00,6.00,3.00,2.00,0.20,0.015,0.25,0.06,0.0
 plaque_reelle_hohappyme,devis_reel,39.90,4.69,2.32,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"Prix REEL panier AliExpress 2026-11-06 : 4,69 EUR (promo 11.11, -10 %) + Standard 2,32 EUR. Droit 3 EUR + traitement 2 EUR supposes (a confirmer au paiement : 'des frais d'importation s'appliqueront')"
 plaque_reelle_hohappyme,sans_promo,39.90,5.21,2.61,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"Prix hors promo estime"
 duo_reel_hohappyme,devis_reel_59,59.90,9.38,3.00,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"2 plaques meme colis, port estime ; 1 seule categorie tarifaire"
+plaque_prix_concurrent,24.99,24.99,4.69,2.32,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"Prix aligne sur evridwearcustom.fr (24,99 EUR, plaques 'Attention zone patrouillee par') - releve fondateur 2026-11-06"
+plaque_prix_concurrent,29.90,29.90,4.69,2.32,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"Prix intermediaire"
+plaque_prix_concurrent,34.90,34.90,4.69,2.32,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"Prix intermediaire haut"
+duo_prix_concurrent,44.90,44.90,9.38,3.00,3.00,2.00,0.20,0.015,0.25,0.05,0.00,"2 plaques meme colis"
