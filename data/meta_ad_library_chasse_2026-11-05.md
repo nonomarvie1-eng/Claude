@@ -52,3 +52,16 @@ Lecture : sur chaque carte, la date « Début de diffusion » affichée au-dessu
 
 ## Synthèse des 4 séries
 Les pubs les plus anciennes hors santé/beauté sont **toutes des cadeaux personnalisés** : CaseCompany (3,5 ans), GRAAZIE (19 mois), plaques evridwear (17 mois), Iconic Puzzles (14 mois). Marché large et fragmenté : chaque acteur tient **un produit + un angle**. → La catégorie est validée ; reste à choisir un produit et un angle où nous sommes crédibles.
+
+## Mot-clé « prénom gravé »
+| Annonceur | Produit | Début | Note |
+|---|---|---|---|
+| Callie France (fr.callie.com) | Étui porte-médiators guitare gravé ; portefeuille gravé | 10/09 et 20/10/2026 | Grosse plateforme chinoise de cadeaux personnalisés ; angle « passion » |
+| Candychristy France | Collier croix + prénom gravé | 24/09/2026 | Plateforme chinoise de bijoux personnalisés |
+| Tanndem | Bague monogramme / hommage à un proche disparu | 01/06/2026 (~5 mois) | Angle émotion/deuil |
+| My Little Necklace | Collier prénom, « 1 acheté = 1 offert » | 21/10/2026 | Marque française installée |
+| Baytoul Waqt | Montre de prière | 28/10/2026 | Exclu : électronique |
+| Bande de Canailles | Collier pour chat, prénom gravé sur boucle, personnalisé en France | 02/11/2026 | Angle animal |
+| Le Bouliste | Boules Obut, prénom gravé offert | 28/10/2026 | Gravure comme bonus d'un produit de passion |
+
+**Conclusion :** le bijou « prénom gravé » générique est **saturé** (grandes plateformes chinoises Callie, Candychristy + marque FR My Little Necklace). Ce qui distingue les petits acteurs : **une passion ou un public précis** (guitaristes, joueurs de pétanque, propriétaires de chats, deuil). Presque toutes ces pubs ont démarré en sept.–nov. : saison de Noël.

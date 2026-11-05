@@ -112,3 +112,6 @@ Collier gravé portrait/prénom d'animal en dropshipping (sans stock) : marge es
 
 ## D-020 — 2026-11-05 — Catégorie retenue : le cadeau personnalisé
 Preuve par la Meta Ad Library (4 séries de captures) : hors santé/beauté, les pubs qui durent le plus (14 mois à 3,5 ans) vendent toutes des cadeaux personnalisés. Avantages pour nous : pas de comparaison de prix, pas de stock (fabrication à la commande), règles simples, contenu facile sans visage, l'IA aide à créer les visuels. Trois candidats finalistes : pendentif gravé, plaque métal humoristique avec avatar, portrait/aquarelle d'animal à partir d'une photo. Choix final à faire avec le fondateur.
+
+## D-021 — 2026-11-05 — Pendentif prénom générique abandonné ; règle « passion + personnalisation »
+Le bijou prénom gravé est occupé par de grosses plateformes (Callie, Candychristy, My Little Necklace). Règle retenue : un objet personnalisé **ciblé sur une passion ou un public précis**, comme la plaque « accro aux plantes » (17 mois de pub), l'étui à médiators gravé ou les boules de pétanque gravées. Fin de la chasse : il faut maintenant choisir la niche.
