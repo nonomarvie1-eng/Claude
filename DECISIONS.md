@@ -215,3 +215,6 @@ Règle : pour un fichier d'impression, demander une image plate, cadrée bord à
 
 ## D-043 — 2026-11-06 — Château Tokyo v4 validé
 Étiquette de grand cru clairement reconnaissable + chien gravé rehaussé de roux (reconnaissable) + point parasite supprimé. Collection validée : Le Petit Toutou, Château, Passeport ; Avenue en attente de sa version plate ; magazine optionnel.
+
+## D-044 — 2026-11-06 — Collection de lancement complète (5 plaques)
+Le Petit Toutou, Château Tokyo, Passeport, Avenue Tokyo (version plate validée), Chiens & Célébrités (magazine). Planche : `designs/collection_fr/COLLECTION_LANCEMENT.jpg`. Magazine : la plus « photo », donc la plus proche du rendu IA, mais assumée comme couverture d'époque ; à surveiller sur l'échantillon. Étape suivante : test auprès de 5–10 propriétaires de chiens (préférence, intention d'achat, prix).
