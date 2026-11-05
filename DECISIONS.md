@@ -238,3 +238,6 @@ Boutique connectée : sapin-et-lin.myshopify.com (plan Basic, EUR). Avec l'accor
 - 4 plaques créées **en brouillon** à 34,90 € : Le Petit Toutou (gid 16346479755589), Avenue (16346479853893), Château (16346479886661), Lettre au Père Noël (16346479952197).
 - Collection manuelle « Nos plaques personnalisées » créée (gid 710332481861).
 Restent à faire : images (envoi via le sélecteur Shopify), nom de la boutique et domaine (admin uniquement, non modifiable par l'API), pages légales (SIRET requis), champs de personnalisation, anciennes collections de Noël à masquer.
+
+## D-049 — 2026-11-06 — Images ajoutées aux 4 fiches Shopify
+8 images envoyées par le fondateur, identifiées par taille de fichier : mise en situation en image principale, design à plat en 2e image, textes alternatifs renseignés. Produits toujours en brouillon.
