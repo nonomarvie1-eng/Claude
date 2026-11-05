@@ -18,7 +18,7 @@ Vous bénéficiez dans tous les cas des garanties légales de conformité et des
 
 ## Expédition
 Livraison offerte en France métropolitaine, avec numéro de suivi.
-Aperçu : sous 48 h ouvrées après la commande (photo et textes remplis sur la fiche produit), jusqu'à 2 séries de corrections incluses. Fabrication : 2 à 3 jours après validation, par notre atelier partenaire. Livraison : 15 à 22 jours en moyenne. Au total, environ 3 semaines après validation de l'aperçu (délais indicatifs).
+Aperçu : sous 2 jours ouvrés après réception d'une photo exploitable (photo et textes remplis sur la fiche produit), jusqu'à 2 séries de corrections incluses. Fabrication : 2 à 3 jours après validation, par notre atelier partenaire. Livraison : 15 à 22 jours en moyenne. Au total, environ 3 semaines après validation de l'aperçu (délais indicatifs).
 Noël : comptez environ 3 semaines après validation de l'aperçu ; commandez le plus tôt possible (aucune date garantie tant que le délai fournisseur n'est pas confirmé).
 
 ## Conditions d'utilisation

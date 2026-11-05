@@ -42,20 +42,21 @@ BASE_CSS = """
 
 HOME_CSS = """
 /* Accueil */
-.gp-hero{background:var(--cream);padding:22px 0 30px;overflow:hidden}
-.gp-hero__grid{display:grid;gap:6px}
-.gp-hero h1{font-size:clamp(30px,8vw,58px);line-height:1.05;font-weight:800}
+.gp-hero{background:var(--cream);padding:16px 0 24px;overflow:hidden}
+.gp-hero__grid{display:grid;gap:0}
+.gp-hero h1{font-size:clamp(28px,7.6vw,58px);line-height:1.04;font-weight:800}
 .gp-hero h1 em{font-style:normal;color:var(--accent)}
-.gp-fan{position:relative;height:clamp(260px,78vw,470px);margin:14px auto 8px;width:100%;max-width:520px}
+.gp-fan{position:relative;height:clamp(210px,62vw,470px);margin:2px auto 4px;width:100%;max-width:440px}
 .gp-fan img{position:absolute;top:50%;left:50%;height:auto;border-radius:6px;box-shadow:0 18px 34px -16px rgba(27,42,74,.55)}
-.gp-fan .c{width:46%;transform:translate(-50%,-50%);z-index:3}
+.gp-fan .c{width:44%;transform:translate(-50%,-50%);z-index:3}
 .gp-fan .l{width:38%;transform:translate(-118%,-46%) rotate(-8deg);z-index:2}
 .gp-fan .r{width:38%;transform:translate(18%,-46%) rotate(8deg);z-index:2}
-.gp-hero__txt p{font-size:17px;color:var(--soft);max-width:480px}
-.gp-buy{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:16px}
+.gp-hero__txt p{font-size:16px;color:var(--soft);max-width:480px}
+.gp-buy{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:12px}
 .gp-buy__price{font-family:'Poppins',sans-serif;font-weight:700;font-size:17px}
 .gp-buy__price small{display:block;font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;color:var(--soft)}
-.gp-hero__more{margin-top:14px;font-size:15px}
+.gp-hero__more{margin-top:10px;font-size:13.5px}
+.gp-hero__more a{color:var(--soft);font-weight:400;text-decoration:underline;text-underline-offset:2px}
 /* Collection */
 .gp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
 .gp-card{display:flex;flex-direction:column;text-decoration:none;border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}
@@ -97,11 +98,12 @@ HOME_CSS = """
 @media(min-width:750px){
  .gp-hero{padding:40px 0 48px}
  .gp-hero__grid{grid-template-columns:1fr 1fr;align-items:center;gap:40px}
- .gp-hero__grid .gp-fan{grid-column:2;grid-row:1/span 2;height:480px;margin:0}
+ .gp-hero__grid .gp-fan{grid-column:2;grid-row:1/span 2;height:470px;max-width:520px;margin:0}
+ .gp-hero__txt{margin-top:18px}
  .gp-grid{grid-template-columns:repeat(4,1fr);gap:18px}
  .gp-steps{grid-template-columns:repeat(3,1fr)}
  .gp-strip{margin:18px 0 0;padding:0;overflow:visible}
- .gp-strip figure{flex:1 1 0}
+ .gp-strip figure{flex:1 1 0;max-width:360px}
  .gp-two{display:grid;grid-template-columns:1fr 1fr;gap:56px}
 }
 """
@@ -124,10 +126,10 @@ HERO = f"""
   <img class="c" src="{img('toutou_d',600)}" alt="Plaque Le Petit Toutou : un chien en une du journal" width="600" height="900" fetchpriority="high">
  </div>
  <div class="gp-hero__txt">
-  <p>Envoyez une photo de votre chien. On en fait une plaque vintage unique, avec son prénom et ses bêtises.</p>
+  <p>Une photo de votre chien suffit&nbsp;: on en fait une plaque vintage unique, avec son prénom et ses bêtises.</p>
   <div class="gp-buy"><span class="gp-buy__price">34,90 €<small>Livraison offerte en France</small></span>
    <a class="gp-btn" href="#plaques">Créer sa plaque</a></div>
-  <p class="gp-hero__more"><a class="gp-link" href="#comment">Comment ça marche</a></p>
+  <p class="gp-hero__more"><a href="#comment">Comment ça marche&nbsp;?</a></p>
  </div>
 </div></section></div>
 """
@@ -157,7 +159,7 @@ ETAPES = """
  <h2 class="gp-h2">3 étapes, et c'est tout</h2>
  <ol class="gp-steps">
   <li><span class="n">1</span><div><b>Personnalisez</b><p>Prénom, texte et photo, directement sur la page de la plaque.</p></div></li>
-  <li><span class="n">2</span><div><b>Validez l'aperçu</b><p>Vous le recevez par e-mail sous 48 h ouvrées. Rien n'est imprimé sans votre accord.</p></div></li>
+  <li><span class="n">2</span><div><b>Validez l'aperçu</b><p>Par e-mail, sous 2 jours ouvrés après réception d'une photo exploitable. Rien n'est imprimé sans votre accord.</p></div></li>
   <li><span class="n">3</span><div><b>Recevez-la</b><p>Environ 3 semaines après votre validation. Livraison offerte, avec suivi.</p></div></li>
  </ol>
 </div></section></div>
@@ -166,10 +168,9 @@ ETAPES = """
 CHEZVOUS = f"""
 <div class="gp"><section class="gp-sec"><div class="gp-wrap">
  <span class="gp-kicker">Chez vous</span>
- <h2 class="gp-h2">Dans l'entrée, le salon ou la cuisine</h2>
+ <h2 class="gp-h2">Au salon, dans la cuisine, sur la cheminée</h2>
  <div class="gp-strip">
   <figure><img src="{img('toutou_m',700)}" alt="Plaque Le Petit Toutou accrochée dans un salon" loading="lazy" width="700" height="700"><figcaption>Le Petit Toutou, dans un salon</figcaption></figure>
-  <figure><img src="{img('avenue_m',700)}" alt="Plaque Avenue près d'une porte d'entrée" loading="lazy" width="700" height="700"><figcaption>Avenue, près de l'entrée</figcaption></figure>
   <figure><img src="{img('chateau_m',700)}" alt="Plaque Château dans une cuisine, avec ses dimensions 20 × 30 cm" loading="lazy" width="700" height="700"><figcaption>Château : format 20 × 30 cm</figcaption></figure>
   <figure><img src="{img('noel_m',700)}" alt="Plaque Lettre au Père Noël sur une cheminée" loading="lazy" width="700" height="700"><figcaption>Lettre au Père Noël, sur la cheminée</figcaption></figure>
  </div>
@@ -190,7 +191,7 @@ PRODUIT = """
  <div><span class="gp-kicker">Nos engagements</span>
  <h2 class="gp-h2">Avant, pendant, après</h2>
  <dl class="gp-spec">
-  <div><dt>Aperçu</dt><span>Par e-mail sous 48 h ouvrées après réception de votre photo</span></div>
+  <div><dt>Aperçu</dt><span>Par e-mail, sous 2 jours ouvrés après réception d'une photo exploitable</span></div>
   <div><dt>Retouches</dt><span>Jusqu'à 2 séries de corrections sur l'aperçu, incluses</span></div>
   <div><dt>Délai</dt><span>Environ 3 semaines entre votre validation et la livraison</span></div>
   <div><dt>Livraison</dt><span>Offerte en France métropolitaine, avec suivi</span></div>
@@ -220,3 +221,25 @@ def home_sections():
     out = [(k, nbsp(v)) for k, v in secs]
     out[0] = (out[0][0], css + out[0][1])
     return out
+
+# --- Preuve de ressemblance (à activer quand les vraies photos sont dans Shopify > Fichiers) ---
+PREUVE_CSS = """
+.gp-proof{display:grid;gap:14px;margin-top:18px}
+.gp-pair{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px}
+.gp-pair figure{margin:0}
+.gp-pair img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:10px;display:block}
+.gp-pair figcaption{font-size:12.5px;color:var(--soft);margin-top:5px;text-align:center}
+.gp-pair .arr{font-size:22px;color:var(--accent);font-weight:700}
+.gp-pair p{grid-column:1/-1;font-size:13.5px;color:var(--soft)}
+@media(min-width:750px){.gp-proof{grid-template-columns:1fr 1fr;gap:20px}}
+"""
+def preuve(exemples):
+    """exemples = [(url_photo, url_plaque, 'Tokyo, shiba', 'Publié avec l'accord de sa famille.'), ...]"""
+    pairs = "".join(f"""<div class="gp-pair"><figure><img src="{a}" alt="Photo d'origine de {n}" loading="lazy"><figcaption>La photo reçue</figcaption></figure>
+ <span class="arr" aria-hidden="true">→</span>
+ <figure><img src="{b}" alt="Plaque créée pour {n}" loading="lazy"><figcaption>Sa plaque</figcaption></figure><p><b>{n}.</b> {note}</p></div>""" for a, b, n, note in exemples)
+    return nbsp(f"""<div class="gp"><section class="gp-sec"><div class="gp-wrap">
+ <span class="gp-kicker">Est-ce que ce sera vraiment lui ?</span>
+ <h2 class="gp-h2">De la photo à la plaque</h2>
+ <div class="gp-proof">{pairs}</div>
+</div></section></div>""")

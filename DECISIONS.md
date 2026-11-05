@@ -257,3 +257,11 @@ Suite à une critique détaillée (validée par le fondateur) du site v7 :
 - Engagements précisés : aperçu sous 48 h ouvrées, jusqu'à 2 séries de corrections incluses, environ 3 semaines entre validation et livraison, intérieur seulement. Promesse « avant le 1er décembre » retirée partout (accueil, fiches, pages, textes légaux) tant que le fournisseur ne l'a pas confirmée.
 - Couleurs : bleu nuit #1b2a4a + crème #f7f0e3, orange réservé aux boutons, jaune en petites touches ; bleu pâle et bloc rouge supprimés.
 À faire : avant/après avec une vraie photo de chien (aucune n'est disponible, pas de faux), photos de l'échantillon réel, commande test pour vérifier l'envoi de la photo, nom de la boutique.
+
+## D-053 — 2026-11-06 — Corrections v8 : premier écran, infos clés, Avenue, formulation de l'aperçu
+- Premier écran mobile : bouton « Créer sa plaque » remonté de 111 px (bas du bouton à 668 px au lieu de 779 px sur un écran de 844 px) ; montage des plaques plus bas et plus serré ; « Comment ça marche ? » en petit lien discret.
+- Fiche produit : pastilles sous le prix (20 × 30 cm aluminium, livraison offerte, environ 3 semaines après validation).
+- Aperçu : « sous 2 jours ouvrés après réception d'une photo exploitable » partout (accueil, fiche, pages Livraison et FAQ, textes légaux).
+- Avenue : la mise en scène sur une façade extérieure est retirée de la fiche et de l'accueil (fichier conservé dans Shopify → Fichiers) en attendant une mise en scène d'intérieur.
+- Style regroupé dans `assets/gate-pourri.css` (plus d'envois légers).
+- Non faits, avec la raison : nom de la boutique (pas modifiable par l'API → fondateur), fixation et contenu du colis (non vérifiés : l'annonce AliExpress est bloquée pour moi → question au vendeur + échantillon), avant/après (vraies photos nécessaires ; section prête dans `sections.py`). Liste d'actions : `A_FAIRE_SITE.md`.

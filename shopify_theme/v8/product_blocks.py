@@ -24,7 +24,7 @@ PERSO = """
   assign fid = 'BuyButtons-ProductForm-' | append: section.id
 -%}
 <div class="gp"><div class="gp-perso" id="gp-perso" data-form="{{ fid }}">
- <div><h3>Personnalisez sa plaque</h3><p class="gp-perso__sub">Tout se remplit ici, avant le paiement. Vous recevrez l'aperçu par e-mail.</p></div>
+ <div><h3>Personnalisez sa plaque</h3><p class="gp-perso__sub">Tout se remplit ici, avant le paiement. Vous recevrez l'aperçu par e-mail avant toute impression.</p></div>
  <div class="gp-f"><label for="gp-prenom">Son prénom</label>
   <input type="text" id="gp-prenom" name="properties[Prénom]" form="{{ fid }}" maxlength="12" required placeholder="Tokyo"><small>12 caractères maximum.</small></div>
 {%- if gp_handle contains 'petit-toutou' -%}
@@ -61,7 +61,7 @@ PERSO = """
 RECU = """
 <div class="gp"><dl class="gp-spec2">
  <div><dt>La plaque</dt><dd>Aluminium imprimé, 20 × 30 cm. Plaque plate : rivets et usure sont imprimés. Pour l'intérieur.</dd></div>
- <div><dt>L'aperçu</dt><dd>Par e-mail sous 48 h ouvrées après la commande. Jusqu'à 2 séries de corrections incluses. Rien n'est imprimé sans votre accord.</dd></div>
+ <div><dt>L'aperçu</dt><dd>Par e-mail, sous 2 jours ouvrés après réception d'une photo exploitable. Jusqu'à 2 séries de corrections incluses. Rien n'est imprimé sans votre accord.</dd></div>
  <div><dt>Le délai</dt><dd>Environ 3 semaines entre votre validation et la livraison. Livraison offerte en France métropolitaine, avec suivi.</dd></div>
  <div><dt>Un souci ?</dt><dd>Plaque abîmée ou différente de l'aperçu validé : on la refait ou on vous rembourse.</dd></div>
 </dl></div>
@@ -77,3 +77,14 @@ def perso_block():
     return FONTS + "<style>" + BASE_CSS + PERSO_CSS + RECU_CSS + "</style>" + nbsp(PERSO)
 def recu_block():
     return nbsp(RECU)
+
+KEYINFO = """
+<div class="gp"><ul class="gp-key">
+ <li>📐 20 × 30 cm, aluminium</li>
+ <li>🚚 Livraison offerte</li>
+ <li>⏱️ Reçue environ 3 semaines après validation de l'aperçu</li>
+</ul></div>
+<style>.gp-key{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}.gp-key li{background:#f7f0e3;border-radius:999px;padding:5px 11px;font-size:13px;color:#1b2a4a}</style>
+"""
+def key_block():
+    return nbsp(KEYINFO)
