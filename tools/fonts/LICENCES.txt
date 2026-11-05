@@ -1,0 +1,2 @@
+Polices Google Fonts sous licence SIL Open Font License (usage commercial autorisé) : Bebas Neue, Pacifico, DM Serif Display.
+Source : https://github.com/google/fonts
