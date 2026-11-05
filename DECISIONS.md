@@ -76,3 +76,11 @@ Sources : [Trustpilot Lanoxie](https://uk.trustpilot.com/review/lanoxie.com), [Y
 
 ## D-015 — 2026-11-05 — Modèle « dropshipping avec stock privé » adopté comme piste principale
 Le fondateur refuse de gérer les envois mais accepte un stock si l'idée est solide. Modèle : lot à notre marque → entrepôt CJ en UE → CJ expédie. Évite le droit de 3 € par catégorie et par colis, et livre plus vite qu'AliExpress. Candidat n°1 : kit anti-bouchon sans chimie (marge estimée 43–46 %). Candidat n°2 : surgrips à notre marque. Détail : `RAPPORT_DECISION_05_CONSOMMABLES.md`. Le test berger australien reste possible en parallèle (0 €).
+
+## D-016 — 2026-11-05 — Lecture de la Meta Ad Library : vendre la solution d'urgence, pas la prévention
+Constats (`data/meta_ad_library_2026-11-05.md`) :
+- La demande payante existe sur le **débouchage** (Lanoxie : plusieurs créations actives ; Carrefour/Canard).
+- La **prévention non chimique** est presque vide (« attrape cheveux » : 0 pub ; 1 seul vendeur de filtre d'évier). Cela peut être une opportunité, ou le signe que les gens n'achètent pas avant d'avoir le problème.
+- Lanoxie monte son panier avec des lots (« 3 achetés + 2 gratuits »).
+**Décision :** repositionner le kit sur l'**urgence**. Produit vedette = la tige débouche-canalisation (mécanique, sans chimie) : « Débouchez votre douche en 30 secondes, sans produit corrosif ». Les autocollants et le filtre deviennent la suite logique (« pour que ça ne revienne pas ») et les recharges. Offres en lots pour monter le panier.
+**Limite honnête à afficher :** une tige mécanique retire les bouchons de cheveux proches de la bonde (douche, lavabo). Elle ne règle pas un bouchon profond ou de graisse en cuisine. Ne pas promettre plus.

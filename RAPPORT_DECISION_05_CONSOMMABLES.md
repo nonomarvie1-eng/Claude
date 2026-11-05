@@ -46,3 +46,8 @@ Le fondateur a raison : un produit banal qui règle un problème, se rachète et
 1. Fondateur : Meta Ad Library, pays France, mots-clés « attrape cheveux », « anti bouchon », « déboucheur ». Captures des annonceurs actifs et de l'ancienneté des pubs.
 2. Fondateur : demande via « Sourcing » dans l'appli CJ (gratuit) pour les 3 composants, avec prix en stock privé UE (brouillon dans NEXT_ACTIONS).
 3. Mise à jour du modèle avec les vrais coûts → décision échantillons (avec accord).
+
+## Mise à jour 2026-11-05 — Meta Ad Library (captures du fondateur)
+- Débouchage : demande payante confirmée (Lanoxie, plusieurs créations actives, offres en lots ; Carrefour/Canard).
+- Prévention non chimique : quasi vide (0 pub sur « attrape cheveux », 1 seul vendeur de filtre d'évier, Tikieta).
+- → Repositionnement (D-016) : la tige débouche-canalisation devient le produit vedette « urgence », les autocollants deviennent la prévention et les recharges. Lots pour monter le panier.
