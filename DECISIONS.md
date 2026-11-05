@@ -218,3 +218,6 @@ Règle : pour un fichier d'impression, demander une image plate, cadrée bord à
 
 ## D-044 — 2026-11-06 — Collection de lancement complète (5 plaques)
 Le Petit Toutou, Château Tokyo, Passeport, Avenue Tokyo (version plate validée), Chiens & Célébrités (magazine). Planche : `designs/collection_fr/COLLECTION_LANCEMENT.jpg`. Magazine : la plus « photo », donc la plus proche du rendu IA, mais assumée comme couverture d'époque ; à surveiller sur l'échantillon. Étape suivante : test auprès de 5–10 propriétaires de chiens (préférence, intention d'achat, prix).
+
+## D-045 — 2026-11-06 — Plaque de Noël validée : « Lettre au Père Noël »
+Lettre manuscrite des années 1950 écrite par le chien, timbre et cachet « Pôle Nord », photo ancienne avec bonnet scotchée, empreinte de patte. Textes exacts. Personnalisable : prénom, 3 vœux, date du cachet. Date limite de commande pour Noël ≈ 1er décembre (délai 15–22 j).
