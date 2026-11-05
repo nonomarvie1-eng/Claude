@@ -133,3 +133,8 @@ Modèles au cartouche vide dans `designs/modeles/` : golden retriever, berger au
 
 ## D-027 — 2026-11-05 — Noms de marque présélectionnés
 Recherche web : aucun homonyme trouvé pour « Gâté Pourri », « Rouille & Moustache », « La Patte Rétro » (proches sans conflit direct : série jeunesse « Chien Pourri », chaussures « M. Moustache », animalerie « Patte Blanche »). Recommandation : **Gâté Pourri** (prolonge le slogan « Un chien gâté vit ici », humour affectueux). Plan B : Rouille & Moustache (s'étend aux chats). Vérifications restant au fondateur (accès bloqué ici) : base des marques INPI (data.inpi.fr, classes 6, 20 et 21) et disponibilité du domaine. Dépôt INPI (~190 € pour une classe) reporté après les premières ventes.
+
+## D-028 — 2026-11-05 — Vérification INPI de « Gâté Pourri »
+Résultats (captures du fondateur, data.inpi.fr) : marque « POURRI GÂTÉ » n° 4841225, enregistrée le 07/02/2022, classe 25 (vêtements) uniquement ; marque « POURRI GATE » n° 3382246 (classes 18, 25, 28) **expirée** ; société « POURRIS GATES » (commerce d'habillement, 2020).
+Analyse : en droit des marques, la protection est limitée aux produits désignés (principe de spécialité). Nos plaques relèvent des classes 6/20 → a priori pas de conflit. Risque si l'on vend un jour des **vêtements** sous ce nom (classe 25 = conflit direct).
+Décision : **Gâté Pourri retenu** pour les plaques, avec la règle : jamais de textile sous ce nom. Avant tout dépôt de marque (après les premières ventes), faire valider par un conseil en propriété industrielle.
