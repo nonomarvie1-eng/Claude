@@ -2,7 +2,7 @@
 
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
-## ⚠️ 2026-11-05 — Piste principale : kit anti-bouchon sans chimie en stock privé CJ UE (D-015)
+## ⚠️ 2026-11-05 — Piste principale : kit anti-bouchon sans chimie (D-015, D-016, D-017). Ordre révisé après contre-expertise : 1) devis standard ET personnalisé, pour 100 kits complets ; 2) échantillons (avec accord) et essais réels ; 3) vidéos réelles avec prix et délai affichés ; 4) recalcul sans réachat ; 5) stock seulement si tout est positif. Logistique : privilégier un stock en France (TVA).
 Actions du fondateur (gratuites) :
 1. Meta Ad Library (facebook.com/ads/library), pays France, catégorie « Toutes les publicités » : chercher « attrape cheveux », « anti bouchon », « déboucheur ». M'envoyer des captures des annonceurs (nom, date de début des pubs).
 2. Appli CJ → Sourcing : envoyer la demande ci-dessous (gratuite, aucun paiement).

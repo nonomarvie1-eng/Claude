@@ -84,3 +84,12 @@ Constats (`data/meta_ad_library_2026-11-05.md`) :
 - Lanoxie monte son panier avec des lots (« 3 achetés + 2 gratuits »).
 **Décision :** repositionner le kit sur l'**urgence**. Produit vedette = la tige débouche-canalisation (mécanique, sans chimie) : « Débouchez votre douche en 30 secondes, sans produit corrosif ». Les autocollants et le filtre deviennent la suite logique (« pour que ça ne revienne pas ») et les recharges. Offres en lots pour monter le panier.
 **Limite honnête à afficher :** une tige mécanique retire les bouchons de cheveux proches de la bonde (douche, lavabo). Elle ne règle pas un bouchon profond ou de graisse en cuisine. Ne pas promettre plus.
+
+## D-017 — 2026-11-05 — Contre-expertise d'une autre IA : adoptée en grande partie
+**Erreurs corrigées dans nos calculs :**
+- **Cotisations micro-entrepreneur oubliées** (~12,3 % du chiffre d'affaires en achat-revente, + 0,1 % formation, hors ACRE ; taux 2026 à confirmer). Ajoutées au modèle. Nouvelles marges avant pub : kit 24,90 € → **7,59 €** (30 %), double kit 34,90 € → **11,60 €** (33 %). Aiguiseur, surgrips et mugs baissent aussi.
+- **Réachat surestimé** : les autocollants peuvent durer longtemps et le filtre silicone fait doublon. → Rentabilité calculée **sans réachat**.
+- **TVA d'un stock en Allemagne ou en Pologne** : un stock détenu dans un autre pays de l'UE peut créer des obligations de TVA dans ce pays. La franchise française ne couvre pas automatiquement ce montage. → **Privilégier un stock en France** (logisticien français), ou faire valider le montage CJ par le service des impôts des entreprises (SIE) ou un comptable avant tout achat.
+- Douane : le droit de 3 € vise tous les envois hors UE (pas seulement la Chine), par catégorie tarifaire. Un kit vendu comme assortiment n'a pas forcément 3 catégories. Frais de traitement de 2 € par catégorie annoncés à partir du 01/11/2026 (selon l'autre IA, citant la douane ; à vérifier).
+**Points adoptés :** pas de stock personnalisé maintenant ; échantillons et essais réels avant toute promesse ; message prudent (« Retirez les cheveux accessibles près de la bonde, sans déboucheur corrosif ») au lieu de « 30 secondes » ; réserve de trésorerie de 150–250 € ; responsabilité de fabricant au sens du GPSR si vente sous notre marque.
+**Conséquence :** avec 7,59 € de marge par kit, la publicité payante est quasi impossible à rentabiliser. Le projet n'est viable que si (a) le contenu organique génère les ventes, ou (b) le prix ou l'offre montent sans perdre l'acheteur. À tester avant d'engager du stock.

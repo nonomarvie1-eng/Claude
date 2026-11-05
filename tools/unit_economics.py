@@ -17,6 +17,10 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "UNIT_ECONOMICS.csv"
 OUT = ROOT / "UNIT_ECONOMICS_RESULTATS.csv"
 
+# Cotisations sociales micro-entrepreneur (achat-revente), calculees sur le chiffre d'affaires,
+# meme si la publicite absorbe le benefice. 12,3 % + 0,1 % formation professionnelle (taux 2026 a confirmer, hors ACRE).
+TAUX_COTISATIONS_CA = 0.124
+
 # Part de la marge contributive qu'on accepte de depenser en acquisition.
 # Le reste couvre les frais fixes, les imprevus et le resultat.
 PART_MARGE_POUR_CPA_CIBLE = 0.60
@@ -41,10 +45,12 @@ def calc(row):
     cout_rendu = base_import + tva_import + f(row, "frais_traitement_ue") + f(row, "emballage_insert")
     frais_paiement = prix * f(row, "frais_paiement_pct") + f(row, "frais_paiement_fixe")
     provision = prix * f(row, "provision_retours_pct")
-    marge = prix - cout_rendu - frais_paiement - provision
+    cotisations = prix * TAUX_COTISATIONS_CA
+    marge = prix - cout_rendu - frais_paiement - provision - cotisations
     cpa_max = marge
     roas_eq = prix / marge if marge > 0 else float("inf")
-    cpa_cible = marge * PART_MARGE_POUR_CPA_CIBLE
+    # CPA cible : on garde au moins 3 EUR par commande (ou 40 % de la marge si c'est plus)
+    cpa_cible = max(0.0, marge - max(3.0, marge * (1 - PART_MARGE_POUR_CPA_CIBLE)))
     roas_cible = prix / cpa_cible if cpa_cible > 0 else float("inf")
     fixes = sum(FRAIS_FIXES_MENSUELS.values())
     reste_par_cmd = marge - cpa_cible
@@ -59,6 +65,7 @@ def calc(row):
         "cout_rendu_client": round(cout_rendu, 2),
         "frais_paiement": round(frais_paiement, 2),
         "provision_retours_sav": round(provision, 2),
+        "cotisations_micro": round(cotisations, 2),
         "marge_contributive_avant_pub": round(marge, 2),
         "taux_marge_contributive": round(marge / prix, 3),
         "cpa_max_equilibre": round(cpa_max, 2),
