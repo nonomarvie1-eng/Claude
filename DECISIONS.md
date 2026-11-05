@@ -93,3 +93,16 @@ Constats (`data/meta_ad_library_2026-11-05.md`) :
 - Douane : le droit de 3 € vise tous les envois hors UE (pas seulement la Chine), par catégorie tarifaire. Un kit vendu comme assortiment n'a pas forcément 3 catégories. Frais de traitement de 2 € par catégorie annoncés à partir du 01/11/2026 (selon l'autre IA, citant la douane ; à vérifier).
 **Points adoptés :** pas de stock personnalisé maintenant ; échantillons et essais réels avant toute promesse ; message prudent (« Retirez les cheveux accessibles près de la bonde, sans déboucheur corrosif ») au lieu de « 30 secondes » ; réserve de trésorerie de 150–250 € ; responsabilité de fabricant au sens du GPSR si vente sous notre marque.
 **Conséquence :** avec 7,59 € de marge par kit, la publicité payante est quasi impossible à rentabiliser. Le projet n'est viable que si (a) le contenu organique génère les ventes, ou (b) le prix ou l'offre montent sans perdre l'acheteur. À tester avant d'engager du stock.
+
+## D-018 — 2026-11-05 — Le kit anti-bouchon devient une référence, pas un choix ; nouveau filtre pour la recherche n°6
+Le fondateur veut chercher mieux avant de choisir. D'accord : le kit sert de **référence** (les devis CJ, gratuits, restent utiles pour comparer).
+**Leçon tirée de Lanoxie et de nos calculs :** ce qui fait vivre ces marques n'est pas l'originalité, c'est l'**écart entre le prix de vente et le coût** (poudre ~0,80 € vendue en lots à ~30–40 €). Notre kit est trop faible sur ce point (24,90 € pour ~10 € de coût rendu, livraison comprise).
+**Filtre recherche n°6 (tous obligatoires) :**
+1. Coût produit livré ≤ ~20 % du prix de vente (multiplicateur ≥ 5).
+2. Panier ≥ 35 € (produit seul ou lot logique).
+3. Léger (< 300–400 g) pour limiter le port.
+4. Ni chimie, ni électricité/batterie, ni allégation santé, ni tailles.
+5. Problème concret, démontrable en vidéo filmée aux mains.
+6. Annonceurs actifs en France (preuve de demande), sans saturation.
+7. Marge après cotisations ≥ 15 € par commande.
+Répartition : je cherche et chiffre les candidats ; le fondateur vérifie la Meta Ad Library et Google Shopping sur les 3–5 meilleurs (captures).
