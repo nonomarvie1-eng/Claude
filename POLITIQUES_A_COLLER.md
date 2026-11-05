@@ -18,8 +18,8 @@ Vous bénéficiez dans tous les cas des garanties légales de conformité et des
 
 ## Expédition
 Livraison offerte en France métropolitaine, avec numéro de suivi.
-Aperçu : sous 48 h après réception de la photo. Fabrication : 2 à 3 jours après validation, par notre atelier partenaire. Livraison : 15 à 22 jours en moyenne. Au total, environ 3 semaines après validation de l'aperçu (délais indicatifs).
-Noël : pour une livraison avant le 25 décembre, commandez avant le 1er décembre.
+Aperçu : sous 48 h ouvrées après la commande (photo et textes remplis sur la fiche produit), jusqu'à 2 séries de corrections incluses. Fabrication : 2 à 3 jours après validation, par notre atelier partenaire. Livraison : 15 à 22 jours en moyenne. Au total, environ 3 semaines après validation de l'aperçu (délais indicatifs).
+Noël : comptez environ 3 semaines après validation de l'aperçu ; commandez le plus tôt possible (aucune date garantie tant que le délai fournisseur n'est pas confirmé).
 
 ## Conditions d'utilisation
 Remplacer « Sapin & Lin » par « Gâté Pourri ». Ajouter : « Vous vous engagez à ne nous transmettre que des photos dont vous disposez des droits. Les photos de mise en situation présentées sur le site sont non contractuelles. »
@@ -28,7 +28,7 @@ Remplacer « Sapin & Lin » par « Gâté Pourri ». Ajouter : « Vous vous enga
 - Partout : « Sapin & Lin » → « Gâté Pourri ».
 - Art. 2 Produits : « Gâté Pourri vend des plaques décoratives personnalisées en aluminium imprimé (20 × 30 cm), réalisées à partir de la photo de l'animal du client. Chaque plaque est fabriquée à la commande. Les photos de mise en situation sont non contractuelles. »
 - Art. 3 Personnalisation : « Le client transmet par e-mail, après la commande, la photo de son animal et les textes souhaités. Un aperçu lui est envoyé ; l'impression n'est lancée qu'après sa validation. Le client garantit disposer des droits sur la photo transmise. »
-- Art. 6 Livraison : « Fabrication par notre atelier partenaire après validation de l'aperçu, puis expédition. Délai indicatif : environ 3 semaines après validation. Livraison offerte en France métropolitaine. Pour Noël, commander avant le 1er décembre. »
+- Art. 6 Livraison : « Fabrication par notre atelier partenaire après validation de l'aperçu, puis expédition. Délai indicatif : environ 3 semaines après validation. Livraison offerte en France métropolitaine. Pour Noël, commander le plus tôt possible. »
 - Art. 8 : ajouter « Si aucun portrait satisfaisant ne peut être réalisé, la commande est remboursée intégralement. »
 
 ## Confidentialité (ajout)

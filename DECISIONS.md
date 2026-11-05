@@ -248,3 +248,12 @@ Le fondateur rejette un premier site trop proche de l'ancien (Sapin & Lin). Nouv
 ## D-051 — 2026-11-06 — Site refait une 3e fois : style moderne et lumineux
 Le fondateur rejette la « Gazette » (pas de produits visibles, couleurs, polices et textes). Nouveau style sur le même thème non publié, renommé « Gâté Pourri – Nouveau site » : fond blanc, encre #1d1a2f, orange #e5451f (boutons), pêche #ffeee6, jaune #ffd84d, bleu clair #e8f1ff ; polices Poppins (titres) + DM Sans (texte) ; boutons arrondis. Accueil : grand titre « Son portrait. Ses bêtises. Sur une plaque. », les 4 plaques en cartes avec photo et prix, 3 étapes, exemple Tokyo (présenté comme exemple, pas comme client), garanties, encart Noël, FAQ. Les cartes produits sont codées en dur (images CDN) pour s'afficher même avec des produits en brouillon → l'erreur Liquid disparaît. Fiche produit : nouvelles couleurs + bloc garanties. Sources : `shopify_theme/v7/`.
 Boutique sans mot de passe : passer les produits en « actif » les mettrait en vente publique → attend l'accord du fondateur.
+
+## D-052 — 2026-11-06 — Site v8 : produit d'abord, personnalisation avant paiement
+Suite à une critique détaillée (validée par le fondateur) du site v7 :
+- Accueil plus court (4 100 px au lieu de 7 200 sur mobile) : 3 plaques vues de face dès le premier écran, prix + bouton juste après, « Comment ça marche » devenu un simple lien.
+- Vignettes : vue de face pour les 4 modèles, même cadrage ; les mises en situation passent dans une bande « Chez vous » avec la mention « images d'illustration, plaque plate ». Sur Shopify, la vue de face est maintenant la 1re image de chaque fiche.
+- Fiche produit : formulaire avant paiement (prénom, champs propres au modèle, photo obligatoire, conseils photo, précision facultative). Paiement express masqué (il ne transmet pas la personnalisation).
+- Engagements précisés : aperçu sous 48 h ouvrées, jusqu'à 2 séries de corrections incluses, environ 3 semaines entre validation et livraison, intérieur seulement. Promesse « avant le 1er décembre » retirée partout (accueil, fiches, pages, textes légaux) tant que le fournisseur ne l'a pas confirmée.
+- Couleurs : bleu nuit #1b2a4a + crème #f7f0e3, orange réservé aux boutons, jaune en petites touches ; bleu pâle et bloc rouge supprimés.
+À faire : avant/après avec une vraie photo de chien (aucune n'est disponible, pas de faux), photos de l'échantillon réel, commande test pour vérifier l'envoi de la photo, nom de la boutique.
