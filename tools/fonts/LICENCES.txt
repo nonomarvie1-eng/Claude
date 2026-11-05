@@ -1,2 +1,2 @@
-Polices Google Fonts sous licence SIL Open Font License (usage commercial autorisé) : Bebas Neue, Pacifico, DM Serif Display.
+Polices Google Fonts sous licence SIL Open Font License (usage commercial autorisé) : Bebas Neue, Pacifico, DM Serif Display, Alfa Slab One.
 Source : https://github.com/google/fonts

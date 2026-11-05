@@ -118,3 +118,6 @@ Le bijou prénom gravé est occupé par de grosses plateformes (Callie, Candychr
 
 ## D-022 — 2026-11-05 — Produit choisi (par délégation du fondateur) : plaque personnalisée chien/chat
 Le fondateur me confie le choix. Décision : plaque alu personnalisée (race, robe, prénom, phrase drôle), positionnée cadeau/déco. Prix : 39,90 € (1) / 54,90 € (2). Marge estimée ~14 € / ~20 €. Test pendant la période de Noël si les échantillons sont bons. Plan : `PLAN_LANCEMENT.md`. Prochaine dépense (échantillons ~15 €) soumise à l'accord du fondateur.
+
+## D-023 — 2026-11-05 — Design retenu : style ChatGPT, reproduit dans notre outil (v3)
+Le design proposé par ChatGPT est jugé meilleur que nos v1/v2 (médaillon du prénom sur le poitrail, bandeau ATTENTION en arc, ruban bas). Mais l'image ChatGPT fait 1024×1536 px (~130 dpi à 20×30 cm) et devrait être regénérée à chaque commande, avec un risque de fautes. → Style reproduit dans `tools/make_plaque_v3.py` à 300 dpi, avec prénom, phrase et titre modifiables en quelques secondes. Fichier échantillon : `designs/plaque_v3_max.png`.
