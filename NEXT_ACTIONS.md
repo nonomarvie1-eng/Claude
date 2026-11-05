@@ -1,5 +1,10 @@
 # NEXT ACTIONS
 
+## ⭐ 2026-11-05 — Meilleur candidat : collier gravé portrait/prénom d'animal (D-019)
+1. Fondateur : Meta Ad Library (France) — « collier personnalisé chien », « collier portrait animal », « bijou photo chien chat » ; Google Shopping — « collier portrait chien ». Envoyer des captures.
+2. Avec accord : 2 échantillons de 2 fournisseurs (~10–20 €) gravés avec la photo d'un vrai animal.
+3. Exiger acier 316L + rapport de test REACH (nickel, plomb, cadmium).
+
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
 ## ⚠️ 2026-11-05 — Piste principale : kit anti-bouchon sans chimie (D-015, D-016, D-017). Ordre révisé après contre-expertise : 1) devis standard ET personnalisé, pour 100 kits complets ; 2) échantillons (avec accord) et essais réels ; 3) vidéos réelles avec prix et délai affichés ; 4) recalcul sans réachat ; 5) stock seulement si tout est positif. Logistique : privilégier un stock en France (TVA).

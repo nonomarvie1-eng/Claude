@@ -106,3 +106,6 @@ Le fondateur veut chercher mieux avant de choisir. D'accord : le kit sert de **r
 6. Annonceurs actifs en France (preuve de demande), sans saturation.
 7. Marge après cotisations ≥ 15 € par commande.
 Répartition : je cherche et chiffre les candidats ; le fondateur vérifie la Meta Ad Library et Google Shopping sur les 3–5 meilleurs (captures).
+
+## D-019 — 2026-11-05 — Recherche n°6 : un seul candidat passe le filtre
+Collier gravé portrait/prénom d'animal en dropshipping (sans stock) : marge estimée 18,81 € après cotisations (pessimiste 7,21 €). Kit anti-poils, râteau et serviettes auto rejetés (marges de 6 à 11 €). Enseignement : il faut des produits très légers, personnalisés ou à forte valeur perçue, vendus ≥ 40–45 €. Détail : `RAPPORT_DECISION_06.md`.
