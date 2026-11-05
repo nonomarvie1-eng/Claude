@@ -115,3 +115,6 @@ Preuve par la Meta Ad Library (4 séries de captures) : hors santé/beauté, les
 
 ## D-021 — 2026-11-05 — Pendentif prénom générique abandonné ; règle « passion + personnalisation »
 Le bijou prénom gravé est occupé par de grosses plateformes (Callie, Candychristy, My Little Necklace). Règle retenue : un objet personnalisé **ciblé sur une passion ou un public précis**, comme la plaque « accro aux plantes » (17 mois de pub), l'étui à médiators gravé ou les boules de pétanque gravées. Fin de la chasse : il faut maintenant choisir la niche.
+
+## D-022 — 2026-11-05 — Produit choisi (par délégation du fondateur) : plaque personnalisée chien/chat
+Le fondateur me confie le choix. Décision : plaque alu personnalisée (race, robe, prénom, phrase drôle), positionnée cadeau/déco. Prix : 39,90 € (1) / 54,90 € (2). Marge estimée ~14 € / ~20 €. Test pendant la période de Noël si les échantillons sont bons. Plan : `PLAN_LANCEMENT.md`. Prochaine dépense (échantillons ~15 €) soumise à l'accord du fondateur.

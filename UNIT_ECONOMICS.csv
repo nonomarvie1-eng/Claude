@@ -31,3 +31,7 @@ serviettes_sechage_auto_x2,central,29.90,6.00,7.50,0.00,0.00,0.20,0.015,0.25,0.0
 collier_portrait_animal_dropship,central,44.90,6.00,3.00,3.00,2.00,0.20,0.015,0.25,0.06,0.50,"Collier acier gravure portrait/prenom animal, envoi direct Chine (personnalise a l'unite). AliExpress public 4,86 $ (627 ventes) a 14,09 $ (264 ventes) VERIFIE 2026-11-05 ; port estime"
 collier_portrait_animal_dropship,pessimiste,39.90,10.00,4.00,3.00,2.00,0.20,0.015,0.25,0.10,0.50,"Fournisseur plus cher, plus de remakes/retours"
 collier_portrait_animal_dropship,optimiste,49.90,5.00,3.00,3.00,0.00,0.20,0.015,0.25,0.04,0.50,"Favorable"
+plaque_chien_perso,central,34.90,5.00,5.00,3.00,2.00,0.20,0.015,0.25,0.06,0.00,"Plaque alu 20x30 personnalisee (race, robe, prenom, phrase drole), fabrication a l'unite en Chine. AliExpress public 3,05-7,49 $ VERIFIE 2026-11-05 ; port ESTIME"
+plaque_chien_perso,pessimiste,29.90,7.00,6.50,3.00,2.00,0.20,0.015,0.25,0.10,0.00,"Fournisseur plus cher, refabrications"
+plaque_chien_perso,optimiste,39.90,4.00,4.50,3.00,0.00,0.20,0.015,0.25,0.04,0.00,"Favorable"
+plaque_chien_perso_x2,central,49.90,9.00,6.00,3.00,2.00,0.20,0.015,0.25,0.06,0.00,"2 plaques meme colis (1 categorie tarifaire) : porte + cadeau"

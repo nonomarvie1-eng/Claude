@@ -1,5 +1,10 @@
 # NEXT ACTIONS
 
+## ✅ 2026-11-05 — PRODUIT CHOISI : plaque personnalisée chien/chat (D-022) — suivre `PLAN_LANCEMENT.md`
+1. Fondateur : commander 2 échantillons chez 2 vendeurs AliExpress différents (~15 € au total) — accord donné ?
+2. Fondateur : inscription micro-entreprise sur autoentrepreneur.urssaf.fr (gratuit).
+3. Moi : nom de marque, designs IA, textes boutique, scripts vidéos.
+
 ## 🔎 2026-11-05 — Chasse aux produits « qui marchent » (tous univers) — méthode Meta Ad Library
 Signal le plus fiable disponible gratuitement : une pub **active depuis 2 mois ou plus** et une page qui a **plusieurs pubs** = l'annonceur continue à payer, donc il gagne probablement de l'argent.
 Réglages : facebook.com/ads/library → France → Toutes les publicités → mots-clés ci-dessous (avec guillemets).
