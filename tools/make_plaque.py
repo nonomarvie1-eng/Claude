@@ -17,6 +17,25 @@ FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
 FONT_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
 
+def remove_white_bg(art, seuil=235):
+    """Rend transparent le fond blanc relie aux bords (le blanc a l'interieur du dessin est conserve)."""
+    rgb = art.convert("RGB")
+    mask = Image.new("L", art.size, 0)
+    w, h = art.size
+    for start in [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]:
+        tmp = rgb.copy()
+        ImageDraw.floodfill(tmp, start, (255, 0, 255), thresh=255 - seuil)
+        px = tmp.load()
+        m = mask.load()
+        for y in range(h):
+            for x in range(w):
+                if px[x, y] == (255, 0, 255):
+                    m[x, y] = 255
+    alpha = Image.eval(mask, lambda v: 255 - v)
+    art.putalpha(alpha)
+    return art
+
+
 def fit_font(draw, text, path, max_w, start):
     size = start
     while size > 20:
@@ -57,8 +76,10 @@ def main(illu, nom, phrase, out):
     box = (m + 160, m + 470, W - m - 160, m + 470 + 1750)
     bw, bh = box[2] - box[0], box[3] - box[1]
     if illu != "-":
-        art = Image.open(illu).convert("RGBA")
-        art.thumbnail((bw, bh), Image.LANCZOS)
+        art = remove_white_bg(Image.open(illu).convert("RGBA"))
+        art = art.crop(art.getbbox())
+        scale = min(bw / art.width, bh / art.height)
+        art = art.resize((int(art.width * scale), int(art.height * scale)), Image.LANCZOS)
         x = box[0] + (bw - art.width) // 2
         y = box[1] + (bh - art.height) // 2
         img.paste(art, (x, y), art)
