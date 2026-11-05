@@ -271,3 +271,6 @@ Retour du fondateur sur l'aperçu réel : les plaques inclinées ressemblaient �
 - Accueil : 3 plaques droites accrochées sur un fond de mur, coins arrondis, reflet métallique, ombre portée, étiquette « Plaques en métal · 20 × 30 cm » ; titre au-dessus « Plaques en métal personnalisées ». Bouton « Créer sa plaque » à 623 px du haut sur mobile (779 au départ). Même effet métal sur les vignettes de la collection.
 - Page 404 : refaite en français (« Cette page s'est fait la malle. ») avec retour à l'accueil et les 4 plaques.
 - Fiches : restent introuvables tant que les produits sont en brouillon → décision du fondateur (mot de passe + activation).
+
+## D-055 — 2026-11-06 — Boutique protégée par mot de passe, 4 plaques actives
+Mot de passe de la boutique activé par le fondateur (vérifié via l'API). Les 4 plaques passent en « actif » et sont publiées sur la Boutique en ligne (stock non suivi → jamais « épuisé »). Le site reste invisible au public. Prochaine étape : test du formulaire (prénom, champs, photo) jusqu'au panier ; nom de la boutique toujours « Sapin & Lin ».
