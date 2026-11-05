@@ -2,7 +2,19 @@
 
 Classées par impact sur la décision. ⛔ = nécessite votre accord ou votre action.
 
-## ⚠️ 2026-11-04 — Test « berger australien » (D-013). Prochaines actions du fondateur : 1) créer les comptes Instagram + TikTok (gratuit) ; 2) générer les 5 premières illustrations avec `BRIEF_DESIGN_BERGER_AUSTRALIEN.md` ; 3) me proposer 3 noms de marque, je vérifie la disponibilité. Suivi : `PLAN_TEST_30J.md`, `TABLEAU_TEST.csv`.
+## ⚠️ 2026-11-05 — Piste principale : kit anti-bouchon sans chimie en stock privé CJ UE (D-015)
+Actions du fondateur (gratuites) :
+1. Meta Ad Library (facebook.com/ads/library), pays France, catégorie « Toutes les publicités » : chercher « attrape cheveux », « anti bouchon », « déboucheur ». M'envoyer des captures des annonceurs (nom, date de début des pubs).
+2. Appli CJ → Sourcing : envoyer la demande ci-dessous (gratuite, aucun paiement).
+
+Brouillon de demande Sourcing CJ (en anglais) :
+> Hello, I am preparing a private-label bundle for the French market and would like quotes for private inventory stored in your EU warehouse (Germany or Poland):
+> 1) Disposable shower drain hair catcher mesh stickers (pack of 30, ~10x10 cm, strong waterproof adhesive)
+> 2) Silicone drain hair stopper, universal, ~11 cm
+> 3) Plastic barbed drain snake / hair removal stick (pack of 3)
+> For each: unit price at 100 / 300 / 500 units, product weight, custom packaging or label options (French text), lead time, cost to transfer stock to the EU warehouse, storage fees and EU fulfillment fee per order to France. Could you also confirm the EU responsible person (GPSR) and send product safety documentation? Thank you.
+
+(En parallèle, optionnel) Test « berger australien » à 0 € : voir PLAN_TEST_30J.md.
 
 ## 0. (caduc) Mise à jour 2026-11-04 (soir) — ce qui reste après ouverture du réseau
 1. ⛔ **Devis CJ (votre compte gratuit, aucun paiement)** : aiguiseur « 4 angles, disques 360/600 + céramique, support magnétique » et kit crochet amigurumi. Il me faut : prix unitaire, port France DDP, délai, poids. **C'est le test décisif pour l'aiguiseur** : il faut ~15 € rendu pour une qualité correcte.

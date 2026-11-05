@@ -20,3 +20,7 @@ sweat_race_pod,central,54.90,27.00,6.00,0.00,0.00,0.20,0.015,0.25,0.05,0.00,"Est
 mug_race_pod,central,24.90,8.00,5.00,0.00,0.00,0.20,0.015,0.25,0.03,0.00,"Estimation de travail (casse)"
 panier_sweat_mug_pod,central,74.90,35.00,8.00,0.00,0.00,0.20,0.015,0.25,0.05,0.00,"Panier moyen vise ; port groupe estime"
 plaid_race_pod,central,59.90,25.68,7.00,0.00,0.00,0.20,0.015,0.25,0.03,0.00,"Cout de base Printful 'a partir de 25,68 EUR' VERIFIE (page Printful FR via recherche), port estime"
+surgrips_24_marque,central,29.90,8.40,7.00,0.00,0.00,0.20,0.015,0.25,0.03,0.00,"Stock prive CJ UE. Cout ~0,30 EUR/surgrip a logo (ESTIME ; AliExpress public : 60 pcs 27,72 $ VERIFIE) + emballage + part du transport en lot. Livraison = preparation CJ ~2,5 + port FR ~4,5 (ESTIMES)"
+surgrips_36_marque,central,39.90,12.00,7.00,0.00,0.00,0.20,0.015,0.25,0.03,0.00,"Idem, pack 36"
+kit_anti_bouchon,central,24.90,4.00,6.50,0.00,0.00,0.20,0.015,0.25,0.04,0.00,"Autocollants anti-cheveux (AliExpress 90 pcs 3,75 $ VERIFIE) + filtre silicone + tige debouche-canalisation. Couts ESTIMES"
+kit_anti_bouchon_x2,central,34.90,7.00,7.00,0.00,0.00,0.20,0.015,0.25,0.04,0.00,"Double kit (salle de bain + cuisine)"
