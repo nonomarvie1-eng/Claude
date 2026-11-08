@@ -26,7 +26,8 @@
     "name": "Panier",
     "settings": [
       { "type": "checkbox", "id": "free_shipping_on", "label": "Afficher la jauge « livraison offerte »", "default": true },
-      { "type": "number", "id": "free_shipping_threshold", "label": "Livraison offerte à partir de (€)", "default": 110, "info": "Doit correspondre à la remise « livraison offerte » créée dans Shopify." }
+      { "type": "number", "id": "free_shipping_threshold", "label": "Livraison offerte à partir de (€)", "default": 100, "info": "Doit correspondre à la remise « livraison offerte » créée dans Shopify." },
+      { "type": "checkbox", "id": "promo_free_relay", "label": "Offre en cours : Point Relais offert", "default": false, "info": "Affiche « Point Relais : offert » dans l'estimation du panier. À activer en même temps que la remise Shopify, et à désactiver à la fin de l'offre." }
     ]
   },
   {

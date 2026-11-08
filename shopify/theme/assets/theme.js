@@ -25,7 +25,7 @@
   function msg(t) { var m = $('#cmsg'); if (m) m.textContent = t || ''; }
   /* Estimation des frais de livraison en France, selon le poids des articles (grammes).
      Mêmes tranches que les tarifs Shopify : [poids max des articles, Point Relais, Domicile]. */
-  var SHIP_FR = [[200, 415, 750], [700, 455, 950], [1700, 635, 1100], [2700, 675, 1635], [4700, 1340, 1635], [9700, 1340, 2500], [14700, 2100, 3150]];
+  var SHIP_FR = [[200, 390, 750], [700, 390, 950], [1700, 390, 1100], [2700, 390, 1635], [4700, 390, 1635], [9700, 1340, 2500], [14700, 2100, 3150]];
   function shipEstimate(cart) {
     var boxes = $$('[data-shipest]'); if (!boxes.length) return;
     var html = '';
@@ -34,7 +34,7 @@
     if (!cart || !cart.item_count) html = '';
     else if (free && cart.total_price >= free) html = '<p class="shipest"><b>Livraison en France : offerte</b></p>';
     else html = r
-      ? '<p class="shipest"><b>Livraison estimée en France</b><span>Point Relais ou Locker : ' + money(r[1]) + '</span><span>À domicile : ' + money(r[2]) + '</span><small>Autres pays : tarif affiché au paiement.</small></p>'
+      ? '<p class="shipest"><b>Livraison estimée en France</b><span>Point Relais ou Locker : ' + (F.promoFreeRelay && r[0] <= 4700 ? '<b>offert</b> 🎁' : money(r[1])) + '</span><span>À domicile : ' + money(r[2]) + '</span><small>Autres pays : tarif affiché au paiement.</small></p>'
       : '<p class="shipest"><b>Colis de plus de 15 kg</b><span>Écrivez-nous pour un devis de livraison.</span></p>';
     boxes.forEach(function (b) { b.innerHTML = html; });
   }

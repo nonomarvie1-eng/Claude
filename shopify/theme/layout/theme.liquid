@@ -42,6 +42,7 @@
       cart: {{ cart | json }},
       routes: { add: {{ routes.cart_add_url | append: '.js' | json }}, change: {{ routes.cart_change_url | append: '.js' | json }}, cart: {{ routes.cart_url | append: '.js' | json }}, checkout: '/checkout' },
       freeShipping: {% if settings.free_shipping_on %}{{ settings.free_shipping_threshold | times: 100 }}{% else %}0{% endif %},
+      promoFreeRelay: {{ settings.promo_free_relay | json }},
       locale: {{ request.locale.iso_code | append: '-FR' | json }},
       currency: {{ cart.currency.iso_code | json }}
     };

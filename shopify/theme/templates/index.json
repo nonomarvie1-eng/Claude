@@ -67,13 +67,13 @@
         "m2": {
           "type": "message",
           "settings": {
-            "text": "Mondial Relay en Point Relais ou à domicile"
+            "text": "Point Relais à 3,90 € partout en France"
           }
         },
         "m3": {
           "type": "message",
           "settings": {
-            "text": "Livraison offerte dès 110 €"
+            "text": "Livraison offerte dès 100 €"
           }
         },
         "m4": {
@@ -81,9 +81,16 @@
           "settings": {
             "text": "Traditions, créations & art de vivre"
           }
+        },
+        "promo": {
+          "type": "message",
+          "settings": {
+            "text": "🎁 24 h seulement : livraison offerte en Point Relais"
+          }
         }
       },
       "block_order": [
+        "promo",
         "m0",
         "m1",
         "m2",

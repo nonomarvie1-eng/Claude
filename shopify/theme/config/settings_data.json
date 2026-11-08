@@ -3,7 +3,10 @@
     "social_instagram": "https://www.instagram.com/juju_fofana",
     "social_tiktok": "https://www.tiktok.com/@jujufofana",
     "social_snapchat": "https://snapchat.com/t/VUMKoSqa",
-    "social_facebook": "https://www.facebook.com/share/1GzJyVUD8a/"
+    "social_facebook": "https://www.facebook.com/share/1GzJyVUD8a/",
+    "free_shipping_on": true,
+    "free_shipping_threshold": 100,
+    "promo_free_relay": true
   },
   "presets": {
     "Mme Fofana": {}
