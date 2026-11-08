@@ -1,9 +1,11 @@
-{%- comment -%} Carte produit (grille boutique et accueil). Paramètre : product. {%- endcomment -%}
+{%- comment -%} Carte produit (grille boutique et accueil). Paramètre : product. Tag « photo-entiere » : photo affichée en entier, sans recadrage. {%- endcomment -%}
 {%- liquid
   assign first = product.featured_media
   assign second = product.media[1]
   assign pos = ''
-  if first.aspect_ratio < 0.9
+  if product.tags contains 'photo-entiere'
+    assign pos = 'object-fit:contain'
+  elsif first.aspect_ratio < 0.9
     assign pos = 'object-position:50% 90%'
   endif
 -%}
