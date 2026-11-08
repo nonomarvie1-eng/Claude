@@ -14,11 +14,22 @@
       <a class="more" href="{{ col.url }}">Tout voir</a>
     </div>
     <div class="cgrid center">
-      {%- for product in col.products limit: section.settings.limit -%}
-        {%- if product.available or section.settings.show_sold_out -%}
+      {%- comment -%} Produits disponibles d'abord, ruptures de stock à la fin. {%- endcomment -%}
+      {%- assign shown = 0 -%}
+      {%- for product in col.products -%}
+        {%- if product.available and shown < section.settings.limit -%}
           {% render 'product-card', product: product %}
+          {%- assign shown = shown | plus: 1 -%}
         {%- endif -%}
       {%- endfor -%}
+      {%- if section.settings.show_sold_out -%}
+        {%- for product in col.products -%}
+          {%- unless product.available or shown >= section.settings.limit -%}
+            {% render 'product-card', product: product %}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
     </div>
     {%- if section.settings.button_label != blank -%}
       <div class="btns" style="justify-content:center;margin-top:48px"><a class="btn xl" href="{{ col.url }}">{{ section.settings.button_label }} <span aria-hidden="true">→</span></a></div>

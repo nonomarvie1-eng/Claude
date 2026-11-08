@@ -97,10 +97,14 @@
         </div>
       {%- endif -%}
       <div class="cgrid">
+        {%- comment -%} Produits disponibles d'abord, ruptures de stock à la fin. {%- endcomment -%}
         {%- for product in collection.products -%}
-          {% render 'product-card', product: product %}
+          {%- if product.available %}{% render 'product-card', product: product %}{% endif -%}
         {%- else -%}
           <div class="none"><p>Aucun produit ne correspond à ta recherche.</p><a class="btn o sm" href="{{ collection.url }}">Réinitialiser les filtres</a></div>
+        {%- endfor -%}
+        {%- for product in collection.products -%}
+          {%- unless product.available %}{% render 'product-card', product: product %}{% endunless -%}
         {%- endfor -%}
       </div>
       {%- if paginate.pages > 1 -%}

@@ -39,9 +39,10 @@
     "selection": {
       "type": "featured-collection",
       "settings": {
+        "collection": "frontpage",
         "label": "Ma sélection",
         "title": "Des objets, des histoires, des savoir-faire",
-        "limit": 8,
+        "limit": 12,
         "show_sold_out": true,
         "button_label": "Voir toute la boutique"
       }
