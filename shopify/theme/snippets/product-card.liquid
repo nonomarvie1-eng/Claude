@@ -2,6 +2,8 @@
 {%- liquid
   assign first = product.featured_media
   assign second = product.media[1]
+  assign cur = product.selected_or_first_available_variant.price
+  assign cmp = product.selected_or_first_available_variant.compare_at_price | default: 0
   assign pos = ''
   if product.tags contains 'photo-entiere'
     assign pos = 'object-fit:contain'
@@ -20,11 +22,16 @@
       {%- endif -%}
     </a>
     {%- unless product.available %}<span class="stag">Rupture de stock</span>{% endunless -%}
+    {%- if product.available and cmp > cur %}{% render 'promo-style' %}<span class="ptag">Promo</span>{% endif -%}
   </div>
   <div class="pbody">
     {%- if product.type != blank %}<span class="pcat">{{ product.type }}</span>{% endif %}
     <h3 class="pname"><a href="{{ product.url }}">{{ product.title }}</a></h3>
-    <div class="pprice">{% if product.price_varies %}Dès {% endif %}{{ product.price_min | money }}</div>
+    {%- if cmp > cur -%}
+      <div class="pprice"><s>{{ cmp | money }}</s><span class="now">{{ cur | money }}</span></div>
+    {%- else -%}
+      <div class="pprice">{% if product.price_varies %}Dès {% endif %}{{ product.price_min | money }}</div>
+    {%- endif -%}
     {%- if product.available == false -%}
       <a class="btn gold sm full" href="{{ product.url }}">Rupture de stock</a>
     {%- elsif product.has_only_default_variant == false -%}

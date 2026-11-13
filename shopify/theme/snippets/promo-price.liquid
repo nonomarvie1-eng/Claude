@@ -1,0 +1,11 @@
+{%- comment -%} Prix de la fiche produit, avec prix barré et badge si la variante est en promo. Paramètre : current (variante). {%- endcomment -%}
+<div class="pr3">
+  {%- if current.compare_at_price > current.price -%}
+    {%- render 'promo-style' -%}
+    <s class="was">{{ current.compare_at_price | money }}</s>
+    <span data-price class="now">{{ current.price | money }}</span>
+    <span class="pbadge">Promo −{{ current.compare_at_price | minus: current.price | money }}</span>
+  {%- else -%}
+    <span data-price>{{ current.price | money }}</span>
+  {%- endif -%}
+</div>

@@ -1,0 +1,10 @@
+{%- comment -%} Styles des promotions (prix barré + badge). Affiché seulement quand un produit est en promo. {%- endcomment -%}
+<style>
+.ptag{position:absolute;top:12px;right:12px;z-index:2;background:#B3261E;color:#fff;font:700 11px/1 var(--b);letter-spacing:.14em;text-transform:uppercase;padding:8px 12px;border-radius:30px;box-shadow:0 4px 12px rgba(179,38,30,.35)}
+@media(max-width:480px){.ptag{top:10px;right:10px;font-size:10px;padding:7px 10px}}
+.pprice s,.pr3 s.was{color:#8C8372;font-weight:400;text-decoration-thickness:1.5px;margin-right:8px}
+.pprice s{font-size:.82em}
+.pprice .now,.pr3 .now{color:#B3261E}
+.pr3 s.was{font-size:.68em}
+.pbadge{display:inline-block;vertical-align:middle;margin-left:10px;background:#B3261E;color:#fff;font:700 12px/1 var(--b);letter-spacing:.1em;text-transform:uppercase;padding:7px 11px;border-radius:30px}
+</style>

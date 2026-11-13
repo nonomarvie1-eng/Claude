@@ -6,7 +6,7 @@
     "social_facebook": "https://www.facebook.com/share/1GzJyVUD8a/",
     "free_shipping_on": true,
     "free_shipping_threshold": 100,
-    "promo_free_relay": true
+    "promo_free_relay": false
   },
   "presets": {
     "Mme Fofana": {}

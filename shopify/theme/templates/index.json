@@ -82,16 +82,9 @@
           "settings": {
             "text": "Traditions, créations & art de vivre"
           }
-        },
-        "promo": {
-          "type": "message",
-          "settings": {
-            "text": "🎁 24 h seulement : livraison offerte en Point Relais"
-          }
         }
       },
       "block_order": [
-        "promo",
         "m0",
         "m1",
         "m2",

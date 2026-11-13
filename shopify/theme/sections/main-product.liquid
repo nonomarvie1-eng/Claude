@@ -62,7 +62,7 @@
         {%- if product.type != blank %}<span class="cat">{{ product.type }}</span>{% endif %}
         <span class="stag st-in" data-soldtag{% if current.available %} hidden{% endif %}>Rupture de stock</span>
         <h1>{{ product.title }}</h1>
-        <div class="pr3" data-price>{{ current.price | money }}</div>
+        {% render 'promo-price', current: current %}
         <div class="lead2 rte">{{ product.description }}</div>
 
         {%- unless product.has_only_default_variant -%}
