@@ -12,22 +12,24 @@
     <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
 </defs>
-  <radialGradient id="bgk" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="#f4934f"/><stop offset="1" stop-color="#a8461c"/></radialGradient>
-  <clipPath id="cck"><rect x="16" y="34" width="224" height="206" rx="30"/></clipPath>
-  <clipPath id="chk"><rect x="16" y="-80" width="224" height="320" rx="30"/></clipPath>
-  <clipPath id="botk"><rect x="0" y="200" width="256" height="60"/></clipPath>
+  <radialGradient id="bgk" cx=".5" cy=".35" r=".8"><stop offset="0" stop-color="#f4934f"/><stop offset="1" stop-color="#a8461c"/></radialGradient>
+  <pattern id="pat_k" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M0,8 L8,0 L16,8 L8,16Z" fill="none" stroke="#fff" stroke-width="1.6" opacity=".25"/></pattern>
+  <clipPath id="cck"><rect x="14" y="54" width="228" height="188" rx="28"/></clipPath>
+  <clipPath id="chk"><rect x="6" y="-80" width="244" height="322" rx="28"/></clipPath>
+  <clipPath id="botk"><rect x="0" y="94" width="256" height="200"/></clipPath>
   <g filter="url(#comic)">
-    <rect x="16" y="34" width="224" height="206" rx="30" fill="url(#bgk)"/>
-    <g clip-path="url(#cck)"><path d="M128,140L348,140L343.77,182.92Z" fill="#fff" opacity="0.1"/><path d="M128,140L331.25,224.19L310.92,262.23Z" fill="#fff" opacity="0.1"/><path d="M128,140L283.56,295.56L250.23,322.92Z" fill="#fff" opacity="0.1"/><path d="M128,140L212.19,343.25L170.92,355.77Z" fill="#fff" opacity="0.1"/><path d="M128,140L128,360L85.08,355.77Z" fill="#fff" opacity="0.1"/><path d="M128,140L43.81,343.25L5.77,322.92Z" fill="#fff" opacity="0.1"/><path d="M128,140L-27.56,295.56L-54.92,262.23Z" fill="#fff" opacity="0.1"/><path d="M128,140L-75.25,224.19L-87.77,182.92Z" fill="#fff" opacity="0.1"/><path d="M128,140L-92,140L-87.77,97.08Z" fill="#fff" opacity="0.1"/><path d="M128,140L-75.25,55.81L-54.92,17.77Z" fill="#fff" opacity="0.1"/><path d="M128,140L-27.56,-15.56L5.77,-42.92Z" fill="#fff" opacity="0.1"/><path d="M128,140L43.81,-63.25L85.08,-75.77Z" fill="#fff" opacity="0.1"/><path d="M128,140L128,-80L170.92,-75.77Z" fill="#fff" opacity="0.1"/><path d="M128,140L212.19,-63.25L250.23,-42.92Z" fill="#fff" opacity="0.1"/><path d="M128,140L283.56,-15.56L310.92,17.77Z" fill="#fff" opacity="0.1"/><path d="M128,140L331.25,55.81L343.77,97.08Z" fill="#fff" opacity="0.1"/><rect x="16" y="34" width="224" height="206" fill="url(#dotsL)"/></g>
-    <rect x="16" y="34" width="224" height="206" rx="30" fill="none" stroke="#1b1410" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="14" y="54" width="228" height="188" rx="28" fill="url(#bgk)"/>
+    <g clip-path="url(#cck)"><path d="M128,150L358,150L353.58,194.87Z" fill="#fff" opacity="0.1"/><path d="M128,150L340.49,238.02L319.24,277.78Z" fill="#fff" opacity="0.1"/><path d="M128,150L290.63,312.63L255.78,341.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L216.02,362.49L172.87,375.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L128,380L83.13,375.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L39.98,362.49L0.22,341.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L-34.63,312.63L-63.24,277.78Z" fill="#fff" opacity="0.1"/><path d="M128,150L-84.49,238.02L-97.58,194.87Z" fill="#fff" opacity="0.1"/><path d="M128,150L-102,150L-97.58,105.13Z" fill="#fff" opacity="0.1"/><path d="M128,150L-84.49,61.98L-63.24,22.22Z" fill="#fff" opacity="0.1"/><path d="M128,150L-34.63,-12.63L0.22,-41.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L39.98,-62.49L83.13,-75.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L128,-80L172.87,-75.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L216.02,-62.49L255.78,-41.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L290.63,-12.63L319.24,22.22Z" fill="#fff" opacity="0.1"/><path d="M128,150L340.49,61.98L353.58,105.13Z" fill="#fff" opacity="0.1"/><rect x="14" y="54" width="228" height="188" fill="url(#pat_k)"/>
+      <rect x="14" y="198" width="228" height="44" fill="#000" opacity=".12"/></g>
+    <rect x="14" y="54" width="228" height="188" rx="28" fill="none" stroke="#1b1410" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
   </g>
   <g clip-path="url(#chk)">
-    <path d="M30,262 C32,214 62,196 100,190 L156,190 C194,196 224,214 226,262Z" fill="#2f9a4a" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M30,262 C32,214 62,196 100,190 L156,190 C194,196 224,214 226,262Z" fill="#2f9a4a" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><path d="M152,192 C192,198 222,218 224,262 L156,262Z" fill="#000" opacity=".18"/>
     <path d="M30,232 h196" stroke="#fff" stroke-width="8"/>
     <rect x="112" y="168" width="32" height="28" fill="#f7cfa6" stroke="#1b1410" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
     <ellipse cx="62" cy="122" rx="16" ry="20" fill="#f7cfa6" stroke="#1b1410" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
     <ellipse cx="190" cy="122" rx="16" ry="20" fill="#f7cfa6" stroke="#1b1410" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-    <circle cx="126" cy="116" r="62" fill="#f7cfa6" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="126" cy="116" r="62" fill="#f7cfa6" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><path d="M71.95,102.12 A55.8,55.8 0 0,1 117.27,60.89" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55"/>
     <path d="M70,140 Q126,190 182,140 Q172,172 126,176 Q80,172 70,140Z" fill="#e2a87f" opacity=".6"/>
     <path d="M68,92 C66,46 104,34 128,36 C160,34 190,52 186,92 C170,74 150,70 128,70 C106,70 84,76 68,92Z" fill="#2f9a4a" stroke="#1b1410" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
     <path d="M60,86 C44,86 30,94 28,104 C46,102 60,100 72,96Z" fill="#2f9a4a" stroke="#1b1410" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
@@ -48,4 +50,5 @@
   <path d="M185.76,144.3 C200.5,146.5 201.6,169.6 196.1,171.36" fill="none" stroke="#fffde8" stroke-width="3.08" stroke-linecap="round"/>
   <path d="M215.9,132.64 C210.4,134.4 211.5,157.5 226.24,159.7" fill="none" stroke="#fffde8" stroke-width="3.08" stroke-linecap="round"/>
   <ellipse cx="198.3" cy="143.2" rx="5.5" ry="3.08" fill="#fff" opacity=".7" transform="rotate(-30 198.3 143.2)"/></g>
-  <rect x="16" y="34" width="224" height="206" rx="30" fill="none" stroke="#1b1410" stroke-width="7" clip-path="url(#botk)"/></svg>
+  <rect x="14" y="54" width="228" height="188" rx="28" fill="none" stroke="#1b1410" stroke-width="7" clip-path="url(#botk)"/>
+  <path d="M30,62 Q128,48 226,62" fill="none" stroke="#fff" stroke-width="3" opacity=".35" clip-path="url(#botk)"/></svg>

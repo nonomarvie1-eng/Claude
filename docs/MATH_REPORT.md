@@ -95,6 +95,13 @@ Empreintes SHA-256 : books `dbeedfa56188cf0a…`, table `38243c0e0d451d91…`.
 
 Sur Stake Engine, le serveur ne tire que des tours présents dans les books : le gain maximal réellement atteignable est donc celui de la table, **5000×**, égal au plafond affiché.
 
+## 4 bis. Mode « achat du Tie-Break » (bet mode `bonus`, coût 75×)
+
+- Règle : le tour acheté montre 3 Trophées (tirés selon la loi conditionnelle exacte) et démarre un Tie-Break de 10 tours gratuits.
+- **RTP exact du mode : 96.4820 %** (gain moyen 72.361× la mise de base, pour un coût de 75×).
+- Contrôle Monte-Carlo : 2 000 000 achats → RTP 96.449 % ± 0.163 % (IC 95 %)  écart-type 88.0× la mise de base.
+- Table publiée : 10746 books, RTP 96.48198 % (écart au modèle exact -3.0e-14), gain maximal présent 5000×.
+
 ## 5. Vérification par l'outil officiel (engineio/math-sdk)
 
 - Commit du SDK : `141b4e89065ac4400769709a919259a923430c4d`

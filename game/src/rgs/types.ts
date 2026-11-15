@@ -17,6 +17,8 @@ export interface Jurisdiction {
   disabledTurbo?: boolean;
   disabledSlamstop?: boolean;
   disabledSpacebar?: boolean;
+  disabledAutoplay?: boolean;   // name to confirm with Stake (assumption)
+  disabledBuyBonus?: boolean;   // name to confirm with Stake (assumption)
   displayRTP?: boolean;
   minimumRoundDuration?: number; // ms
   [k: string]: unknown;
@@ -42,6 +44,7 @@ export interface Round {
    *  (field name to be confirmed on the Stake sandbox: `state` or `events`). */
   state: Book['events'];
   bookId?: number;
+  cost?: number; // bet-mode cost multiplier (1 = base, 75 = bonus buy)
   forced?: string; // demo-only: forced scenario label
 }
 

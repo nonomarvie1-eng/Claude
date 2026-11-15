@@ -126,6 +126,14 @@ def main() -> None:
         w(f"| {s['name']} | {s['probability']:.4e} | {s['books']} | {s['target_mean_x']:.4f}× | {s['sample_mean_x']:.4f}× | {s['kl']:.1e} | {s['max_payout_x']:.1f}× |")
     w(f"\nEmpreintes SHA-256 : books `{lut['sha256_books'][:16]}…`, table `{lut['sha256_lut'][:16]}…`.\n")
     w(f"Sur Stake Engine, le serveur ne tire que des tours présents dans les books : le gain maximal réellement atteignable est donc celui de la table, **{lut['lut_max_payout_x']:.0f}×**, égal au plafond affiché.\n")
+    if "bonus" in lut and "buy" in ex:
+        bb, bm = lut["bonus"], mc.get("buy", {})
+        w("## 4 bis. Mode « achat du Tie-Break » (bet mode `bonus`, coût " + str(ex["buy"]["cost"]) + "×)\n")
+        w(f"- Règle : le tour acheté montre {ex['buy']['scatters']} Trophées (tirés selon la loi conditionnelle exacte) et démarre un Tie-Break de {ex['buy']['spins']} tours gratuits.")
+        w(f"- **RTP exact du mode : {pct(ex['buy']['rtp'], 4)}** (gain moyen {ex['buy']['E_x']:.3f}× la mise de base, pour un coût de {ex['buy']['cost']}×).")
+        if bm:
+            w(f"- Contrôle Monte-Carlo : {bm['rounds']:,} achats → RTP {pct(bm['rtp_observed'])} ± {pct(1.96 * bm['rtp_std_error'])} (IC 95 %), écart-type {bm['std_dev_x']:.1f}× la mise de base.".replace(",", " "))
+        w(f"- Table publiée : {bb['books']} books, RTP {pct(bb['lut_rtp'], 5)} (écart au modèle exact {bb['lut_minus_exact']:.1e}), gain maximal présent {bb['lut_max_payout_x']:.0f}×.\n")
     if sdk:
         w("## 5. Vérification par l'outil officiel (engineio/math-sdk)\n")
         m = sdk["modes"]["base"]

@@ -5,6 +5,14 @@ import { RgsError, validateRound, type RgsClient, type Round } from '../rgs/type
 import type { RallyScene } from '../render/scene';
 import { playBook, type Hud } from './player';
 import { game } from './state.svelte';
+import { RULES } from '../engine/rules';
+
+export interface AutoplayConfig {
+  count: number;
+  lossLimit: number; // money units; autoplay stops once net loss reaches it
+  singleWinLimit: number | null; // stop when one round wins at least this
+  stopOnBonus: boolean;
+}
 
 export class Controller {
   lastRound: Round | null = null;
@@ -30,7 +38,7 @@ export class Controller {
     if (!game.betLevels.includes(game.bet)) game.bet = auth.config.defaultBetLevel ?? game.betLevels[0];
     if (game.jurisdiction.disabledTurbo) game.prefs.turbo = false;
     this.scene.currency = game.currency;
-    this.scene.setBoard([0, 0, 0, 0, 0], 'basegame');
+    this.scene.setBoard(new Array(RULES.reels).fill(0), 'basegame');
     if (auth.round && auth.round.active) {
       // interrupted round (reload, crash, network loss): show it, then close it
       game.notice = game.t.interruptedResume;
@@ -46,9 +54,15 @@ export class Controller {
     return game.phase === 'idle' && !game.modal && !game.error;
   }
 
-  async spin(force: ForcedScenario = null) {
+  async buyBonus() {
+    if (game.jurisdiction.disabledBuyBonus) return;
+    await this.spin(null, 'BONUS');
+  }
+
+  async spin(force: ForcedScenario = null, mode: 'BASE' | 'BONUS' = 'BASE') {
     if (!this.canSpin()) return;
-    if (game.bet > game.balance) {
+    const cost = mode === 'BONUS' ? RULES.buyBonus.cost : 1;
+    if (game.bet * cost > game.balance) {
       game.notice = game.t.insufficient;
       setTimeout(() => (game.notice = null), 2500);
       return;
@@ -62,7 +76,9 @@ export class Controller {
         (this.rgs as DemoRgs).forceNext = force;
         game.banner = game.t.forcedBanner;
       }
-      const { balance, round } = await this.rgs.play(game.bet, 'BASE');
+      if (mode === 'BONUS') game.banner = game.t.buyBanner;
+      const { balance, round } = await this.rgs.play(game.bet, mode);
+      round.cost = round.cost ?? cost;
       game.balance = balance.amount;
       validateRound(round);
       this.lastRound = round;
@@ -85,7 +101,7 @@ export class Controller {
 
   private async present(round: Round, quick: boolean) {
     this.scene.bet = round.amount;
-    await playBook(round.state, this.scene, this.hud, { bet: round.amount, quick });
+    await playBook(round.state, this.scene, this.hud, { bet: round.amount, cost: round.cost ?? 1, quick });
   }
 
   private record(round: Round) {
@@ -93,12 +109,45 @@ export class Controller {
       id: round.betID,
       time: Date.now(),
       bet: round.amount,
+      cost: round.cost ?? 1,
       win: round.payout,
       payoutMultiplier: round.payoutMultiplier,
       bonus: round.state.some((e) => e.type === 'freeSpinTrigger'),
       forced: round.forced,
       events: round.state,
     });
+  }
+
+  /** Autoplay with mandatory loss limit.  Every round is still a separate,
+   *  independent RGS round; autoplay only presses the button for the player. */
+  private stopRequested = false;
+
+  async autoplay(cfg: AutoplayConfig) {
+    if (game.jurisdiction.disabledAutoplay || !this.canSpin()) return;
+    this.stopRequested = false;
+    const start = game.balance;
+    game.autoplay = { remaining: cfg.count };
+    try {
+      while (game.autoplay && game.autoplay.remaining > 0 && !this.stopRequested) {
+        if (game.bet > game.balance) break;
+        game.autoplay = { remaining: game.autoplay.remaining - 1 };
+        await this.spin();
+        if (game.phase !== 'idle') break; // error or interruption
+        const r = this.lastRound;
+        if (start - game.balance >= cfg.lossLimit) break;
+        if (r && cfg.stopOnBonus && r.state.some((e) => e.type === 'freeSpinTrigger')) break;
+        if (r && cfg.singleWinLimit !== null && r.payout >= cfg.singleWinLimit) break;
+        await new Promise((res) => setTimeout(res, game.prefs.turbo ? 150 : 350));
+      }
+    } finally {
+      game.autoplay = null;
+      this.stopRequested = false;
+    }
+  }
+
+  stopAutoplay() {
+    this.stopRequested = true;
+    if (game.autoplay) game.autoplay = { remaining: 0 };
   }
 
   /** Faithful replay of a past round from its stored book.  Purely visual. */
@@ -111,7 +160,7 @@ export class Controller {
     const savedWin = game.win;
     try {
       this.scene.bet = e.bet;
-      await playBook(e.events, this.scene, this.hud, { bet: e.bet });
+      await playBook(e.events, this.scene, this.hud, { bet: e.bet, cost: e.cost ?? 1 });
     } finally {
       game.banner = null;
       game.win = savedWin;

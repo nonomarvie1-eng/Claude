@@ -1,0 +1,16 @@
+{
+ "landscape": {
+  "width": 1920,
+  "height": 1080,
+  "crowdY": 390,
+  "foreY": 516,
+  "flagsY": 0
+ },
+ "portrait": {
+  "width": 1080,
+  "height": 1920,
+  "crowdY": 656,
+  "foreY": 782,
+  "flagsY": 0
+ }
+}

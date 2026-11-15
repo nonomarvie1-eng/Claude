@@ -5,7 +5,7 @@ import { cryptoDrawer, cryptoInt, listDrawer } from './rng';
 import { RULES } from './rules';
 import type { Book } from './types';
 
-type Fixture = { stops: number[][]; book: Book };
+type Fixture = { stops: number[][]; book: Book; bought?: boolean };
 
 describe('TS engine parity with the Python reference engine', () => {
   const fx = fixtures as unknown as Fixture[];
@@ -15,7 +15,7 @@ describe('TS engine parity with the Python reference engine', () => {
   });
   it('reproduces every fixture book exactly (events, payouts)', () => {
     for (const f of fx) {
-      const out = playRound(listDrawer(f.stops), f.book.id);
+      const out = playRound(listDrawer(f.stops), f.book.id, undefined, !!f.bought);
       expect(out.book).toEqual(f.book);
     }
   });

@@ -25,7 +25,7 @@ describe('DemoRgs (play money)', () => {
   it('refuses invalid bets, insufficient funds and concurrent rounds', async () => {
     const rgs = new DemoRgs(memoryStorage());
     await expect(rgs.play(123, 'BASE')).rejects.toMatchObject({ code: 'ERR_VAL' });
-    await expect(rgs.play(1_000_000, 'BONUS')).rejects.toMatchObject({ code: 'ERR_VAL' });
+    await expect(rgs.play(1_000_000, 'TURBO')).rejects.toMatchObject({ code: 'ERR_VAL' });
     await rgs.play(1_000_000, 'BASE');
     await expect(rgs.play(1_000_000, 'BASE')).rejects.toMatchObject({ code: 'ERR_VAL' });
     await rgs.endRound();
@@ -51,6 +51,20 @@ describe('DemoRgs (play money)', () => {
   it('recovers from corrupted storage', async () => {
     const rgs = new DemoRgs({ get: () => '{not json', set: () => {} });
     expect((await rgs.authenticate()).balance.amount).toBe(DEMO_START_BALANCE);
+  });
+
+  it('bonus buy debits bet x cost and plays a bought Tie-Break', async () => {
+    const rgs = new DemoRgs(memoryStorage());
+    const { balance, round } = await rgs.play(1_000_000, 'BONUS');
+    expect(balance.amount).toBe(DEMO_START_BALANCE - 75 * 1_000_000);
+    expect(round.cost).toBe(75);
+    const trig = round.state.find((e) => e.type === 'freeSpinTrigger') as { bought?: boolean; totalFs: number };
+    expect(trig.bought).toBe(true);
+    expect(trig.totalFs).toBe(10);
+    const end = await rgs.endRound();
+    expect(end.balance.amount).toBe(DEMO_START_BALANCE - 75 * 1_000_000 + round.payout);
+    const poor = new DemoRgs({ get: () => JSON.stringify({ balance: 50 * 1_000_000, active: null, nextId: 1 }), set: () => {} });
+    await expect(poor.play(1_000_000, 'BONUS')).rejects.toMatchObject({ code: 'ERR_IPB' });
   });
 
   it('forced bonus scenario triggers free spins (demo QA only)', async () => {

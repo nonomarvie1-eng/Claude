@@ -75,6 +75,13 @@ FS_MAX_REMAINING = 50
 # evaluated.  The multiplier never goes down during the bonus.
 RALLY_LADDER = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20]
 
+# Bonus buy ("Acheter le Tie-Break"): separate bet mode.  The bought round
+# shows a base board with exactly BUY_SCATTERS Trophies (drawn with the exact
+# conditional law) and starts the Tie-Break with BUY_SPINS free spins.
+BUY_COST = 75
+BUY_SPINS = 10
+BUY_SCATTERS = 3
+
 WINCAP_X = 5000
 WINCAP_T = WINCAP_X * 10
 

@@ -4,6 +4,7 @@
 //   proven parity), drawn with the browser CSPRNG.
 // * Nothing here talks to a network or an operator.
 import { drawBaseStopsWithScatters, playRound } from '../engine/engine';
+import { RULES } from '../engine/rules';
 import { cryptoDrawer, cryptoInt } from '../engine/rng';
 import { MONEY_SCALE, RgsError, type AuthResult, type Balance, type RgsClient, type RgsConfig, type Round } from './types';
 
@@ -105,18 +106,23 @@ export class DemoRgs implements RgsClient {
   async play(amount: number, mode: string): Promise<{ balance: Balance; round: Round }> {
     this.maybeFail('play');
     if (this.s.active) throw new RgsError('ERR_VAL', 'a round is already active');
-    if (mode !== 'BASE') throw new RgsError('ERR_VAL', 'unknown mode');
+    if (mode !== 'BASE' && mode !== 'BONUS') throw new RgsError('ERR_VAL', 'unknown mode');
     if (!this.config.betLevels.includes(amount)) throw new RgsError('ERR_VAL', 'invalid bet');
-    if (amount > this.s.balance) throw new RgsError('ERR_IPB', 'insufficient balance');
-    const forced = this.forceNext;
+    const bought = mode === 'BONUS';
+    if (bought && this.config.jurisdiction.disabledBuyBonus) throw new RgsError('ERR_VAL', 'bonus buy disabled');
+    const cost = bought ? RULES.buyBonus.cost : 1;
+    const debit = amount * cost; // Stake RGS: debit = base bet x mode cost multiplier
+    if (debit > this.s.balance) throw new RgsError('ERR_IPB', 'insufficient balance');
+    const forced = bought ? null : this.forceNext;
     this.forceNext = null;
-    const k = forced ? +forced.slice(-1) : 0;
-    const out = playRound(cryptoDrawer, this.s.nextId, k ? drawBaseStopsWithScatters(k, cryptoInt) : undefined);
+    const k = bought ? RULES.buyBonus.scatters : forced ? +forced.slice(-1) : 0;
+    const out = playRound(cryptoDrawer, this.s.nextId, k ? drawBaseStopsWithScatters(k, cryptoInt) : undefined, bought);
     const pm = out.book.payoutMultiplier;
     const round: Round = {
       betID: this.s.nextId,
       bookId: out.book.id,
       amount,
+      cost,
       payoutMultiplier: pm,
       payout: Math.round((amount * pm) / 100),
       active: true,
@@ -125,7 +131,7 @@ export class DemoRgs implements RgsClient {
       ...(forced ? { forced } : {}),
     };
     this.s.nextId += 1;
-    this.s.balance -= amount;
+    this.s.balance -= debit;
     this.s.active = round;
     this.save();
     return { balance: this.bal(), round };

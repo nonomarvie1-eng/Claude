@@ -70,6 +70,9 @@
 <section class="rules">
   <h3>{t.rules}</h3>
   <p>{t.rulesOutcome}</p>
+  {#if !game.jurisdiction.disabledBuyBonus && RULES.buyBonus.rtp}
+    <p>{fmt(t.buyRule, { x: RULES.buyBonus.cost, spins: RULES.buyBonus.spins, rtp: (RULES.buyBonus.rtp * 100).toFixed(2) })}</p>
+  {/if}
   <p>{fmt(t.maxWinRule, { x: RULES.wincapX.toLocaleString(game.prefs.lang) })}</p>
   {#if stats && showRtp}
     <p data-testid="rtp">{fmt(t.rtpRule, { rtp: (stats.rtp * 100).toFixed(2) })}</p>

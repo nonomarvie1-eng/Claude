@@ -29,7 +29,7 @@
 | Écart entre le moteur de démo (TypeScript) et le moteur de référence (Python) | Élevé | Faible | Test de parité sur 200 tours de référence (identiques à l'octet près), plus validation de chaque book avant affichage. |
 | Erreur de calcul RTP | Élevé | Faible | Méthode exacte validée par énumération exhaustive, simulation de 200 millions de tours, vérification par l'outil officiel du SDK. |
 | Perte de session ou rechargement en cours de tour | Moyen | Moyen | Reprise automatique du tour actif, réglé une seule fois (test navigateur). |
-| Ajout ultérieur d'un achat de bonus | Moyen | — | Volontairement absent : il est interdit sur plusieurs marchés et exige un mode séparé avec son propre RTP. |
+| Achat de bonus (75× la mise par tour) et autoplay : interdits ou restreints sur certains marchés ; risque de jeu excessif | Élevé | Moyen | Désactivables par drapeau de juridiction ; confirmation explicite avec prix et RTP ; limite de perte obligatoire et arrêt facile pour l'autoplay ; pas de célébration d'un bonus acheté qui rapporte moins que son prix. Revue juridique par marché obligatoire. |
 
 ## Ce qui n'est **pas** garanti
 

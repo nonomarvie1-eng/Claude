@@ -75,34 +75,53 @@ function eye(cx, cy, r, look = [0, 0], lid = 0, lidColor = SKIN.light) {
   return s;
 }
 
-// character card: the head pops out above the top edge
+// character card: shorter card, the head pops out above the top edge
+const PATTERNS = {
+  p: `<pattern id="pat_p" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="28" height="28" fill="none"/><rect x="0" y="0" width="14" height="14" fill="#fff" opacity=".08"/><path d="M0,0 L28,28 M28,0 L0,28" stroke="#ffd23f" stroke-width="1.2" opacity=".35"/></pattern>`,
+  c: `<pattern id="pat_c" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M0,32 H64 M32,0 V64" stroke="#fff" stroke-width="3" opacity=".22"/></pattern>`,
+  u: `<pattern id="pat_u" width="30" height="30" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="24" height="24" rx="4" fill="none" stroke="#fff" stroke-width="2" opacity=".18"/></pattern>`,
+  k: `<pattern id="pat_k" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M0,8 L8,0 L16,8 L8,16Z" fill="none" stroke="#fff" stroke-width="1.6" opacity=".25"/></pattern>`,
+  d: `<pattern id="pat_d" width="48" height="48" patternUnits="userSpaceOnUse"><g fill="#fff" opacity=".2"><ellipse cx="14" cy="18" rx="6" ry="5"/><circle cx="7" cy="9" r="2.6"/><circle cx="13" cy="6" r="2.6"/><circle cx="20" cy="8" r="2.6"/><ellipse cx="38" cy="40" rx="6" ry="5"/><circle cx="31" cy="31" r="2.6"/><circle cx="37" cy="28" r="2.6"/><circle cx="44" cy="30" r="2.6"/></g></pattern>`,
+};
+const CARD_Y = 54, CARD_H = 188;
 function card(id, c1, c2, body) {
   return `
-  <radialGradient id="bg${id}" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>
-  <clipPath id="cc${id}"><rect x="16" y="34" width="224" height="206" rx="30"/></clipPath>
-  <clipPath id="ch${id}"><rect x="16" y="-80" width="224" height="320" rx="30"/></clipPath>
-  <clipPath id="bot${id}"><rect x="0" y="200" width="256" height="60"/></clipPath>
+  <radialGradient id="bg${id}" cx=".5" cy=".35" r=".8"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>
+  ${PATTERNS[id] || ''}
+  <clipPath id="cc${id}"><rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28"/></clipPath>
+  <clipPath id="ch${id}"><rect x="6" y="-80" width="244" height="${CARD_Y + CARD_H + 80}" rx="28"/></clipPath>
+  <clipPath id="bot${id}"><rect x="0" y="${CARD_Y + 40}" width="256" height="200"/></clipPath>
   <g filter="url(#comic)">
-    <rect x="16" y="34" width="224" height="206" rx="30" fill="url(#bg${id})"/>
-    <g clip-path="url(#cc${id})">${rays(128, 140, 220, 16, '#fff', .1)}<rect x="16" y="34" width="224" height="206" fill="url(#dotsL)"/></g>
-    <rect x="16" y="34" width="224" height="206" rx="30" fill="none" ${ink(LW + 1)}/>
+    <rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28" fill="url(#bg${id})"/>
+    <g clip-path="url(#cc${id})">${rays(128, 150, 230, 16, '#fff', .1)}<rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" fill="url(#pat_${id})"/>
+      <rect x="14" y="${CARD_Y + CARD_H - 44}" width="228" height="44" fill="#000" opacity=".12"/></g>
+    <rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28" fill="none" ${ink(LW + 1)}/>
   </g>
   <g clip-path="url(#ch${id})">${body}</g>
-  <rect x="16" y="34" width="224" height="206" rx="30" fill="none" stroke="${INK}" stroke-width="${LW + 1}" clip-path="url(#bot${id})"/>`;
+  <rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28" fill="none" stroke="${INK}" stroke-width="${LW + 1}" clip-path="url(#bot${id})"/>
+  <path d="M30,${CARD_Y + 8} Q128,${CARD_Y - 6} 226,${CARD_Y + 8}" fill="none" stroke="#fff" stroke-width="3" opacity=".35" clip-path="url(#bot${id})"/>`;
 }
+
+// rim light along the upper-left edge of an ellipse
+const rim = (cx, cy, rx, ry) => {
+  const a0 = Math.PI * 1.08, a1 = Math.PI * 1.45;
+  const p0 = [f(cx + rx * .9 * Math.cos(a0)), f(cy + ry * .9 * Math.sin(a0))], p1 = [f(cx + rx * .9 * Math.cos(a1)), f(cy + ry * .9 * Math.sin(a1))];
+  return `<path d="M${p0} A${f(rx * .9)},${f(ry * .9)} 0 0,1 ${p1}" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55"/>`;
+};
+const torsoShade = `<path d="M152,192 C192,198 222,218 224,262 L156,262Z" fill="#000" opacity=".18"/>`;
 
 const torso = (fill) => `<path d="M30,262 C32,214 62,196 100,190 L156,190 C194,196 224,214 226,262Z" fill="${fill}" ${ink()}/>`;
 
 function president() {
   const body = `
-    ${torso('#26346a')}
+    ${torso('#26346a')}${torsoShade}
     <path d="M100,190 L128,234 L156,190Z" fill="#fff" ${ink(4)}/>
     <path d="M110,204 L128,212 L146,204 L146,224 L128,216 L110,224Z" fill="#d93b3b" ${ink(4)}/>
     <path d="M172,212 h20 v14 q-10,10 -20,0Z" fill="url(#gold)" ${ink(3)}/>
     <rect x="110" y="166" width="36" height="30" fill="${SKIN.light}" ${ink(4)}/>
     <ellipse cx="62" cy="116" rx="13" ry="17" fill="${SKIN.light}" ${ink(5)}/>
     <ellipse cx="194" cy="116" rx="13" ry="17" fill="${SKIN.light}" ${ink(5)}/>
-    <ellipse cx="128" cy="104" rx="64" ry="70" fill="${SKIN.light}" ${ink()}/>
+    <ellipse cx="128" cy="104" rx="64" ry="70" fill="${SKIN.light}" ${ink()}/>${rim(128, 104, 64, 70)}
     <path d="M78,150 Q128,186 178,150 Q170,176 128,178 Q86,176 78,150Z" fill="${SKIN.shadeL}" opacity=".7"/>
     <path d="M66,98 q-14,-24 4,-38 q-2,18 16,22 q-10,10 -20,16Z" fill="#ececf2" ${ink(4)}/>
     <path d="M190,98 q14,-24 -4,-38 q2,18 -16,22 q10,10 20,16Z" fill="#ececf2" ${ink(4)}/>
@@ -138,14 +157,15 @@ function champion() {
       <ellipse cx="0" cy="0" rx="34" ry="46" fill="none" ${ink(3)}/>
     </g>
     <path d="M70,52 C40,36 18,64 30,92 C22,116 38,134 60,126 C50,100 60,76 80,64Z" fill="#2a1a12" ${ink(5)}/>
-    ${torso('#ffffff')}
+    ${torso('#ffffff')}${torsoShade}
     <path d="M100,190 L128,214 L156,190" fill="none" stroke="#2f9a4a" stroke-width="9"/>
     <path d="M100,190 L128,214 L156,190" fill="none" ${ink(3)}/>
     <path d="M40,232 h176" stroke="#2f9a4a" stroke-width="7"/>
     <rect x="110" y="164" width="36" height="32" fill="${SKIN.brown}" ${ink(4)}/>
-    <ellipse cx="128" cy="108" rx="60" ry="66" fill="${SKIN.brown}" ${ink()}/>
+    <ellipse cx="128" cy="108" rx="60" ry="66" fill="${SKIN.brown}" ${ink()}/>${rim(128, 108, 60, 66)}
     <path d="M78,150 Q128,186 178,150 Q170,174 128,176 Q86,174 78,150Z" fill="${SKIN.shadeB}" opacity=".6"/>
     <path d="M68,84 C66,40 100,28 128,30 C160,28 192,44 188,86 C176,64 150,56 128,60 C102,58 82,66 68,84Z" fill="#2a1a12" ${ink(5)}/>
+    <path d="M150,40 C176,46 190,62 188,86 C182,72 168,64 150,60Z" fill="#000" opacity=".25"/>
     <path d="M68,78 Q128,54 190,78 L190,94 Q128,70 68,94Z" fill="#d93b3b" ${ink(4)}/>
     <path d="M70,86 Q128,63 188,86" fill="none" stroke="#fff" stroke-width="3"/>
     <path d="M88,94 l26,8 M168,94 l-26,8" ${ink(7)}/>
@@ -161,12 +181,12 @@ function champion() {
 
 function umpire() {
   const body = `
-    ${torso('#1f5e33')}
+    ${torso('#1f5e33')}${torsoShade}
     <path d="M100,190 L128,228 L156,190Z" fill="#fff" ${ink(4)}/>
     <path d="M122,204 h12 l4,32 l-10,10 l-10,-10Z" fill="#26346a" ${ink(3)}/>
     <rect x="112" y="166" width="32" height="30" fill="${SKIN.mid}" ${ink(4)}/>
     <ellipse cx="72" cy="122" rx="11" ry="15" fill="${SKIN.mid}" ${ink(5)}/>
-    <ellipse cx="128" cy="112" rx="54" ry="74" fill="${SKIN.mid}" ${ink()}/>
+    <ellipse cx="128" cy="112" rx="54" ry="74" fill="${SKIN.mid}" ${ink()}/>${rim(128, 112, 54, 74)}
     <path d="M80,160 Q128,198 176,160 Q166,182 128,186 Q90,182 80,160Z" fill="${SKIN.shadeM}" opacity=".7"/>
     <path d="M72,60 C76,20 180,20 184,60Z" fill="#ffffff" ${ink(5)}/>
     <path d="M62,58 h132 l20,12 h-152Z" fill="#26346a" ${ink(5)}/>
@@ -189,12 +209,12 @@ function umpire() {
 
 function ballKid() {
   const body = `
-    ${torso('#2f9a4a')}
+    ${torso('#2f9a4a')}${torsoShade}
     <path d="M30,232 h196" stroke="#fff" stroke-width="8"/>
     <rect x="112" y="168" width="32" height="28" fill="${SKIN.light}" ${ink(4)}/>
     <ellipse cx="62" cy="122" rx="16" ry="20" fill="${SKIN.light}" ${ink(5)}/>
     <ellipse cx="190" cy="122" rx="16" ry="20" fill="${SKIN.light}" ${ink(5)}/>
-    <circle cx="126" cy="116" r="62" fill="${SKIN.light}" ${ink()}/>
+    <circle cx="126" cy="116" r="62" fill="${SKIN.light}" ${ink()}/>${rim(126, 116, 62, 62)}
     <path d="M70,140 Q126,190 182,140 Q172,172 126,176 Q80,172 70,140Z" fill="${SKIN.shadeL}" opacity=".6"/>
     <path d="M68,92 C66,46 104,34 128,36 C160,34 190,52 186,92 C170,74 150,70 128,70 C106,70 84,76 68,92Z" fill="#2f9a4a" ${ink(5)}/>
     <path d="M60,86 C44,86 30,94 28,104 C46,102 60,100 72,96Z" fill="#2f9a4a" ${ink(5)}/>
@@ -217,7 +237,7 @@ function bulldog() {
     <path d="M34,262 C36,216 70,200 128,200 C186,200 220,216 222,262Z" fill="${fur}" ${ink()}/>
     <path d="M60,214 Q128,236 196,214 L200,232 Q128,254 56,232Z" fill="#d93b3b" ${ink(5)}/>
     <circle cx="128" cy="242" r="11" fill="url(#gold)" ${ink(4)}/>
-    <ellipse cx="128" cy="124" rx="86" ry="74" fill="${fur}" ${ink()}/>
+    <ellipse cx="128" cy="124" rx="86" ry="74" fill="${fur}" ${ink()}/>${rim(128, 124, 86, 74)}
     <path d="M70,66 L28,72 Q34,100 58,104 Q56,84 76,76Z" fill="#7a4b2a" ${ink(5)}/>
     <path d="M186,66 L228,72 Q222,100 198,104 Q200,84 180,76Z" fill="#7a4b2a" ${ink(5)}/>
     <path d="M48,150 Q40,184 70,196 M208,150 Q216,184 186,196" fill="none" ${ink(5)}/>
@@ -286,14 +306,16 @@ function scatter() {
 
 function plate(label, color, tilt, size) {
   return svg(256, 256, `
-    <g transform="rotate(${tilt} 128 132)">
-      <path d="M128,22 L84,64 M128,22 L172,64" stroke="${INK}" stroke-width="4"/>
-      <circle cx="128" cy="22" r="7" fill="#9a9a9a" ${ink(3)}/>
-      <g filter="url(#comic)"><rect x="44" y="58" width="168" height="168" rx="18" fill="#fff3d6" ${ink()}/></g>
-      <rect x="44" y="58" width="168" height="168" rx="18" fill="url(#grain)"/>
-      <rect x="56" y="70" width="144" height="144" rx="12" fill="none" stroke="${color}" stroke-width="5" opacity=".55"/>
-      <text x="132" y="${f(142 + size * .38)}" text-anchor="middle" class="lg" font-size="${size}" fill="${INK}" opacity=".3">${label}</text>
-      <text x="128" y="${f(139 + size * .36)}" text-anchor="middle" class="lg" font-size="${size}" fill="${color}" stroke="${INK}" stroke-width="7" stroke-linejoin="round" paint-order="stroke">${label}</text>
+    <g transform="rotate(${tilt} 128 136)">
+      <path d="M128,12 L74,46 M128,12 L182,46" stroke="${INK}" stroke-width="4"/>
+      <circle cx="128" cy="12" r="7" fill="#9a9a9a" ${ink(3)}/>
+      <g filter="url(#comic)"><rect x="30" y="40" width="196" height="196" rx="22" fill="#fff3d6" ${ink()}/></g>
+      <rect x="30" y="40" width="196" height="196" rx="22" fill="url(#grain)"/>
+      <path d="M30,62 a22,22 0 0 1 22,-22 h152 a22,22 0 0 1 22,22 v10 h-196Z" fill="${color}" opacity=".25"/>
+      <rect x="44" y="54" width="168" height="168" rx="14" fill="none" stroke="${color}" stroke-width="5" opacity=".6"/>
+      <text x="133" y="${f(142 + size * .4)}" text-anchor="middle" class="lg" font-size="${size}" fill="${INK}" opacity=".3">${label}</text>
+      <text x="128" y="${f(138 + size * .38)}" text-anchor="middle" class="lg" font-size="${size}" fill="${color}" stroke="${INK}" stroke-width="8" stroke-linejoin="round" paint-order="stroke">${label}</text>
+      <path d="M52,70 q30,-8 60,0" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8" fill="none"/>
     </g>`);
 }
 
@@ -301,13 +323,18 @@ function cloud(x, y, s) {
   return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0,40 C-10,10 30,-6 50,12 C60,-14 110,-10 112,20 C140,14 150,44 128,52 L4,54 C-12,54 -12,42 0,40Z" fill="#fff" ${ink(5)}/></g>`;
 }
 
-function background(w, h) {
-  const horizon = h * (w > h ? 0.5 : 0.42);
+// background split in animatable layers: sky (static), crowd (bobs, jumps on
+// big wins), fore (rail + lawn + court, static), flags (sway).  Layers are
+// cropped to their band; offsets are written to layers.json for the scene.
+const LAYERS = {};
+function background(w, h, key) {
+  const horizon = Math.round(h * (w > h ? 0.5 : 0.42));
   const cols = ['#d93b3b', '#ffd23f', '#2f9a4a', '#2f6fd0', '#fff'];
   const nf = Math.ceil(w / 60);
   const sag = (i) => Math.sin((i / nf) * Math.PI) * 40;
   let flags = '';
   for (let i = 0; i < nf; i++) flags += `<path d="M${i * 60},${f(30 + sag(i))} L${(i + 1) * 60},${f(30 + sag(i + 1))} L${i * 60 + 30},${f(80 + sag(i))}Z" fill="${cols[i % 5]}" ${ink(3)}/>`;
+  flags += `<path d="M0,30 ${Array.from({ length: nf }, (_, i) => `L${(i + 1) * 60},${f(30 + sag(i + 1))}`).join(' ')}" fill="none" ${ink(3)}/>`;
   let crowd = '';
   const rnd = mulberry(5);
   for (let row = 0; row < 4; row++) {
@@ -315,7 +342,8 @@ function background(w, h) {
       const x = i * 34 + (row % 2) * 17 + rnd() * 6;
       const y = horizon - 34 - row * 26;
       const c = ['#f4c7a1', '#c98557', '#8d5a3b', '#f6d7b0'][Math.floor(rnd() * 4)];
-      crowd += `<rect x="${f(x - 12)}" y="${f(y + 6)}" width="24" height="26" rx="8" fill="${cols[Math.floor(rnd() * 5)]}" stroke="${INK}" stroke-width="2.5"/><circle cx="${f(x)}" cy="${f(y)}" r="10" fill="${c}" stroke="${INK}" stroke-width="2.5"/>`;
+      const arms = rnd() < 0.18 ? `<path d="M${f(x - 12)},${f(y + 12)} l-8,-22 M${f(x + 12)},${f(y + 12)} l8,-22" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>` : '';
+      crowd += `${arms}<rect x="${f(x - 12)}" y="${f(y + 6)}" width="24" height="34" rx="8" fill="${cols[Math.floor(rnd() * 5)]}" stroke="${INK}" stroke-width="2.5"/><circle cx="${f(x)}" cy="${f(y)}" r="10" fill="${c}" stroke="${INK}" stroke-width="2.5"/>`;
     }
   }
   const cx = w / 2, top = horizon + 30, bot = h + 40;
@@ -327,20 +355,26 @@ function background(w, h) {
   for (const v of [0, 0.45]) court += L(at(-1, v), at(1, v));
   court += L(at(0, 0.45), at(0, 1));
   const hills = Array.from({ length: 24 }, (_, i) => `Q${f(((i + .5) * w) / 24)},${f(horizon - 230 - (i % 3) * 22)} ${f(((i + 1) * w) / 24)},${f(horizon - 170)}`).join(' ');
-  return svg(w, h, `
+  const sky = svg(w, h, `
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f9fe0"/><stop offset=".7" stop-color="#9fdcf6"/><stop offset="1" stop-color="#ffe9b0"/></linearGradient>
     <rect width="${w}" height="${h}" fill="url(#sky)"/>
     ${rays(w / 2, horizon, Math.max(w, h), 24, '#fff', .08)}
     ${cloud(w * .06, h * .1, 1.3)}${cloud(w * .74, h * .06, 1.0)}${cloud(w * .46, h * .17, .8)}
     <path d="M0,${f(horizon - 170)} ${hills} V${horizon} H0Z" fill="#3e8f4e" ${ink(5)}/>
-    <rect x="-10" y="${horizon - 140}" width="${w + 20}" height="140" fill="#2b6b45" ${ink(5)}/>
-    ${crowd}
+    <rect x="-10" y="${horizon - 140}" width="${w + 20}" height="160" fill="#2b6b45" ${ink(5)}/>
+    <rect x="0" y="${horizon}" width="${w}" height="${h - horizon}" fill="#3e9b4f"/>
+    <rect width="${w}" height="${h}" fill="url(#dots)" opacity=".35"/>`);
+  const cy0 = horizon - 150, ch = 160;
+  const crowdSvg = svg(w, ch, `<g transform="translate(0 ${-cy0})">${crowd}</g>`);
+  const fy0 = horizon - 24;
+  const fore = svg(w, h - fy0, `<g transform="translate(0 ${-fy0})">
     <rect x="-10" y="${horizon - 20}" width="${w + 20}" height="28" fill="#1f5e33" ${ink(5)}/>
     <rect x="0" y="${horizon + 8}" width="${w}" height="${h}" fill="#3e9b4f"/>
     ${court}
-    <rect width="${w}" height="${h}" fill="url(#dots)" opacity=".45"/>
-    ${flags}
-    <path d="M0,30 ${Array.from({ length: nf }, (_, i) => `L${(i + 1) * 60},${f(30 + sag(i + 1))}`).join(' ')}" fill="none" ${ink(3)}/>`);
+    <rect x="0" y="${horizon + 8}" width="${w}" height="${h}" fill="url(#dots)" opacity=".4"/></g>`);
+  const flagsSvg = svg(w, 130, flags);
+  LAYERS[key] = { width: w, height: h, crowdY: cy0, foreY: fy0, flagsY: 0 };
+  return { sky, crowd: crowdSvg, fore, flags: flagsSvg };
 }
 
 export const CELL = 170;
@@ -434,6 +468,11 @@ function mulberry(a) {
   };
 }
 
+function layerAssets(key, w, h) {
+  const b = background(w, h, key);
+  return { [`bg_${key}`]: b.sky, [`crowd_${key}`]: b.crowd, [`fore_${key}`]: b.fore, [`flags_${key}`]: b.flags };
+}
+
 const assets = {
   sym_W: wild(),
   sym_S: scatter(),
@@ -442,13 +481,13 @@ const assets = {
   sym_H3: umpire(),
   sym_H4: ballKid(),
   sym_H5: bulldog(),
-  sym_L1: plate('AD', '#d93b3b', -5, 92),
-  sym_L2: plate('40', '#2f9a4a', 4, 108),
-  sym_L3: plate('30', '#2f6fd0', -3, 108),
-  sym_L4: plate('15', '#f08a12', 5, 108),
-  sym_L5: plate('0', '#9b2fb0', -4, 124),
-  bg_landscape: background(1920, 1080),
-  bg_portrait: background(1080, 1920),
+  sym_L1: plate('AD', '#d93b3b', -5, 112),
+  sym_L2: plate('40', '#2f9a4a', 4, 132),
+  sym_L3: plate('30', '#2f6fd0', -3, 132),
+  sym_L4: plate('15', '#f08a12', 5, 132),
+  sym_L5: plate('0', '#9b2fb0', -4, 150),
+  ...layerAssets('landscape', 1920, 1080),
+  ...layerAssets('portrait', 1080, 1920),
   frame: scoreboard(),
   logo: logo(),
   dial: rallyDial(),
@@ -464,4 +503,5 @@ const assets = {
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 for (const [name, content] of Object.entries(assets)) fs.writeFileSync(path.join(OUT, name + '.svg'), content);
+fs.writeFileSync(path.join(HERE, '..', 'src', 'assets', 'layers.json'), JSON.stringify(LAYERS, null, 1));
 console.log(`wrote ${Object.keys(assets).length} SVG files to ${OUT}`);

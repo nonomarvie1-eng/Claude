@@ -29,15 +29,23 @@ Les symboles bas reprennent toute la progression du score au tennis (0, 15, 30, 
 - **Tie-Break (tours gratuits)** : 3, 4, 5 ou 6 Trophées donnent 9, 12, 15 ou 20 tours.
 - **Mécanique signature « Rally »** : pendant le Tie-Break, chaque Smash qui tombe *relance l'échange*. Le multiplicateur de tous les gains en façons monte, avant le calcul du tour : ×1 → ×2 → ×3 → ×4 → ×5 → ×6 → ×8 → ×10 → ×12 → ×15 → ×20. Il ne redescend jamais pendant le bonus et s'affiche sur le cadran RALLY.
 - Relance du bonus : 3 Trophées ou plus ajoutent 5 tours, avec au plus 50 tours restants.
+- **Achat du Tie-Break** (badge « ACHAT BONUS ») : **75× la mise** pour lancer directement le bonus avec 10 tours gratuits. Le tour acheté montre 3 Trophées, puis le Tie-Break se déroule normalement. Le RTP exact de ce mode est de 96,482 %. Une confirmation affiche le prix et le RTP. Le badge peut être désactivé par juridiction.
+- **Tours automatiques** : 10, 25, 50 ou 100 tours. La **limite de perte est obligatoire**. Arrêts optionnels sur un gros gain unitaire et au déclenchement du bonus (activé par défaut). Le bouton Stop arrête la série après le tour en cours, et la barre d'espace arrête aussi. Désactivable par juridiction.
 - Gain maximal : 5 000× la mise. Ce gain est **réellement présent** dans les fichiers Stake.
 - RTP : **96,487 %** (calcul exact). Volatilité élevée : écart-type de 7,8× la mise. Bonus en moyenne une fois tous les 174 tours.
+
+## Finitions visuelles (v2.1)
+
+- Les personnages **débordent de leur carte** (la tête dépasse le cadre). Ils ont une deuxième couche d'ombre, un liseré de lumière et un motif de fond propre à chacun : losanges VIP pour le Président, lignes de court pour la Championne, damier de tableau pour l'Arbitre, filet pour le Ramasseur, empreintes de pattes pour le Bulldog.
+- Les plaques de score sont agrandies et remplissent mieux la case sur mobile.
+- Le **décor est animé** : la tribune ondule doucement et **saute de joie** sur les gros gains et au Tie-Break, et les fanions oscillent. Les rouleaux s'écrasent légèrement à l'atterrissage et les symboles gagnants se dandinent.
 
 ## Présentation (le résultat est toujours fixé avant l'animation)
 
 - Les rouleaux défilent sur leurs vraies bandes et s'arrêtent sur les positions tirées par le serveur.
 - Les gains sont mis en valeur symbole par symbole (cadres jaunes, nombre de façons, montant). Les gains inférieurs ou égaux à la mise ne sont pas célébrés.
 - Tie-Break : écran « TIE-BREAK ! ». À chaque Smash, la balle vole vers le cadran RALLY et l'aiguille avance, puis vient l'écran récapitulatif.
-- Gros gains (≥ 10× la mise) : célébration avec pluie de balles, qu'un toucher écourte sans changer le montant.
+- Gros gains (≥ 10× la mise **débitée**, soit 10 × 75 × la mise pour un bonus acheté) : célébration avec pluie de balles et tribune en délire, qu'un toucher écourte sans changer le montant.
 
 ## Production 100 % par code
 

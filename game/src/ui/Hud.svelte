@@ -15,7 +15,7 @@
     game.bet = game.betLevels[i];
     audio.play('button', { volume: 0.5 });
   }
-  function open(m: 'paytable' | 'settings' | 'history') {
+  function open(m: 'paytable' | 'settings' | 'history' | 'buy' | 'auto') {
     if (game.phase === 'spinning' || game.phase === 'replay') return;
     audio.play('button', { volume: 0.5 });
     game.modal = m;
@@ -55,6 +55,12 @@
   </nav>
 </div>
 
+{#if !game.jurisdiction.disabledBuyBonus && !game.inBonus}
+  <button class="buybadge" onclick={() => open('buy')} disabled={busy || !!game.autoplay} data-testid="btn-buy">
+    <span>{t.buyShort}</span>
+  </button>
+{/if}
+
 <div class="hud" class:bonus={game.inBonus}>
   <div class="cell balance">
     <span class="label">{game.isDemo ? t.credits : t.balance}</span>
@@ -78,6 +84,11 @@
         <button class="round" onclick={() => changeBet(1)} disabled={busy || idx >= game.betLevels.length - 1} aria-label="+" data-testid="bet-plus">+</button>
       </div>
     {/if}
+    {#if game.autoplay}
+      <button class="spin stop" onclick={() => ctrl?.stopAutoplay()} aria-label={t.autoStop} data-testid="auto-stop">
+        <span class="stopbox">■</span><span class="left">{game.autoplay.remaining}</span>
+      </button>
+    {:else}
     <button class="spin" class:busy onclick={() => ctrl?.spin()} disabled={busy} aria-label={t.spinAria} data-testid="spin">
       <svg viewBox="0 0 100 100" aria-hidden="true">
         <defs>
@@ -91,6 +102,12 @@
         <path d="M71,28v14H57" fill="none" stroke="#1b1410" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </button>
+    {/if}
+    {#if !game.jurisdiction.disabledAutoplay && !game.inBonus}
+      <button class="round auto" onclick={() => open('auto')} disabled={busy || !!game.autoplay} aria-label={t.autoAria} title={t.autoAria} data-testid="btn-auto">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path d="M5 12a7 7 0 0 1 12-4.9M19 12a7 7 0 0 1-12 4.9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M17 3v4.5h-4.5M7 21v-4.5h4.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="15" text-anchor="middle" font-size="7" font-weight="900" fill="currentColor">A</text></svg>
+      </button>
+    {/if}
   </div>
 
   <div class="cell win">
@@ -119,7 +136,7 @@
   .label { font-family: var(--font-deco); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); text-shadow: 0 2px 0 var(--ink-line); }
   .value { font-family: var(--font-title); font-size: clamp(18px, 2.4vw, 28px); color: #fff; white-space: nowrap; -webkit-text-stroke: 1.5px var(--ink-line); text-shadow: 0 3px 0 var(--ink-line); letter-spacing: .03em; }
   .value.hot { color: var(--gold); }
-  .center { display: flex; align-items: center; gap: 18px; }
+  .center { display: flex; align-items: center; gap: 14px; }
   .bet { display: flex; align-items: center; gap: 10px; }
   .betval { display: flex; flex-direction: column; align-items: center; min-width: 92px; }
   .round { width: 46px; height: 46px; border-radius: 50%; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #ffd23f, #f08a12); color: var(--ink-line); font-family: var(--font-title); font-size: 28px; line-height: 1; }
@@ -133,6 +150,19 @@
   .spin:active:not(:disabled) { transform: scale(.96); }
   .spin.busy .teeth { animation: turn 1.2s linear infinite; transform-origin: 50px 50px; }
   .spin:disabled { cursor: default; filter: grayscale(.4) brightness(.8); }
+  .spin.stop { display: grid; place-items: center; background: radial-gradient(circle at 40% 35%, #ff8a7a, #d93b3b); border: 5px solid var(--ink-line); color: #fff; font-family: var(--font-title); position: relative; }
+  .stopbox { font-size: 30px; line-height: 1; }
+  .left { position: absolute; bottom: 10px; font-size: 18px; -webkit-text-stroke: 1px var(--ink-line); }
+  .round.auto { display: grid; place-items: center; background: #fff3d6; }
+  .buybadge {
+    position: absolute; z-index: 21; left: max(14px, env(safe-area-inset-left)); bottom: calc(118px + var(--safe-b));
+    width: 92px; height: 92px; border-radius: 50%; border: 4px solid var(--ink-line); box-shadow: 0 5px 0 var(--ink-line);
+    background: radial-gradient(circle at 40% 35%, #ffe680, #ffb21e 60%, #f08a12); color: var(--ink-line);
+    font-family: var(--font-title); font-size: 17px; line-height: 1.05; padding: 8px; transform: rotate(-12deg);
+  }
+  .buybadge span { display: block; }
+  .buybadge:disabled { opacity: .45; }
+  @media (max-aspect-ratio: 1/1) { .buybadge { bottom: calc(200px + var(--safe-b)); width: 80px; height: 80px; font-size: 15px; } }
   @keyframes turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spin.busy .teeth { animation: none; } }
 

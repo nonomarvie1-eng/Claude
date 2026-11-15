@@ -239,3 +239,23 @@ def test_small_export_is_valid(tmp_path, exact):
     assert len(rows) == len(books)
     for row, b in zip(rows, books):
         assert int(row[0]) == b["id"] and int(row[2]) == b["payoutMultiplier"] and int(row[1]) > 0
+
+
+# ---------------------------------------------------------------- bonus buy
+
+def test_buy_mode_round(monkeypatch):
+    rng = np.random.default_rng(21)
+    st = _base_with_scatters(C.BUY_SCATTERS)
+    r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=st, bought=True)
+    trig = [e for e in r.events if e["type"] == "freeSpinTrigger"][0]
+    assert trig["totalFs"] == C.BUY_SPINS and trig["bought"] is True
+    assert r.fs_spins >= C.BUY_SPINS or r.capped
+
+
+def test_buy_rtp_exact_and_simulated(exact):
+    from rally_math.simulate import run_buy
+
+    assert 0.960 <= exact["buy"]["rtp"] <= 0.967
+    rep = run_buy(400_000, seed=5)
+    z = (rep["rtp_observed"] - exact["buy"]["rtp"]) / rep["rtp_std_error"]
+    assert abs(z) < 4, z

@@ -4,7 +4,7 @@
 
 | Élément | Emplacement | État |
 |---|---|---|
-| `index.json`, table de correspondance, books `.jsonl.zst` (mode `base`, coût 1×) | `stake/publish_files/` | ✅ Format validé par `engineio/math-sdk` (commit `141b4e8`) |
+| `index.json`, tables de correspondance et books `.jsonl.zst` pour **2 modes** : `base` (coût 1×) et `bonus` (achat du Tie-Break, coût 75×) | `stake/publish_files/` | ✅ Format validé par `engineio/math-sdk` (commit `141b4e8`), 0 problème de soumission, contrôles de risque réussis sur les 2 modes |
 | RTP de la table : 96,4871 %, identique au modèle exact ; gain maximal 5 000× présent dans la table | `stake/publish_files/export_summary.json` | ✅ |
 | Statistiques de l'outil officiel (risques 6/6, 0 problème de soumission) | `stake/official_sdk_verification.json` | ✅ |
 | Fichiers frontend statiques, chemins relatifs (`base: './'`) | `game/dist/` après `npm run build` | ✅ |
@@ -12,7 +12,8 @@
 | Désactivation par défaut du client réel (variable de build `VITE_ENABLE_RGS=1` requise) | `game/src/rgs/index.ts` | ✅ |
 | Reprise d'un tour actif renvoyé par `authenticate` | `controller.ts` | ✅ |
 | Rejeu fidèle d'un tour à partir de son book | Historique → « Rejouer » | ✅ |
-| Drapeaux de juridiction gérés : `socialCasino`, `disabledTurbo`, `disabledFullscreen`, `disabledSpacebar`, `displayRTP`, `minimumRoundDuration` | `Hud.svelte`, `controller.ts` | ✅ (noms à confirmer) |
+| Drapeaux de juridiction gérés : `socialCasino`, `disabledTurbo`, `disabledFullscreen`, `disabledSpacebar`, `displayRTP`, `minimumRoundDuration`, `disabledAutoplay`, `disabledBuyBonus` | `Hud.svelte`, `controller.ts` | ✅ (noms à confirmer, surtout les deux derniers, qui sont des hypothèses) |
+| Achat du bonus via `/wallet/play` avec `mode: "BONUS"` et montant = mise de base (débit = mise × coût du mode, selon la doc RGS) | `controller.ts`, `stakeRgs.ts` | ✅ en démo ; nom exact du mode à aligner sur `index.json` (`bonus`) lors des tests du bac à sable |
 | Événements de book documentés | ci-dessous | ✅ |
 
 ## Événements d'un book
@@ -37,7 +38,7 @@ Tous les montants sont en unités `payoutMultiplier` (multiple de la mise × 100
 
 - Mode « casino social » (`socialCasino`) : vocabulaire « Jouer » au lieu de « Mise ». **À compléter** selon la terminologie Stake.us : éviter « bet », « gamble » et « cash ».
 - Turbo, plein écran et barre d'espace désactivables ; durée minimale d'un tour configurable.
-- Pas d'autoplay, pas d'achat de bonus, pas d'arrêt rapide.
+- L'autoplay (avec limite de perte obligatoire) et l'achat de bonus existent, et chacun **doit pouvoir être coupé par marché**. Plusieurs régulateurs les interdisent ou les restreignent ; le Royaume-Uni interdit par exemple l'autoplay. Pas d'arrêt rapide.
 
 ## Éléments restant nécessaires avant commercialisation
 

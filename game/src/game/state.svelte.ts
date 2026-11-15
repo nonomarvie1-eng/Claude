@@ -6,6 +6,7 @@ export interface HistoryEntry {
   id: string | number;
   time: number;
   bet: number;
+  cost?: number;
   win: number;
   payoutMultiplier: number;
   bonus: boolean;
@@ -57,7 +58,8 @@ class GameState {
   fsCurrent = $state(0);
   fsTotal = $state(0);
   multiplier = $state(1);
-  modal = $state<null | 'paytable' | 'settings' | 'history'>(null);
+  modal = $state<null | 'paytable' | 'settings' | 'history' | 'buy' | 'auto'>(null);
+  autoplay = $state<{ remaining: number } | null>(null);
   notice = $state<string | null>(null);
   error = $state<{ message: string; retryable: boolean; fatal: boolean } | null>(null);
   banner = $state<string | null>(null);

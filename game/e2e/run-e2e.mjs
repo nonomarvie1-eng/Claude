@@ -141,6 +141,48 @@ try {
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 240000 });
   check('replay does not change the balance', (await text(page, 'balance')) === balBefore);
 
+  // bonus buy: debit = bet x 75, bought Tie-Break shown, payout credited
+  {
+    const before = await page.evaluate(() => JSON.parse(localStorage.getItem('golden-rally-demo-v1')).balance);
+    await page.click('[data-testid=btn-buy]');
+    await page.waitForSelector('[data-testid=buy-confirm]');
+    await page.screenshot({ path: path.join(SHOTS, 'feature-buy-dialog.png') });
+    await page.click('[data-testid=buy-confirm]');
+    await page.waitForSelector('[data-testid=fs-counter]', { timeout: 30000 });
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: path.join(SHOTS, 'feature-buy-bonus.png') });
+    await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 300000 });
+    const rb = await page.evaluate(() => window.__rally.lastRound);
+    const trig = rb.state.find((e) => e.type === 'freeSpinTrigger');
+    check('bonus buy: round is a bought Tie-Break of 10 spins', trig && trig.bought === true && trig.totalFs === 10);
+    check('bonus buy: cost multiplier 75', rb.cost === 75);
+    check('bonus buy: balance = before - 75 x bet + payout', (await text(page, 'balance')) === norm(fmt(before - 75 * rb.amount + rb.payout)), await text(page, 'balance'));
+    check('bonus buy: displayed win equals payout', (await text(page, 'win')) === norm(fmt(rb.payout)));
+  }
+
+  // autoplay: 10 spins with loss limit, then a stopped run
+  {
+    const h0 = await page.evaluate(() => JSON.parse(localStorage.getItem('golden-rally-history-v1') || '[]').length);
+    await page.click('[data-testid=btn-auto]');
+    await page.waitForSelector('[data-testid=auto-start]');
+    await page.screenshot({ path: path.join(SHOTS, 'feature-autoplay-dialog.png') });
+    await page.click('[data-testid=auto-count-10]');
+    await page.click('[data-testid=auto-start]');
+    await page.waitForSelector('[data-testid=auto-stop]', { timeout: 10000 });
+    await page.screenshot({ path: path.join(SHOTS, 'feature-autoplay-running.png') });
+    await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 600000 });
+    const h1 = await page.evaluate(() => JSON.parse(localStorage.getItem('golden-rally-history-v1') || '[]').length);
+    check('autoplay: plays between 1 and 10 rounds', h1 - h0 >= 1 && h1 - h0 <= 10, `${h1 - h0} rounds`);
+    await page.click('[data-testid=btn-auto]');
+    await page.click('[data-testid=auto-count-100]');
+    await page.click('[data-testid=auto-start]');
+    await page.waitForSelector('[data-testid=auto-stop]', { timeout: 10000 });
+    await page.click('[data-testid=auto-stop]');
+    await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 300000 });
+    const h2 = await page.evaluate(() => JSON.parse(localStorage.getItem('golden-rally-history-v1') || '[]').length);
+    check('autoplay: stop button ends autoplay promptly', h2 - h1 <= 2, `${h2 - h1} rounds after stop`);
+  }
+
   // server error -> error dialog -> retry
   await page.evaluate(() => (window.__rallyDemo.failNext = 'play'));
   await page.click('[data-testid=spin]');

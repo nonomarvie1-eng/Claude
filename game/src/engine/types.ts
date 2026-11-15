@@ -27,7 +27,7 @@ export type BookEvent =
   | { index: number; type: 'reveal'; gameType: GameType; board: Board; stops: number[]; paddingAbove: SymbolName[]; paddingBelow: SymbolName[]; anticipation: number[] }
   | { index: number; type: 'winInfo'; gameType: GameType; multiplier: number; totalWin: number; wins: WinLine[] }
   | { index: number; type: 'setWin'; amount: number; winLevel: string }
-  | { index: number; type: 'freeSpinTrigger'; totalFs: number; positions: Position[] }
+  | { index: number; type: 'freeSpinTrigger'; totalFs: number; positions: Position[]; bought?: boolean }
   | { index: number; type: 'updateFreeSpin'; amount: number; total: number }
   | { index: number; type: 'rallyUp'; added: number; collected: number; multiplier: number; previousMultiplier: number; positions: Position[] }
   | { index: number; type: 'freeSpinRetrigger'; totalFs: number; added: number; positions: Position[] }
@@ -58,6 +58,7 @@ export interface GameConfig {
   rallyLadder: number[];
   wincapX: number;
   minKind: number;
+  buyBonus: { cost: number; spins: number; scatters: number; rtp: number | null };
   payModel: string;
   winLevels: { name: string; min: number }[];
   reelStrips: { base: SymbolName[][]; free: SymbolName[][] };

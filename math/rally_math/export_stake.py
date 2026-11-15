@@ -79,7 +79,7 @@ def conditional_base_stops(strips, k, rng, n):
     return out, float(probs.sum())
 
 
-def bonus_pilot(rng, base_stops, base_cnt, free_cnt, free_len):
+def bonus_pilot(rng, base_stops, base_cnt, free_cnt, free_len, award_override=None):
     """Vectorised play of bonus rounds whose base stops are given; records free stops."""
     n = base_stops.shape[0]
     scpay = np.zeros(C.NUM_REELS + 1, dtype=np.int64)
@@ -92,7 +92,7 @@ def bonus_pilot(rng, base_stops, base_cnt, free_cnt, free_len):
     top = len(C.RALLY_LADDER) - 1
     lw, _w, sc = ways_win_vec(base_cnt, base_stops)
     total = lw + scpay[sc]
-    remaining = award[sc]
+    remaining = award[sc] if award_override is None else np.full(n, award_override, dtype=np.int64)
     collected = np.zeros(n, dtype=np.int64)
     active = remaining > 0
     log: list[tuple[np.ndarray, np.ndarray]] = []
@@ -219,8 +219,12 @@ def export(out_dir, n_base, plan, pilot_n, seed, exact_path):
     with open(lut_path, "w", encoding="utf-8", newline="\n") as f:
         for i, (wt, po) in enumerate(zip(weights, payouts), start=1):
             f.write(f"{i},{wt},{int(po)}\n")
+    bonus_summary = export_buy_mode(out_dir, ex, base, free, bc, fc, rng, pilot_n, BUY_PLAN)
     with open(os.path.join(out_dir, "index.json"), "w", encoding="utf-8") as f:
-        json.dump({"modes": [{"name": "base", "cost": 1.0, "events": "books_base.jsonl.zst", "weights": "lookUpTable_base_0.csv"}]}, f, indent=4)
+        json.dump({"modes": [
+            {"name": "base", "cost": 1.0, "events": "books_base.jsonl.zst", "weights": "lookUpTable_base_0.csv"},
+            {"name": "bonus", "cost": float(C.BUY_COST), "events": "books_bonus.jsonl.zst", "weights": "lookUpTable_bonus_0.csv"},
+        ]}, f, indent=4)
     W = np.array(weights, dtype=np.float64)
     P = np.array(payouts, dtype=np.float64) / 100
     rtp = float((W * P).sum() / W.sum())
@@ -229,10 +233,57 @@ def export(out_dir, n_base, plan, pilot_n, seed, exact_path):
         "lut_minus_exact": rtp - ex["rtp"], "lut_std_dev": float(math.sqrt((W * P * P).sum() / W.sum() - rtp ** 2)),
         "lut_hit_rate": float(W[P > 0].sum() / W.sum()), "lut_max_payout_x": float(P.max()),
         "weight_sum": int(sum(weights)), "strata": rep_strata, "sha256_books": _sha(books_path), "sha256_lut": _sha(lut_path),
-        "seed": seed, "math_version": C.MATH_VERSION,
+        "seed": seed, "math_version": C.MATH_VERSION, "bonus": bonus_summary,
     }
     json.dump(summary, open(os.path.join(out_dir, "export_summary.json"), "w"), indent=2)
     return summary
+
+
+def export_buy_mode(out_dir, ex, base, free, bc, fc, rng, pilot_n, plan_row):
+    """Bet mode 'bonus' (cost BUY_COST): base board with exactly BUY_SCATTERS
+    trophies (exact conditional law), Tie-Break of BUY_SPINS spins."""
+    k = C.BUY_SCATTERS
+    target = ex["buy"]["E_x"] * 10  # exact E[payout | bought round], t-units
+    books_path = os.path.join(out_dir, "books_bonus.jsonl.zst")
+    lut_path = os.path.join(out_dir, "lookUpTable_bonus_0.csv")
+    cctx = zstd.ZstdCompressor(level=19, threads=-1)
+    bs, _ = conditional_base_stops(base.strips, k, rng, pilot_n)
+    tot, log = bonus_pilot(rng, bs, bc, fc, free.lengths, award_override=C.BUY_SPINS)
+    band_of = np.digitize(tot / 10, BANDS_X) - 1
+    xs, w0, band_rep = [], [], []
+    book_id = 1
+    with open(books_path, "wb") as fbin, cctx.stream_writer(fbin) as wtr:
+        for b in range(len(BANDS_X) - 1):
+            members = np.nonzero(band_of == b)[0]
+            p_band = len(members) / pilot_n
+            want = plan_row[b]
+            if len(members) == 0 or want == 0:
+                band_rep.append({"band_x": BANDS_X[b:b + 2], "pilot_count": int(len(members)), "books": 0})
+                continue
+            pick = members if len(members) <= want else rng.choice(members, size=want, replace=False)
+            for i in pick:
+                seq = stops_of(int(i), bs, log)
+                res = play_round(list_drawer(seq[1:]), base, free, True, forced_base_stops=seq[0], bought=True)
+                assert res.total_t == int(tot[i]), "fast path and reference engine disagree (buy mode)"
+                book = make_book(book_id, res)
+                wtr.write((json.dumps(book, separators=(",", ":")) + "\n").encode())
+                book_id += 1
+                xs.append(res.total_t)
+                w0.append(p_band / len(pick))
+            band_rep.append({"band_x": BANDS_X[b:b + 2], "pilot_count": int(len(members)), "p_band": p_band, "books": int(len(pick))})
+    xs = np.array(xs)
+    w, lam, kl = _tilt(xs, np.array(w0), target)
+    weights = [max(1, int(round(v))) for v in w * WEIGHT_TOTAL]
+    with open(lut_path, "w", encoding="utf-8", newline="\n") as f:
+        for i, (wt, po) in enumerate(zip(weights, xs * 10), start=1):
+            f.write(f"{i},{wt},{int(po)}\n")
+    W = np.array(weights, dtype=np.float64)
+    P = xs.astype(np.float64) / 10
+    mean = float((W * P).sum() / W.sum())
+    return {"mode": "bonus", "cost": C.BUY_COST, "books": len(xs), "lut_mean_x": mean, "lut_rtp": mean / C.BUY_COST,
+            "exact_rtp": ex["buy"]["rtp"], "lut_minus_exact": mean / C.BUY_COST - ex["buy"]["rtp"], "kl": kl,
+            "lut_max_payout_x": float(P.max()), "lut_std_dev_x": float(math.sqrt((W * P * P).sum() / W.sum() - mean ** 2)),
+            "pilot_rounds": pilot_n, "bands": band_rep, "sha256_books": _sha(books_path), "sha256_lut": _sha(lut_path)}
 
 
 def _sha(p):
@@ -244,6 +295,7 @@ def _sha(p):
 
 
 DEFAULT_PLAN = {3: [8000, 300, 120, 40], 4: [2500, 200, 100, 40], 5: [800, 120, 60, 40], 6: [300, 80, 60, 40]}
+BUY_PLAN = [10000, 600, 200, 60]
 
 
 def main():
@@ -258,7 +310,8 @@ def main():
     ap.add_argument("--exact", default=os.path.join(root, "reports", "exact.json"))
     a = ap.parse_args()
     s = export(a.out, a.n_base, DEFAULT_PLAN, a.pilot, a.seed, a.exact)
-    print(json.dumps({k: v for k, v in s.items() if k != "strata"}, indent=2))
+    print(json.dumps({k: v for k, v in s.items() if k not in ("strata", "bonus")}, indent=2))
+    print("bonus mode:", {k: v for k, v in s["bonus"].items() if k != "bands"})
     for st in s["strata"]:
         print(st["name"], st["books"], round(st["target_mean_x"], 3), round(st["sample_mean_x"], 3), f"kl={st['kl']:.2e}", st["max_payout_x"], st["bands"])
 

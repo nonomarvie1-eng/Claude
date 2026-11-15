@@ -125,11 +125,12 @@ def bonus_chain(Pf: np.ndarray, E1f: np.ndarray) -> dict:
             b[sid[(r, n)]] = 1
     reach = np.linalg.solve(np.eye(S) - Mt, b)
     out = {}
+    buy = float(V1[sid[(C.BUY_SPINS, 0)]])
     for k, spins in C.FS_AWARD.items():
         i = sid[(spins, 0)]
         out[k] = {"spins": spins, "E": float(V1[i]), "E_spins": float(T[i]), "E_retriggers": float(RT[i]),
                   "E_final_multiplier": float(FM[i]), "P_reach_max_mult": float(reach[i])}
-    return {"by_trigger": out, "residual": float(np.abs(A @ V1 - a1).max()), "states": S}
+    return {"by_trigger": out, "buy_bonus_E": buy, "residual": float(np.abs(A @ V1 - a1).max()), "states": S}
 
 
 def full_report() -> dict:
@@ -172,6 +173,11 @@ def full_report() -> dict:
         "free_spin_E_ways_x": float(E1f.sum()) / 10,
         "free_spin_p_wild_count": [float(x) for x in p_free_w[:8]],
         "free_spin_p_retrigger": float(Pf[:, 3:].sum()),
+        "buy": {
+            "cost": C.BUY_COST, "spins": C.BUY_SPINS, "scatters": C.BUY_SCATTERS,
+            "E_x": (cond_base[str(C.BUY_SCATTERS)] + ch["buy_bonus_E"]) / 10,
+            "rtp": (cond_base[str(C.BUY_SCATTERS)] + ch["buy_bonus_E"]) / 10 / C.BUY_COST,
+        },
         "markov_states": ch["states"],
         "markov_residual": ch["residual"],
         "timing_s": time.time() - t0,
@@ -189,6 +195,7 @@ def main() -> None:
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(rep, f, indent=2)
+    print("buy:", rep["buy"])
     for k in ["rtp", "rtp_base_ways", "rtp_base_scatter", "rtp_free", "trigger_1_in", "bonus_mean_x", "free_spin_p_wild_count", "markov_residual", "timing_s"]:
         print(f"{k:>22}: {rep[k]}")
     print({k: (round(v["E_x"], 2), round(v["P_reach_max_mult"], 3), round(v["E_final_multiplier"], 2)) for k, v in rep["bonus_by_trigger"].items()})

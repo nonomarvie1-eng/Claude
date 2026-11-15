@@ -159,6 +159,32 @@ def run(n_rounds: int, seed: int, procs: int, batch: int = 200_000) -> dict:
     }
 
 
+def run_buy(n_rounds: int, seed: int) -> dict:
+    """Monte-Carlo of the bonus-buy mode (independent check of exact buy RTP)."""
+    from .export_stake import bonus_pilot, conditional_base_stops
+
+    rng = np.random.Generator(np.random.PCG64(seed))
+    base, free = C.base_reels(), C.free_reels()
+    bc, fc = count_tables(base.strips), count_tables(free.strips)
+    tot_sum = 0.0
+    tot_sq = 0.0
+    done = 0
+    mx = 0
+    while done < n_rounds:
+        m = min(500_000, n_rounds - done)
+        bs, _ = conditional_base_stops(base.strips, C.BUY_SCATTERS, rng, m)
+        tot, _log = bonus_pilot(rng, bs, bc, fc, free.lengths, award_override=C.BUY_SPINS)
+        x = tot.astype(np.float64) / 10
+        tot_sum += x.sum()
+        tot_sq += (x * x).sum()
+        mx = max(mx, float(x.max()))
+        done += m
+    mean = tot_sum / n_rounds
+    sd = (tot_sq / n_rounds - mean ** 2) ** 0.5
+    return {"rounds": n_rounds, "cost": C.BUY_COST, "mean_x": mean, "rtp_observed": mean / C.BUY_COST,
+            "rtp_std_error": sd / n_rounds ** 0.5 / C.BUY_COST, "std_dev_x": sd, "max_win_observed_x": mx}
+
+
 def main() -> None:
     import argparse
 
@@ -167,8 +193,11 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=20261115)
     ap.add_argument("--procs", type=int, default=os.cpu_count() or 4)
     ap.add_argument("--out", default=os.path.join(os.path.dirname(C.HERE), "reports", "montecarlo.json"))
+    ap.add_argument("--buy", type=int, default=2_000_000, help="bonus-buy rounds to simulate")
     a = ap.parse_args()
     rep = run(a.n, a.seed, a.procs)
+    rep["buy"] = run_buy(a.buy, a.seed + 1)
+    print("buy:", rep["buy"])
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(rep, f, indent=2)

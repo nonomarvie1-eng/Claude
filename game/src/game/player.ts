@@ -42,11 +42,13 @@ export function tierFor(amount: number, bet: number): WinTier {
 
 export interface PlayOptions {
   bet: number;
+  cost?: number; // bet-mode cost multiplier: celebrations are relative to the amount actually debited
   quick?: boolean; // resume/replay of an interrupted round: shorter presentation
 }
 
 export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: PlayOptions): Promise<{ total: number }> {
   const bet = opts.bet;
+  const debit = bet * (opts.cost ?? 1);
   let total = 0;
   let inBonus = false;
   let baseWin = 0;
@@ -66,7 +68,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
       }
       case 'winInfo': {
         const amt = winAmount(bet, e.totalWin);
-        const tier = tierFor(amt, bet);
+        const tier = tierFor(amt, debit);
         const scatter = e.wins.find((w) => w.kind === 'scatter');
         if (scatter && e.gameType === 'basegame') await view.scatterCelebrate(scatter.positions);
         await view.showWins(e.wins, e.multiplier, tier);
@@ -112,7 +114,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
       case 'finalWin': {
         total = winAmount(bet, e.amount);
         hud.setWin(total);
-        const tier = tierFor(total, bet);
+        const tier = tierFor(total, debit);
         if (!opts.quick && (tier === 'big' || tier === 'mega' || tier === 'epic')) await view.bigWin(total, tier);
         break;
       }

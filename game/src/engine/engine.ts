@@ -110,7 +110,7 @@ export interface RoundOutcome {
 }
 
 /** Plays one complete round (base spin + whole bonus) and returns its book. */
-export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[]): RoundOutcome {
+export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], bought = false): RoundOutcome {
   const events: BookEvent[] = [];
   const allStops: number[][] = [];
   const emit = (e: Record<string, unknown>) => {
@@ -138,9 +138,10 @@ export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[]):
   let collected = 0;
   let mult = 1;
   if (triggered) {
-    let remaining = FS_AWARD[nSc];
+    if (bought && nSc !== RULES.buyBonus.scatters) throw new Error('bought round must show the buy scatter count');
+    let remaining = bought ? RULES.buyBonus.spins : FS_AWARD[nSc];
     let awarded = remaining;
-    emit({ type: 'freeSpinTrigger', totalFs: remaining, positions: scPos });
+    emit({ type: 'freeSpinTrigger', totalFs: remaining, positions: scPos, ...(bought ? { bought: true } : {}) });
     while (remaining > 0) {
       remaining -= 1;
       fsSpins += 1;

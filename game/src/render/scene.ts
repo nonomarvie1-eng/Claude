@@ -8,6 +8,7 @@ import type { View, WinTier } from '../game/player';
 import { money } from '../game/format';
 import type { Strings } from '../i18n/strings';
 import { ease, Tweener } from './tween';
+import LAYERS from '../assets/layers.json';
 
 const imgs = import.meta.glob('../assets/img/*.{png,jpg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
@@ -102,7 +103,14 @@ export class RallyScene implements View {
   t!: Strings;
 
   private world = new Container();
-  private bg = new Sprite();
+  private bg = new Container();
+  private sky = new Sprite();
+  private crowd = new Sprite();
+  private fore = new Sprite();
+  private flags = new Sprite();
+  private cheerAmp = 0;
+  private layerBase = { crowdY: 0 };
+  private time = 0;
   private bonusTint = new Graphics();
   private gears: { s: Sprite; speed: number }[] = [];
   private logo = new Sprite();
@@ -146,7 +154,7 @@ export class RallyScene implements View {
     this.app.canvas.setAttribute('aria-hidden', 'true');
     this.tw = new Tweener(this.app.ticker, () => (this.prefs.turbo ? 1.8 : 1));
 
-    this.bg.texture = tex.bg_landscape;
+    this.bg.addChild(this.sky, this.crowd, this.fore, this.flags);
     this.app.stage.addChild(this.bg, this.bonusTint, this.world);
     // decorative tennis balls and racket (behind the board)
     const g1 = new Sprite(tex.deco_1);
@@ -246,10 +254,21 @@ export class RallyScene implements View {
     const DW = this.portrait ? 1080 : 1920;
     const DH = this.portrait ? 1920 : 1080;
     // background: cover
-    this.bg.texture = this.portrait ? this.tex.bg_portrait : this.tex.bg_landscape;
-    const bs = Math.max(w / this.bg.texture.width, h / this.bg.texture.height);
+    const key = this.portrait ? 'portrait' : 'landscape';
+    const L = LAYERS[key];
+    this.sky.texture = this.tex[`bg_${key}`];
+    this.crowd.texture = this.tex[`crowd_${key}`];
+    this.fore.texture = this.tex[`fore_${key}`];
+    this.flags.texture = this.tex[`flags_${key}`];
+    // textures may be rendered at a different pixel scale than the design units
+    for (const sp of [this.sky, this.crowd, this.fore, this.flags]) sp.scale.set(L.width / sp.texture.width);
+    this.crowd.y = L.crowdY;
+    this.fore.y = L.foreY;
+    this.flags.y = L.flagsY;
+    this.layerBase = { crowdY: L.crowdY };
+    const bs = Math.max(w / L.width, h / L.height);
     this.bg.scale.set(bs);
-    this.bg.position.set((w - this.bg.texture.width * bs) / 2, (h - this.bg.texture.height * bs) / 2);
+    this.bg.position.set((w - L.width * bs) / 2, (h - L.height * bs) / 2);
     this.bonusTint.clear().rect(0, 0, w, h).fill({ color: 0xff8a1e, alpha: 1 });
     this.bonusTint.blendMode = 'add';
     this.bonusTint.alpha = this.mode === 'freegame' ? 0.16 : 0;
@@ -290,6 +309,17 @@ export class RallyScene implements View {
   private update(tk: Ticker) {
     const dt = tk.deltaMS / 1000;
     const rm = this.prefs.reducedMotion;
+    this.time += dt;
+    if (!rm) {
+      // crowd: gentle idle sway, jumping when cheering
+      const jump = this.cheerAmp > 0 ? -Math.abs(Math.sin(this.time * 9)) * 22 * this.cheerAmp : 0;
+      this.crowd.y = this.layerBase.crowdY + Math.sin(this.time * 2.2) * 2.5 + jump;
+      this.cheerAmp = Math.max(0, this.cheerAmp - dt * 0.35);
+      this.flags.skew.x = Math.sin(this.time * 1.6) * 0.015;
+      this.flags.y = Math.sin(this.time * 1.3) * 3;
+    } else {
+      this.crowd.y = this.layerBase.crowdY;
+    }
     const boost = 1 + this.gearBoost * 4;
     this.gearBoost = Math.max(0, this.gearBoost - dt * 0.6);
     if (!rm) {
@@ -358,6 +388,28 @@ export class RallyScene implements View {
   private cellWorld(reel: number, row: number) {
     const sc = this.board.scale.x;
     return { x: this.board.x + (FRAME_M + reel * CELL + CELL / 2) * sc, y: this.board.y + (FRAME_M + row * CELL + CELL / 2) * sc };
+  }
+
+  /** crowd celebration (presentation only) */
+  cheer(strength = 1) {
+    this.cheerAmp = Math.min(1.5, Math.max(this.cheerAmp, strength));
+  }
+
+  private squash(reel: Reel) {
+    if (this.prefs.reducedMotion) return;
+    const base = SYM_SIZE / reel.sprites[0].texture.width;
+    void this.tw.tween(260, (u) => {
+      const k = u < 0.4 ? 1 - 0.1 * (u / 0.4) : 0.9 + 0.1 * ease.outElastic((u - 0.4) / 0.6);
+      for (const sp of reel.sprites) {
+        sp.scale.y = base * k;
+        sp.scale.x = base * (2 - k);
+      }
+    });
+  }
+
+  private wiggle(sp: Sprite, ms = 700) {
+    if (this.prefs.reducedMotion) return;
+    void this.tw.tween(ms, (u) => (sp.rotation = Math.sin(u * Math.PI * 6) * 0.09 * (1 - u)));
   }
 
   // ---------------------------------------------------------------- View API
@@ -438,6 +490,7 @@ export class RallyScene implements View {
       // landing feedback (strictly informative: the result was fixed before the spin)
       if (!quick) {
         audio.play('reel_stop', { volume: 0.55, rate: 0.96 + r * 0.02 });
+        this.squash(reel);
         const col = Array.from({ length: NROWS }, (_, row) => reel.strip[(stops[r] + row) % n]);
         if (col.includes('S')) {
           landedScatters++;
@@ -483,6 +536,7 @@ export class RallyScene implements View {
     this.winText.text = '';
     for (const r of this.reels) for (const s of r.sprites) {
       s.alpha = 1;
+      s.rotation = 0;
       s.tint = 0xffffff;
       s.width = s.height = SYM_SIZE;
     }
@@ -519,6 +573,7 @@ export class RallyScene implements View {
         glow.alpha = 0.55;
         this.glowLayer.addChild(glow);
         this.pulse(s, 1.12, 600);
+        if (tier !== 'ldw' && tier !== 'none') this.wiggle(s);
       }
     }));
     for (const w of wins) this.drawGroup(w);
@@ -621,6 +676,7 @@ export class RallyScene implements View {
   }
 
   async bonusIntro(spins: number) {
+    this.cheer(1.2);
     audio.play('bonus_trigger', { volume: 0.9 });
     const c = this.makeOverlay();
     const inner = c.children[1] as Container;
@@ -747,6 +803,7 @@ export class RallyScene implements View {
   }
 
   async bigWin(amount: number, tier: WinTier) {
+    this.cheer(tier === 'big' ? 1 : 1.5);
     const title = tier === 'epic' ? this.t.epicWin : tier === 'mega' ? this.t.megaWin : this.t.bigWin;
     audio.play('win_3', { volume: 0.9 });
     const c = this.makeOverlay();

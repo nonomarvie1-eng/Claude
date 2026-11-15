@@ -11,6 +11,8 @@
   import Paytable from './ui/Paytable.svelte';
   import Settings from './ui/Settings.svelte';
   import History from './ui/History.svelte';
+  import BuyBonus from './ui/BuyBonus.svelte';
+  import Autoplay from './ui/Autoplay.svelte';
 
   let host: HTMLDivElement;
   let ctrl: Controller | null = $state(null);
@@ -77,6 +79,7 @@
     if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA' || el.tagName === 'BUTTON')) return;
     e.preventDefault();
     if (game.phase === 'ready') void start();
+    else if (game.autoplay) ctrl?.stopAutoplay();
     else void ctrl?.spin();
   }
 </script>
@@ -107,6 +110,10 @@
     <Modal title={t.settings} onclose={() => (game.modal = null)}><Settings {ctrl} /></Modal>
   {:else if game.modal === 'history'}
     <Modal title={t.history} onclose={() => (game.modal = null)}><History {ctrl} /></Modal>
+  {:else if game.modal === 'buy'}
+    <Modal title={t.buyTitle} onclose={() => (game.modal = null)}><BuyBonus {ctrl} /></Modal>
+  {:else if game.modal === 'auto'}
+    <Modal title={t.autoTitle} onclose={() => (game.modal = null)}><Autoplay {ctrl} /></Modal>
   {/if}
 
   {#if game.error}

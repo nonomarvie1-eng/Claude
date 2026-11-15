@@ -32,6 +32,7 @@ def game_config(exact: dict | None, mc: dict | None = None) -> dict:
         "rallyLadder": C.RALLY_LADDER,
         "wincapX": C.WINCAP_X,
         "minKind": C.MIN_KIND,
+        "buyBonus": {"cost": C.BUY_COST, "spins": C.BUY_SPINS, "scatters": C.BUY_SCATTERS, "rtp": exact["buy"]["rtp"] if exact else None},
         "payModel": "ways",
         "winLevels": C.WIN_LEVELS[:-1] + [{"name": "max", "min": C.WINCAP_X}],
         "reelStrips": {
@@ -68,6 +69,13 @@ def fixtures(n: int, seed: int) -> list[dict]:
         res2 = play_round(list_drawer(res.stops), base, free, record_events=True)
         assert res2.events == res.events
         out.append({"stops": res.stops, "book": make_book(len(out) + 1, res)})
+    # bonus-buy rounds (mode "bonus")
+    from .export_stake import conditional_base_stops
+
+    bs, _ = conditional_base_stops(base.strips, C.BUY_SCATTERS, rng, 30)
+    for row in bs:
+        res = play_round(numpy_drawer(rng), base, free, record_events=True, forced_base_stops=[int(x) for x in row], bought=True)
+        out.append({"stops": res.stops, "bought": True, "book": make_book(len(out) + 1, res)})
     return out
 
 
