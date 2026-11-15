@@ -19,7 +19,7 @@
 <div class="buy">
   <img src={trophy} alt="" />
   <div>
-    <p>{fmt(t.buyText, { spins: RULES.buyBonus.spins })}</p>
+    <p>{t.buyText}</p>
     <p class="price" data-testid="buy-price">{fmt(t.buyCost, { x: cost, amount: money(price, game.currency, game.prefs.lang) })}</p>
     {#if RULES.buyBonus.rtp && game.jurisdiction.displayRTP !== false}
       <p class="small">{fmt(t.buyRtp, { rtp: (RULES.buyBonus.rtp * 100).toFixed(2) })}</p>

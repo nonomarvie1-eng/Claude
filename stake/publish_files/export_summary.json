@@ -218,55 +218,110 @@
   "math_version": "2.0.0",
   "bonus": {
     "mode": "bonus",
-    "cost": 75,
-    "books": 10746,
-    "lut_mean_x": 72.36148328949518,
-    "lut_rtp": 0.9648197771932691,
-    "exact_rtp": 0.9648197771932988,
-    "lut_minus_exact": -2.9753977059954195e-14,
-    "kl": 2.2662275320040665e-08,
+    "cost": 100,
+    "books": 13313,
+    "lut_mean_x": 96.45688443415628,
+    "lut_rtp": 0.9645688443415628,
+    "exact_rtp": 0.9645688443414225,
+    "lut_minus_exact": 1.4022116801015727e-13,
     "lut_max_payout_x": 5000.0,
-    "lut_std_dev_x": 88.19594203329216,
-    "pilot_rounds": 3000000,
-    "bands": [
+    "lut_std_dev_x": 110.25721005323896,
+    "pilot_rounds_per_stratum": 3000000,
+    "strata": [
       {
-        "band_x": [
-          0,
-          500
-        ],
-        "pilot_count": 2981386,
-        "p_band": 0.9937953333333334,
-        "books": 10000
+        "name": "buy_3_trophies",
+        "probability": 0.1875,
+        "books": 6604,
+        "target_mean_x": 59.61187120933437,
+        "kl": 1.061043451186109e-06,
+        "max_payout_x": 5000.0,
+        "bands": [
+          {
+            "band_x": [
+              0,
+              500
+            ],
+            "pilot_count": 2987729,
+            "p_band": 0.9959096666666667,
+            "books": 6000
+          },
+          {
+            "band_x": [
+              500,
+              2000
+            ],
+            "pilot_count": 12167,
+            "p_band": 0.004055666666666667,
+            "books": 500
+          },
+          {
+            "band_x": [
+              2000,
+              4000
+            ],
+            "pilot_count": 96,
+            "p_band": 3.2e-05,
+            "books": 96
+          },
+          {
+            "band_x": [
+              4000,
+              1000000000
+            ],
+            "pilot_count": 8,
+            "p_band": 2.666666666666667e-06,
+            "books": 8
+          }
+        ]
       },
       {
-        "band_x": [
-          500,
-          2000
-        ],
-        "pilot_count": 18468,
-        "p_band": 0.006156,
-        "books": 600
-      },
-      {
-        "band_x": [
-          2000,
-          4000
-        ],
-        "pilot_count": 138,
-        "p_band": 4.6e-05,
-        "books": 138
-      },
-      {
-        "band_x": [
-          4000,
-          1000000000
-        ],
-        "pilot_count": 8,
-        "p_band": 2.666666666666667e-06,
-        "books": 8
+        "name": "buy_4_trophies",
+        "probability": 0.8125,
+        "books": 6709,
+        "target_mean_x": 104.9595797937133,
+        "kl": 1.7448510461114906e-05,
+        "max_payout_x": 5000.0,
+        "bands": [
+          {
+            "band_x": [
+              0,
+              500
+            ],
+            "pilot_count": 2961529,
+            "p_band": 0.9871763333333333,
+            "books": 6000
+          },
+          {
+            "band_x": [
+              500,
+              2000
+            ],
+            "pilot_count": 38231,
+            "p_band": 0.012743666666666667,
+            "books": 500
+          },
+          {
+            "band_x": [
+              2000,
+              4000
+            ],
+            "pilot_count": 231,
+            "p_band": 7.7e-05,
+            "books": 200
+          },
+          {
+            "band_x": [
+              4000,
+              1000000000
+            ],
+            "pilot_count": 9,
+            "p_band": 3e-06,
+            "books": 9
+          }
+        ]
       }
     ],
-    "sha256_books": "0657e2ea0f7080aff38fe8dde57f6d757694b314b61d8d1803bf747cf03439c6",
-    "sha256_lut": "ab2c05a420c548bf57924a5f8b713b377085949807eba810a70a0a4b16cd179c"
+    "sha256_books": "f05f82a312e6381a74cf2fd2006485f84d62991b647ff617d2dd579d6ea6091e",
+    "sha256_lut": "c2a87ca0794704f7f57e3fca95aa739a3bd39e3f5f4ec53a812f8abb784f8ef1"
   }
 }

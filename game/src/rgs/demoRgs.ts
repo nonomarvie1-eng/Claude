@@ -3,7 +3,7 @@
 // * Outcomes come from the same rules as the production math (TS port with
 //   proven parity), drawn with the browser CSPRNG.
 // * Nothing here talks to a network or an operator.
-import { drawBaseStopsWithScatters, playRound } from '../engine/engine';
+import { drawBaseStopsWithScatters, drawBuyScatterCount, playRound } from '../engine/engine';
 import { RULES } from '../engine/rules';
 import { cryptoDrawer, cryptoInt } from '../engine/rng';
 import { MONEY_SCALE, RgsError, type AuthResult, type Balance, type RgsClient, type RgsConfig, type Round } from './types';
@@ -115,7 +115,7 @@ export class DemoRgs implements RgsClient {
     if (debit > this.s.balance) throw new RgsError('ERR_IPB', 'insufficient balance');
     const forced = bought ? null : this.forceNext;
     this.forceNext = null;
-    const k = bought ? RULES.buyBonus.scatters : forced ? +forced.slice(-1) : 0;
+    const k = bought ? drawBuyScatterCount(cryptoInt) : forced ? +forced.slice(-1) : 0;
     const out = playRound(cryptoDrawer, this.s.nextId, k ? drawBaseStopsWithScatters(k, cryptoInt) : undefined, bought);
     const pm = out.book.payoutMultiplier;
     const round: Round = {

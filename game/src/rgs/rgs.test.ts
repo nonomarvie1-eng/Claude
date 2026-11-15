@@ -56,14 +56,14 @@ describe('DemoRgs (play money)', () => {
   it('bonus buy debits bet x cost and plays a bought Tie-Break', async () => {
     const rgs = new DemoRgs(memoryStorage());
     const { balance, round } = await rgs.play(1_000_000, 'BONUS');
-    expect(balance.amount).toBe(DEMO_START_BALANCE - 75 * 1_000_000);
-    expect(round.cost).toBe(75);
+    expect(balance.amount).toBe(DEMO_START_BALANCE - 100 * 1_000_000);
+    expect(round.cost).toBe(100);
     const trig = round.state.find((e) => e.type === 'freeSpinTrigger') as { bought?: boolean; totalFs: number };
     expect(trig.bought).toBe(true);
-    expect(trig.totalFs).toBe(10);
+    expect([9, 12]).toContain(trig.totalFs);
     const end = await rgs.endRound();
-    expect(end.balance.amount).toBe(DEMO_START_BALANCE - 75 * 1_000_000 + round.payout);
-    const poor = new DemoRgs({ get: () => JSON.stringify({ balance: 50 * 1_000_000, active: null, nextId: 1 }), set: () => {} });
+    expect(end.balance.amount).toBe(DEMO_START_BALANCE - 100 * 1_000_000 + round.payout);
+    const poor = new DemoRgs({ get: () => JSON.stringify({ balance: 80 * 1_000_000, active: null, nextId: 1 }), set: () => {} });
     await expect(poor.play(1_000_000, 'BONUS')).rejects.toMatchObject({ code: 'ERR_IPB' });
   });
 

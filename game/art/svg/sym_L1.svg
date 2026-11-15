@@ -12,14 +12,11 @@
     <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
 </defs>
-    <g transform="rotate(-5 128 136)">
-      <path d="M128,12 L74,46 M128,12 L182,46" stroke="#1b1410" stroke-width="4"/>
-      <circle cx="128" cy="12" r="7" fill="#9a9a9a" stroke="#1b1410" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-      <g filter="url(#comic)"><rect x="30" y="40" width="196" height="196" rx="22" fill="#fff3d6" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/></g>
-      <rect x="30" y="40" width="196" height="196" rx="22" fill="url(#grain)"/>
-      <path d="M30,62 a22,22 0 0 1 22,-22 h152 a22,22 0 0 1 22,22 v10 h-196Z" fill="#d93b3b" opacity=".25"/>
-      <rect x="44" y="54" width="168" height="168" rx="14" fill="none" stroke="#d93b3b" stroke-width="5" opacity=".6"/>
-      <text x="133" y="186.8" text-anchor="middle" class="lg" font-size="112" fill="#1b1410" opacity=".3">AD</text>
-      <text x="128" y="180.56" text-anchor="middle" class="lg" font-size="112" fill="#d93b3b" stroke="#1b1410" stroke-width="8" stroke-linejoin="round" paint-order="stroke">AD</text>
-      <path d="M52,70 q30,-8 60,0" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8" fill="none"/>
+    <linearGradient id="nAD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".18" stop-color="#ff4a4a" stop-opacity=".35"/><stop offset=".5" stop-color="#ff4a4a"/><stop offset="1" stop-color="#ff4a4a"/></linearGradient>
+    <radialGradient id="gnAD" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff4a4a" stop-opacity=".45"/><stop offset="1" stop-color="#ff4a4a" stop-opacity="0"/></radialGradient>
+    <circle cx="128" cy="140" r="118" fill="url(#gnAD)"/>
+    <g transform="rotate(-6 128 140)">
+      <text x="136.1" y="208.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="135.2" y="207.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="134.3" y="206.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="133.4" y="205.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="132.5" y="204.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="131.6" y="203.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="130.7" y="202.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="129.8" y="201.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text><text x="128.9" y="200.68" text-anchor="middle" class="lg" font-size="138" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">AD</text>
+      <text x="128" y="199.68" text-anchor="middle" class="lg" font-size="138" fill="url(#nAD)" stroke="#1b1410" stroke-width="10" stroke-linejoin="round" paint-order="stroke">AD</text>
+      <text x="128" y="199.68" text-anchor="middle" class="lg" font-size="138" fill="none" stroke="#fff" stroke-width="2.5" opacity=".55" transform="translate(-2 -3)">AD</text>
     </g></svg>

@@ -172,10 +172,12 @@
  "wincapX": 5000,
  "minKind": 3,
  "buyBonus": {
-  "cost": 75,
-  "spins": 10,
-  "scatters": 3,
-  "rtp": 0.9648197771932988
+  "cost": 100,
+  "scatterWeights": {
+   "3": 3,
+   "4": 13
+  },
+  "rtp": 0.9645688443414225
  },
  "payModel": "ways",
  "winLevels": [

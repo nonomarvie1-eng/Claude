@@ -245,11 +245,13 @@ def test_small_export_is_valid(tmp_path, exact):
 
 def test_buy_mode_round(monkeypatch):
     rng = np.random.default_rng(21)
-    st = _base_with_scatters(C.BUY_SCATTERS)
-    r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=st, bought=True)
-    trig = [e for e in r.events if e["type"] == "freeSpinTrigger"][0]
-    assert trig["totalFs"] == C.BUY_SPINS and trig["bought"] is True
-    assert r.fs_spins >= C.BUY_SPINS or r.capped
+    for k in C.BUY_SCATTER_WEIGHTS:
+        st = _base_with_scatters(k)
+        r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=st, bought=True)
+        trig = [e for e in r.events if e["type"] == "freeSpinTrigger"][0]
+        assert trig["totalFs"] == C.FS_AWARD[k] and trig["bought"] is True
+    with pytest.raises(AssertionError):
+        play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=_base_with_scatters(5), bought=True)
 
 
 def test_buy_rtp_exact_and_simulated(exact):

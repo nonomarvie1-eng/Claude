@@ -18,7 +18,7 @@ const NROWS = RULES.rows;
 const FRAME_M = 46;
 const FRAME_W = NR * CELL + 2 * FRAME_M;
 const FRAME_H = NROWS * CELL + 2 * FRAME_M;
-const SYM_SIZE = 164;
+const SYM_SIZE = 172;
 
 export interface Prefs {
   reducedMotion: boolean;
@@ -169,7 +169,6 @@ export class RallyScene implements View {
     }
     this.logo.texture = tex.logo;
     this.logo.anchor.set(0.5);
-    this.world.addChild(this.logo);
 
     // board
     this.frame.texture = tex.frame;
@@ -200,6 +199,7 @@ export class RallyScene implements View {
     this.winText.y = FRAME_H - 10;
     this.board.addChild(this.winText);
     this.world.addChild(this.board);
+    this.world.addChild(this.logo); // the logo sits on the top edge of the frame
 
     // rally dial
     this.dialGear.texture = tex.deco_3;
@@ -277,8 +277,8 @@ export class RallyScene implements View {
     this.world.scale.set(s);
     this.world.position.set((w - DW * s) / 2, (h - DH * s) / 2);
     if (!this.portrait) {
-      this.logo.position.set(960, 92);
-      this.logo.scale.set(0.3);
+      this.logo.position.set(960, 120);
+      this.logo.scale.set(0.32);
       const bs2 = 800 / FRAME_H;
       this.board.scale.set(bs2);
       this.board.position.set(960 - (FRAME_W * bs2) / 2, 168);
@@ -289,8 +289,8 @@ export class RallyScene implements View {
       this.gears[2].s.position.set(1660, 820);
       this.gears[1].s.scale.set(0.55);
     } else {
-      this.logo.position.set(540, 228);
-      this.logo.scale.set(0.34);
+      this.logo.position.set(540, 262);
+      this.logo.scale.set(0.38);
       const bsc = 1050 / FRAME_W;
       this.board.scale.set(bsc);
       this.board.position.set(15, 318);
@@ -302,6 +302,7 @@ export class RallyScene implements View {
       this.gears[1].s.scale.set(0.35);
     }
     this.gears[2].s.visible = !this.portrait;
+    this.gears[0].s.visible = this.portrait;
     for (const o of this.overlay.children) (o as Container & { relayout?: () => void }).relayout?.();
   }
 
@@ -546,8 +547,9 @@ export class RallyScene implements View {
     const g = this.lineGfx;
     const color = w.kind === 'scatter' ? 0x7cd3ff : 0xffd23f;
     for (const p of w.positions) {
-      g.roundRect(p.reel * CELL + 7, p.row * CELL + 7, CELL - 14, CELL - 14, 20).stroke({ color: 0x1b1410, width: 11, alpha });
-      g.roundRect(p.reel * CELL + 7, p.row * CELL + 7, CELL - 14, CELL - 14, 20).stroke({ color, width: 5, alpha });
+      const x = p.reel * CELL + CELL / 2, y = p.row * CELL + CELL / 2, r = CELL * 0.47;
+      g.circle(x, y, r).stroke({ color: 0x1b1410, width: 12, alpha });
+      g.circle(x, y, r).stroke({ color, width: 6, alpha });
     }
   }
 

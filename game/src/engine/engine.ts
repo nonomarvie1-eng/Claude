@@ -138,8 +138,8 @@ export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], 
   let collected = 0;
   let mult = 1;
   if (triggered) {
-    if (bought && nSc !== RULES.buyBonus.scatters) throw new Error('bought round must show the buy scatter count');
-    let remaining = bought ? RULES.buyBonus.spins : FS_AWARD[nSc];
+    if (bought && !(String(nSc) in RULES.buyBonus.scatterWeights)) throw new Error('bought round must show a buy scatter count');
+    let remaining = FS_AWARD[nSc];
     let awarded = remaining;
     emit({ type: 'freeSpinTrigger', totalFs: remaining, positions: scPos, ...(bought ? { bought: true } : {}) });
     while (remaining > 0) {
@@ -227,6 +227,18 @@ export function drawBaseStopsWithScatters(k: number, rand: (n: number) => number
     const arr = b ? withS[r] : withoutS[r];
     return arr[rand(arr.length)];
   });
+}
+
+/** Trophy count of a bought spin, drawn with the published weights. */
+export function drawBuyScatterCount(rand: (n: number) => number): number {
+  const entries = Object.entries(RULES.buyBonus.scatterWeights).map(([k, w]) => [+k, w] as const);
+  const total = entries.reduce((a, [, w]) => a + w, 0);
+  let u = rand(total);
+  for (const [k, w] of entries) {
+    if (u < w) return k;
+    u -= w;
+  }
+  return entries[entries.length - 1][0];
 }
 
 export const STRIPS = { base: BASE, free: FREE };

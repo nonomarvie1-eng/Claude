@@ -12,16 +12,18 @@
     <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
 </defs>
-  <radialGradient id="bgd" cx=".5" cy=".35" r=".8"><stop offset="0" stop-color="#86c9f0"/><stop offset="1" stop-color="#2f78b0"/></radialGradient>
+  <radialGradient id="bgd" cx=".5" cy=".3" r=".75"><stop offset="0" stop-color="#86c9f0"/><stop offset="1" stop-color="#2f78b0"/></radialGradient>
+  <radialGradient id="halod" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#86c9f0" stop-opacity=".55"/><stop offset="1" stop-color="#86c9f0" stop-opacity="0"/></radialGradient>
   <pattern id="pat_d" width="48" height="48" patternUnits="userSpaceOnUse"><g fill="#fff" opacity=".2"><ellipse cx="14" cy="18" rx="6" ry="5"/><circle cx="7" cy="9" r="2.6"/><circle cx="13" cy="6" r="2.6"/><circle cx="20" cy="8" r="2.6"/><ellipse cx="38" cy="40" rx="6" ry="5"/><circle cx="31" cy="31" r="2.6"/><circle cx="37" cy="28" r="2.6"/><circle cx="44" cy="30" r="2.6"/></g></pattern>
-  <clipPath id="ccd"><rect x="14" y="54" width="228" height="188" rx="28"/></clipPath>
-  <clipPath id="chd"><rect x="6" y="-80" width="244" height="322" rx="28"/></clipPath>
-  <clipPath id="botd"><rect x="0" y="94" width="256" height="200"/></clipPath>
+  <clipPath id="ccd"><circle cx="128" cy="140" r="98"/></clipPath>
+  <clipPath id="chd"><circle cx="128" cy="140" r="98"/><rect x="36" y="-60" width="184" height="200"/></clipPath>
+  <clipPath id="botd"><rect x="0" y="130" width="256" height="200"/></clipPath>
+  <circle cx="128" cy="140" r="124" fill="url(#halod)"/>
   <g filter="url(#comic)">
-    <rect x="14" y="54" width="228" height="188" rx="28" fill="url(#bgd)"/>
-    <g clip-path="url(#ccd)"><path d="M128,150L358,150L353.58,194.87Z" fill="#fff" opacity="0.1"/><path d="M128,150L340.49,238.02L319.24,277.78Z" fill="#fff" opacity="0.1"/><path d="M128,150L290.63,312.63L255.78,341.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L216.02,362.49L172.87,375.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L128,380L83.13,375.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L39.98,362.49L0.22,341.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L-34.63,312.63L-63.24,277.78Z" fill="#fff" opacity="0.1"/><path d="M128,150L-84.49,238.02L-97.58,194.87Z" fill="#fff" opacity="0.1"/><path d="M128,150L-102,150L-97.58,105.13Z" fill="#fff" opacity="0.1"/><path d="M128,150L-84.49,61.98L-63.24,22.22Z" fill="#fff" opacity="0.1"/><path d="M128,150L-34.63,-12.63L0.22,-41.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L39.98,-62.49L83.13,-75.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L128,-80L172.87,-75.58Z" fill="#fff" opacity="0.1"/><path d="M128,150L216.02,-62.49L255.78,-41.24Z" fill="#fff" opacity="0.1"/><path d="M128,150L290.63,-12.63L319.24,22.22Z" fill="#fff" opacity="0.1"/><path d="M128,150L340.49,61.98L353.58,105.13Z" fill="#fff" opacity="0.1"/><rect x="14" y="54" width="228" height="188" fill="url(#pat_d)"/>
-      <rect x="14" y="198" width="228" height="44" fill="#000" opacity=".12"/></g>
-    <rect x="14" y="54" width="228" height="188" rx="28" fill="none" stroke="#1b1410" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="128" cy="140" r="107" fill="url(#gold)" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="128" cy="140" r="98" fill="url(#bgd)" stroke="#1b1410" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <g clip-path="url(#ccd)"><path d="M128,150L288,150L285.57,177.78Z" fill="#fff" opacity="0.12"/><path d="M128,150L278.35,204.72L266.56,230Z" fill="#fff" opacity="0.12"/><path d="M128,150L250.57,252.85L230.85,272.57Z" fill="#fff" opacity="0.12"/><path d="M128,150L208,288.56L182.72,300.35Z" fill="#fff" opacity="0.12"/><path d="M128,150L155.78,307.57L128,310Z" fill="#fff" opacity="0.12"/><path d="M128,150L100.22,307.57L73.28,300.35Z" fill="#fff" opacity="0.12"/><path d="M128,150L48,288.56L25.15,272.57Z" fill="#fff" opacity="0.12"/><path d="M128,150L5.43,252.85L-10.56,230Z" fill="#fff" opacity="0.12"/><path d="M128,150L-22.35,204.72L-29.57,177.78Z" fill="#fff" opacity="0.12"/><path d="M128,150L-32,150L-29.57,122.22Z" fill="#fff" opacity="0.12"/><path d="M128,150L-22.35,95.28L-10.56,70Z" fill="#fff" opacity="0.12"/><path d="M128,150L5.43,47.15L25.15,27.43Z" fill="#fff" opacity="0.12"/><path d="M128,150L48,11.44L73.28,-0.35Z" fill="#fff" opacity="0.12"/><path d="M128,150L100.22,-7.57L128,-10Z" fill="#fff" opacity="0.12"/><path d="M128,150L155.78,-7.57L182.72,-0.35Z" fill="#fff" opacity="0.12"/><path d="M128,150L208,11.44L230.85,27.43Z" fill="#fff" opacity="0.12"/><path d="M128,150L250.57,47.15L266.56,70Z" fill="#fff" opacity="0.12"/><path d="M128,150L278.35,95.28L285.57,122.22Z" fill="#fff" opacity="0.12"/><rect x="0" y="0" width="256" height="256" fill="url(#pat_d)"/>
+      <ellipse cx="128" cy="230" rx="98" ry="34" fill="#000" opacity=".16"/></g>
   </g>
   <g clip-path="url(#chd)">
     <path d="M34,262 C36,216 70,200 128,200 C186,200 220,216 222,262Z" fill="#d8a46a" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
@@ -52,5 +54,5 @@
   <path d="M206.8,172.88 C200.8,174.8 202,200 218.08,202.4" fill="none" stroke="#fffde8" stroke-width="3.36" stroke-linecap="round"/>
   <ellipse cx="187.6" cy="184.4" rx="6" ry="3.36" fill="#fff" opacity=".7" transform="rotate(-30 187.6 184.4)"/>
     <path d="M84,196 q-4,14 2,20 q6,-6 -2,-20Z" fill="#9fe1ff" stroke="#1b1410" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></g>
-  <rect x="14" y="54" width="228" height="188" rx="28" fill="none" stroke="#1b1410" stroke-width="7" clip-path="url(#botd)"/>
-  <path d="M30,62 Q128,48 226,62" fill="none" stroke="#fff" stroke-width="3" opacity=".35" clip-path="url(#botd)"/></svg>
+  <g clip-path="url(#botd)"><circle cx="128" cy="140" r="107" fill="none" stroke="#1b1410" stroke-width="6"/><circle cx="128" cy="140" r="102.5" fill="none" stroke="url(#gold)" stroke-width="7"/><circle cx="128" cy="140" r="98" fill="none" stroke="#1b1410" stroke-width="4"/></g>
+  <path d="M58,74 A102,102 0 0,1 118,39" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/></svg>

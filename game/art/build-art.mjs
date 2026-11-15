@@ -83,23 +83,26 @@ const PATTERNS = {
   k: `<pattern id="pat_k" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M0,8 L8,0 L16,8 L8,16Z" fill="none" stroke="#fff" stroke-width="1.6" opacity=".25"/></pattern>`,
   d: `<pattern id="pat_d" width="48" height="48" patternUnits="userSpaceOnUse"><g fill="#fff" opacity=".2"><ellipse cx="14" cy="18" rx="6" ry="5"/><circle cx="7" cy="9" r="2.6"/><circle cx="13" cy="6" r="2.6"/><circle cx="20" cy="8" r="2.6"/><ellipse cx="38" cy="40" rx="6" ry="5"/><circle cx="31" cy="31" r="2.6"/><circle cx="37" cy="28" r="2.6"/><circle cx="44" cy="30" r="2.6"/></g></pattern>`,
 };
-const CARD_Y = 54, CARD_H = 188;
+const MED = { cx: 128, cy: 140, r: 98 };
 function card(id, c1, c2, body) {
+  const { cx, cy, r } = MED;
   return `
-  <radialGradient id="bg${id}" cx=".5" cy=".35" r=".8"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>
+  <radialGradient id="bg${id}" cx=".5" cy=".3" r=".75"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>
+  <radialGradient id="halo${id}" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="${c1}" stop-opacity=".55"/><stop offset="1" stop-color="${c1}" stop-opacity="0"/></radialGradient>
   ${PATTERNS[id] || ''}
-  <clipPath id="cc${id}"><rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28"/></clipPath>
-  <clipPath id="ch${id}"><rect x="6" y="-80" width="244" height="${CARD_Y + CARD_H + 80}" rx="28"/></clipPath>
-  <clipPath id="bot${id}"><rect x="0" y="${CARD_Y + 40}" width="256" height="200"/></clipPath>
+  <clipPath id="cc${id}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
+  <clipPath id="ch${id}"><circle cx="${cx}" cy="${cy}" r="${r}"/><rect x="${cx - r + 6}" y="-60" width="${2 * r - 12}" height="${cy + 60}"/></clipPath>
+  <clipPath id="bot${id}"><rect x="0" y="${cy - 10}" width="256" height="200"/></clipPath>
+  <circle cx="${cx}" cy="${cy}" r="${r + 26}" fill="url(#halo${id})"/>
   <g filter="url(#comic)">
-    <rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28" fill="url(#bg${id})"/>
-    <g clip-path="url(#cc${id})">${rays(128, 150, 230, 16, '#fff', .1)}<rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" fill="url(#pat_${id})"/>
-      <rect x="14" y="${CARD_Y + CARD_H - 44}" width="228" height="44" fill="#000" opacity=".12"/></g>
-    <rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28" fill="none" ${ink(LW + 1)}/>
+    <circle cx="${cx}" cy="${cy}" r="${r + 9}" fill="url(#gold)" ${ink(LW)}/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#bg${id})" ${ink(4)}/>
+    <g clip-path="url(#cc${id})">${rays(cx, cy + 10, 160, 18, '#fff', .12)}<rect x="0" y="0" width="256" height="256" fill="url(#pat_${id})"/>
+      <ellipse cx="${cx}" cy="${cy + r - 8}" rx="${r}" ry="34" fill="#000" opacity=".16"/></g>
   </g>
   <g clip-path="url(#ch${id})">${body}</g>
-  <rect x="14" y="${CARD_Y}" width="228" height="${CARD_H}" rx="28" fill="none" stroke="${INK}" stroke-width="${LW + 1}" clip-path="url(#bot${id})"/>
-  <path d="M30,${CARD_Y + 8} Q128,${CARD_Y - 6} 226,${CARD_Y + 8}" fill="none" stroke="#fff" stroke-width="3" opacity=".35" clip-path="url(#bot${id})"/>`;
+  <g clip-path="url(#bot${id})"><circle cx="${cx}" cy="${cy}" r="${r + 9}" fill="none" stroke="${INK}" stroke-width="${LW}"/><circle cx="${cx}" cy="${cy}" r="${r + 4.5}" fill="none" stroke="url(#gold)" stroke-width="7"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${INK}" stroke-width="4"/></g>
+  <path d="M${cx - 70},${cy - 66} A${r + 4},${r + 4} 0 0,1 ${cx - 10},${cy - r - 3}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>`;
 }
 
 // rim light along the upper-left edge of an ellipse
@@ -305,17 +308,17 @@ function scatter() {
 }
 
 function plate(label, color, tilt, size) {
+  const id = 'n' + label;
+  let extr = '';
+  for (let i = 9; i >= 1; i--) extr += `<text x="${128 + i * 0.9}" y="${f(150 + size * .36 + i)}" text-anchor="middle" class="lg" font-size="${size}" fill="${INK}" stroke="${INK}" stroke-width="10" stroke-linejoin="round">${label}</text>`;
   return svg(256, 256, `
-    <g transform="rotate(${tilt} 128 136)">
-      <path d="M128,12 L74,46 M128,12 L182,46" stroke="${INK}" stroke-width="4"/>
-      <circle cx="128" cy="12" r="7" fill="#9a9a9a" ${ink(3)}/>
-      <g filter="url(#comic)"><rect x="30" y="40" width="196" height="196" rx="22" fill="#fff3d6" ${ink()}/></g>
-      <rect x="30" y="40" width="196" height="196" rx="22" fill="url(#grain)"/>
-      <path d="M30,62 a22,22 0 0 1 22,-22 h152 a22,22 0 0 1 22,22 v10 h-196Z" fill="${color}" opacity=".25"/>
-      <rect x="44" y="54" width="168" height="168" rx="14" fill="none" stroke="${color}" stroke-width="5" opacity=".6"/>
-      <text x="133" y="${f(142 + size * .4)}" text-anchor="middle" class="lg" font-size="${size}" fill="${INK}" opacity=".3">${label}</text>
-      <text x="128" y="${f(138 + size * .38)}" text-anchor="middle" class="lg" font-size="${size}" fill="${color}" stroke="${INK}" stroke-width="8" stroke-linejoin="round" paint-order="stroke">${label}</text>
-      <path d="M52,70 q30,-8 60,0" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8" fill="none"/>
+    <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".18" stop-color="${color}" stop-opacity=".35"/><stop offset=".5" stop-color="${color}"/><stop offset="1" stop-color="${color}"/></linearGradient>
+    <radialGradient id="g${id}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="${color}" stop-opacity=".45"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></radialGradient>
+    <circle cx="128" cy="140" r="118" fill="url(#g${id})"/>
+    <g transform="rotate(${tilt} 128 140)">
+      ${extr}
+      <text x="128" y="${f(150 + size * .36)}" text-anchor="middle" class="lg" font-size="${size}" fill="url(#${id})" stroke="${INK}" stroke-width="10" stroke-linejoin="round" paint-order="stroke">${label}</text>
+      <text x="128" y="${f(150 + size * .36)}" text-anchor="middle" class="lg" font-size="${size}" fill="none" stroke="#fff" stroke-width="2.5" opacity=".55" transform="translate(-2 -3)">${label}</text>
     </g>`);
 }
 
@@ -378,31 +381,27 @@ function background(w, h, key) {
 }
 
 export const CELL = 170;
+// grid frame: court-line border with a net-mesh band, tennis-ball studs,
+// deep glowing playfield with rounded reel columns (no cell squares)
 function scoreboard() {
   const iw = 6 * CELL, ih = 5 * CELL, m = 46;
   const w = iw + 2 * m, h = ih + 2 * m;
-  let grain = '';
-  const rnd = mulberry(3);
-  for (let i = 0; i < 40; i++) {
-    const y = rnd() * h;
-    grain += `<path d="M0,${f(y)} q${w / 4},${f(rnd() * 10 - 5)} ${w / 2},0 t${w / 2},0" fill="none" stroke="#5a3418" stroke-width="2" opacity=".35"/>`;
-  }
-  let nails = '';
-  for (const [x, y] of [[22, 22], [w - 22, 22], [22, h - 22], [w - 22, h - 22], [w / 2, 22], [w / 2, h - 22], [22, h / 2], [w - 22, h / 2]]) {
-    nails += `<circle cx="${x}" cy="${y}" r="8" fill="#c9c9c9" ${ink(3)}/><circle cx="${x - 2}" cy="${y - 2}" r="2.5" fill="#fff"/>`;
-  }
-  let chalk = '';
-  for (let r = 1; r < 6; r++) chalk += `<line x1="${m + r * CELL}" y1="${m + 10}" x2="${m + r * CELL}" y2="${m + ih - 10}" stroke="#e8f5e0" stroke-width="3" stroke-dasharray="14 8" opacity=".35"/>`;
-  for (let r = 1; r < 5; r++) chalk += `<line x1="${m + 10}" y1="${m + r * CELL}" x2="${m + iw - 10}" y2="${m + r * CELL}" stroke="#e8f5e0" stroke-width="2" stroke-dasharray="6 10" opacity=".18"/>`;
+  let cols = '';
+  for (let r = 0; r < 6; r++) cols += `<rect x="${m + r * CELL + 6}" y="${m + 6}" width="${CELL - 12}" height="${ih - 12}" rx="26" fill="#000" opacity=".18"/>`;
+  let studs = '';
+  for (const [x, y] of [[m / 2 + 2, m / 2 + 2], [w - m / 2 - 2, m / 2 + 2], [m / 2 + 2, h - m / 2 - 2], [w - m / 2 - 2, h - m / 2 - 2]]) studs += ball(x, y, 22, 5);
   return svg(w, h, `
-    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9763e"/><stop offset="1" stop-color="#8a5228"/></linearGradient>
-    <rect x="4" y="4" width="${w - 8}" height="${h - 8}" rx="22" fill="url(#wood)" ${ink(8)}/>
-    ${grain}
-    <rect x="${m - 10}" y="${m - 10}" width="${iw + 20}" height="${ih + 20}" rx="10" fill="#6b3f1e" ${ink(5)}/>
-    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="6" fill="#1f5e3a"/>
-    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="6" fill="url(#dotsL)" opacity=".5"/>
-    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="6" fill="none" ${ink(5)}/>
-    ${chalk}${nails}`);
+    <pattern id="mesh" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M0,0 L14,14 M14,0 L0,14" stroke="#fff" stroke-width="1.4" opacity=".35"/></pattern>
+    <radialGradient id="field" cx=".5" cy="0" r="1.1"><stop offset="0" stop-color="#2a8c5a"/><stop offset=".55" stop-color="#145238"/><stop offset="1" stop-color="#0a2f20"/></radialGradient>
+    <linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3fbf6a"/><stop offset="1" stop-color="#1f7a44"/></linearGradient>
+    <g filter="url(#comic)"><rect x="4" y="4" width="${w - 8}" height="${h - 8}" rx="40" fill="url(#band)" ${ink(8)}/></g>
+    <rect x="4" y="4" width="${w - 8}" height="${h - 8}" rx="40" fill="url(#mesh)"/>
+    <rect x="${m - 16}" y="${m - 16}" width="${iw + 32}" height="${ih + 32}" rx="30" fill="#fffdf2" ${ink(6)}/>
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="22" fill="url(#field)" ${ink(5)}/>
+    ${cols}
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="22" fill="url(#dotsL)" opacity=".35"/>
+    <path d="M${m + 30},${m + 14} H${m + iw - 30}" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".18"/>
+    ${studs}`);
 }
 
 function logo() {
@@ -481,11 +480,11 @@ const assets = {
   sym_H3: umpire(),
   sym_H4: ballKid(),
   sym_H5: bulldog(),
-  sym_L1: plate('AD', '#d93b3b', -5, 112),
-  sym_L2: plate('40', '#2f9a4a', 4, 132),
-  sym_L3: plate('30', '#2f6fd0', -3, 132),
-  sym_L4: plate('15', '#f08a12', 5, 132),
-  sym_L5: plate('0', '#9b2fb0', -4, 150),
+  sym_L1: plate('AD', '#ff4a4a', -6, 138),
+  sym_L2: plate('40', '#3ccf5c', 5, 160),
+  sym_L3: plate('30', '#3d8bff', -4, 160),
+  sym_L4: plate('15', '#ff9f1c', 5, 160),
+  sym_L5: plate('0', '#b44dff', -4, 180),
   ...layerAssets('landscape', 1920, 1080),
   ...layerAssets('portrait', 1080, 1920),
   frame: scoreboard(),

@@ -125,12 +125,19 @@ def bonus_chain(Pf: np.ndarray, E1f: np.ndarray) -> dict:
             b[sid[(r, n)]] = 1
     reach = np.linalg.solve(np.eye(S) - Mt, b)
     out = {}
-    buy = float(V1[sid[(C.BUY_SPINS, 0)]])
     for k, spins in C.FS_AWARD.items():
         i = sid[(spins, 0)]
         out[k] = {"spins": spins, "E": float(V1[i]), "E_spins": float(T[i]), "E_retriggers": float(RT[i]),
                   "E_final_multiplier": float(FM[i]), "P_reach_max_mult": float(reach[i])}
-    return {"by_trigger": out, "buy_bonus_E": buy, "residual": float(np.abs(A @ V1 - a1).max()), "states": S}
+    return {"by_trigger": out, "residual": float(np.abs(A @ V1 - a1).max()), "states": S}
+
+
+def _buy(cond_base: dict, ch: dict) -> dict:
+    tot = sum(C.BUY_SCATTER_WEIGHTS.values())
+    per = {str(k): (cond_base[str(k)] + ch["by_trigger"][k]["E"]) / 10 for k in C.BUY_SCATTER_WEIGHTS}
+    E = sum(w / tot * per[str(k)] for k, w in C.BUY_SCATTER_WEIGHTS.items())
+    return {"cost": C.BUY_COST, "scatter_weights": {str(k): w for k, w in C.BUY_SCATTER_WEIGHTS.items()},
+            "weights_total": tot, "E_x_by_scatters": per, "E_x": E, "rtp": E / C.BUY_COST}
 
 
 def full_report() -> dict:
@@ -173,11 +180,7 @@ def full_report() -> dict:
         "free_spin_E_ways_x": float(E1f.sum()) / 10,
         "free_spin_p_wild_count": [float(x) for x in p_free_w[:8]],
         "free_spin_p_retrigger": float(Pf[:, 3:].sum()),
-        "buy": {
-            "cost": C.BUY_COST, "spins": C.BUY_SPINS, "scatters": C.BUY_SCATTERS,
-            "E_x": (cond_base[str(C.BUY_SCATTERS)] + ch["buy_bonus_E"]) / 10,
-            "rtp": (cond_base[str(C.BUY_SCATTERS)] + ch["buy_bonus_E"]) / 10 / C.BUY_COST,
-        },
+        "buy": _buy(cond_base, ch),
         "markov_states": ch["states"],
         "markov_residual": ch["residual"],
         "timing_s": time.time() - t0,

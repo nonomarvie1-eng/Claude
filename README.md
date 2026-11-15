@@ -1,6 +1,6 @@
 # Golden Rally — machine à sous de démonstration (tennis, style cartoon)
 
-Jeu original **6 × 5, 15 625 façons de gagner**, personnages cartoon (le Président, la Championne, l'Arbitre, le Ramasseur, le Bulldog), Wild **Smash**, Scatter **Trophée**, bonus **Tie-Break** avec multiplicateur persistant **Rally** (×1 → ×20). RTP théorique **96,487 %** calculé exactement, vérifié par 200 millions de tours simulés ; gain maximal 5 000×. **Achat du bonus** (75× la mise, RTP 96,482 %) et **tours automatiques** avec limite de perte.
+Jeu original **6 × 5, 15 625 façons de gagner**, personnages cartoon (le Président, la Championne, l'Arbitre, le Ramasseur, le Bulldog), Wild **Smash**, Scatter **Trophée**, bonus **Tie-Break** avec multiplicateur persistant **Rally** (×1 → ×20). RTP théorique **96,487 %** calculé exactement, vérifié par 200 millions de tours simulés ; gain maximal 5 000×. **Achat du bonus** (100× la mise, RTP 96,457 %) et **tours automatiques** avec limite de perte.
 
 > **Démonstration uniquement.** Les crédits sont fictifs, sans valeur monétaire, ni retirables, ni convertibles. Aucune connexion à un opérateur, aucun paiement, aucune transaction n'est activé. La commercialisation reste subordonnée à une validation technique, juridique et contractuelle (voir `docs/`).
 

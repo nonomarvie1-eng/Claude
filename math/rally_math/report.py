@@ -129,7 +129,8 @@ def main() -> None:
     if "bonus" in lut and "buy" in ex:
         bb, bm = lut["bonus"], mc.get("buy", {})
         w("## 4 bis. Mode « achat du Tie-Break » (bet mode `bonus`, coût " + str(ex["buy"]["cost"]) + "×)\n")
-        w(f"- Règle : le tour acheté montre {ex['buy']['scatters']} Trophées (tirés selon la loi conditionnelle exacte) et démarre un Tie-Break de {ex['buy']['spins']} tours gratuits.")
+        sw = ex["buy"]["scatter_weights"]
+        w("- Règle : le tour acheté affiche " + " ou ".join(f"{k} Trophées ({v}/{ex['buy']['weights_total']})" for k, v in sw.items()) + " — grille tirée selon la loi conditionnelle exacte — puis le Tie-Break suit les règles normales (" + ", ".join(f"{k} Trophées = {C.FS_AWARD[int(k)]} tours" for k in sw) + ").")
         w(f"- **RTP exact du mode : {pct(ex['buy']['rtp'], 4)}** (gain moyen {ex['buy']['E_x']:.3f}× la mise de base, pour un coût de {ex['buy']['cost']}×).")
         if bm:
             w(f"- Contrôle Monte-Carlo : {bm['rounds']:,} achats → RTP {pct(bm['rtp_observed'])} ± {pct(1.96 * bm['rtp_std_error'])} (IC 95 %), écart-type {bm['std_dev_x']:.1f}× la mise de base.".replace(",", " "))

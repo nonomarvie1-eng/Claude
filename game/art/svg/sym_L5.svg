@@ -12,14 +12,11 @@
     <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
 </defs>
-    <g transform="rotate(-4 128 136)">
-      <path d="M128,12 L74,46 M128,12 L182,46" stroke="#1b1410" stroke-width="4"/>
-      <circle cx="128" cy="12" r="7" fill="#9a9a9a" stroke="#1b1410" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-      <g filter="url(#comic)"><rect x="30" y="40" width="196" height="196" rx="22" fill="#fff3d6" stroke="#1b1410" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/></g>
-      <rect x="30" y="40" width="196" height="196" rx="22" fill="url(#grain)"/>
-      <path d="M30,62 a22,22 0 0 1 22,-22 h152 a22,22 0 0 1 22,22 v10 h-196Z" fill="#9b2fb0" opacity=".25"/>
-      <rect x="44" y="54" width="168" height="168" rx="14" fill="none" stroke="#9b2fb0" stroke-width="5" opacity=".6"/>
-      <text x="133" y="202" text-anchor="middle" class="lg" font-size="150" fill="#1b1410" opacity=".3">0</text>
-      <text x="128" y="195" text-anchor="middle" class="lg" font-size="150" fill="#9b2fb0" stroke="#1b1410" stroke-width="8" stroke-linejoin="round" paint-order="stroke">0</text>
-      <path d="M52,70 q30,-8 60,0" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8" fill="none"/>
+    <linearGradient id="n0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".18" stop-color="#b44dff" stop-opacity=".35"/><stop offset=".5" stop-color="#b44dff"/><stop offset="1" stop-color="#b44dff"/></linearGradient>
+    <radialGradient id="gn0" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#b44dff" stop-opacity=".45"/><stop offset="1" stop-color="#b44dff" stop-opacity="0"/></radialGradient>
+    <circle cx="128" cy="140" r="118" fill="url(#gn0)"/>
+    <g transform="rotate(-4 128 140)">
+      <text x="136.1" y="223.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="135.2" y="222.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="134.3" y="221.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="133.4" y="220.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="132.5" y="219.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="131.6" y="218.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="130.7" y="217.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="129.8" y="216.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text><text x="128.9" y="215.8" text-anchor="middle" class="lg" font-size="180" fill="#1b1410" stroke="#1b1410" stroke-width="10" stroke-linejoin="round">0</text>
+      <text x="128" y="214.8" text-anchor="middle" class="lg" font-size="180" fill="url(#n0)" stroke="#1b1410" stroke-width="10" stroke-linejoin="round" paint-order="stroke">0</text>
+      <text x="128" y="214.8" text-anchor="middle" class="lg" font-size="180" fill="none" stroke="#fff" stroke-width="2.5" opacity=".55" transform="translate(-2 -3)">0</text>
     </g></svg>

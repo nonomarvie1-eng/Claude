@@ -170,10 +170,18 @@ def run_buy(n_rounds: int, seed: int) -> dict:
     tot_sq = 0.0
     done = 0
     mx = 0
+    ks = list(C.BUY_SCATTER_WEIGHTS)
+    q = np.array([C.BUY_SCATTER_WEIGHTS[k] for k in ks], dtype=float)
+    q /= q.sum()
     while done < n_rounds:
         m = min(500_000, n_rounds - done)
-        bs, _ = conditional_base_stops(base.strips, C.BUY_SCATTERS, rng, m)
-        tot, _log = bonus_pilot(rng, bs, bc, fc, free.lengths, award_override=C.BUY_SPINS)
+        counts = rng.multinomial(m, q)
+        parts = []
+        for k, c in zip(ks, counts):
+            if c:
+                bs, _ = conditional_base_stops(base.strips, k, rng, int(c))
+                parts.append(bonus_pilot(rng, bs, bc, fc, free.lengths)[0])
+        tot = np.concatenate(parts)
         x = tot.astype(np.float64) / 10
         tot_sum += x.sum()
         tot_sq += (x * x).sum()

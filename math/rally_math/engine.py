@@ -174,8 +174,8 @@ def _scatter_win(sc_pos, sc_pay):
 
 def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events: bool = True,
                forced_base_stops: list[int] | None = None, bought: bool = False) -> RoundResult:
-    """bought=True: bonus-buy mode; forced_base_stops must show BUY_SCATTERS Trophies
-    and the Tie-Break starts with BUY_SPINS free spins."""
+    """bought=True: bonus-buy mode; forced_base_stops must show a Trophy count
+    listed in BUY_SCATTER_WEIGHTS; the Tie-Break then follows the normal rules."""
     ev: list[dict] | None = [] if record_events else None
     all_stops = []
 
@@ -205,11 +205,11 @@ def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events
     total = min(base_t, C.WINCAP_T)
     triggered = n_sc >= 3 and not capped
     if bought:
-        assert n_sc == C.BUY_SCATTERS, "bought round must show BUY_SCATTERS trophies"
+        assert n_sc in C.BUY_SCATTER_WEIGHTS, "bought round must show a buy trophy count"
     free_t = fs_spins = retrig = collected = 0
     mult = 1
     if triggered:
-        remaining = C.BUY_SPINS if bought else C.FS_AWARD[n_sc]
+        remaining = C.FS_AWARD[n_sc]
         awarded = remaining
         emit({"type": "freeSpinTrigger", "totalFs": remaining, "positions": sc_pos, **({"bought": True} if bought else {})})
         while remaining > 0:

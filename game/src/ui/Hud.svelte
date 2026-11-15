@@ -128,7 +128,7 @@
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 20;
     display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
     padding: 10px max(16px, env(safe-area-inset-left)) calc(10px + var(--safe-b));
-    background: linear-gradient(180deg, #2b7a3f, #1f5e3a);
+    background: linear-gradient(180deg, rgba(20,70,46,.94), rgba(8,30,20,.98)); border-radius: 26px 26px 0 0; box-shadow: 0 -6px 0 rgba(27,20,16,.25);
     border-top: 4px solid var(--ink-line);
   }
   .cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -162,7 +162,7 @@
   }
   .buybadge span { display: block; }
   .buybadge:disabled { opacity: .45; }
-  @media (max-aspect-ratio: 1/1) { .buybadge { bottom: calc(200px + var(--safe-b)); width: 80px; height: 80px; font-size: 15px; } }
+  @media (max-aspect-ratio: 1/1) { .buybadge { bottom: calc(178px + var(--safe-b)); width: 74px; height: 74px; font-size: 14px; } }
   @keyframes turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spin.busy .teeth { animation: none; } }
 

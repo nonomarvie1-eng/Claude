@@ -58,7 +58,7 @@ export interface GameConfig {
   rallyLadder: number[];
   wincapX: number;
   minKind: number;
-  buyBonus: { cost: number; spins: number; scatters: number; rtp: number | null };
+  buyBonus: { cost: number; scatterWeights: Record<string, number>; rtp: number | null };
   payModel: string;
   winLevels: { name: string; min: number }[];
   reelStrips: { base: SymbolName[][]; free: SymbolName[][] };

@@ -4,7 +4,7 @@
 
 | Élément | Emplacement | État |
 |---|---|---|
-| `index.json`, tables de correspondance et books `.jsonl.zst` pour **2 modes** : `base` (coût 1×) et `bonus` (achat du Tie-Break, coût 75×) | `stake/publish_files/` | ✅ Format validé par `engineio/math-sdk` (commit `141b4e8`), 0 problème de soumission, contrôles de risque réussis sur les 2 modes |
+| `index.json`, tables de correspondance et books `.jsonl.zst` pour **2 modes** : `base` (coût 1×) et `bonus` (achat du Tie-Break, coût 100×) | `stake/publish_files/` | ✅ Format validé par `engineio/math-sdk` (commit `141b4e8`), 0 problème de soumission, contrôles de risque réussis sur les 2 modes |
 | RTP de la table : 96,4871 %, identique au modèle exact ; gain maximal 5 000× présent dans la table | `stake/publish_files/export_summary.json` | ✅ |
 | Statistiques de l'outil officiel (risques 6/6, 0 problème de soumission) | `stake/official_sdk_verification.json` | ✅ |
 | Fichiers frontend statiques, chemins relatifs (`base: './'`) | `game/dist/` après `npm run build` | ✅ |

@@ -32,7 +32,7 @@ def game_config(exact: dict | None, mc: dict | None = None) -> dict:
         "rallyLadder": C.RALLY_LADDER,
         "wincapX": C.WINCAP_X,
         "minKind": C.MIN_KIND,
-        "buyBonus": {"cost": C.BUY_COST, "spins": C.BUY_SPINS, "scatters": C.BUY_SCATTERS, "rtp": exact["buy"]["rtp"] if exact else None},
+        "buyBonus": {"cost": C.BUY_COST, "scatterWeights": {str(k): w for k, w in C.BUY_SCATTER_WEIGHTS.items()}, "rtp": exact["buy"]["rtp"] if exact else None},
         "payModel": "ways",
         "winLevels": C.WIN_LEVELS[:-1] + [{"name": "max", "min": C.WINCAP_X}],
         "reelStrips": {
@@ -72,8 +72,11 @@ def fixtures(n: int, seed: int) -> list[dict]:
     # bonus-buy rounds (mode "bonus")
     from .export_stake import conditional_base_stops
 
-    bs, _ = conditional_base_stops(base.strips, C.BUY_SCATTERS, rng, 30)
-    for row in bs:
+    rows = []
+    for k in C.BUY_SCATTER_WEIGHTS:
+        bs, _ = conditional_base_stops(base.strips, k, rng, 15)
+        rows += list(bs)
+    for row in rows:
         res = play_round(numpy_drawer(rng), base, free, record_events=True, forced_base_stops=[int(x) for x in row], bought=True)
         out.append({"stops": res.stops, "bought": True, "book": make_book(len(out) + 1, res)})
     return out

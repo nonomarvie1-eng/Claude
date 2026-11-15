@@ -154,9 +154,9 @@ try {
     await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 300000 });
     const rb = await page.evaluate(() => window.__rally.lastRound);
     const trig = rb.state.find((e) => e.type === 'freeSpinTrigger');
-    check('bonus buy: round is a bought Tie-Break of 10 spins', trig && trig.bought === true && trig.totalFs === 10);
-    check('bonus buy: cost multiplier 75', rb.cost === 75);
-    check('bonus buy: balance = before - 75 x bet + payout', (await text(page, 'balance')) === norm(fmt(before - 75 * rb.amount + rb.payout)), await text(page, 'balance'));
+    check('bonus buy: round is a bought Tie-Break (9 or 12 spins)', trig && trig.bought === true && [9, 12].includes(trig.totalFs));
+    check('bonus buy: cost multiplier 100', rb.cost === 100);
+    check('bonus buy: balance = before - 100 x bet + payout', (await text(page, 'balance')) === norm(fmt(before - 100 * rb.amount + rb.payout)), await text(page, 'balance'));
     check('bonus buy: displayed win equals payout', (await text(page, 'win')) === norm(fmt(rb.payout)));
   }
 
