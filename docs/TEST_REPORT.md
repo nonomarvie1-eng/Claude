@@ -6,23 +6,23 @@ Date : 15 novembre 2026 · environnement : conteneur Linux, Node 22.23, Python 3
 
 | Suite | Commande | Résultat |
 |---|---|---|
-| Mathématiques (pytest) | `cd math && .venv/bin/python -m pytest -q` | **27 / 27 réussis** |
+| Mathématiques (pytest) | `cd math && .venv/bin/python -m pytest -q` | **16 / 16 réussis** |
 | Typage Svelte/TypeScript | `cd game && npm run check` | **0 erreur, 0 avertissement** |
 | Tests unitaires du jeu (vitest) | `cd game && npm test` | **19 / 19 réussis** |
 | Build de production | `npm run build` | **réussi** |
 | Tests navigateur bout en bout | `npm run e2e` | **65 / 65 vérifications réussies** (`game/e2e/report.json`) |
-| Simulation Monte-Carlo | `python -m rally_math.simulate -n 10000000` | RTP 96,203 % ± 0,40 % (IC 95 %) contre 96,486 % exact, z = −1,38 : **cohérent** |
+| Simulation Monte-Carlo | `python -m rally_math.simulate -n 200000000` | RTP 96,468 % ± 0,108 % (IC 95 %) contre 96,487 % exact, z = −0,36 : **cohérent** |
 | Outil officiel engineio/math-sdk | `stake/tools/verify_with_official_sdk.py` | **format conforme, 0 problème de soumission, 6/6 contrôles de risque** |
 
 ## Détail par exigence
 
 | Exigence | Tests |
 |---|---|
-| Calcul des gains | 11 cas de lignes (Wild, Scatter qui coupe la ligne, choix du meilleur gain), en Python et en TypeScript ; cohérence `winInfo` = somme des gains, `win = basePay × multiplicateur` |
-| Probabilités et table des gains | Table de gains monotone ; contraintes des bandes (au plus 1 Scatter par fenêtre, Wilds sur les rouleaux 2-4) ; test du χ² de la distribution des Scatters, exacte contre 200 000 tirages |
-| Exactitude du RTP | RTP exact recalculé par une **méthode indépendante** (linéarité sur les lois marginales, à 10⁻⁹ près) ; Monte-Carlo de 400 000 tours dans les tests (\|z\| < 4) et de 10 millions dans le rapport ; RTP dans les limites Stake |
+| Calcul des gains | Cas de façons de gagner (multiplication par rouleau, Wild, Scatter exclu), en Python et en TypeScript ; chemin vectorisé = moteur de référence sur 3 000 grilles ; `win = basePay × façons × multiplicateur` |
+| Probabilités et table des gains | Table de gains monotone et compatible avec le RGS (paliers de 0,1×) ; contraintes des bandes (au plus 1 Scatter par fenêtre de 5, pas de Wild sur le rouleau 1) ; loi jointe Wilds/Trophées exacte contre énumération |
+| Exactitude du RTP | Méthode polynomiale exacte **comparée à une énumération exhaustive** de toutes les grilles (bandes réduites, à 10⁻¹⁰ près) ; Monte-Carlo de 4 millions de tours dans les tests (\|z\| < 4) et de 200 millions dans le rapport ; RTP dans les limites Stake |
 | Indépendance des résultats | Rejeu déterministe à partir des positions d'arrêt ; ordre des tours sans effet ; aucune variable d'état entre deux tours |
-| Événements de bonus | Multiplicateur Rally appliqué au tour même ; relances et plafond de 50 tours restants (scénario exact de 62 tours) ; plafond de gain 5 000× ; bonus forcé en démo |
+| Événements de bonus | Multiplicateur Rally appliqué au tour même ; relances et plafond de 50 tours restants (scénario déterministe) ; plafond de gain ; bonus forcé en démo ; chaque book Stake reconstruit par le moteur de référence |
 | Cohérence affichage et résultat | 400 tours : chaque grille affichée = grille du book, gain affiché = paiement ; dans le navigateur : gain et solde affichés = réponse du RGS, sur 5 formats d'écran et pendant le bonus |
 | Parité des moteurs Python et TypeScript | 200 tours de référence (dont 100 bonus) reproduits **à l'identique** |
 | Erreurs de données | Book vide, `finalWin` incohérent ou grille malformée : rejetés avant affichage ; stockage local corrompu : réinitialisation ; erreur serveur simulée : boîte de dialogue puis reprise |
@@ -30,7 +30,7 @@ Date : 15 novembre 2026 · environnement : conteneur Linux, Node 22.23, Python 3
 | Tailles d'écran | 1920×1080, 1366×768, iPhone 13 en portrait, Pixel 7 en paysage, iPad en portrait : pas de débordement horizontal, bouton de lancement entièrement visible, badge démo visible, aucune erreur console |
 | Réduction des animations | Présentation d'un tour en moins de 9 s (mesuré : 4,4 s) |
 | Client RGS Stake | Points d'accès, `sessionID`, montants, correspondance des codes d'erreur, panne réseau (requêtes simulées, **sans identifiants réels**) |
-| Génération des fichiers de production | Mini-export Stake valide (ids, poids > 0, paiements identiques entre books et table, RTP de la table = exact) ; build Vite |
+| Génération des fichiers de production | Mini-export Stake valide (ids, poids > 0, paiements identiques entre books et table, RTP de la table = exact) ; export complet vérifié par l'outil officiel (gain max 5 000× présent) ; build Vite |
 | Gains ≤ mise non célébrés | Paliers de gain : `ldw` pour un gain ≤ mise, sans célébration |
 
 Captures d'écran : `game/e2e/screenshots/` (chargement, jeu, gains, bonus, table des gains, réglages, historique, rejeu, erreur).

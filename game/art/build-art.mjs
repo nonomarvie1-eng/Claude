@@ -1,387 +1,428 @@
-// GOLDEN RALLY — procedural art generator (tennis club, original designs;
-// no real players, tournaments, trophies or brands are depicted).
-// Every visual asset of the game is generated from code in this file
-// (no third-party images, no AI image service).  Output: art/svg/*.svg,
-// rasterised to public/assets/*.png by art/rasterize.mjs.
+// GOLDEN RALLY — procedural CARTOON art generator.
+// Thick ink outlines, flat colours with cel shading, hard comic shadows,
+// halftone dots.  Every asset is drawn from code written for this project:
+// no third-party image, no AI image service, no real person, tournament,
+// trophy or brand.  Output: art/svg/*.svg -> rasterised by art/rasterize.mjs.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(HERE, 'svg');
-fs.mkdirSync(OUT, { recursive: true });
-
+const CFG = JSON.parse(fs.readFileSync(path.join(HERE, '..', '..', 'shared', 'game-config.json'), 'utf8'));
 const TAU = Math.PI * 2;
 const f = (n) => +n.toFixed(2);
 const pol = (cx, cy, r, a) => [f(cx + r * Math.cos(a)), f(cy + r * Math.sin(a))];
 
-// ------------------------------------------------------------------ palette
-const P = {
-  navy0: '#040816',
-  navy1: '#0a1430',
-  navy2: '#13224d',
-  navy3: '#1d3370',
-  gold: '#d9a93f',
-  goldHi: '#fff1b8',
-  copper: '#c8763f',
-  ink: '#08102a',
-};
+const INK = '#1b1410';
+const LW = 6;
+const SKIN = { light: '#f7cfa6', mid: '#e8a97a', brown: '#b9784c', shadeL: '#e2a87f', shadeM: '#c98557', shadeB: '#94593a' };
 
 const DEFS = `
 <defs>
-  <linearGradient id="gold" x1="0" y1="0" x2="0.35" y2="1">
-    <stop offset="0" stop-color="#fff6c9"/><stop offset="0.18" stop-color="#f4d27a"/>
-    <stop offset="0.45" stop-color="#b8842a"/><stop offset="0.62" stop-color="#f1cf72"/>
-    <stop offset="0.82" stop-color="#9a6a1c"/><stop offset="1" stop-color="#5c3a0c"/>
-  </linearGradient>
-  <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#7a5212"/><stop offset="0.25" stop-color="#f6d98a"/>
-    <stop offset="0.5" stop-color="#b8842a"/><stop offset="0.75" stop-color="#fff0b0"/>
-    <stop offset="1" stop-color="#6b4510"/>
-  </linearGradient>
-  <radialGradient id="goldR" cx="0.38" cy="0.32" r="0.75">
-    <stop offset="0" stop-color="#fff7cf"/><stop offset="0.35" stop-color="#ecc463"/>
-    <stop offset="0.75" stop-color="#9c6b1d"/><stop offset="1" stop-color="#4f320a"/>
-  </radialGradient>
-  <linearGradient id="copper" x1="0" y1="0" x2="0.4" y2="1">
-    <stop offset="0" stop-color="#ffd9bd"/><stop offset="0.25" stop-color="#e3925a"/>
-    <stop offset="0.55" stop-color="#8f4020"/><stop offset="0.75" stop-color="#e8a172"/>
-    <stop offset="1" stop-color="#4e1d0a"/>
-  </linearGradient>
-  <linearGradient id="silver" x1="0" y1="0" x2="0.4" y2="1">
-    <stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#cfd8e4"/>
-    <stop offset="0.55" stop-color="#6f7c8f"/><stop offset="0.78" stop-color="#e9eef5"/>
-    <stop offset="1" stop-color="#3a4352"/>
-  </linearGradient>
-  <linearGradient id="blued" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#8fb6ff"/><stop offset="0.4" stop-color="#2853b8"/>
-    <stop offset="1" stop-color="#0b1c55"/>
-  </linearGradient>
-  <radialGradient id="enamel" cx="0.4" cy="0.35" r="0.8">
-    <stop offset="0" stop-color="#fffaf0"/><stop offset="0.7" stop-color="#efe4cc"/>
-    <stop offset="1" stop-color="#c9b48a"/>
-  </radialGradient>
-  <radialGradient id="navyDisc" cx="0.45" cy="0.35" r="0.8">
-    <stop offset="0" stop-color="#22397c"/><stop offset="0.6" stop-color="#0f1c45"/>
-    <stop offset="1" stop-color="#060b20"/>
-  </radialGradient>
-  <radialGradient id="ruby" cx="0.38" cy="0.3" r="0.8">
-    <stop offset="0" stop-color="#ffc2cc"/><stop offset="0.3" stop-color="#ff3d64"/>
-    <stop offset="0.7" stop-color="#a0062c"/><stop offset="1" stop-color="#3d0010"/>
-  </radialGradient>
-  <radialGradient id="sapphire" cx="0.38" cy="0.3" r="0.8">
-    <stop offset="0" stop-color="#d6e6ff"/><stop offset="0.3" stop-color="#4d8cff"/>
-    <stop offset="0.7" stop-color="#123a9e"/><stop offset="1" stop-color="#040f3a"/>
-  </radialGradient>
-  <radialGradient id="glass" cx="0.35" cy="0.3" r="0.9">
-    <stop offset="0" stop-color="#e8f3ff" stop-opacity="0.55"/><stop offset="0.6" stop-color="#7fa8e0" stop-opacity="0.18"/>
-    <stop offset="1" stop-color="#1b3570" stop-opacity="0.35"/>
-  </radialGradient>
-  <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
-    <stop offset="0" stop-color="#ffe9a8" stop-opacity="0.85"/><stop offset="0.45" stop-color="#f0b84a" stop-opacity="0.35"/>
-    <stop offset="1" stop-color="#f0b84a" stop-opacity="0"/>
-  </radialGradient>
-  <radialGradient id="haloBlue" cx="0.5" cy="0.5" r="0.5">
-    <stop offset="0" stop-color="#bcd4ff" stop-opacity="0.8"/><stop offset="0.5" stop-color="#5a86ff" stop-opacity="0.3"/>
-    <stop offset="1" stop-color="#5a86ff" stop-opacity="0"/>
-  </radialGradient>
-  <radialGradient id="greenDisc" cx="0.45" cy="0.35" r="0.8">
-    <stop offset="0" stop-color="#2f8a5c"/><stop offset="0.6" stop-color="#14492f"/>
-    <stop offset="1" stop-color="#06180f"/>
-  </radialGradient>
-  <radialGradient id="ballG" cx="0.38" cy="0.32" r="0.8">
-    <stop offset="0" stop-color="#f9ffc2"/><stop offset="0.45" stop-color="#dcef4c"/>
-    <stop offset="0.85" stop-color="#9fb526"/><stop offset="1" stop-color="#5f6e12"/>
-  </radialGradient>
-  <linearGradient id="clay" x1="0" y1="0" x2="0.4" y2="1">
-    <stop offset="0" stop-color="#f0a274"/><stop offset="0.45" stop-color="#c8643a"/>
-    <stop offset="1" stop-color="#6e2a12"/>
-  </linearGradient>
-  <linearGradient id="ivory" x1="0" y1="0" x2="0.5" y2="1">
-    <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#f1e8d2"/>
-    <stop offset="1" stop-color="#c2b48e"/>
-  </linearGradient>
-  <linearGradient id="glassG" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#d8f2e4" stop-opacity="0.35"/><stop offset="0.5" stop-color="#7fc7a0" stop-opacity="0.12"/>
-    <stop offset="1" stop-color="#1b5a3e" stop-opacity="0.4"/>
-  </linearGradient>
-  <radialGradient id="haloGreen" cx="0.5" cy="0.5" r="0.5">
-    <stop offset="0" stop-color="#f6ffc0" stop-opacity="0.75"/><stop offset="0.5" stop-color="#9fd16a" stop-opacity="0.25"/>
-    <stop offset="1" stop-color="#9fd16a" stop-opacity="0"/>
-  </radialGradient>
-  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.6"/>
+  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2a8"/><stop offset=".45" stop-color="#ffc83a"/><stop offset="1" stop-color="#e08a12"/></linearGradient>
+  <linearGradient id="goldText" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff7c2"/><stop offset=".5" stop-color="#ffd23f"/><stop offset=".51" stop-color="#ffb21e"/><stop offset="1" stop-color="#f47d12"/></linearGradient>
+  <radialGradient id="ballG" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#fbffb0"/><stop offset=".55" stop-color="#d9ef3b"/><stop offset="1" stop-color="#a9c21c"/></radialGradient>
+  <pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4.5" cy="4.5" r="1.6" fill="#000" opacity=".16"/></pattern>
+  <pattern id="dotsL" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4.5" cy="4.5" r="1.6" fill="#fff" opacity=".18"/></pattern>
+  <pattern id="grain" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="2" r=".6" fill="#000" opacity=".06"/><circle cx="4" cy="5" r=".5" fill="#fff" opacity=".07"/></pattern>
+  <filter id="comic" x="-20%" y="-20%" width="150%" height="150%">
+    <feOffset dx="5" dy="6" in="SourceAlpha" result="o"/><feFlood flood-color="#000" flood-opacity=".38"/><feComposite in2="o" operator="in" result="s"/>
+    <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
-  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
-  <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
 </defs>`;
 
-const svg = (w, h, body, extraStyle = '') =>
-  `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-<style>
-  .cinzel{font-family:'Cinzel',serif;font-weight:700}
-  .marcellus{font-family:'Marcellus',serif}
-  .poiret{font-family:'Poiret One',sans-serif}
-  ${extraStyle}
-</style>${DEFS}${body}</svg>`;
+const svg = (w, h, body) => `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+<style>.lg{font-family:'Luckiest Guy',sans-serif}.li{font-family:'Lilita One',sans-serif}</style>${DEFS}${body}</svg>`;
 
-// ------------------------------------------------------------------ helpers
-function gearPath(cx, cy, rOut, rRoot, teeth, { tip = 0.45, holeR = 0 } = {}) {
-  const pts = [];
-  const step = TAU / teeth;
-  for (let i = 0; i < teeth; i++) {
-    const a = i * step;
-    const w = (step * tip) / 2;
-    pts.push(pol(cx, cy, rRoot, a - step / 2 + 0.02));
-    pts.push(pol(cx, cy, rRoot, a - w - 0.05));
-    pts.push(pol(cx, cy, rOut, a - w * 0.75));
-    pts.push(pol(cx, cy, rOut, a + w * 0.75));
-    pts.push(pol(cx, cy, rRoot, a + w + 0.05));
-  }
-  let d = 'M' + pts.map((p) => p.join(',')).join('L') + 'Z';
-  if (holeR) d += circlePath(cx, cy, holeR);
-  return d;
-}
-const circlePath = (cx, cy, r) => `M${f(cx - r)},${cy}a${r},${r} 0 1,0 ${2 * r},0a${r},${r} 0 1,0 ${-2 * r},0Z`;
+const ink = (w = LW) => `stroke="${INK}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
 
-function spokes(cx, cy, rIn, rOut, n, width, rot = 0) {
-  let s = '';
-  for (let i = 0; i < n; i++) {
-    const a = rot + (i * TAU) / n;
-    const [x1, y1] = pol(cx, cy, rIn, a);
-    const [x2, y2] = pol(cx, cy, rOut, a);
-    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke-width="${width}" stroke-linecap="round"/>`;
-  }
-  return s;
-}
-
-function ticks(cx, cy, r1, r2, n, width, color, skipEvery = 0) {
-  let s = '';
-  for (let i = 0; i < n; i++) {
-    if (skipEvery && i % skipEvery === 0) continue;
-    const a = (i * TAU) / n - Math.PI / 2;
-    const [x1, y1] = pol(cx, cy, r1, a);
-    const [x2, y2] = pol(cx, cy, r2, a);
-    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`;
-  }
-  return s;
-}
-
-function spiral(cx, cy, r0, r1, turns, steps = 220) {
+function burst(cx, cy, r1, r2, n, fill, extra = '') {
   let d = '';
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    const a = t * turns * TAU;
-    const r = r0 + (r1 - r0) * t;
-    const [x, y] = pol(cx, cy, r, a);
+  for (let i = 0; i < n * 2; i++) {
+    const [x, y] = pol(cx, cy, i % 2 ? r1 : r2, (i * Math.PI) / n - Math.PI / 2);
     d += (i ? 'L' : 'M') + x + ',' + y;
   }
-  return d;
+  return `<path d="${d}Z" fill="${fill}" ${extra}/>`;
 }
 
-function jewel(cx, cy, r) {
-  return `<circle cx="${cx}" cy="${cy}" r="${r + 2.2}" fill="url(#gold)"/>
-  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#ruby)"/>
-  <circle cx="${f(cx - r * 0.35)}" cy="${f(cy - r * 0.35)}" r="${f(r * 0.28)}" fill="#fff" opacity="0.8"/>`;
-}
-
-// art-deco medallion used behind high symbols
-function medallion(cx, cy, r, accent = 'url(#gold)') {
-  let rays = '';
-  for (let i = 0; i < 24; i++) {
-    const a = (i * TAU) / 24;
-    const [x1, y1] = pol(cx, cy, r * 0.55, a);
-    const [x2, y2] = pol(cx, cy, r * 0.93, a);
-    rays += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#d9a93f" stroke-opacity="${i % 2 ? 0.12 : 0.22}" stroke-width="${i % 2 ? 1.2 : 2.4}"/>`;
-  }
-  return `<g filter="url(#shadow)">
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${accent}"/>
-    <circle cx="${cx}" cy="${cy}" r="${r - 5}" fill="#2a1c06"/>
-    <circle cx="${cx}" cy="${cy}" r="${r - 7}" fill="url(#navyDisc)"/>
-  </g>
-  ${rays}
-  <circle cx="${cx}" cy="${cy}" r="${r - 14}" fill="none" stroke="#d9a93f" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="2 5"/>`;
-}
-
-// ------------------------------------------------------------------ symbols (256x256)
-const S = 256;
-const C = 128;
-
-// tennis ball with its classic seam, drawn generically
-function ball(cx, cy, r, fill = 'url(#ballG)', seam = '#f8f6ea', sw = 0) {
-  const k = r * 0.62;
-  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}"/>
-  <path d="M${f(cx - r * 0.95)},${f(cy - r * 0.3)} C${f(cx - k * 0.3)},${f(cy - r * 0.2)} ${f(cx - k * 0.3)},${f(cy + r * 0.85)} ${f(cx - r * 0.45)},${f(cy + r * 0.9)}" fill="none" stroke="${seam}" stroke-width="${sw || f(r * 0.1)}" stroke-linecap="round"/>
-  <path d="M${f(cx + r * 0.45)},${f(cy - r * 0.9)} C${f(cx + k * 0.3)},${f(cy - r * 0.85)} ${f(cx + k * 0.3)},${f(cy + r * 0.2)} ${f(cx + r * 0.95)},${f(cy + r * 0.3)}" fill="none" stroke="${seam}" stroke-width="${sw || f(r * 0.1)}" stroke-linecap="round"/>
-  <ellipse cx="${f(cx - r * 0.35)}" cy="${f(cy - r * 0.42)}" rx="${f(r * 0.32)}" ry="${f(r * 0.18)}" fill="#fff" opacity="0.45" transform="rotate(-30 ${f(cx - r * 0.35)} ${f(cy - r * 0.42)})"/>`;
-}
-
-function laurel(cx, cy, r, color = 'url(#gold)') {
+function rays(cx, cy, r, n, color, op) {
   let s = '';
-  for (const side of [-1, 1]) {
-    for (let i = 0; i < 9; i++) {
-      const a = Math.PI / 2 + side * (0.35 + i * 0.27);
-      const [x, y] = pol(cx, cy, r, a);
-      const rot = (a * 180) / Math.PI + (side > 0 ? -60 : 60);
-      s += `<ellipse cx="${x}" cy="${y}" rx="${f(r * 0.17)}" ry="${f(r * 0.07)}" fill="${color}" transform="rotate(${f(rot)} ${x} ${y})"/>`;
-    }
+  for (let i = 0; i < n; i++) {
+    const a0 = (i * TAU) / n, a1 = a0 + TAU / n / 2;
+    const [x0, y0] = pol(cx, cy, r, a0), [x1, y1] = pol(cx, cy, r, a1);
+    s += `<path d="M${cx},${cy}L${x0},${y0}L${x1},${y1}Z" fill="${color}" opacity="${op}"/>`;
   }
   return s;
 }
 
-function banner(cx, y, text, size = 23) {
-  return `<g filter="url(#shadow)">
-    <path d="M${cx - 88},${y} L${cx - 72},${y - 14} H${cx + 72} L${cx + 88},${y} L${cx + 72},${y + 14} H${cx - 72} Z" fill="url(#gold)"/>
-    <path d="M${cx - 80},${y} L${cx - 68},${y - 10} H${cx + 68} L${cx + 80},${y} L${cx + 68},${y + 10} H${cx - 68} Z" fill="#0b2a1e"/>
-  </g>
-  <text x="${cx}" y="${y + 8}" text-anchor="middle" class="cinzel" font-size="${size}" letter-spacing="6" fill="url(#gold)">${text}</text>`;
+function ball(cx, cy, r, w = LW) {
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#ballG)" ${ink(w)}/>
+  <path d="M${f(cx - r * .92)},${f(cy - r * .35)} C${f(cx - r * .25)},${f(cy - r * .25)} ${f(cx - r * .2)},${f(cy + r * .8)} ${f(cx - r * .45)},${f(cy + r * .88)}" fill="none" stroke="#fffde8" stroke-width="${f(r * .14)}" stroke-linecap="round"/>
+  <path d="M${f(cx + r * .45)},${f(cy - r * .88)} C${f(cx + r * .2)},${f(cy - r * .8)} ${f(cx + r * .25)},${f(cy + r * .25)} ${f(cx + r * .92)},${f(cy + r * .35)}" fill="none" stroke="#fffde8" stroke-width="${f(r * .14)}" stroke-linecap="round"/>
+  <ellipse cx="${f(cx - r * .35)}" cy="${f(cy - r * .4)}" rx="${f(r * .25)}" ry="${f(r * .14)}" fill="#fff" opacity=".7" transform="rotate(-30 ${f(cx - r * .35)} ${f(cy - r * .4)})"/>`;
 }
 
-function symWild() {
-  const cx = C;
-  // racket head
+function eye(cx, cy, r, look = [0, 0], lid = 0, lidColor = SKIN.light) {
+  const px = cx + look[0] * r * .35, py = cy + look[1] * r * .35;
+  let s = `<ellipse cx="${cx}" cy="${cy}" rx="${f(r * .78)}" ry="${r}" fill="#fff" ${ink(4)}/>
+  <circle cx="${f(px)}" cy="${f(py + r * .1)}" r="${f(r * .48)}" fill="${INK}"/>
+  <circle cx="${f(px - r * .16)}" cy="${f(py - r * .12)}" r="${f(r * .17)}" fill="#fff"/>`;
+  if (lid > 0) {
+    const ly = cy - r + lid * 2 * r;
+    s += `<path d="M${f(cx - r * .85)},${f(cy - r * .1)} Q${cx},${f(cy - r * 1.5)} ${f(cx + r * .85)},${f(cy - r * .1)} L${f(cx + r * .85)},${f(ly)} Q${cx},${f(ly - r * .15)} ${f(cx - r * .85)},${f(ly)}Z" fill="${lidColor}" ${ink(4)}/>`;
+  }
+  return s;
+}
+
+// character card: the head pops out above the top edge
+function card(id, c1, c2, body) {
+  return `
+  <radialGradient id="bg${id}" cx=".5" cy=".4" r=".75"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>
+  <clipPath id="cc${id}"><rect x="16" y="34" width="224" height="206" rx="30"/></clipPath>
+  <clipPath id="ch${id}"><rect x="16" y="-80" width="224" height="320" rx="30"/></clipPath>
+  <clipPath id="bot${id}"><rect x="0" y="200" width="256" height="60"/></clipPath>
+  <g filter="url(#comic)">
+    <rect x="16" y="34" width="224" height="206" rx="30" fill="url(#bg${id})"/>
+    <g clip-path="url(#cc${id})">${rays(128, 140, 220, 16, '#fff', .1)}<rect x="16" y="34" width="224" height="206" fill="url(#dotsL)"/></g>
+    <rect x="16" y="34" width="224" height="206" rx="30" fill="none" ${ink(LW + 1)}/>
+  </g>
+  <g clip-path="url(#ch${id})">${body}</g>
+  <rect x="16" y="34" width="224" height="206" rx="30" fill="none" stroke="${INK}" stroke-width="${LW + 1}" clip-path="url(#bot${id})"/>`;
+}
+
+const torso = (fill) => `<path d="M30,262 C32,214 62,196 100,190 L156,190 C194,196 224,214 226,262Z" fill="${fill}" ${ink()}/>`;
+
+function president() {
+  const body = `
+    ${torso('#26346a')}
+    <path d="M100,190 L128,234 L156,190Z" fill="#fff" ${ink(4)}/>
+    <path d="M110,204 L128,212 L146,204 L146,224 L128,216 L110,224Z" fill="#d93b3b" ${ink(4)}/>
+    <path d="M172,212 h20 v14 q-10,10 -20,0Z" fill="url(#gold)" ${ink(3)}/>
+    <rect x="110" y="166" width="36" height="30" fill="${SKIN.light}" ${ink(4)}/>
+    <ellipse cx="62" cy="116" rx="13" ry="17" fill="${SKIN.light}" ${ink(5)}/>
+    <ellipse cx="194" cy="116" rx="13" ry="17" fill="${SKIN.light}" ${ink(5)}/>
+    <ellipse cx="128" cy="104" rx="64" ry="70" fill="${SKIN.light}" ${ink()}/>
+    <path d="M78,150 Q128,186 178,150 Q170,176 128,178 Q86,176 78,150Z" fill="${SKIN.shadeL}" opacity=".7"/>
+    <path d="M66,98 q-14,-24 4,-38 q-2,18 16,22 q-10,10 -20,16Z" fill="#ececf2" ${ink(4)}/>
+    <path d="M190,98 q14,-24 -4,-38 q2,18 -16,22 q10,10 20,16Z" fill="#ececf2" ${ink(4)}/>
+    <ellipse cx="104" cy="56" rx="22" ry="11" fill="#fff" opacity=".75" transform="rotate(-20 104 56)"/>
+    <path d="M118,38 q22,-18 34,4 q-14,-6 -22,4" fill="none" ${ink(4)}/>
+    <path d="M82,80 q18,-18 36,-6" fill="none" stroke="#d2d2da" stroke-width="12" stroke-linecap="round"/>
+    <path d="M140,66 q18,-14 36,0" fill="none" stroke="#d2d2da" stroke-width="12" stroke-linecap="round"/>
+    <path d="M82,80 q18,-18 36,-6 M140,66 q18,-14 36,0" fill="none" stroke="${INK}" stroke-width="2.5" opacity=".6"/>
+    ${eye(102, 100, 13, [.4, .2], .55)}
+    ${eye(156, 98, 15, [-.3, .1])}
+    <circle cx="156" cy="98" r="21" fill="#bfe6ff" fill-opacity=".35" stroke="#ffc83a" stroke-width="6"/>
+    <circle cx="156" cy="98" r="21" fill="none" stroke="${INK}" stroke-width="2.5"/>
+    <path d="M176,106 C192,138 186,170 176,196" fill="none" stroke="#ffc83a" stroke-width="3" stroke-dasharray="4 3"/>
+    <ellipse cx="128" cy="130" rx="17" ry="14" fill="#e8665a" ${ink(5)}/>
+    <ellipse cx="122" cy="125" rx="5" ry="3" fill="#fff" opacity=".7"/>
+    <path d="M128,140 C108,132 86,140 74,130 C64,124 58,132 66,140 C54,140 52,128 62,120 C80,150 108,150 128,146 C148,150 176,150 194,120 C204,128 202,140 190,140 C198,132 192,124 182,130 C170,140 148,132 128,140Z" fill="#f4f4f8" ${ink(5)}/>
+    <path d="M114,160 q14,8 28,-2" fill="none" ${ink(4)}/>
+    <circle cx="86" cy="136" r="8" fill="#ff8c8c" opacity=".45"/>`;
+  return svg(256, 256, card('p', '#c0485a', '#5c1424', body));
+}
+
+function champion() {
   let strings = '';
-  for (let i = -5; i <= 5; i++) strings += `<line x1="${cx + i * 9}" y1="12" x2="${cx + i * 9}" y2="150" stroke="#f5eedc" stroke-width="1.6" opacity="0.9"/>`;
-  for (let j = 0; j < 14; j++) strings += `<line x1="${cx - 60}" y1="${24 + j * 9}" x2="${cx + 60}" y2="${24 + j * 9}" stroke="#f5eedc" stroke-width="1.6" opacity="0.9"/>`;
-  return svg(S, S, `
-  <circle cx="${cx}" cy="100" r="110" fill="url(#halo)"/>
-  <clipPath id="head"><ellipse cx="${cx}" cy="80" rx="46" ry="58"/></clipPath>
-  <g filter="url(#shadow)" transform="rotate(-18 ${cx} 120)">
-    <ellipse cx="${cx}" cy="80" rx="56" ry="68" fill="url(#gold)"/>
-    <ellipse cx="${cx}" cy="80" rx="47" ry="59" fill="#0b2a1e"/>
-    <g clip-path="url(#head)">${strings}</g>
-    <path d="M${cx - 30},140 Q${cx},150 ${cx - 7},170 L${cx + 7},170 Q${cx},150 ${cx + 30},140 L${cx + 20},136 Q${cx},146 ${cx},160 Q${cx},146 ${cx - 20},136 Z" fill="url(#gold)"/>
-    <rect x="${cx - 9}" y="168" width="18" height="56" rx="4" fill="url(#ivory)"/>
-    ${[0, 1, 2, 3, 4, 5].map((i) => `<line x1="${cx - 9}" y1="${172 + i * 9}" x2="${cx + 9}" y2="${178 + i * 9}" stroke="#a89a78" stroke-width="2"/>`).join('')}
-    <rect x="${cx - 11}" y="220" width="22" height="8" rx="3" fill="url(#gold)"/>
-  </g>
-  ${banner(cx, 214, 'WILD')}
-  <path d="M${cx - 50},40 A60,70 0 0,1 ${cx - 10},14" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round"/>
-  `);
+  for (let i = -4; i <= 4; i++) strings += `<line x1="${i * 9}" y1="-60" x2="${i * 9}" y2="60" stroke="#fff" stroke-width="2"/>`;
+  for (let j = -5; j <= 5; j++) strings += `<line x1="-46" y1="${j * 9}" x2="46" y2="${j * 9}" stroke="#fff" stroke-width="2"/>`;
+  const body = `
+    <g transform="translate(198 90) rotate(28)">
+      <clipPath id="rhc"><ellipse cx="0" cy="0" rx="34" ry="46"/></clipPath>
+      <rect x="-6" y="44" width="12" height="80" rx="5" fill="#2b2b2b" ${ink(4)}/>
+      <ellipse cx="0" cy="0" rx="42" ry="54" fill="#d93b3b" ${ink()}/>
+      <ellipse cx="0" cy="0" rx="34" ry="46" fill="#1f5e33"/>
+      <g clip-path="url(#rhc)">${strings}</g>
+      <ellipse cx="0" cy="0" rx="34" ry="46" fill="none" ${ink(3)}/>
+    </g>
+    <path d="M70,52 C40,36 18,64 30,92 C22,116 38,134 60,126 C50,100 60,76 80,64Z" fill="#2a1a12" ${ink(5)}/>
+    ${torso('#ffffff')}
+    <path d="M100,190 L128,214 L156,190" fill="none" stroke="#2f9a4a" stroke-width="9"/>
+    <path d="M100,190 L128,214 L156,190" fill="none" ${ink(3)}/>
+    <path d="M40,232 h176" stroke="#2f9a4a" stroke-width="7"/>
+    <rect x="110" y="164" width="36" height="32" fill="${SKIN.brown}" ${ink(4)}/>
+    <ellipse cx="128" cy="108" rx="60" ry="66" fill="${SKIN.brown}" ${ink()}/>
+    <path d="M78,150 Q128,186 178,150 Q170,174 128,176 Q86,174 78,150Z" fill="${SKIN.shadeB}" opacity=".6"/>
+    <path d="M68,84 C66,40 100,28 128,30 C160,28 192,44 188,86 C176,64 150,56 128,60 C102,58 82,66 68,84Z" fill="#2a1a12" ${ink(5)}/>
+    <path d="M68,78 Q128,54 190,78 L190,94 Q128,70 68,94Z" fill="#d93b3b" ${ink(4)}/>
+    <path d="M70,86 Q128,63 188,86" fill="none" stroke="#fff" stroke-width="3"/>
+    <path d="M88,94 l26,8 M168,94 l-26,8" ${ink(7)}/>
+    ${eye(104, 114, 12, [.5, 0], 0, SKIN.brown)}
+    ${eye(152, 114, 12, [.5, 0], 0, SKIN.brown)}
+    <path d="M124,120 q6,16 -2,20 q6,2 10,-2" fill="none" ${ink(4)}/>
+    <path d="M100,146 Q128,172 158,144 Q156,162 128,166 Q104,164 100,146Z" fill="#fff" ${ink(4)}/>
+    <path d="M110,149 v9 M120,152 v11 M130,153 v11 M140,152 v11 M150,148 v9" stroke="${INK}" stroke-width="1.5"/>
+    <path d="M180,122 q9,11 0,17 q-9,-6 0,-17Z" fill="#7cd3ff" ${ink(3)}/>
+    ${burst(176, 152, 4, 12, 4, '#fff', ink(2))}`;
+  return svg(256, 256, card('c', '#5fc06e', '#1f5e33', body));
 }
 
-function symScatter() {
-  const cx = C;
-  let rays = '';
-  for (let i = 0; i < 16; i++) {
-    const a = (i * TAU) / 16;
-    const [x1, y1] = pol(cx, 100, 70, a - 0.07);
-    const [x2, y2] = pol(cx, 100, i % 2 ? 104 : 120, a);
-    const [x3, y3] = pol(cx, 100, 70, a + 0.07);
-    rays += `<path d="M${x1},${y1} L${x2},${y2} L${x3},${y3} Z" fill="url(#gold)" opacity="0.55"/>`;
+function umpire() {
+  const body = `
+    ${torso('#1f5e33')}
+    <path d="M100,190 L128,228 L156,190Z" fill="#fff" ${ink(4)}/>
+    <path d="M122,204 h12 l4,32 l-10,10 l-10,-10Z" fill="#26346a" ${ink(3)}/>
+    <rect x="112" y="166" width="32" height="30" fill="${SKIN.mid}" ${ink(4)}/>
+    <ellipse cx="72" cy="122" rx="11" ry="15" fill="${SKIN.mid}" ${ink(5)}/>
+    <ellipse cx="128" cy="112" rx="54" ry="74" fill="${SKIN.mid}" ${ink()}/>
+    <path d="M80,160 Q128,198 176,160 Q166,182 128,186 Q90,182 80,160Z" fill="${SKIN.shadeM}" opacity=".7"/>
+    <path d="M72,60 C76,20 180,20 184,60Z" fill="#ffffff" ${ink(5)}/>
+    <path d="M62,58 h132 l20,12 h-152Z" fill="#26346a" ${ink(5)}/>
+    <path d="M84,90 l30,10 M172,90 l-30,10" ${ink(8)}/>
+    <circle cx="106" cy="110" r="17" fill="#fff" ${ink(5)}/>
+    <circle cx="152" cy="110" r="17" fill="#fff" ${ink(5)}/>
+    <line x1="123" y1="110" x2="135" y2="110" ${ink(5)}/>
+    <circle cx="108" cy="113" r="5" fill="${INK}"/><circle cx="150" cy="113" r="5" fill="${INK}"/>
+    <path d="M124,122 q-4,16 6,18" fill="none" ${ink(4)}/>
+    <ellipse cx="128" cy="160" rx="22" ry="18" fill="#7a1f1f" ${ink(5)}/>
+    <path d="M112,168 q16,-10 32,0 q-16,10 -32,0Z" fill="#e8665a"/>
+    <path d="M112,151 h32" stroke="#fff" stroke-width="5"/>
+    <path d="M58,150 l-14,6 M56,166 l-16,0 M198,150 l14,6 M200,166 l16,0" ${ink(4)}/>
+    <g filter="url(#comic)">
+      <path d="M140,4 h80 a12,12 0 0 1 12,12 v30 a12,12 0 0 1 -12,12 h-48 l-20,18 l4,-18 h-16 a12,12 0 0 1 -12,-12 v-30 a12,12 0 0 1 12,-12Z" fill="#fff" ${ink(5)}/>
+    </g>
+    <text x="182" y="45" text-anchor="middle" class="lg" font-size="30" fill="#d93b3b" stroke="${INK}" stroke-width="2">OUT!</text>`;
+  return svg(256, 256, card('u', '#4f73c9', '#182650', body));
+}
+
+function ballKid() {
+  const body = `
+    ${torso('#2f9a4a')}
+    <path d="M30,232 h196" stroke="#fff" stroke-width="8"/>
+    <rect x="112" y="168" width="32" height="28" fill="${SKIN.light}" ${ink(4)}/>
+    <ellipse cx="62" cy="122" rx="16" ry="20" fill="${SKIN.light}" ${ink(5)}/>
+    <ellipse cx="190" cy="122" rx="16" ry="20" fill="${SKIN.light}" ${ink(5)}/>
+    <circle cx="126" cy="116" r="62" fill="${SKIN.light}" ${ink()}/>
+    <path d="M70,140 Q126,190 182,140 Q172,172 126,176 Q80,172 70,140Z" fill="${SKIN.shadeL}" opacity=".6"/>
+    <path d="M68,92 C66,46 104,34 128,36 C160,34 190,52 186,92 C170,74 150,70 128,70 C106,70 84,76 68,92Z" fill="#2f9a4a" ${ink(5)}/>
+    <path d="M60,86 C44,86 30,94 28,104 C46,102 60,100 72,96Z" fill="#2f9a4a" ${ink(5)}/>
+    <path d="M150,72 q14,-14 10,6 q12,-6 6,10" fill="#e8742a" ${ink(4)}/>
+    <path d="M88,98 q12,-12 26,-4 M140,94 q14,-8 26,4" fill="none" ${ink(6)}/>
+    ${eye(104, 118, 16, [.25, -.1])}
+    ${eye(152, 118, 16, [.25, -.1])}
+    ${[[86, 140], [94, 146], [80, 148], [162, 140], [170, 146], [158, 148]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#c9733f"/>`).join('')}
+    <path d="M96,152 Q126,190 160,150 Q156,176 126,178 Q100,176 96,152Z" fill="#7a1f1f" ${ink(5)}/>
+    <path d="M100,154 Q126,166 156,152 L154,160 Q126,170 102,162Z" fill="#fff"/>
+    <rect x="124" y="155" width="9" height="10" fill="#7a1f1f"/>
+    <circle cx="206" cy="180" r="20" fill="${SKIN.light}" ${ink(5)}/>
+    ${ball(206, 152, 22)}`;
+  return svg(256, 256, card('k', '#f4934f', '#a8461c', body));
+}
+
+function bulldog() {
+  const fur = '#d8a46a';
+  const body = `
+    <path d="M34,262 C36,216 70,200 128,200 C186,200 220,216 222,262Z" fill="${fur}" ${ink()}/>
+    <path d="M60,214 Q128,236 196,214 L200,232 Q128,254 56,232Z" fill="#d93b3b" ${ink(5)}/>
+    <circle cx="128" cy="242" r="11" fill="url(#gold)" ${ink(4)}/>
+    <ellipse cx="128" cy="124" rx="86" ry="74" fill="${fur}" ${ink()}/>
+    <path d="M70,66 L28,72 Q34,100 58,104 Q56,84 76,76Z" fill="#7a4b2a" ${ink(5)}/>
+    <path d="M186,66 L228,72 Q222,100 198,104 Q200,84 180,76Z" fill="#7a4b2a" ${ink(5)}/>
+    <path d="M48,150 Q40,184 70,196 M208,150 Q216,184 186,196" fill="none" ${ink(5)}/>
+    <path d="M66,66 Q128,40 190,66 L192,84 Q128,58 64,84Z" fill="#fff" ${ink(4)}/>
+    <path d="M66,73 Q128,49 191,73" fill="none" stroke="#d93b3b" stroke-width="5"/>
+    <path d="M98,98 q12,-6 22,2 M136,100 q10,-8 22,-2" fill="none" stroke="#9c6a3c" stroke-width="4" stroke-linecap="round"/>
+    <path d="M80,108 l24,8 M176,108 l-24,8" ${ink(7)}/>
+    ${eye(100, 124, 13, [0, .3], .5, fur)}
+    ${eye(156, 124, 13, [0, .3], .5, fur)}
+    <path d="M70,150 C70,186 104,196 128,192 C152,196 186,186 186,150 C170,166 150,160 128,160 C106,160 86,166 70,150Z" fill="#f3e6d2" ${ink(5)}/>
+    <ellipse cx="128" cy="146" rx="24" ry="15" fill="${INK}"/>
+    <ellipse cx="120" cy="141" rx="7" ry="4" fill="#fff" opacity=".6"/>
+    <path d="M128,160 v12" ${ink(4)}/>
+    <path d="M92,182 Q128,206 164,182" fill="#7a1f1f" ${ink(5)}/>
+    <path d="M104,186 l6,-14 l6,16Z M140,188 l6,-16 l6,14Z" fill="#fff" ${ink(2.5)}/>
+    ${ball(196, 194, 24)}
+    <path d="M84,196 q-4,14 2,20 q6,-6 -2,-20Z" fill="#9fe1ff" ${ink(3)}/>`;
+  return svg(256, 256, card('d', '#86c9f0', '#2f78b0', body));
+}
+
+function wild() {
+  let strings = '';
+  for (let i = -5; i <= 5; i++) strings += `<line x1="${i * 8}" y1="-70" x2="${i * 8}" y2="60" stroke="#fff" stroke-width="2.2"/>`;
+  for (let j = -7; j <= 6; j++) strings += `<line x1="-50" y1="${j * 9}" x2="50" y2="${j * 9}" stroke="#fff" stroke-width="2.2"/>`;
+  let speed = '';
+  for (let i = 0; i < 5; i++) speed += `<line x1="${22 + i * 3}" y1="${70 + i * 11}" x2="${62 + i * 4}" y2="${70 + i * 11}" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`;
+  return svg(256, 256, `
+    <g filter="url(#comic)">
+      ${burst(128, 112, 80, 118, 14, '#ffd23f', ink())}
+      ${burst(128, 112, 58, 88, 14, '#ff8a1e')}
+    </g>
+    <g transform="translate(152 100) rotate(-38)">
+      <clipPath id="wh"><ellipse cx="0" cy="-10" rx="40" ry="54"/></clipPath>
+      <rect x="-8" y="44" width="16" height="78" rx="6" fill="#2b2b2b" ${ink(5)}/>
+      <ellipse cx="0" cy="-10" rx="48" ry="62" fill="#d93b3b" ${ink()}/>
+      <ellipse cx="0" cy="-10" rx="40" ry="54" fill="#26346a"/>
+      <g clip-path="url(#wh)">${strings}</g>
+      <ellipse cx="0" cy="-10" rx="40" ry="54" fill="none" ${ink(3)}/>
+    </g>
+    ${speed}
+    ${ball(84, 92, 26)}
+    ${burst(60, 60, 6, 17, 4, '#fff', ink(2.5))}
+    <g filter="url(#comic)"><path d="M28,184 L228,170 L234,224 L22,234Z" fill="#d93b3b" ${ink()}/></g>
+    <text x="128" y="222" text-anchor="middle" class="lg" font-size="46" fill="url(#goldText)" stroke="${INK}" stroke-width="3" letter-spacing="2" transform="rotate(-3 128 208)">WILD</text>`);
+}
+
+function scatter() {
+  let stars = '';
+  for (const [x, y, r] of [[40, 52, 13], [216, 40, 11], [224, 144, 9], [30, 150, 8]]) stars += burst(x, y, r * .35, r, 4, '#fff', ink(2));
+  return svg(256, 256, `
+    <circle cx="128" cy="110" r="110" fill="#7cd3ff" opacity=".4"/>
+    ${rays(128, 110, 130, 18, '#fff', .28)}
+    <g filter="url(#comic)">
+      <path d="M78,46 C40,44 36,96 84,108 M178,46 C216,44 220,96 172,108" fill="none" stroke="${INK}" stroke-width="16" stroke-linecap="round"/>
+      <path d="M78,46 C40,44 36,96 84,108 M178,46 C216,44 220,96 172,108" fill="none" stroke="#ffc83a" stroke-width="7" stroke-linecap="round"/>
+      <path d="M70,34 H186 C186,104 162,134 128,140 C94,134 70,104 70,34Z" fill="url(#gold)" ${ink()}/>
+      <path d="M86,44 C86,92 98,118 118,128" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+      <rect x="116" y="138" width="24" height="26" fill="url(#gold)" ${ink(5)}/>
+      <path d="M86,164 H170 L178,188 H78Z" fill="url(#gold)" ${ink()}/>
+    </g>
+    ${ball(128, 78, 20)}
+    ${stars}
+    <g filter="url(#comic)"><path d="M22,196 L234,196 L224,214 L234,232 L22,232 L32,214Z" fill="#2f6fd0" ${ink()}/></g>
+    <text x="128" y="227" text-anchor="middle" class="lg" font-size="34" fill="#fff" stroke="${INK}" stroke-width="2.5" letter-spacing="3">BONUS</text>`);
+}
+
+function plate(label, color, tilt, size) {
+  return svg(256, 256, `
+    <g transform="rotate(${tilt} 128 132)">
+      <path d="M128,22 L84,64 M128,22 L172,64" stroke="${INK}" stroke-width="4"/>
+      <circle cx="128" cy="22" r="7" fill="#9a9a9a" ${ink(3)}/>
+      <g filter="url(#comic)"><rect x="44" y="58" width="168" height="168" rx="18" fill="#fff3d6" ${ink()}/></g>
+      <rect x="44" y="58" width="168" height="168" rx="18" fill="url(#grain)"/>
+      <rect x="56" y="70" width="144" height="144" rx="12" fill="none" stroke="${color}" stroke-width="5" opacity=".55"/>
+      <text x="132" y="${f(142 + size * .38)}" text-anchor="middle" class="lg" font-size="${size}" fill="${INK}" opacity=".3">${label}</text>
+      <text x="128" y="${f(139 + size * .36)}" text-anchor="middle" class="lg" font-size="${size}" fill="${color}" stroke="${INK}" stroke-width="7" stroke-linejoin="round" paint-order="stroke">${label}</text>
+    </g>`);
+}
+
+function cloud(x, y, s) {
+  return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0,40 C-10,10 30,-6 50,12 C60,-14 110,-10 112,20 C140,14 150,44 128,52 L4,54 C-12,54 -12,42 0,40Z" fill="#fff" ${ink(5)}/></g>`;
+}
+
+function background(w, h) {
+  const horizon = h * (w > h ? 0.5 : 0.42);
+  const cols = ['#d93b3b', '#ffd23f', '#2f9a4a', '#2f6fd0', '#fff'];
+  const nf = Math.ceil(w / 60);
+  const sag = (i) => Math.sin((i / nf) * Math.PI) * 40;
+  let flags = '';
+  for (let i = 0; i < nf; i++) flags += `<path d="M${i * 60},${f(30 + sag(i))} L${(i + 1) * 60},${f(30 + sag(i + 1))} L${i * 60 + 30},${f(80 + sag(i))}Z" fill="${cols[i % 5]}" ${ink(3)}/>`;
+  let crowd = '';
+  const rnd = mulberry(5);
+  for (let row = 0; row < 4; row++) {
+    for (let i = 0; i < w / 34 + 1; i++) {
+      const x = i * 34 + (row % 2) * 17 + rnd() * 6;
+      const y = horizon - 34 - row * 26;
+      const c = ['#f4c7a1', '#c98557', '#8d5a3b', '#f6d7b0'][Math.floor(rnd() * 4)];
+      crowd += `<rect x="${f(x - 12)}" y="${f(y + 6)}" width="24" height="26" rx="8" fill="${cols[Math.floor(rnd() * 5)]}" stroke="${INK}" stroke-width="2.5"/><circle cx="${f(x)}" cy="${f(y)}" r="10" fill="${c}" stroke="${INK}" stroke-width="2.5"/>`;
+    }
   }
-  return svg(S, S, `
-  <circle cx="${cx}" cy="104" r="124" fill="url(#haloGreen)"/>
-  ${rays}
-  <g filter="url(#shadow)">
-    <path d="M${cx - 50},44 C${cx - 82},44 ${cx - 84},96 ${cx - 40},110" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linecap="round"/>
-    <path d="M${cx + 50},44 C${cx + 82},44 ${cx + 84},96 ${cx + 40},110" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linecap="round"/>
-    <path d="M${cx - 56},34 H${cx + 56} C${cx + 56},96 ${cx + 34},126 ${cx},132 C${cx - 34},126 ${cx - 56},96 ${cx - 56},34 Z" fill="url(#gold)"/>
-    <ellipse cx="${cx}" cy="34" rx="56" ry="9" fill="url(#goldR)"/>
-    <ellipse cx="${cx}" cy="34" rx="48" ry="5" fill="#5c3a0c" opacity="0.6"/>
-    <rect x="${cx - 7}" y="130" width="14" height="22" fill="url(#goldH)"/>
-    <ellipse cx="${cx}" cy="154" rx="26" ry="7" fill="url(#gold)"/>
-    <path d="M${cx - 36},162 H${cx + 36} L${cx + 42},186 H${cx - 42} Z" fill="#0b2a1e" stroke="url(#gold)" stroke-width="3"/>
-  </g>
-  ${ball(cx, 82, 17, 'url(#ballG)')}
-  <path d="M${cx - 40},46 C${cx - 40},80 ${cx - 30},104 ${cx - 14},116" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="4" stroke-linecap="round"/>
-  ${banner(cx, 214, 'BONUS', 21)}
-  `);
+  const cx = w / 2, top = horizon + 30, bot = h + 40;
+  const tw = w * 0.55, bw = w * 1.7;
+  const at = (u, v) => [f(cx + (u * (tw + (bw - tw) * v)) / 2), f(top + (bot - top) * v)];
+  const L = (a, b) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#fff" stroke-width="7" opacity=".9"/>`;
+  let court = `<path d="M${at(-1.15, 0)} L${at(1.15, 0)} L${at(1.15, 1)} L${at(-1.15, 1)}Z" fill="#d9733a"/>`;
+  for (const u of [-1, -0.78, 0.78, 1]) court += L(at(u, 0), at(u, 1));
+  for (const v of [0, 0.45]) court += L(at(-1, v), at(1, v));
+  court += L(at(0, 0.45), at(0, 1));
+  const hills = Array.from({ length: 24 }, (_, i) => `Q${f(((i + .5) * w) / 24)},${f(horizon - 230 - (i % 3) * 22)} ${f(((i + 1) * w) / 24)},${f(horizon - 170)}`).join(' ');
+  return svg(w, h, `
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f9fe0"/><stop offset=".7" stop-color="#9fdcf6"/><stop offset="1" stop-color="#ffe9b0"/></linearGradient>
+    <rect width="${w}" height="${h}" fill="url(#sky)"/>
+    ${rays(w / 2, horizon, Math.max(w, h), 24, '#fff', .08)}
+    ${cloud(w * .06, h * .1, 1.3)}${cloud(w * .74, h * .06, 1.0)}${cloud(w * .46, h * .17, .8)}
+    <path d="M0,${f(horizon - 170)} ${hills} V${horizon} H0Z" fill="#3e8f4e" ${ink(5)}/>
+    <rect x="-10" y="${horizon - 140}" width="${w + 20}" height="140" fill="#2b6b45" ${ink(5)}/>
+    ${crowd}
+    <rect x="-10" y="${horizon - 20}" width="${w + 20}" height="28" fill="#1f5e33" ${ink(5)}/>
+    <rect x="0" y="${horizon + 8}" width="${w}" height="${h}" fill="#3e9b4f"/>
+    ${court}
+    <rect width="${w}" height="${h}" fill="url(#dots)" opacity=".45"/>
+    ${flags}
+    <path d="M0,30 ${Array.from({ length: nf }, (_, i) => `L${(i + 1) * 60},${f(30 + sag(i + 1))}`).join(' ')}" fill="none" ${ink(3)}/>`);
 }
 
-function symGoldBall() {
-  const cx = C, cy = 124;
-  return svg(S, S, `
-  <circle cx="${cx}" cy="${cy}" r="112" fill="url(#halo)" opacity="0.7"/>
-  ${laurel(cx, cy, 96)}
-  <g filter="url(#shadow)">${ball(cx, cy, 66, 'url(#goldR)', '#fff5d0')}</g>
-  ${jewel(cx, cy + 104, 6)}
-  `);
-}
-
-function medallionG(cx, cy, r) {
-  let rays = '';
-  for (let i = 0; i < 24; i++) {
-    const a = (i * TAU) / 24;
-    const [x1, y1] = pol(cx, cy, r * 0.55, a);
-    const [x2, y2] = pol(cx, cy, r * 0.93, a);
-    rays += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#e6d6a8" stroke-opacity="${i % 2 ? 0.08 : 0.16}" stroke-width="${i % 2 ? 1.2 : 2.4}"/>`;
+export const CELL = 170;
+function scoreboard() {
+  const iw = 6 * CELL, ih = 5 * CELL, m = 46;
+  const w = iw + 2 * m, h = ih + 2 * m;
+  let grain = '';
+  const rnd = mulberry(3);
+  for (let i = 0; i < 40; i++) {
+    const y = rnd() * h;
+    grain += `<path d="M0,${f(y)} q${w / 4},${f(rnd() * 10 - 5)} ${w / 2},0 t${w / 2},0" fill="none" stroke="#5a3418" stroke-width="2" opacity=".35"/>`;
   }
-  return `<g filter="url(#shadow)">
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gold)"/>
-    <circle cx="${cx}" cy="${cy}" r="${r - 5}" fill="#1a1204"/>
-    <circle cx="${cx}" cy="${cy}" r="${r - 7}" fill="url(#greenDisc)"/>
-  </g>${rays}
-  <circle cx="${cx}" cy="${cy}" r="${r - 14}" fill="none" stroke="#f5eedc" stroke-opacity="0.35" stroke-width="1.5"/>`;
+  let nails = '';
+  for (const [x, y] of [[22, 22], [w - 22, 22], [22, h - 22], [w - 22, h - 22], [w / 2, 22], [w / 2, h - 22], [22, h / 2], [w - 22, h / 2]]) {
+    nails += `<circle cx="${x}" cy="${y}" r="8" fill="#c9c9c9" ${ink(3)}/><circle cx="${x - 2}" cy="${y - 2}" r="2.5" fill="#fff"/>`;
+  }
+  let chalk = '';
+  for (let r = 1; r < 6; r++) chalk += `<line x1="${m + r * CELL}" y1="${m + 10}" x2="${m + r * CELL}" y2="${m + ih - 10}" stroke="#e8f5e0" stroke-width="3" stroke-dasharray="14 8" opacity=".35"/>`;
+  for (let r = 1; r < 5; r++) chalk += `<line x1="${m + 10}" y1="${m + r * CELL}" x2="${m + iw - 10}" y2="${m + r * CELL}" stroke="#e8f5e0" stroke-width="2" stroke-dasharray="6 10" opacity=".18"/>`;
+  return svg(w, h, `
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9763e"/><stop offset="1" stop-color="#8a5228"/></linearGradient>
+    <rect x="4" y="4" width="${w - 8}" height="${h - 8}" rx="22" fill="url(#wood)" ${ink(8)}/>
+    ${grain}
+    <rect x="${m - 10}" y="${m - 10}" width="${iw + 20}" height="${ih + 20}" rx="10" fill="#6b3f1e" ${ink(5)}/>
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="6" fill="#1f5e3a"/>
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="6" fill="url(#dotsL)" opacity=".5"/>
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="6" fill="none" ${ink(5)}/>
+    ${chalk}${nails}`);
 }
 
-function symUmpireChair() {
-  const cx = C;
-  return svg(S, S, `
-  ${medallionG(cx, C, 114)}
-  <g filter="url(#shadow)" stroke-linecap="round">
-    <path d="M${cx - 40},228 L${cx - 22},104 M${cx + 40},228 L${cx + 22},104" stroke="url(#ivory)" stroke-width="9"/>
-    ${[0, 1, 2, 3].map((i) => `<line x1="${cx - 36 + i * 2.6}" y1="${206 - i * 26}" x2="${cx + 36 - i * 2.6}" y2="${206 - i * 26}" stroke="#efe6cf" stroke-width="7"/>`).join('')}
-    <rect x="${cx - 36}" y="92" width="72" height="12" rx="3" fill="url(#gold)"/>
-    <path d="M${cx - 30},92 V54 H${cx + 30} V92" fill="none" stroke="url(#ivory)" stroke-width="8"/>
-    <rect x="${cx - 30}" y="54" width="60" height="22" fill="#1f6b47" stroke="url(#gold)" stroke-width="2"/>
-    <path d="M${cx - 36},88 H${cx - 52} V70 M${cx + 36},88 H${cx + 52} V70" fill="none" stroke="url(#ivory)" stroke-width="6"/>
-    <path d="M${cx - 62},40 Q${cx},4 ${cx + 62},40 Z" fill="url(#clay)"/>
-    <path d="M${cx - 62},40 Q${cx - 31},30 ${cx},40 Q${cx + 31},30 ${cx + 62},40" fill="none" stroke="#f5eedc" stroke-width="3"/>
-    <line x1="${cx}" y1="20" x2="${cx}" y2="56" stroke="url(#gold)" stroke-width="4"/>
-  </g>
-  `);
+function logo() {
+  const w = 1000, h = 330;
+  let speed = '';
+  for (let i = 0; i < 4; i++) speed += `<line x1="${770 + i * 8}" y1="${150 + i * 18}" x2="${840 + i * 10}" y2="${150 + i * 18}" stroke="#fff" stroke-width="8" stroke-linecap="round" ${''}/>`;
+  return svg(w, h, `
+    <g transform="rotate(-4 500 165)">
+      <text x="508" y="158" text-anchor="middle" class="lg" font-size="136" fill="${INK}" stroke="${INK}" stroke-width="26" stroke-linejoin="round" letter-spacing="6">GOLDEN</text>
+      <text x="500" y="148" text-anchor="middle" class="lg" font-size="136" fill="url(#goldText)" stroke="${INK}" stroke-width="14" stroke-linejoin="round" paint-order="stroke" letter-spacing="6">GOLDEN</text>
+      <text x="458" y="300" text-anchor="middle" class="lg" font-size="150" fill="${INK}" stroke="${INK}" stroke-width="26" stroke-linejoin="round" letter-spacing="10">RALLY</text>
+      <text x="450" y="290" text-anchor="middle" class="lg" font-size="150" fill="#d9f04a" stroke="${INK}" stroke-width="14" stroke-linejoin="round" paint-order="stroke" letter-spacing="10">RALLY</text>
+      ${speed}
+      ${ball(905, 200, 54, 9)}
+    </g>`);
 }
 
-function symBallTube() {
-  const cx = C;
-  return svg(S, S, `
-  ${medallionG(cx, C, 114)}
-  <g filter="url(#shadow)">
-    <rect x="${cx - 42}" y="44" width="84" height="176" rx="12" fill="url(#glassG)" stroke="#f5eedc" stroke-opacity="0.7" stroke-width="2.5"/>
-    ${ball(cx, 92, 34)}${ball(cx, 152, 34)}
-    <rect x="${cx - 42}" y="178" width="84" height="40" rx="6" fill="url(#ivory)"/>
-    <text x="${cx}" y="206" text-anchor="middle" class="cinzel" font-size="18" letter-spacing="3" fill="#0b2a1e">CLUB</text>
-    <rect x="${cx - 48}" y="28" width="96" height="22" rx="8" fill="url(#gold)"/>
-    <rect x="${cx - 48}" y="214" width="96" height="16" rx="6" fill="url(#gold)"/>
-    <rect x="${cx - 32}" y="52" width="10" height="120" rx="5" fill="#fff" opacity="0.28"/>
-  </g>
-  `);
+function rallyDial() {
+  const s = 320, c = 160;
+  const ladder = CFG.rallyLadder;
+  const a0 = Math.PI * 0.78, a1 = Math.PI * 2.22;
+  const cols = ['#5fc06e', '#9fd84a', '#cfe63f', '#ffd23f', '#ffb21e', '#ff8a1e', '#f4642a', '#e8452e', '#d93b3b', '#c22a5a', '#9b2fb0'];
+  let seg = '';
+  for (let i = 0; i < ladder.length; i++) {
+    const aa = a0 + ((a1 - a0) * i) / ladder.length, ab = a0 + ((a1 - a0) * (i + 1)) / ladder.length;
+    const [x1, y1] = pol(c, c, 138, aa), [x2, y2] = pol(c, c, 138, ab), [x3, y3] = pol(c, c, 100, ab), [x4, y4] = pol(c, c, 100, aa);
+    seg += `<path d="M${x1},${y1} A138,138 0 0,1 ${x2},${y2} L${x3},${y3} A100,100 0 0,0 ${x4},${y4}Z" fill="${cols[i % cols.length]}" stroke="${INK}" stroke-width="3"/>`;
+    const [lx, ly] = pol(c, c, 119, (aa + ab) / 2);
+    seg += `<text x="${lx}" y="${f(ly + 6)}" text-anchor="middle" class="lg" font-size="${ladder[i] >= 10 ? 15 : 17}" fill="#fff" stroke="${INK}" stroke-width="4" paint-order="stroke">×${ladder[i]}</text>`;
+  }
+  return svg(s, s, `
+    <g filter="url(#comic)"><circle cx="${c}" cy="${c}" r="152" fill="#fff3d6" ${ink(8)}/></g>
+    ${seg}
+    <circle cx="${c}" cy="${c}" r="96" fill="#fff3d6" stroke="${INK}" stroke-width="3"/>
+    <circle cx="${c}" cy="${c}" r="96" fill="url(#grain)"/>
+    <text x="${c}" y="${c + 128}" text-anchor="middle" class="lg" font-size="30" fill="#d93b3b" stroke="${INK}" stroke-width="6" stroke-linejoin="round" paint-order="stroke" letter-spacing="3">RALLY</text>`);
 }
 
-function symCap() {
-  const cx = C;
-  return svg(S, S, `
-  ${medallionG(cx, C, 114)}
-  <g filter="url(#shadow)">
-    <path d="M${cx - 74},150 C${cx - 74},70 ${cx - 30},54 ${cx + 6},54 C${cx + 50},54 ${cx + 76},86 ${cx + 76},150 Z" fill="url(#ivory)"/>
-    <path d="M${cx - 74},150 H${cx + 76} L${cx + 76},160 H${cx - 74} Z" fill="#1f6b47"/>
-    <path d="M${cx + 6},54 C${cx - 10},80 ${cx - 14},120 ${cx - 12},150" fill="none" stroke="#c9bc98" stroke-width="2"/>
-    <path d="M${cx + 6},54 C${cx + 28},80 ${cx + 34},120 ${cx + 34},150" fill="none" stroke="#c9bc98" stroke-width="2"/>
-    <path d="M${cx + 70},150 C${cx + 104},150 ${cx + 118},166 ${cx + 112},176 C${cx + 80},176 ${cx + 40},168 ${cx + 20},160 Z" fill="#1f6b47" stroke="url(#gold)" stroke-width="2"/>
-    <circle cx="${cx + 6}" cy="56" r="7" fill="url(#gold)"/>
-    <circle cx="${cx - 34}" cy="110" r="20" fill="#0b2a1e" stroke="url(#gold)" stroke-width="3"/>
-    <path d="M${cx - 44},120 L${cx - 24},100 M${cx - 24},120 L${cx - 44},100" stroke="url(#gold)" stroke-width="3.5" stroke-linecap="round"/>
-    <circle cx="${cx - 34}" cy="104" r="4" fill="url(#ballG)"/>
-  </g>
-  <path d="M${cx - 60},116 C${cx - 56},86 ${cx - 36},70 ${cx - 14},64" fill="none" stroke="#fff" stroke-opacity="0.7" stroke-width="4" stroke-linecap="round"/>
-  `);
+function dialHand() {
+  return svg(40, 150, `<path d="M20,6 L30,112 L20,126 L10,112Z" fill="#d93b3b" ${ink(4)}/>${ball(20, 124, 13, 4)}`);
 }
 
-// low symbols: tennis score medallions
-function scoreBadge(label, fill, textFill, size) {
-  const cx = C, cy = C, R = 96;
-  const oct = (r) => Array.from({ length: 8 }, (_, i) => pol(cx, cy, r, (i * TAU) / 8 + TAU / 16).join(',')).join(' ');
-  return svg(S, S, `
-  <g filter="url(#shadow)">
-    <polygon points="${oct(R)}" fill="url(#gold)"/>
-    <polygon points="${oct(R - 7)}" fill="#1a1204"/>
-    <polygon points="${oct(R - 9)}" fill="${fill}"/>
-  </g>
-  <polygon points="${oct(R - 18)}" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.8"/>
-  <path d="M${cx - 60},${cy - 44} A80,80 0 0,1 ${cx + 10},${cy - 78}" fill="none" stroke="#fff" stroke-opacity="0.3" stroke-width="6" stroke-linecap="round"/>
-  <text x="${cx}" y="${cy + size * 0.36}" text-anchor="middle" class="cinzel" font-size="${size}" fill="${textFill}" stroke="#1a1204" stroke-width="2" letter-spacing="2">${label}</text>
-  `);
+function decoRacket() {
+  const w = 300, h = 640, cx = 150;
+  let strings = '';
+  for (let i = -8; i <= 8; i++) strings += `<line x1="${cx + i * 13}" y1="20" x2="${cx + i * 13}" y2="400" stroke="#fff" stroke-width="3"/>`;
+  for (let j = 0; j < 30; j++) strings += `<line x1="${cx - 130}" y1="${30 + j * 13}" x2="${cx + 130}" y2="${30 + j * 13}" stroke="#fff" stroke-width="3"/>`;
+  return svg(w, h, `
+    <clipPath id="rh"><ellipse cx="${cx}" cy="200" rx="112" ry="160"/></clipPath>
+    <rect x="${cx - 18}" y="430" width="36" height="200" rx="10" fill="#2b2b2b" ${ink(8)}/>
+    <ellipse cx="${cx}" cy="200" rx="128" ry="178" fill="#d93b3b" ${ink(10)}/>
+    <ellipse cx="${cx}" cy="200" rx="112" ry="160" fill="#26346a"/>
+    <g clip-path="url(#rh)">${strings}</g>
+    <ellipse cx="${cx}" cy="200" rx="112" ry="160" fill="none" ${ink(5)}/>`);
 }
 
 function mulberry(a) {
@@ -393,195 +434,34 @@ function mulberry(a) {
   };
 }
 
-// ------------------------------------------------------------------ decor
-function decoBall(r, alpha = 1) {
-  const size = Math.ceil(r * 2 + 8);
-  const c = size / 2;
-  return svg(size, size, `<g opacity="${alpha}">${ball(c, c, r, 'url(#ballG)')}</g>`);
-}
-
-function decoRacket() {
-  const w = 300, h = 640, cx = 150;
-  let strings = '';
-  for (let i = -8; i <= 8; i++) strings += `<line x1="${cx + i * 13}" y1="20" x2="${cx + i * 13}" y2="400" stroke="#f5eedc" stroke-width="2.4"/>`;
-  for (let j = 0; j < 30; j++) strings += `<line x1="${cx - 130}" y1="${30 + j * 13}" x2="${cx + 130}" y2="${30 + j * 13}" stroke="#f5eedc" stroke-width="2.4"/>`;
-  return svg(w, h, `
-    <clipPath id="rh"><ellipse cx="${cx}" cy="200" rx="112" ry="160"/></clipPath>
-    <ellipse cx="${cx}" cy="200" rx="128" ry="178" fill="none" stroke="url(#gold)" stroke-width="22"/>
-    <g clip-path="url(#rh)">${strings}</g>
-    <path d="M${cx - 60},360 Q${cx},400 ${cx - 14},450 L${cx + 14},450 Q${cx},400 ${cx + 60},360" fill="none" stroke="url(#gold)" stroke-width="16"/>
-    <rect x="${cx - 18}" y="446" width="36" height="180" rx="8" fill="url(#ivory)"/>`);
-}
-
-function background(w, h) {
-  const cx = w / 2;
-  // mown-grass stripes
-  let stripes = '';
-  const n = 14;
-  for (let i = 0; i < n; i++) {
-    if (i % 2) stripes += `<rect x="${(i * w) / n}" y="0" width="${w / n}" height="${h}" fill="#ffffff" opacity="0.025"/>`;
-  }
-  // perspective court lines (generic court geometry)
-  const top = h * 0.30, bot = h * 1.05;
-  const tw = w * 0.36, bw = w * 1.25;
-  const L = (x1, y1, x2, y2, o = 0.16, sw = 3) => `<line x1="${f(x1)}" y1="${f(y1)}" x2="${f(x2)}" y2="${f(y2)}" stroke="#f5eedc" stroke-opacity="${o}" stroke-width="${sw}"/>`;
-  const at = (u, v) => { // u in [-1,1] across, v in [0,1] depth (0 far)
-    const y = top + (bot - top) * v;
-    const half = (tw + (bw - tw) * v) / 2;
-    return [cx + u * half, y];
-  };
-  let court = '';
-  for (const u of [-1, -0.78, 0.78, 1]) court += L(...at(u, 0), ...at(u, 1));
-  for (const v of [0, 0.32, 1]) court += L(...at(-1, v), ...at(1, v));
-  court += L(...at(0, 0.32), ...at(0, 1));
-  court += L(...at(-0.78, 0.62), ...at(0.78, 0.62));
-  // net band
-  const [nx1, ny] = at(-1.08, 0.12);
-  const [nx2] = at(1.08, 0.12);
-  court += `<rect x="${f(nx1)}" y="${f(ny - 24)}" width="${f(nx2 - nx1)}" height="24" fill="#071a12" opacity="0.5"/>`;
-  court += L(nx1, ny - 24, nx2, ny - 24, 0.35, 5);
-  let rays = '';
-  for (let i = 0; i < 48; i++) {
-    const a = Math.PI + (i * Math.PI) / 47;
-    const [x2, y2] = pol(cx, h * 0.3, Math.max(w, h), a);
-    rays += `<line x1="${cx}" y1="${h * 0.3}" x2="${x2}" y2="${y2}" stroke="#e6d6a8" stroke-opacity="${i % 2 ? 0.02 : 0.045}" stroke-width="${i % 2 ? 2 : 6}"/>`;
-  }
-  const defs = `<radialGradient id="vig" cx="0.5" cy="0.45" r="0.75">
-      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="0.65" stop-color="#000" stop-opacity="0.25"/>
-      <stop offset="1" stop-color="#000" stop-opacity="0.82"/></radialGradient>
-    <linearGradient id="bgG" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#06150f"/><stop offset="0.35" stop-color="#0f3b2a"/><stop offset="1" stop-color="#1b5a3e"/></linearGradient>`;
-  return svg(w, h, `<defs>${defs}</defs>
-    <rect width="${w}" height="${h}" fill="url(#bgG)"/>
-    ${stripes}${rays}${court}
-    <rect x="18" y="18" width="${w - 36}" height="${h - 36}" fill="none" stroke="#e3b552" stroke-opacity="0.22" stroke-width="2"/>
-    <rect x="28" y="28" width="${w - 56}" height="${h - 56}" fill="none" stroke="#f5eedc" stroke-opacity="0.10" stroke-width="1"/>
-    <rect width="${w}" height="${h}" fill="url(#vig)"/>`);
-}
-
-export const CELL = 200;
-function reelFrame() {
-  const iw = 5 * CELL, ih = 3 * CELL, m = 46;
-  const w = iw + 2 * m, h = ih + 2 * m;
-  const step = 18;
-  const outline = (o) => `M${o + step},${o} H${w - o - step} L${w - o},${o + step} V${h - o - step} L${w - o - step},${h - o} H${o + step} L${o},${h - o - step} V${o + step} Z`;
-  let seps = '';
-  for (let i = 1; i < 5; i++) {
-    const x = m + i * CELL;
-    seps += `<line x1="${x}" y1="${m + 8}" x2="${x}" y2="${m + ih - 8}" stroke="#f5eedc" stroke-opacity="0.18" stroke-width="2"/>`;
-  }
-  let studs = '';
-  for (const [x, y] of [[m / 2, m / 2], [w - m / 2, m / 2], [m / 2, h - m / 2], [w - m / 2, h - m / 2]]) {
-    studs += `<circle cx="${x}" cy="${y}" r="12" fill="url(#gold)"/><circle cx="${x}" cy="${y}" r="6" fill="url(#ballG)"/>`;
-  }
-  return svg(w, h, `
-    <path d="${outline(0)}" fill="url(#gold)"/>
-    <path d="${outline(6)}" fill="#1a1204"/>
-    <path d="${outline(9)}" fill="url(#ivory)"/>
-    <path d="${outline(16)}" fill="#0b2a1e"/>
-    <path d="${outline(26)}" fill="none" stroke="url(#gold)" stroke-width="3"/>
-    <path d="M${m},${m} H${m + iw} V${m + ih} H${m} Z" fill="#06180f" fill-opacity="0.86"/>
-    <path d="M${m},${m} H${m + iw} V${m + ih} H${m} Z" fill="none" stroke="url(#goldH)" stroke-width="4"/>
-    ${seps}${studs}`);
-}
-
-function logo() {
-  const w = 900, h = 260;
-  const cx = w / 2;
-  return svg(w, h, `
-    <g filter="url(#shadow)">
-      <g transform="translate(${cx} 48)">
-        <g transform="rotate(-35)"><ellipse cx="0" cy="-12" rx="14" ry="19" fill="none" stroke="url(#gold)" stroke-width="5"/><rect x="-3" y="6" width="6" height="30" fill="url(#gold)"/></g>
-        <g transform="rotate(35)"><ellipse cx="0" cy="-12" rx="14" ry="19" fill="none" stroke="url(#gold)" stroke-width="5"/><rect x="-3" y="6" width="6" height="30" fill="url(#gold)"/></g>
-        ${ball(0, -30, 10)}
-      </g>
-      <text x="${cx}" y="168" text-anchor="middle" class="cinzel" font-size="96" letter-spacing="12" fill="url(#gold)" stroke="#3b2708" stroke-width="1.5">GOLDEN</text>
-      <line x1="${cx - 330}" y1="198" x2="${cx - 140}" y2="198" stroke="url(#goldH)" stroke-width="2.5"/>
-      <line x1="${cx + 140}" y1="198" x2="${cx + 330}" y2="198" stroke="url(#goldH)" stroke-width="2.5"/>
-      <circle cx="${cx - 140}" cy="198" r="6" fill="url(#ballG)"/><circle cx="${cx + 140}" cy="198" r="6" fill="url(#ballG)"/>
-      <text x="${cx}" y="214" text-anchor="middle" class="poiret" font-size="46" letter-spacing="26" fill="#f5eedc">RALLY</text>
-    </g>`);
-}
-
-function rallyDial() {
-  const s = 300, c = 150;
-  const ladder = [1, 2, 3, 4, 5, 6, 8, 10];
-  const a0 = Math.PI * 0.8, a1 = Math.PI * 2.2;
-  let labels = '';
-  ladder.forEach((m, i) => {
-    const a = a0 + ((a1 - a0) * i) / (ladder.length - 1);
-    const [x, y] = pol(c, c, 100, a);
-    const [t1x, t1y] = pol(c, c, 118, a);
-    const [t2x, t2y] = pol(c, c, 132, a);
-    labels += `<line x1="${t1x}" y1="${t1y}" x2="${t2x}" y2="${t2y}" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/>`;
-    labels += `<text x="${x}" y="${f(y + 9)}" text-anchor="middle" class="cinzel" font-size="${i === 7 ? 26 : 22}" fill="${i === 7 ? '#ffe7a0' : '#f5eedc'}">×${m}</text>`;
-  });
-  let minor = '';
-  for (let i = 0; i <= 28; i++) {
-    const a = a0 + ((a1 - a0) * i) / 28;
-    const [x1, y1] = pol(c, c, 122, a);
-    const [x2, y2] = pol(c, c, 128, a);
-    minor += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/>`;
-  }
-  return svg(s, s, `
-    <g filter="url(#shadow)">
-      <circle cx="${c}" cy="${c}" r="146" fill="url(#gold)"/>
-      <circle cx="${c}" cy="${c}" r="138" fill="#1a1204"/>
-      <circle cx="${c}" cy="${c}" r="136" fill="url(#greenDisc)"/>
-    </g>
-    ${minor}${labels}
-    <text x="${c}" y="${c + 112}" text-anchor="middle" class="poiret" font-size="16" letter-spacing="6" fill="#f5eedc" fill-opacity="0.85">RALLY</text>
-  `);
-}
-
-function dialHand() {
-  return svg(40, 150, `
-    <path d="M20,4 L27,112 L20,124 L13,112 Z" fill="url(#ivory)" stroke="#5c3a0c" stroke-width="1"/>
-    <circle cx="20" cy="124" r="14" fill="url(#gold)"/><circle cx="20" cy="124" r="6" fill="url(#ballG)"/>`);
-}
-
-function sparkle() {
-  return svg(64, 64, `
-    <circle cx="32" cy="32" r="30" fill="url(#halo)"/>
-    <path d="M32,2 L36,28 L62,32 L36,36 L32,62 L28,36 L2,32 L28,28 Z" fill="#fff8d8"/>`);
-}
-
-function glowDot() {
-  return svg(64, 64, `<circle cx="32" cy="32" r="32" fill="url(#halo)"/>`);
-}
-
-function coinBall() {
-  return svg(96, 96, `<g filter="url(#shadow)">${ball(48, 48, 40)}</g>`);
-}
-
 const assets = {
-  'sym_W': symWild(),
-  'sym_S': symScatter(),
-  'sym_H1': symGoldBall(),
-  'sym_H2': symUmpireChair(),
-  'sym_H3': symBallTube(),
-  'sym_H4': symCap(),
-  'sym_L1': scoreBadge('AD', 'url(#clay)', '#fff1d6', 74),
-  'sym_L2': scoreBadge('40', 'url(#greenDisc)', 'url(#gold)', 92),
-  'sym_L3': scoreBadge('30', 'url(#ivory)', '#1f6b47', 92),
-  'sym_L4': scoreBadge('15', 'url(#navyDisc)', '#f5eedc', 92),
-  'bg_landscape': background(1920, 1080),
-  'bg_portrait': background(1080, 1920),
-  'frame': reelFrame(),
-  'logo': logo(),
-  'dial': rallyDial(),
-  'dial_hand': dialHand(),
-  'deco_1': decoBall(150, 1),
-  'deco_2': decoRacket(),
-  'deco_3': decoBall(70, 1),
-  'sparkle': sparkle(),
-  'glow': glowDot(),
-  'coin': coinBall(),
+  sym_W: wild(),
+  sym_S: scatter(),
+  sym_H1: president(),
+  sym_H2: champion(),
+  sym_H3: umpire(),
+  sym_H4: ballKid(),
+  sym_H5: bulldog(),
+  sym_L1: plate('AD', '#d93b3b', -5, 92),
+  sym_L2: plate('40', '#2f9a4a', 4, 108),
+  sym_L3: plate('30', '#2f6fd0', -3, 108),
+  sym_L4: plate('15', '#f08a12', 5, 108),
+  sym_L5: plate('0', '#9b2fb0', -4, 124),
+  bg_landscape: background(1920, 1080),
+  bg_portrait: background(1080, 1920),
+  frame: scoreboard(),
+  logo: logo(),
+  dial: rallyDial(),
+  dial_hand: dialHand(),
+  deco_1: svg(320, 320, ball(160, 160, 150, 10)),
+  deco_2: decoRacket(),
+  deco_3: svg(160, 160, ball(80, 80, 72, 8)),
+  sparkle: svg(64, 64, burst(32, 32, 9, 28, 4, '#fff6a0', ink(3))),
+  glow: svg(64, 64, `<radialGradient id="g"><stop offset="0" stop-color="#fff9c0" stop-opacity=".9"/><stop offset=".5" stop-color="#ffd23f" stop-opacity=".35"/><stop offset="1" stop-color="#ffd23f" stop-opacity="0"/></radialGradient><circle cx="32" cy="32" r="32" fill="url(#g)"/>`),
+  coin: svg(96, 96, ball(48, 48, 40, 5)),
 };
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
-for (const [name, content] of Object.entries(assets)) {
-  fs.writeFileSync(path.join(OUT, name + '.svg'), content);
-}
+for (const [name, content] of Object.entries(assets)) fs.writeFileSync(path.join(OUT, name + '.svg'), content);
 console.log(`wrote ${Object.keys(assets).length} SVG files to ${OUT}`);

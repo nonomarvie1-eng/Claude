@@ -51,12 +51,12 @@
   .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,.06); }
   input[type='checkbox'] { width: 22px; height: 22px; accent-color: var(--gold); }
   input[type='range'] { width: min(260px, 50vw); accent-color: var(--gold); }
-  select { background: var(--deep-2); color: var(--ink); border: 1px solid var(--gold); border-radius: 8px; padding: 6px 10px; font-family: inherit; }
+  select { background: var(--deep-2); color: var(--ink); border: var(--chunky); box-shadow: var(--pop); border-radius: 8px; padding: 6px 10px; font-family: inherit; }
   .demo { margin-top: 18px; padding: 12px; border: 1px dashed #dcef4c; border-radius: 12px; }
   .demo p { color: #eef6c4; line-height: 1.5; margin-top: 0; }
   h3 { font-family: var(--font-title); font-size: 15px; color: var(--gold-hi); }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; }
-  button { padding: 10px 16px; border-radius: 999px; border: 1px solid var(--gold); background: linear-gradient(180deg, #2a7a52, #0c3121); }
+  button { padding: 10px 16px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #4fb85f, #2b7a3f); }
   button:disabled { opacity: .4; }
   .refill { margin-top: 12px; }
 </style>

@@ -45,6 +45,7 @@
 
 ## Positionnement concurrentiel (vérification du concept)
 
-- Le format 5×3 / 20 lignes avec Wild, Scatter et tours gratuits est **standard et accepté** par le SDK (exemple officiel `0_0_lines` de même format).
+- Le format retenu en v2 (6×5 « ways ») est **standard et accepté** par le SDK : le SDK fournit un exemple officiel `0_0_ways`. Il est vérifié par l'outil officiel sur nos fichiers.
 - Les machines à sous à thème tennis sont peu nombreuses. Celles qui existent se reposent surtout sur la licence de joueurs ou de tournois célèbres. Un univers « club privé » original, sans licence, se distingue et évite les coûts de licence.
-- La mécanique Rally (multiplicateur persistant alimenté par les Wilds) est simple, lisible, et **entièrement calculable exactement**, ce qui facilite la certification.
+- La mécanique Rally (multiplicateur persistant alimenté par les Wilds) est simple, lisible, et son RTP est **calculable exactement**, ce qui facilite la certification.
+- v2 : passage à un style cartoon à personnages, demandé après comparaison avec les jeux du marché. Les jeux de référence ont inspiré des principes, aucun dessin n'a été repris.

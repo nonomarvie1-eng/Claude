@@ -25,7 +25,7 @@ Légende : **[V]** vérifié (source officielle consultée) · **[S]** source se
 - **10 % du GGR** (mises − gains) généré par le jeu, versé mensuellement **[S]** (blog Stake, easygo.io, presse spécialisée).
 - Calcul exact du GGR, traitement des mois où le GGR est négatif, devises, fiscalité, seuil de paiement : **[?]**.
 
-Avec le RTP exact de 96,4857 %, l'avantage maison vaut 3,514 % des mises. Sur la durée, la part du studio est donc d'environ **0,351 % des mises** (10 % × 3,514 %).
+Avec le RTP exact de 96,4871 %, l'avantage maison vaut 3,513 % des mises. Sur la durée, la part du studio est donc d'environ **0,351 % des mises** (10 % × 3,513 %).
 
 ## 4. Coûts identifiés
 
@@ -47,22 +47,22 @@ Avec le RTP exact de 96,4857 %, l'avantage maison vaut 3,514 % des mises. Sur la
 | Scénario | Mises mensuelles **[H]** | GGR attendu | Part studio attendue (10 %) |
 |---|---|---|---|
 | Pessimiste | 20 000 $ | 703 $ | **70 $** |
-| Central | 300 000 $ | 10 543 $ | **1 054 $** |
-| Optimiste | 3 000 000 $ | 105 430 $ | **10 543 $** |
+| Central | 300 000 $ | 10 539 $ | **1 054 $** |
+| Optimiste | 3 000 000 $ | 105 386 $ | **10 539 $** |
 
 Les volumes sont des hypothèses. Stake annonce environ 3,3 milliards de dollars de mises par an sur l'ensemble des jeux Engine **[S]**, mais leur répartition entre des centaines de jeux n'est pas publiée **[?]**. La visibilité dans le lobby détermine l'essentiel du volume et n'est pas maîtrisée par le studio.
 
-**Volatilité du revenu** : avec un écart-type de 6,5× la mise par tour, 300 000 $ de mises en tours de 1 $ donnent un GGR mensuel de 10 543 $ ± 3 574 $ (1 écart-type). En tours de 10 $, l'écart-type monte à ± 11 303 $ : un mois **négatif** est alors plausible. Ce qu'il advient d'un GGR négatif dans le contrat est **[?]**.
+**Volatilité du revenu** : avec un écart-type de 7,8× la mise par tour, 300 000 $ de mises en tours de 1 $ donnent un GGR mensuel de 10 539 $ ± 4 257 $ (1 écart-type). En tours de 10 $, l'écart-type monte à ± 13 462 $ : un mois **négatif** est alors plausible. Ce qu'il advient d'un GGR négatif dans le contrat est **[?]**.
 
 ## 6. Seuil de rentabilité
 
-Part du studio = 0,35143 % des mises.
+Part du studio = 0,35129 % des mises.
 
 | Charges à couvrir | Mises mensuelles nécessaires |
 |---|---|
 | 150 €/mois (maintenance seule) | **≈ 42 700 $/mois** |
 | 150 €/mois + 3 500 € de frais initiaux amortis sur 12 mois | **≈ 125 700 $/mois** |
-| 400 €/mois + 6 000 € amortis sur 12 mois (structure, juridique renforcé) | **≈ 256 100 $/mois** |
+| 400 €/mois + 6 000 € amortis sur 12 mois (structure, juridique renforcé) | **≈ 256 200 $/mois** |
 
 Lecture : avec le scénario central (300 000 $/mois), un unique jeu couvrirait des charges modestes. Avec le scénario pessimiste, il ne les couvrirait pas. Le levier principal est le **portefeuille** : plusieurs jeux réutilisant ce moteur, à faible coût marginal. Ce levier ne doit être actionné qu'une fois ce premier jeu validé.
 

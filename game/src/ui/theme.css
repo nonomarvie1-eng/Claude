@@ -1,19 +1,24 @@
 :root {
-  --deep-0: #04110b;
-  --deep-1: #0b2a1e;
-  --deep-2: #134a33;
-  --deep-3: #1f6b47;
-  --gold: #e3b552;
-  --gold-hi: #fff1b8;
-  --gold-lo: #8a5f17;
-  --copper: #c8763f;
-  --ink: #f4e8c8;
-  --muted: #a9c4b0;
+  --deep-0: #163d2a;
+  --deep-1: #1f5e3a;
+  --deep-2: #2b6b45;
+  --deep-3: #3e9b4f;
+  --gold: #ffd23f;
+  --gold-hi: #fff3d6;
+  --gold-lo: #f08a12;
+  --copper: #d9733a;
+  --ink: #fff3d6;
+  --ink-line: #1b1410;
+  --accent: #d9f04a;
+  --accent-2: #ffd23f;
+  --muted: #cfe8c9;
   --danger: #ff7a8a;
-  --font-ui: 'Marcellus', 'Georgia', serif;
-  --font-title: 'Cinzel', 'Georgia', serif;
-  --font-deco: 'Poiret One', 'Marcellus', sans-serif;
-  --gold-grad: linear-gradient(180deg, #fff6c9 0%, #f2c94c 40%, #b8842a 60%, #f7dc8a 100%);
+  --font-ui: 'Lilita One', 'Trebuchet MS', sans-serif;
+  --font-title: 'Luckiest Guy', 'Impact', sans-serif;
+  --font-deco: 'Lilita One', 'Trebuchet MS', sans-serif;
+  --gold-grad: linear-gradient(180deg, #fff7c2 0%, #ffd23f 50%, #ffb21e 51%, #f47d12 100%);
+  --chunky: 3px solid var(--ink-line);
+  --pop: 0 4px 0 var(--ink-line);
   --safe-b: env(safe-area-inset-bottom, 0px);
   color-scheme: dark;
 }
@@ -22,4 +27,4 @@
 html, body { font-family: var(--font-ui); color: var(--ink); background: var(--deep-0); -webkit-font-smoothing: antialiased; }
 button { font-family: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
-.gold-text { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.gold-text { color: var(--gold); -webkit-text-stroke: 1.5px var(--ink-line); text-shadow: 0 3px 0 var(--ink-line); }

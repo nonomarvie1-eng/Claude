@@ -4,9 +4,11 @@
 
 | Ressource | Origine | Droits |
 |---|---|---|
-| Symboles, décors, cadre, logo, cadran (`game/src/assets/img/*`) | Générés par `game/art/build-art.mjs` (code écrit pour ce projet) | Propriété du studio |
+| Personnages, symboles, décor, tableau de score, logo, cadran (`game/src/assets/img/*`) | Générés par `game/art/build-art.mjs` (code écrit pour ce projet, style cartoon) | Propriété du studio |
 | Sons et musiques (`game/src/assets/audio/*`) | Synthétisés par `game/audio/synth.py` (code écrit pour ce projet, aucun échantillon externe) | Propriété du studio |
-| Polices Cinzel, Marcellus, Poiret One | Paquets npm `@fontsource/*` 5.3.0 | **SIL Open Font License 1.1** : usage commercial autorisé, embarquement autorisé, la police ne peut pas être vendue seule. Conserver la licence OFL dans la distribution. |
+| Police Luckiest Guy | `@fontsource/luckiest-guy` 5.3.0 | **Apache 2.0** : usage commercial autorisé ; conserver la notice de licence |
+| Polices Lilita One, Bangers | `@fontsource/*` 5.3.0 | **SIL Open Font License 1.1** : usage commercial et embarquement autorisés ; ne pas vendre la police seule ; conserver la licence |
+| (v1, plus utilisées dans le jeu) Cinzel, Marcellus, Poiret One | `@fontsource/*` | OFL 1.1 |
 | PixiJS 8.23.0 | npm | MIT |
 | Svelte 5.57.3, Vite 6.4.6 | npm | MIT |
 | numpy, scipy, matplotlib, zstandard | PyPI | BSD / PSF-compatible |
@@ -18,7 +20,8 @@ Aucune image, aucun son, aucune marque ni aucun personnage tiers n'est utilisé.
 ## Points de vigilance
 
 - **Marques** : vérifier « Golden Rally » auprès de l'EUIPO, de l'USPTO et de l'OMPI (classes 9, 28 et 41) avant toute diffusion publique.
-- **Thème tennis** : n'ajouter aucun nom de joueur, de tournoi ou de fédération, et aucun visuel de lieu ou de trophée réel. Ne pas utiliser certaines couleurs combinées à des éléments distinctifs (par exemple violet et vert avec une typographie de tournoi), car cela pourrait évoquer un tournoi précis. La palette actuelle (vert, ocre, ivoire, or) est générique.
+- **Thème tennis** : n'ajouter aucun nom de joueur, de tournoi ou de fédération, et aucun visuel de lieu ou de trophée réel. Les personnages sont des caricatures génériques inventées ; il faut veiller à ce qu'aucun ne finisse par ressembler à un joueur ou une joueuse célèbre (coiffure, tenue, attributs distinctifs).
+- **Inspiration concurrente** : les jeux montrés en référence (Hacksaw Gaming, Nolimit City) ont inspiré des principes (personnages, style assumé, grille intégrée au décor), pas des dessins. Ne jamais reproduire leurs personnages, logos, décors ou noms de mécaniques.
 
 ## Évolutions possibles (sans souscription automatique)
 

@@ -11,11 +11,13 @@ import { ease, Tweener } from './tween';
 
 const imgs = import.meta.glob('../assets/img/*.{png,jpg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
-const CELL = 200;
+const CELL = 170;
+const NR = RULES.reels;
+const NROWS = RULES.rows;
 const FRAME_M = 46;
-const FRAME_W = 5 * CELL + 2 * FRAME_M;
-const FRAME_H = 3 * CELL + 2 * FRAME_M;
-const SYM_SIZE = 186;
+const FRAME_W = NR * CELL + 2 * FRAME_M;
+const FRAME_H = NROWS * CELL + 2 * FRAME_M;
+const SYM_SIZE = 164;
 
 export interface Prefs {
   reducedMotion: boolean;
@@ -51,7 +53,7 @@ class Reel {
   blur = new BlurFilter({ strengthX: 0, strengthY: 0, quality: 2 });
   constructor(private tex: Record<string, Texture>, strip: SymbolName[], public index: number) {
     this.strip = strip;
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < NROWS + 2; j++) {
       const s = new Sprite(tex['sym_L4']);
       s.anchor.set(0.5);
       s.width = s.height = SYM_SIZE;
@@ -66,7 +68,7 @@ class Reel {
     const n = this.strip.length;
     const base = Math.floor(this.pos);
     const f = this.pos - base;
-    for (let j = -1; j <= 3; j++) {
+    for (let j = -1; j <= NROWS; j++) {
       const s = this.sprites[j + 1];
       const sym = this.strip[mod(base + j, n)];
       s.texture = this.tex['sym_' + sym];
@@ -135,7 +137,7 @@ export class RallyScene implements View {
     await this.app.init({
       resizeTo: host,
       antialias: true,
-      backgroundColor: 0x06150f,
+      backgroundColor: 0x3f9fe0,
       resolution: Math.min(window.devicePixelRatio || 1, 2),
       autoDensity: true,
       powerPreference: 'high-performance',
@@ -150,7 +152,7 @@ export class RallyScene implements View {
     const g1 = new Sprite(tex.deco_1);
     const g2 = new Sprite(tex.deco_2);
     const g3 = new Sprite(tex.deco_3);
-    for (const [s, sp, a, sc] of [[g1, 0.05, 0.14, 0.55], [g2, 0, 0.12, 0.62], [g3, -0.09, 0.16, 0.6]] as const) {
+    for (const [s, sp, a, sc] of [[g1, 0.05, 1, 0.55], [g2, 0, 1, 0.5], [g3, -0.09, 1, 0.55]] as const) {
       s.anchor.set(0.5);
       s.scale.set(sc);
       s.alpha = a;
@@ -168,10 +170,10 @@ export class RallyScene implements View {
     this.board.addChild(this.frame);
     this.reelLayer.x = FRAME_M;
     this.reelLayer.y = FRAME_M;
-    this.reelMask.rect(0, 0, 5 * CELL, 3 * CELL).fill(0xffffff);
+    this.reelMask.rect(0, 0, NR * CELL, NROWS * CELL).fill(0xffffff);
     this.reelLayer.addChild(this.reelMask);
     this.reelLayer.mask = this.reelMask;
-    for (let r = 0; r < 5; r++) {
+    for (let r = 0; r < NR; r++) {
       const reel = new Reel(tex, STRIPS.base[r], r);
       reel.container.x = r * CELL;
       reel.pos = 0;
@@ -184,7 +186,7 @@ export class RallyScene implements View {
     this.winLayer.y = FRAME_M;
     this.winLayer.addChild(this.glowLayer, this.lineGfx);
     this.board.addChild(this.winLayer);
-    this.winText = new Text({ text: '', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 40, fill: '#ffe7a0', stroke: { color: '#2a1c06', width: 6 }, align: 'center', dropShadow: { color: '#000', blur: 8, distance: 0, alpha: 0.8 } } });
+    this.winText = new Text({ text: '', style: { fontFamily: 'Luckiest Guy', fontSize: 44, fill: '#ffd23f', stroke: { color: '#1b1410', width: 8 }, align: 'center', dropShadow: { color: '#000', blur: 8, distance: 0, alpha: 0.8 } } });
     this.winText.anchor.set(0.5);
     this.winText.x = FRAME_W / 2;
     this.winText.y = FRAME_H - 10;
@@ -202,9 +204,9 @@ export class RallyScene implements View {
     this.dialHand.texture = tex.dial_hand;
     this.dialHand.anchor.set(0.5, 124 / 150);
     this.dialHand.scale.set(0.5);
-    this.dialMult = new Text({ text: '×1', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 46, fill: this.goldFill(46), stroke: { color: '#1a1204', width: 5 } } });
+    this.dialMult = new Text({ text: '×1', style: { fontFamily: 'Luckiest Guy', fontSize: 64, fill: this.goldFill(64), stroke: { color: '#1b1410', width: 10 } } });
     this.dialMult.anchor.set(0.5);
-    this.dialMult.y = 168;
+    this.dialMult.y = 10;
     this.dial.addChild(this.dialGear, dialFace, this.dialHand, this.dialMult);
     this.setHand(0);
     this.dial.alpha = 0.8;
@@ -248,7 +250,7 @@ export class RallyScene implements View {
     const bs = Math.max(w / this.bg.texture.width, h / this.bg.texture.height);
     this.bg.scale.set(bs);
     this.bg.position.set((w - this.bg.texture.width * bs) / 2, (h - this.bg.texture.height * bs) / 2);
-    this.bonusTint.clear().rect(0, 0, w, h).fill({ color: 0xc8643a, alpha: 1 });
+    this.bonusTint.clear().rect(0, 0, w, h).fill({ color: 0xff8a1e, alpha: 1 });
     this.bonusTint.blendMode = 'add';
     this.bonusTint.alpha = this.mode === 'freegame' ? 0.16 : 0;
     // world: contain the design area (bottom HUD band is reserved)
@@ -256,27 +258,31 @@ export class RallyScene implements View {
     this.world.scale.set(s);
     this.world.position.set((w - DW * s) / 2, (h - DH * s) / 2);
     if (!this.portrait) {
-      this.logo.position.set(960, 100);
-      this.logo.scale.set(0.36);
-      this.board.scale.set(0.92);
-      this.board.position.set(960 - (FRAME_W * 0.92) / 2, 208);
-      this.dial.position.set(1690, 520);
+      this.logo.position.set(960, 92);
+      this.logo.scale.set(0.3);
+      const bs2 = 800 / FRAME_H;
+      this.board.scale.set(bs2);
+      this.board.position.set(960 - (FRAME_W * bs2) / 2, 168);
+      this.dial.position.set(1690, 470);
       this.dial.scale.set(0.95);
-      this.gears[0].s.position.set(150, 900);
-      this.gears[1].s.position.set(1800, 230);
-      this.gears[2].s.position.set(230, 280);
+      this.gears[0].s.position.set(170, 830);
+      this.gears[1].s.position.set(250, 470);
+      this.gears[2].s.position.set(1660, 820);
+      this.gears[1].s.scale.set(0.55);
     } else {
-      this.logo.position.set(540, 300);
-      this.logo.scale.set(0.5);
-      const bsc = 1040 / FRAME_W;
+      this.logo.position.set(540, 228);
+      this.logo.scale.set(0.34);
+      const bsc = 1050 / FRAME_W;
       this.board.scale.set(bsc);
-      this.board.position.set(20, 430);
-      this.dial.position.set(540, 1255);
-      this.dial.scale.set(0.82);
-      this.gears[0].s.position.set(80, 1500);
-      this.gears[1].s.position.set(1000, 160);
-      this.gears[2].s.position.set(960, 1430);
+      this.board.position.set(15, 318);
+      this.dial.position.set(540, 1338);
+      this.dial.scale.set(0.6);
+      this.gears[0].s.position.set(110, 1370);
+      this.gears[1].s.position.set(980, 1330);
+      this.gears[2].s.position.set(930, 120);
+      this.gears[1].s.scale.set(0.35);
     }
+    this.gears[2].s.visible = !this.portrait;
     for (const o of this.overlay.children) (o as Container & { relayout?: () => void }).relayout?.();
   }
 
@@ -432,7 +438,7 @@ export class RallyScene implements View {
       // landing feedback (strictly informative: the result was fixed before the spin)
       if (!quick) {
         audio.play('reel_stop', { volume: 0.55, rate: 0.96 + r * 0.02 });
-        const col = [0, 1, 2].map((row) => reel.strip[(stops[r] + row) % n]);
+        const col = Array.from({ length: NROWS }, (_, row) => reel.strip[(stops[r] + row) % n]);
         if (col.includes('S')) {
           landedScatters++;
           audio.play(`scatter_${Math.min(3, landedScatters)}` as 'scatter_1', { volume: 0.7 });
@@ -456,7 +462,7 @@ export class RallyScene implements View {
   private showAnticipation(fromReel: number) {
     const g = this.antGfx;
     g.clear();
-    for (let r = fromReel; r < 5; r++) g.roundRect(FRAME_M + r * CELL + 4, FRAME_M + 4, CELL - 8, 3 * CELL - 8, 14).stroke({ color: 0xdcef4c, width: 6, alpha: 0.9 });
+    for (let r = fromReel; r < NR; r++) g.roundRect(FRAME_M + r * CELL + 4, FRAME_M + 4, CELL - 8, NROWS * CELL - 8, 14).stroke({ color: 0xffd23f, width: 8, alpha: 0.95 });
     g.alpha = 0;
     void this.tw.tween(250, (u) => (g.alpha = u));
   }
@@ -482,30 +488,25 @@ export class RallyScene implements View {
     }
   }
 
-  private drawLine(w: WinLine, alpha = 1) {
+  private drawGroup(w: WinLine, alpha = 1) {
     const g = this.lineGfx;
-    if (w.kind === 'line' && w.line !== null) {
-      const rows = RULES.paylines[w.line];
-      const pts = rows.map((row, r) => ({ x: r * CELL + CELL / 2, y: row * CELL + CELL / 2 }));
-      g.moveTo(-10, pts[0].y);
-      for (const p of pts) g.lineTo(p.x, p.y);
-      g.lineTo(5 * CELL + 10, pts[4].y);
-      g.stroke({ color: 0xf6d27a, width: 14, alpha: 0.18 * alpha, join: 'round', cap: 'round' });
-      g.moveTo(-10, pts[0].y);
-      for (const p of pts) g.lineTo(p.x, p.y);
-      g.lineTo(5 * CELL + 10, pts[4].y);
-      g.stroke({ color: 0xfff1b8, width: 4, alpha: 0.95 * alpha, join: 'round', cap: 'round' });
-    }
+    const color = w.kind === 'scatter' ? 0x7cd3ff : 0xffd23f;
     for (const p of w.positions) {
-      g.roundRect(p.reel * CELL + 8, p.row * CELL + 8, CELL - 16, CELL - 16, 18).stroke({ color: w.kind === 'scatter' ? 0xdcef4c : 0xf6d27a, width: 4, alpha });
+      g.roundRect(p.reel * CELL + 7, p.row * CELL + 7, CELL - 14, CELL - 14, 20).stroke({ color: 0x1b1410, width: 11, alpha });
+      g.roundRect(p.reel * CELL + 7, p.row * CELL + 7, CELL - 14, CELL - 14, 20).stroke({ color, width: 5, alpha });
     }
+  }
+
+  private groupLabel(w: WinLine) {
+    const amt = money(Math.round((this.bet * w.win) / 100), this.currency, this.lang);
+    return w.kind === 'scatter' ? amt : `${w.ways} ${this.t.ways}  ·  ${amt}`;
   }
 
   async showWins(wins: WinLine[], multiplier: number, tier: WinTier) {
     const winning = new Set<string>();
     for (const w of wins) for (const p of w.positions) winning.add(`${p.reel}:${p.row}`);
     // dim the others, glow the winners
-    this.reels.forEach((reel, r) => [0, 1, 2].forEach((row) => {
+    this.reels.forEach((reel, r) => Array.from({ length: NROWS }, (_, i) => i).forEach((row) => {
       const s = reel.cell(row);
       if (!winning.has(`${r}:${row}`)) {
         s.alpha = 0.42;
@@ -520,7 +521,7 @@ export class RallyScene implements View {
         this.pulse(s, 1.12, 600);
       }
     }));
-    for (const w of wins) this.drawLine(w);
+    for (const w of wins) this.drawGroup(w);
     const total = wins.reduce((a, w) => a + w.win, 0);
     const amt = Math.round((this.bet * total) / 100);
     this.winText.text = (multiplier > 1 ? `×${multiplier}  ·  ` : '') + money(amt, this.currency, this.lang);
@@ -535,16 +536,16 @@ export class RallyScene implements View {
       }
     }
     await this.tw.wait(this.mode === 'freegame' ? 750 : 950);
-    // cycle through the individual lines once (base game only, up to 4)
+    // cycle through the individual symbol groups once (base game only, up to 4)
     if (this.mode === 'basegame' && wins.length > 1 && !this.prefs.turbo) {
       for (const w of wins.slice(0, 4)) {
         this.lineGfx.clear();
-        this.drawLine(w);
-        this.winText.text = (w.kind === 'scatter' ? '' : `${this.t.paylines.split(' ')[0]} ${(w.line ?? 0) + 1}  ·  `) + money(Math.round((this.bet * w.win) / 100), this.currency, this.lang);
+        this.drawGroup(w);
+        this.winText.text = this.groupLabel(w);
         await this.tw.wait(620);
       }
       this.lineGfx.clear();
-      for (const w of wins) this.drawLine(w, 0.6);
+      for (const w of wins) this.drawGroup(w, 0.6);
       this.winText.text = (multiplier > 1 ? `×${multiplier}  ·  ` : '') + money(amt, this.currency, this.lang);
     }
   }
@@ -565,7 +566,7 @@ export class RallyScene implements View {
     const veil = new Graphics();
     c.addChild(veil);
     c.relayout = () => {
-      veil.clear().rect(0, 0, this.app.screen.width, this.app.screen.height).fill({ color: 0x02040c, alpha: 0.72 });
+      veil.clear().rect(0, 0, this.app.screen.width, this.app.screen.height).fill({ color: 0x1b1410, alpha: 0.62 });
       const inner = c.children[1] as Container | undefined;
       if (inner) {
         const s = Math.min(this.app.screen.width / 1200, this.app.screen.height / 900);
@@ -579,14 +580,14 @@ export class RallyScene implements View {
     return c;
   }
 
-  private goldText(text: string, size: number, font = 'Cinzel') {
-    const t = new Text({ text, style: { fontFamily: font, fontWeight: '700', fontSize: size, fill: this.goldFill(size), stroke: { color: '#2a1c06', width: Math.max(3, size / 14) }, letterSpacing: size / 10, align: 'center', dropShadow: { color: '#000', alpha: 0.8, blur: 12, distance: 4, angle: Math.PI / 2 } } });
+  private goldText(text: string, size: number, font = 'Luckiest Guy') {
+    const t = new Text({ text, style: { fontFamily: font, fontSize: size, fill: this.goldFill(size), stroke: { color: '#1b1410', width: Math.max(6, size / 8), join: 'round' }, letterSpacing: size / 20, align: 'center', dropShadow: { color: '#1b1410', alpha: 1, blur: 0, distance: Math.max(4, size / 14), angle: Math.PI / 3 } } });
     t.anchor.set(0.5);
     return t;
   }
 
-  private plainText(text: string, size: number, color = '#f4e2b0') {
-    const t = new Text({ text, style: { fontFamily: 'Marcellus', fontSize: size, fill: color, align: 'center', wordWrap: true, wordWrapWidth: 900, lineHeight: size * 1.35 } });
+  private plainText(text: string, size: number, color = '#fff3d6') {
+    const t = new Text({ text, style: { fontFamily: 'Lilita One', fontSize: size, fill: color, align: 'center', wordWrap: true, wordWrapWidth: 900, lineHeight: size * 1.3, stroke: { color: '#1b1410', width: 6, join: 'round' } } });
     t.anchor.set(0.5);
     return t;
   }
@@ -629,7 +630,7 @@ export class RallyScene implements View {
     num.y = 10;
     const sub = this.plainText(this.t.bonusIntroSub, 30);
     sub.y = 190;
-    const tap = this.plainText(this.t.tapToContinue, 22, '#a9c4b0');
+    const tap = this.plainText(this.t.tapToContinue, 22, '#ffd23f');
     tap.y = 300;
     const coin = new Sprite(this.tex.dial);
     coin.anchor.set(0.5);
@@ -649,9 +650,9 @@ export class RallyScene implements View {
 
   private setHand(index: number) {
     const ladder = RULES.rallyLadder;
-    const a0 = Math.PI * 0.8;
-    const a1 = Math.PI * 2.2;
-    const a = a0 + ((a1 - a0) * index) / (ladder.length - 1);
+    const a0 = Math.PI * 0.78;
+    const a1 = Math.PI * 2.22;
+    const a = a0 + ((a1 - a0) * (index + 0.5)) / ladder.length;
     this.dialHand.rotation = a + Math.PI / 2;
     this.currentLadderIndex = index;
   }

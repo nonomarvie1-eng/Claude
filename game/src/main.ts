@@ -1,6 +1,5 @@
-import '@fontsource/cinzel/700.css';
-import '@fontsource/marcellus/400.css';
-import '@fontsource/poiret-one/400.css';
+import '@fontsource/luckiest-guy/400.css';
+import '@fontsource/lilita-one/400.css';
 import './ui/theme.css';
 import { mount } from 'svelte';
 import App from './App.svelte';

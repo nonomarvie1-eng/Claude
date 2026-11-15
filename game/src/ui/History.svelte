@@ -33,8 +33,8 @@
   td { padding: 8px 6px; border-top: 1px solid rgba(255,255,255,.06); vertical-align: middle; }
   small { color: var(--muted); }
   .won { color: var(--gold-hi); }
-  .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--gold); margin-right: 4px; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); margin-right: 4px; }
   .tag.f { border-color: #dcef4c; color: #eef6c4; }
-  button { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--gold); background: linear-gradient(180deg, #2a7a52, #0c3121); font-size: 13px; }
+  button { padding: 6px 12px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #4fb85f, #2b7a3f); font-size: 13px; }
   button:disabled { opacity: .4; }
 </style>

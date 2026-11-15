@@ -130,15 +130,15 @@
   .toast, .banner {
     position: absolute; left: 50%; transform: translateX(-50%); z-index: 30;
     padding: 10px 22px; border-radius: 999px; font-size: 15px; letter-spacing: .04em;
-    background: rgba(4,17,11, .9); border: 1px solid var(--gold); box-shadow: 0 6px 24px rgba(0,0,0,.5);
+    background: rgba(4,17,11, .9); border: var(--chunky); box-shadow: var(--pop); box-shadow: 0 6px 24px rgba(0,0,0,.5);
     max-width: calc(100vw - 32px); text-align: center;
   }
   .toast { top: 42%; }
   .banner { top: 12px; font-size: 13px; padding: 7px 16px; color: var(--gold-hi); border-color: #dcef4c; }
   @media (max-width: 700px) { .banner { top: 62px; } }
   .error-veil { position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(2,8,5, .78); padding: 16px; }
-  .error-box { max-width: 440px; background: var(--deep-1); border: 1px solid var(--gold); border-radius: 14px; padding: 24px; text-align: center; }
+  .error-box { max-width: 440px; background: var(--deep-1); border: var(--chunky); box-shadow: var(--pop); border-radius: 14px; padding: 24px; text-align: center; }
   .error-box h2 { font-family: var(--font-title); color: var(--gold-hi); margin: 0 0 10px; font-size: 22px; }
   .error-box p { color: var(--ink); line-height: 1.5; }
-  .btn { margin-top: 10px; padding: 12px 26px; border-radius: 999px; border: 1px solid var(--gold); background: linear-gradient(180deg, #2a7a52, #0c3121); font-size: 16px; }
+  .btn { margin-top: 10px; padding: 12px 26px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #4fb85f, #2b7a3f); font-size: 16px; }
 </style>

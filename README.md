@@ -1,6 +1,6 @@
-# Golden Rally — machine à sous de démonstration (thème tennis, club prestige)
+# Golden Rally — machine à sous de démonstration (tennis, style cartoon)
 
-Jeu original 5 × 3, 20 lignes fixes, Wild **Raquette d'Or**, Scatter **Trophée**, tours gratuits avec multiplicateur progressif **« Rally »** (×1 → ×10). RTP théorique **96,486 %**, calculé exactement et vérifié par simulation.
+Jeu original **6 × 5, 15 625 façons de gagner**, personnages cartoon (le Président, la Championne, l'Arbitre, le Ramasseur, le Bulldog), Wild **Smash**, Scatter **Trophée**, bonus **Tie-Break** avec multiplicateur persistant **Rally** (×1 → ×20). RTP théorique **96,487 %** calculé exactement, vérifié par 200 millions de tours simulés ; gain maximal 5 000×.
 
 > **Démonstration uniquement.** Les crédits sont fictifs, sans valeur monétaire, ni retirables, ni convertibles. Aucune connexion à un opérateur, aucun paiement, aucune transaction n'est activé. La commercialisation reste subordonnée à une validation technique, juridique et contractuelle (voir `docs/`).
 
@@ -51,7 +51,7 @@ cd math
 uv venv .venv && uv pip install --python .venv/bin/python numpy zstandard matplotlib scipy pytest
 .venv/bin/python -m rally_math.reels          # bandes de rouleaux (déterministes)
 .venv/bin/python -m rally_math.exact          # RTP exact -> reports/exact.json
-.venv/bin/python -m rally_math.simulate -n 10000000   # Monte-Carlo -> reports/montecarlo.json
+.venv/bin/python -m rally_math.simulate -n 200000000  # Monte-Carlo (~1 min) -> reports/montecarlo.json
 .venv/bin/python -m rally_math.export_stake   # fichiers Stake -> ../stake/publish_files
 .venv/bin/python -m rally_math.export_config  # règles + fixtures -> ../shared
 .venv/bin/python -m rally_math.report         # ../docs/MATH_REPORT.md

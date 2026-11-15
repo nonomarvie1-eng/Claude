@@ -9,7 +9,7 @@
   const img = (s: string) => Object.entries(urls).find(([k]) => k.endsWith(`sym_${s}.png`))?.[1];
   const t = $derived(game.t);
   const pay = (pm: number) => money(Math.round((game.bet * pm) / 100), game.currency, game.prefs.lang);
-  const order: SymbolName[] = ['H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4'];
+  const order: SymbolName[] = ['H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'L5'];
   const name = (s: SymbolName) => (game.prefs.lang === 'fr' ? RULES.symbolInfo[s].fr : RULES.symbolInfo[s].label);
   const stats = RULES.stats;
   const showRtp = $derived(game.jurisdiction.displayRTP !== false);
@@ -20,11 +20,11 @@
 <section class="specials">
   <div class="special">
     <img src={img('W')} alt={name('W')} />
-    <div><h3>{name('W')} — WILD</h3><p>{t.rulesWild}</p><p class="pays">5 × = {pay(RULES.paytable.W['5'])} · 4 × = {pay(RULES.paytable.W['4'])} · 3 × = {pay(RULES.paytable.W['3'])}</p></div>
+    <div><h3>{name('W')} — WILD</h3><p>{t.rulesWild}</p></div>
   </div>
   <div class="special">
     <img src={img('S')} alt={name('S')} />
-    <div><h3>{name('S')} — BONUS</h3><p>{fmt(t.rulesScatter, { s3: pay(RULES.scatterPay['3']), s4: pay(RULES.scatterPay['4']), s5: pay(RULES.scatterPay['5']) })}</p></div>
+    <div><h3>{name('S')} — BONUS</h3><p>{fmt(t.rulesScatter, { s3: pay(RULES.scatterPay['3']), s4: pay(RULES.scatterPay['4']), s5: pay(RULES.scatterPay['5']), s6: pay(RULES.scatterPay['6']) })}</p></div>
   </div>
 </section>
 
@@ -35,7 +35,7 @@
       <div class="nm">{name(s)}</div>
       <table>
         <tbody>
-          {#each ['5', '4', '3'] as k}
+          {#each ['6', '5', '4', '3'] as k}
             <tr><td>{k}×</td><td>{pay(RULES.paytable[s][k])}</td></tr>
           {/each}
         </tbody>
@@ -45,7 +45,7 @@
 </section>
 
 <section>
-  <h3>{t.freeSpins} — Rally</h3>
+  <h3>Tie-Break — Rally</h3>
   <p>{t.rulesFs}</p>
   <div class="ladder">
     {#each RULES.rallyLadder as m, i}<span class:top={i === RULES.rallyLadder.length - 1}>×{m}</span>{/each}
@@ -55,19 +55,15 @@
 <section>
   <h3>{t.paylines}</h3>
   <p>{t.rulesLines}</p>
-  <div class="lines">
-    {#each RULES.paylines as line, li}
-      <div class="pl" title={String(li + 1)}>
-        <span>{li + 1}</span>
-        <div class="mini">
-          {#each [0, 1, 2] as row}
-            {#each [0, 1, 2, 3, 4] as reel}
-              <i class:on={line[reel] === row}></i>
-            {/each}
-          {/each}
-        </div>
+  <div class="ways" aria-hidden="true">
+    {#each [0, 1, 2, 3, 4, 5] as reel}
+      <div class="col">
+        {#each [0, 1, 2, 3, 4] as row}
+          <i class:on={(reel === 0 && row === 1) || (reel === 1 && (row === 0 || row === 3)) || (reel === 2 && row === 2) || (reel === 3 && row === 4)}></i>
+        {/each}
       </div>
     {/each}
+    <span class="ex">1 × 2 × 1 × 1 = 2 {t.ways}</span>
   </div>
 </section>
 
@@ -93,7 +89,6 @@
   .special { display: flex; gap: 14px; align-items: center; background: rgba(255,255,255,.03); border: 1px solid rgba(227,181,82,.25); border-radius: 12px; padding: 10px; }
   .special img { width: 96px; height: 96px; flex: none; }
   .special h3 { margin-top: 0; }
-  .pays { color: var(--gold-hi); }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
   .sym { text-align: center; background: rgba(255,255,255,.03); border: 1px solid rgba(227,181,82,.2); border-radius: 12px; padding: 8px; }
   .sym img { width: 92px; height: 92px; }
@@ -103,13 +98,13 @@
   td:first-child { color: var(--muted); }
   td:last-child { color: var(--gold-hi); font-family: var(--font-title); }
   .ladder { display: flex; flex-wrap: wrap; gap: 6px; }
-  .ladder span { padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(227,181,82,.5); font-family: var(--font-title); }
+  .ladder span { padding: 6px 12px; border-radius: 999px; border: var(--chunky); font-family: var(--font-title); }
   .ladder .top { background: var(--gold-grad); color: #2a1c06; }
-  .lines { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; }
-  .pl { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
-  .mini { display: grid; grid-template-columns: repeat(5, 8px); gap: 2px; }
-  .mini i { width: 8px; height: 8px; background: rgba(255,255,255,.1); border-radius: 2px; }
-  .mini i.on { background: var(--gold); }
+  .ways { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .col { display: grid; gap: 4px; }
+  .col i { width: 22px; height: 22px; border-radius: 5px; background: rgba(0,0,0,.08); border: 2px solid var(--ink-line); }
+  .col i.on { background: var(--accent); }
+  .ex { margin-left: 10px; font-family: var(--font-title); color: var(--accent-2); }
   .demo { color: #eef6c4; }
   .ver { color: var(--muted); font-size: 12px; }
 </style>

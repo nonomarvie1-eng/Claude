@@ -1,61 +1,54 @@
-# Golden Rally — Conception du jeu
+# Golden Rally — Conception du jeu (v2)
 
 ## Identité
 
-- **Nom de travail** : Golden Rally (recherche de marque à faire avant diffusion publique).
-- **Univers** : un club de tennis privé, haut de gamme, au crépuscule. Gazon fauché en bandes, terre battue ocre, ivoire, laiton et or. Typographies Cinzel, Marcellus et Poiret One.
-- **Ton** : élégant, calme, prestigieux. Pas de mascotte, pas d'élément enfantin.
-- **Contraintes juridiques respectées** : aucun joueur réel, aucun tournoi, trophée ou court identifiable, aucune marque d'équipementier, aucun logo de fédération. Le trophée et la chaise d'arbitre sont des dessins génériques originaux.
+- **Nom de travail** : Golden Rally. Une recherche de marque est à faire avant toute diffusion publique.
+- **Style : cartoon à gros traits.** Contours d'encre épais, aplats de couleur avec ombrage cel, ombres décalées façon BD, trames de points. Typographies Luckiest Guy et Lilita One.
+- **Univers** : le club de tennis du quartier, un jour de tournoi interne. Fanions, tribune pleine, court en terre battue, et le **vieux tableau de score en bois du club** qui sert de grille de jeu.
+- **Ton** : humour et caractère. Chaque symbole fort est un personnage avec une attitude.
+- **Inspiration, pas de copie** : on reprend des jeux du marché les principes qui créent la personnalité (personnages, style assumé, grille intégrée au décor, palette signature). Aucun dessin, nom ou mécanique propriétaire n'est repris. Aucun personnage ne représente une personne réelle, un tournoi ou une marque.
 
-## Symboles
+## Personnages et symboles
 
-| Code | Symbole | Rôle | Paiement 3/4/5 (× mise totale) |
+| Code | Symbole | Rôle | Gain par façon 3/4/5/6 (× mise) |
 |---|---|---|---|
-| W | Raquette d'Or | Wild (rouleaux 2-4), remplace tout sauf le Trophée | 2 / 10 / 50 |
-| S | Trophée | Scatter, paie partout, déclenche le bonus | 2 / 10 / 50 |
-| H1 | Balle d'Or (couronne de laurier) | Haut | 2 / 10 / 50 |
-| H2 | Chaise d'arbitre | Haut | 1,5 / 6 / 25 |
-| H3 | Tube de balles « CLUB » | Haut | 1,2 / 4 / 15 |
-| H4 | Casquette du club | Haut | 1 / 3 / 10 |
-| L1 | Médaillon « AD » (avantage) | Bas | 0,5 / 1,5 / 5 |
-| L2 | Médaillon « 40 » | Bas | 0,4 / 1,2 / 4 |
-| L3 | Médaillon « 30 » | Bas | 0,3 / 1 / 3 |
-| L4 | Médaillon « 15 » | Bas | 0,2 / 0,8 / 2,2 |
+| W | **Smash** : raquette qui frappe la balle | Wild (rouleaux 2 à 6) | — |
+| S | **Trophée** | Scatter, déclenche le Tie-Break | 2 / 5 / 20 / 100 (total, n'importe où) |
+| H1 | **Le Président** : moustache, monocle, nœud papillon, air satisfait | Haut | 0,5 / 1 / 2 / 5 |
+| H2 | **La Championne** : bandeau, regard déterminé, raquette sur l'épaule | Haut | 0,4 / 0,8 / 1,5 / 3 |
+| H3 | **L'Arbitre** : lunettes, crie « OUT ! » | Haut | 0,3 / 0,5 / 1,2 / 2,5 |
+| H4 | **Le Ramasseur** : casquette à l'envers, taches de rousseur, dent manquante | Haut | 0,2 / 0,4 / 1 / 2 |
+| H5 | **Le Bulldog du club** : bandeau éponge, balle dans la gueule | Haut | 0,2 / 0,3 / 0,8 / 1,5 |
+| L1–L5 | **Plaques de score** AD, 40, 30, 15, 0 accrochées au tableau | Bas | 0,1 → 0,7 |
 
-Les symboles bas utilisent le comptage des points au tennis (15, 30, 40, AD). C'est un clin d'œil thématique qui remplace les habituelles valeurs de cartes.
+Les symboles bas reprennent toute la progression du score au tennis (0, 15, 30, 40, AD). C'est notre clin d'œil, à la place des cartes A, K, Q, J habituelles.
 
-## Mécanique distinctive : « Rally »
+## Gameplay
 
-- 3, 4 ou 5 Trophées → 10, 12 ou 15 tours gratuits, plus le gain Scatter (2×, 10× ou 50×).
-- Pendant le bonus, chaque Raquette d'Or qui tombe **prolonge l'échange** : le compteur de Wilds collectés augmente. L'augmentation a lieu *avant* le calcul des gains du tour.
-- Multiplicateur des gains de ligne : ×1 → ×2 → ×3 → ×4 → ×5 → ×6 → ×8 → ×10. Il est conservé jusqu'à la fin du bonus et matérialisé par un cadran « RALLY ».
-- 3 Trophées ou plus pendant le bonus : +5 tours, avec au plus 50 tours restants.
-- Gain maximal par tour : 5 000× la mise.
+- **Grille 6 × 5, 15 625 façons de gagner** : un symbole paie s'il est présent, ou remplacé par un Smash, sur des rouleaux adjacents à partir de la gauche, sur 3 à 6 rouleaux. Le gain vaut la valeur par façon multipliée par le nombre de façons.
+- **Tie-Break (tours gratuits)** : 3, 4, 5 ou 6 Trophées donnent 9, 12, 15 ou 20 tours.
+- **Mécanique signature « Rally »** : pendant le Tie-Break, chaque Smash qui tombe *relance l'échange*. Le multiplicateur de tous les gains en façons monte, avant le calcul du tour : ×1 → ×2 → ×3 → ×4 → ×5 → ×6 → ×8 → ×10 → ×12 → ×15 → ×20. Il ne redescend jamais pendant le bonus et s'affiche sur le cadran RALLY.
+- Relance du bonus : 3 Trophées ou plus ajoutent 5 tours, avec au plus 50 tours restants.
+- Gain maximal : 5 000× la mise. Ce gain est **réellement présent** dans les fichiers Stake.
+- RTP : **96,487 %** (calcul exact). Volatilité élevée : écart-type de 7,8× la mise. Bonus en moyenne une fois tous les 174 tours.
 
-Pourquoi cette mécanique :
-- elle est **élégante** : une seule idée, lisible dès le premier bonus ;
-- elle crée une **tension honnête**, puisque le multiplicateur est visible et ne redescend jamais pendant le bonus ;
-- elle est **exactement calculable** (chaîne de Markov finie), donc vérifiable par un laboratoire.
+## Présentation (le résultat est toujours fixé avant l'animation)
 
-## Déroulé d'un tour (tout est déjà déterminé avant l'animation)
+- Les rouleaux défilent sur leurs vraies bandes et s'arrêtent sur les positions tirées par le serveur.
+- Les gains sont mis en valeur symbole par symbole (cadres jaunes, nombre de façons, montant). Les gains inférieurs ou égaux à la mise ne sont pas célébrés.
+- Tie-Break : écran « TIE-BREAK ! ». À chaque Smash, la balle vole vers le cadran RALLY et l'aiguille avance, puis vient l'écran récapitulatif.
+- Gros gains (≥ 10× la mise) : célébration avec pluie de balles, qu'un toucher écourte sans changer le montant.
 
-1. La mise est débitée et le serveur renvoie le « book » complet du tour, bonus compris.
-2. Les rouleaux défilent **sur leurs vraies bandes** et s'arrêtent sur les positions du book.
-3. Les gains sont présentés : lignes tracées et symboles mis en valeur. Les gains ≤ mise ont un retour sonore discret, sans célébration.
-4. Bonus : écran d'introduction, puis chaque tour gratuit. Les Wilds envoient une énergie vers le cadran, le multiplicateur monte, puis vient le récapitulatif.
-5. Les gros gains (≥ 10× la mise) déclenchent une célébration qu'on peut écourter d'un toucher ; seul l'affichage est accéléré, le montant reste le même.
+## Production 100 % par code
+
+- `game/art/build-art.mjs` dessine tout en SVG (personnages, décor, tableau, logo, cadran), puis `game/art/rasterize.mjs` les rend en PNG avec Chromium.
+- `game/audio/synth.py` synthétise tous les sons (balles, rebonds, swoosh, carillons, applaudissements) et les musiques en boucle.
+- **Limite assumée** : un style graphique fort et des personnages cartoon sont produits ici à un niveau professionnel. Des illustrations *peintes* ou très détaillées, comme celles de certains jeux concurrents, demanderaient un illustrateur ou un outil d'IA d'image (voir `ASSETS_AND_LICENSES.md`).
 
 ## Accessibilité et confort
 
-- Mode « réduire les animations » : il suit aussi le réglage système `prefers-reduced-motion`.
+- Mode « réduire les animations », qui suit aussi le réglage système.
 - Mode rapide, désactivable par juridiction.
-- Volumes séparés : général, musique et effets.
-- Coupure automatique du son quand l'onglet est masqué.
-- Interface en HTML, avec libellés ARIA et navigation au clavier ; la barre d'espace lance le tour.
-- Langues : français et anglais. Les autres langues Stake retombent sur l'anglais en attendant une traduction.
-
-## Production des ressources (100 % pilotée par code)
-
-- **Visuels** : `game/art/build-art.mjs` dessine chaque symbole, le décor, le cadre, le logo et le cadran en SVG par programme (géométrie, dégradés métalliques, ombres). `rasterize.mjs` les rend en PNG haute définition avec Chromium.
-- **Sons** : `game/audio/synth.py` synthétise tout : coups de balle, rebonds, swoosh de raquette, carillons, applaudissements et deux musiques en boucle parfaite.
-- **Pourquoi pas d'IA générative externe** : aucun connecteur d'image ou d'audio n'est disponible dans cet environnement. Les conditions commerciales des services de génération varient et la protégeabilité de leurs sorties est incertaine. La génération procédurale donne au studio **la pleine propriété** des ressources, une reproductibilité totale et un coût nul. Si un rendu encore plus illustratif est souhaité plus tard, voir `ASSETS_AND_LICENSES.md`, section « Évolutions possibles ».
+- Volumes séparés (général, musique, effets) ; son coupé quand l'onglet est masqué.
+- Navigation au clavier ; la barre d'espace lance un tour.
+- Langues : français et anglais.

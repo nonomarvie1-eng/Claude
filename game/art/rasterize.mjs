@@ -23,6 +23,9 @@ const FONT_CSS = `
 @font-face{font-family:'Cinzel';font-weight:700;src:url(${font('cinzel', 'cinzel-latin-700-normal.woff2')}) format('woff2')}
 @font-face{font-family:'Poiret One';font-weight:400;src:url(${font('poiret-one', 'poiret-one-latin-400-normal.woff2')}) format('woff2')}
 @font-face{font-family:'Marcellus';font-weight:400;src:url(${font('marcellus', 'marcellus-latin-400-normal.woff2')}) format('woff2')}
+@font-face{font-family:'Luckiest Guy';font-weight:400;src:url(${font('luckiest-guy', 'luckiest-guy-latin-400-normal.woff2')}) format('woff2')}
+@font-face{font-family:'Lilita One';font-weight:400;src:url(${font('lilita-one', 'lilita-one-latin-400-normal.woff2')}) format('woff2')}
+@font-face{font-family:'Bangers';font-weight:400;src:url(${font('bangers', 'bangers-latin-400-normal.woff2')}) format('woff2')}
 html,body{margin:0;background:transparent}`;
 
 // scale per asset (symbols are authored at 256 and exported at 2x)
@@ -52,10 +55,10 @@ for (const file of files) {
   console.log('✓', path.relative(ROOT, out));
 }
 // contact sheet for review
-const syms = ['W', 'S', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4'];
-await page.setViewportSize({ width: 1310, height: 800 });
-await page.setContent(`<html><body style="margin:0;background:#0a1430;display:flex;flex-wrap:wrap;gap:10px;padding:10px">
-${syms.map((s) => `<img src="data:image/png;base64,${fs.readFileSync(path.join(OUT, `sym_${s}.png`)).toString('base64')}" style="width:250px;height:250px;background:#071029;border:1px solid #2a3a6a">`).join('')}
+const syms = ['W', 'S', 'H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'L5'];
+await page.setViewportSize({ width: 1580, height: 540 });
+await page.setContent(`<html><body style="margin:0;background:#2b6b45;display:flex;flex-wrap:wrap;gap:10px;padding:10px">
+${syms.map((s) => `<img src="data:image/png;base64,${fs.readFileSync(path.join(OUT, `sym_${s}.png`)).toString('base64')}" style="width:250px;height:250px;background:#1f5e3a;border:1px solid #0b2a1e">`).join('')}
 </body></html>`);
 await page.screenshot({ path: path.join(HERE, 'contact-sheet.png') });
 await browser.close();
