@@ -3,7 +3,7 @@
 // math/rally_math/engine.py).  Amounts are payoutMultiplier units
 // (bet multiple x 100).
 
-export type SymbolName = 'W' | 'S' | 'H1' | 'H2' | 'H3' | 'H4' | 'L1' | 'L2' | 'L3' | 'L4';
+export type SymbolName = 'W' | 'S' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'L1' | 'L2' | 'L3' | 'L4' | 'L5';
 export type GameType = 'basegame' | 'freegame';
 export type Board = SymbolName[][]; // board[reel][row]
 
@@ -13,10 +13,10 @@ export interface Position {
 }
 
 export interface WinLine {
-  kind: 'line' | 'scatter';
-  line: number | null;
+  kind: 'ways' | 'scatter';
   symbol: SymbolName;
-  count: number;
+  count: number; // reels
+  ways: number;
   basePay: number;
   multiplier: number;
   win: number;
@@ -57,7 +57,8 @@ export interface GameConfig {
   fsMaxRemaining: number;
   rallyLadder: number[];
   wincapX: number;
-  paylines: number[][];
+  minKind: number;
+  payModel: string;
   winLevels: { name: string; min: number }[];
   reelStrips: { base: SymbolName[][]; free: SymbolName[][] };
   stats?: { rtp: number; hitFrequency: number; bonusOneIn: number; stdDev: number; method: string };

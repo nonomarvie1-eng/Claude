@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fixtures from '$shared/parity-fixtures.json';
-import { playRound, lineEval, drawBaseStopsWithScatters, positionsOf, windowOf, STRIPS } from './engine';
+import { playRound, evaluateWays, drawBaseStopsWithScatters, positionsOf, windowOf, STRIPS } from './engine';
 import { cryptoDrawer, cryptoInt, listDrawer } from './rng';
 import { RULES } from './rules';
 import type { Book } from './types';
@@ -21,12 +21,20 @@ describe('TS engine parity with the Python reference engine', () => {
   });
 });
 
-describe('line evaluation', () => {
-  it('handles wilds, scatters and best-pay choice', () => {
-    expect(lineEval(['H1', 'H1', 'H1', 'H1', 'H1']).pay).toBe(500);
-    expect(lineEval(['W', 'W', 'W', 'H4', 'L1'])).toEqual({ pay: 30, symbol: 'H4', count: 4 });
-    expect(lineEval(['W', 'W', 'S', 'H1', 'H1']).pay).toBe(0);
-    expect(lineEval(['W', 'W', 'W', 'W', 'W'])).toEqual({ pay: 500, symbol: 'W', count: 5 });
+describe('ways evaluation', () => {
+  it('multiplies matches per reel and substitutes wilds', () => {
+    const b = [
+      ['H2', 'H2', 'L1', 'L1', 'L1'],
+      ['W', 'L2', 'L2', 'L2', 'L2'],
+      ['H2', 'H2', 'H2', 'L3', 'L3'],
+      ['H2', 'L4', 'L4', 'L4', 'L4'],
+      ['L5', 'L5', 'L5', 'L5', 'L5'],
+      ['H2', 'H2', 'H2', 'H2', 'H2'],
+    ] as const;
+    const w = evaluateWays(b.map((c) => [...c])).find((x) => x.symbol === 'H2')!;
+    expect(w.reels).toBe(4);
+    expect(w.ways).toBe(6);
+    expect(w.payPerWay).toBe(RULES.paytable.H2['4'] / 10);
   });
 });
 

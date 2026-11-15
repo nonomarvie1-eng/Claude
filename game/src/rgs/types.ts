@@ -2,6 +2,7 @@
 // Shapes follow the Stake Engine RGS documentation (math-sdk/docs/rgs_docs/RGS.md,
 // commit 141b4e8): money is an integer with 6 decimals (1_000_000 = 1.00).
 import type { Book } from '../engine/types';
+import { RULES } from '../engine/rules';
 
 export const MONEY_SCALE = 1_000_000;
 
@@ -79,7 +80,7 @@ export function validateRound(r: unknown): Round {
   if (last.type !== 'finalWin' || last.amount !== x.payoutMultiplier) throw new RgsError('ERR_DATA', 'finalWin does not match payout');
   for (const e of x.state) {
     if (e.type === 'reveal') {
-      if (!Array.isArray(e.board) || e.board.length !== 5 || e.board.some((c) => !Array.isArray(c) || c.length !== 3)) {
+      if (!Array.isArray(e.board) || e.board.length !== RULES.reels || e.board.some((c) => !Array.isArray(c) || c.length !== RULES.rows)) {
         throw new RgsError('ERR_DATA', 'bad board');
       }
     }

@@ -14,7 +14,7 @@ from .engine import make_book, numpy_drawer, play_round, list_drawer
 ROOT = os.path.dirname(os.path.dirname(C.HERE))
 
 
-def game_config(exact: dict | None) -> dict:
+def game_config(exact: dict | None, mc: dict | None = None) -> dict:
     base, free = C.base_reels(), C.free_reels()
     cfg = {
         "gameId": C.GAME_ID,
@@ -31,7 +31,8 @@ def game_config(exact: dict | None) -> dict:
         "fsMaxRemaining": C.FS_MAX_REMAINING,
         "rallyLadder": C.RALLY_LADDER,
         "wincapX": C.WINCAP_X,
-        "paylines": C.PAYLINES,
+        "minKind": C.MIN_KIND,
+        "payModel": "ways",
         "winLevels": C.WIN_LEVELS[:-1] + [{"name": "max", "min": C.WINCAP_X}],
         "reelStrips": {
             "base": [[C.SYMBOLS[s] for s in strip] for strip in base.strips],
@@ -42,9 +43,9 @@ def game_config(exact: dict | None) -> dict:
     if exact:
         cfg["stats"] = {
             "rtp": exact["rtp"],
-            "hitFrequency": exact["hit_frequency"],
+            "hitFrequency": mc["hit_frequency"] if mc else None,
             "bonusOneIn": exact["trigger_1_in"],
-            "stdDev": exact["std_dev"],
+            "stdDev": mc["std_dev"] if mc else None,
             "method": exact["method"],
         }
     return cfg
@@ -73,9 +74,11 @@ def fixtures(n: int, seed: int) -> list[dict]:
 def main() -> None:
     exact_path = os.path.join(ROOT, "math", "reports", "exact.json")
     exact = json.load(open(exact_path)) if os.path.exists(exact_path) else None
+    mc_path = os.path.join(ROOT, "math", "reports", "montecarlo.json")
+    mc = json.load(open(mc_path)) if os.path.exists(mc_path) else None
     os.makedirs(os.path.join(ROOT, "shared"), exist_ok=True)
     with open(os.path.join(ROOT, "shared", "game-config.json"), "w", encoding="utf-8") as f:
-        json.dump(game_config(exact), f, indent=1)
+        json.dump(game_config(exact, mc), f, indent=1)
     with open(os.path.join(ROOT, "shared", "parity-fixtures.json"), "w", encoding="utf-8") as f:
         json.dump(fixtures(200, 4242), f, separators=(",", ":"))
     print("wrote shared/game-config.json and shared/parity-fixtures.json")

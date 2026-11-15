@@ -1,24 +1,23 @@
-"""Export Stake Engine static math files: index.json, lookup table CSV and
-zstd-compressed JSON-lines books, following the format documented in
-engineio/math-sdk `docs/rgs_docs/data_format.md`.
+"""Export Stake Engine static math files (index.json, lookup table CSV,
+zstd JSON-lines books) — format of engineio/math-sdk docs/rgs_docs/data_format.md.
 
-How the lookup-table weights are built (stratified + calibrated)
+Lookup-table construction (stratified, calibrated, tail-complete)
 ----------------------------------------------------------------
-On Stake Engine the RGS draws one book at random, proportionally to its
-lookup-table weight.  The published table therefore *is* the game's
-probability distribution, so its RTP must match the exact model.
+On Stake Engine the RGS draws one book proportionally to its weight, so the
+published table *is* the game's distribution.
 
-1. Rounds are split into 4 strata whose probabilities are known exactly from
-   the full-cycle enumeration: no bonus, bonus with 3, 4 and 5 scatters.
-2. Inside each stratum, rounds are sampled with the exact conditional law
-   (per-reel scatter patterns drawn with exact weights, then a uniform stop
-   among the stops of that pattern), using the reference engine.
-3. Sampling noise is removed by minimal exponential tilting inside each
-   stratum (w_i ∝ exp(λ x_i), λ solved so that the stratum mean equals its
-   exact conditional mean).  The KL divergence from uniform weights is
-   reported for every stratum, so the size of the adjustment is visible.
-   The adjustment depends only on payouts, never on players or history.
-4. Weights are written as uint64 integers whose sum is ~1e15.
+1. Strata with exactly known probabilities (full-cycle exact computation):
+   no bonus, and bonus triggered with 3, 4, 5, 6 Trophies.
+2. Inside each bonus stratum, rounds are split into payout bands
+   (< 500x, 500x-2000x, >= 2000x).  Band probabilities P(band | k) are
+   estimated by a large vectorised Monte-Carlo pilot (reported with counts);
+   books for each band are drawn by rejection from that pilot, so the rare
+   big wins (up to the 5,000x cap) really exist in the table.
+3. Every book is rebuilt by the reference engine from its recorded stops and
+   must reproduce the pilot payout exactly (fast path == reference path).
+4. Minimal exponential tilting inside each scatter stratum makes its mean
+   equal to the exact conditional mean (KL divergence reported).
+5. Weights are uint64 integers summing to ~1e15.
 """
 
 from __future__ import annotations
@@ -32,13 +31,13 @@ import numpy as np
 import zstandard as zstd
 
 from . import config as C
-from .engine import make_book, play_round, numpy_drawer, window, positions_of
+from .engine import count_tables, list_drawer, make_book, play_round, positions_of, window, ways_win_vec
 
 WEIGHT_TOTAL = 10 ** 15
+BANDS_X = [0, 500, 2000, 4000, 10 ** 9]
 
 
 def _scatter_classes(strips):
-    """Per reel: list of stops whose window contains a scatter / not."""
     with_s, without_s = [], []
     for strip in strips:
         n = len(strip)
@@ -52,8 +51,6 @@ def _scatter_classes(strips):
 
 
 def _patterns(strips, k):
-    """All 5-bit scatter patterns with exactly k reels showing a scatter, with
-    their exact probabilities (windows show at most one scatter per reel)."""
     with_s, without_s = _scatter_classes(strips)
     pats, probs = [], []
     for m in range(1 << C.NUM_REELS):
@@ -62,194 +59,208 @@ def _patterns(strips, k):
             continue
         p = 1.0
         for r, b in enumerate(bits):
-            n = len(strips[r])
-            p *= (len(with_s[r]) if b else len(without_s[r])) / n
+            p *= (len(with_s[r]) if b else len(without_s[r])) / len(strips[r])
         if p > 0:
             pats.append(bits)
             probs.append(p)
     return pats, np.array(probs), with_s, without_s
 
 
-def _conditional_stop_drawer(strips, k, rng):
+def conditional_base_stops(strips, k, rng, n):
+    """n base-stop vectors with exactly k scatters, drawn with the exact conditional law."""
     pats, probs, with_s, without_s = _patterns(strips, k)
-    cdf = probs / probs.sum()
+    choice = rng.choice(len(pats), size=n, p=probs / probs.sum())
+    out = np.zeros((n, C.NUM_REELS), dtype=np.int64)
+    for r in range(C.NUM_REELS):
+        bits = np.array([pats[c][r] for c in choice])
+        a = rng.choice(with_s[r], size=n)
+        b = rng.choice(without_s[r], size=n)
+        out[:, r] = np.where(bits == 1, a, b)
+    return out, float(probs.sum())
 
-    def draw():
-        bits = pats[rng.choice(len(pats), p=cdf)]
-        return [int(rng.choice(with_s[r] if bits[r] else without_s[r])) for r in range(C.NUM_REELS)]
 
-    return draw, float(probs.sum())
+def bonus_pilot(rng, base_stops, base_cnt, free_cnt, free_len):
+    """Vectorised play of bonus rounds whose base stops are given; records free stops."""
+    n = base_stops.shape[0]
+    scpay = np.zeros(C.NUM_REELS + 1, dtype=np.int64)
+    for kk, v in C.SCATTER_PAY.items():
+        scpay[kk] = v
+    award = np.zeros(C.NUM_REELS + 1, dtype=np.int64)
+    for kk, v in C.FS_AWARD.items():
+        award[kk] = v
+    ladder = np.array(C.RALLY_LADDER, dtype=np.int64)
+    top = len(C.RALLY_LADDER) - 1
+    lw, _w, sc = ways_win_vec(base_cnt, base_stops)
+    total = lw + scpay[sc]
+    remaining = award[sc]
+    collected = np.zeros(n, dtype=np.int64)
+    active = remaining > 0
+    log: list[tuple[np.ndarray, np.ndarray]] = []
+    while active.any():
+        a = np.nonzero(active)[0]
+        remaining[a] -= 1
+        st = np.stack([rng.integers(0, L, len(a)) for L in free_len], axis=1)
+        log.append((a, st))
+        flw, fw, fsc = ways_win_vec(free_cnt, st)
+        collected[a] += fw
+        total[a] += flw * ladder[np.minimum(collected[a], top)] + scpay[fsc]
+        hit = total[a] >= C.WINCAP_T
+        add = np.where(fsc >= 3, np.minimum(C.FS_RETRIGGER, C.FS_MAX_REMAINING - remaining[a]), 0)
+        add = np.where(hit, 0, np.maximum(add, 0))
+        remaining[a] += add
+        active[a] = (remaining[a] > 0) & ~hit
+    return np.minimum(total, C.WINCAP_T), log
 
 
-def _tilt(x: np.ndarray, target: float) -> tuple[np.ndarray, float, float]:
-    """Return weights (sum 1) with weighted mean == target, minimal KL to uniform."""
+def stops_of(i, base_stops, log):
+    seq = [list(map(int, base_stops[i]))]
+    for a, st in log:
+        j = np.searchsorted(a, i)
+        if j < len(a) and a[j] == i:
+            seq.append(list(map(int, st[j])))
+    return seq
+
+
+def _tilt(x: np.ndarray, w0: np.ndarray, target: float):
+    """Weights w ∝ w0·exp(λx), Σw=1, weighted mean == target (min KL to w0)."""
     x = x.astype(np.float64)
-    if not (x.min() < target < x.max()):
-        raise ValueError(f"target {target} outside sample range [{x.min()}, {x.max()}]")
+    w0 = w0 / w0.sum()
     scale = x.std() or 1.0
 
-    def mean_for(lam):
-        z = lam * (x - x.max()) / scale
-        w = np.exp(z)
-        return (w * x).sum() / w.sum()
+    def weights(lam):
+        z = lam * x / scale
+        z = z - z.max()
+        w = w0 * np.exp(z)
+        return w / w.sum()
 
-    lo, hi = -50.0, 50.0
-    for _ in range(200):
+    lo, hi = -60.0, 60.0
+    for _ in range(300):
         mid = (lo + hi) / 2
-        if mean_for(mid) < target:
+        if (weights(mid) * x).sum() < target:
             lo = mid
         else:
             hi = mid
-    lam = (lo + hi) / 2
-    w = np.exp(lam * (x - x.max()) / scale)
-    w /= w.sum()
-    n = len(x)
-    kl = float((w * np.log(w * n + 1e-300)).sum())
-    return w, lam, kl
+    w = weights((lo + hi) / 2)
+    kl = float((w * np.log(w / w0 + 1e-300)).sum())
+    return w, (lo + hi) / 2, kl
 
 
-def export(out_dir: str, n_base: int, n_fs: dict[int, int], seed: int, exact_path: str) -> dict:
-    with open(exact_path, encoding="utf-8") as f:
-        ex = json.load(f)
+def export(out_dir, n_base, plan, pilot_n, seed, exact_path):
+    ex = json.load(open(exact_path, encoding="utf-8"))
     base, free = C.base_reels(), C.free_reels()
+    bc, fc = count_tables(base.strips), count_tables(free.strips)
     rng = np.random.Generator(np.random.PCG64(seed))
-    p_k = {k: ex["p_scatter"][str(k)] for k in (3, 4, 5)}
+    ks = [k for k in sorted(C.FS_AWARD) if ex["p_scatter"].get(str(k), 0) > 0]
+    p_k = {k: ex["p_scatter"][str(k)] for k in ks}
     p0 = 1.0 - sum(p_k.values())
-
-    # exact conditional means (t-units)
     EB = ex["rtp_base"] * 10
-    # E[B * 1{k}] is not stored directly; recompute from enumeration-free formula:
-    # E[X | k] = E[B | k] + E[bonus | k]; E[B|k] is computed by sampling-free
-    # exact means below.
-    cond_B = _exact_cond_base_means()
-    strata = []
-    # stratum 0: no trigger
-    t0 = (EB - sum(p_k[k] * cond_B[k] for k in p_k)) / p0
-    strata.append({"name": "no_bonus", "k": 0, "prob": p0, "target_t": t0, "n": n_base})
-    for k in (3, 4, 5):
-        strata.append({
-            "name": f"bonus_{k}_scatters",
-            "k": k,
-            "prob": p_k[k],
-            "target_t": cond_B[k] + ex["bonus_by_trigger"][str(k)]["E"],
-            "n": n_fs[k],
-        })
-
+    cond = {k: ex["cond_base_mean_t"][str(k)] for k in ks}
     os.makedirs(out_dir, exist_ok=True)
     books_path = os.path.join(out_dir, "books_base.jsonl.zst")
     lut_path = os.path.join(out_dir, "lookUpTable_base_0.csv")
     cctx = zstd.ZstdCompressor(level=19, threads=-1)
-    payouts: list[int] = []
-    weights_all: list[int] = []
-    draw_fs = numpy_drawer(rng)
+    payouts, weights = [], []
+    rep_strata = []
     book_id = 1
-    report_strata = []
-    with open(books_path, "wb") as fbin, cctx.stream_writer(fbin) as w:
-        for st in strata:
-            k = st["k"]
-            if k == 0:
-                def draw_base():
-                    while True:
-                        s = [int(rng.integers(0, n)) for n in base.lengths]
-                        b = window(base.strips, s)
-                        if len(positions_of(b, C.SCATTER)) < 3:
-                            return s
-            else:
-                draw_base, pk_check = _conditional_stop_drawer(base.strips, k, rng)
-                assert abs(pk_check - st["prob"]) < 1e-12, (pk_check, st["prob"])
-            xs = []
-            ids = []
-            for _ in range(st["n"]):
-                res = play_round(draw_fs, base, free, record_events=True, forced_base_stops=draw_base())
-                book = make_book(book_id, res)
-                w.write((json.dumps(book, separators=(",", ":")) + "\n").encode("utf-8"))
-                xs.append(res.total_t)
-                ids.append(book_id)
-                book_id += 1
-            xs = np.array(xs)
-            wts, lam, kl = _tilt(xs, st["target_t"])
-            int_w = np.maximum(1, np.round(wts * st["prob"] * WEIGHT_TOTAL)).astype(np.uint64)
-            payouts.extend((xs * 10).astype(int).tolist())
-            weights_all.extend(int(v) for v in int_w)
-            report_strata.append({
-                "name": st["name"],
-                "probability": st["prob"],
-                "books": st["n"],
-                "target_mean_x": st["target_t"] / 10,
-                "sample_mean_x": float(xs.mean() / 10),
-                "tilt_lambda": lam,
-                "kl_divergence_from_uniform": kl,
-                "max_weight_ratio_vs_uniform": float(wts.max() * len(wts)),
-                "min_weight_ratio_vs_uniform": float(wts.min() * len(wts)),
-                "max_payout_x": float(xs.max() / 10),
-            })
+    with open(books_path, "wb") as fbin, cctx.stream_writer(fbin) as wtr:
+        def write(res):
+            nonlocal book_id
+            b = make_book(book_id, res)
+            wtr.write((json.dumps(b, separators=(",", ":")) + "\n").encode())
+            book_id += 1
+            return res.total_t
+
+        # ---- stratum 0: no bonus
+        xs = []
+        while len(xs) < n_base:
+            s = [int(rng.integers(0, L)) for L in base.lengths]
+            if len(positions_of(window(base.strips, s), C.SCATTER)) >= 3:
+                continue
+            xs.append(write(play_round(None, base, free, True, forced_base_stops=s)))
+        xs = np.array(xs)
+        target0 = (EB - sum(p_k[k] * cond[k] for k in ks)) / p0
+        w, lam, kl = _tilt(xs, np.ones(len(xs)), target0)
+        payouts += (xs * 10).tolist()
+        weights += [max(1, int(round(v))) for v in w * p0 * WEIGHT_TOTAL]
+        rep_strata.append({"name": "no_bonus", "probability": p0, "books": len(xs), "target_mean_x": target0 / 10,
+                           "sample_mean_x": float(xs.mean() / 10), "kl": kl, "max_payout_x": float(xs.max() / 10), "bands": None})
+
+        # ---- bonus strata
+        for k in ks:
+            target = cond[k] + ex["bonus_by_trigger"][str(k)]["E"]
+            bs, pk_check = conditional_base_stops(base.strips, k, rng, pilot_n)
+            assert abs(pk_check - p_k[k]) < 1e-12
+            tot, log = bonus_pilot(rng, bs, bc, fc, free.lengths)
+            band_of = np.digitize(tot / 10, BANDS_X) - 1
+            xs_all, w0_all, band_rep = [], [], []
+            for b in range(len(BANDS_X) - 1):
+                members = np.nonzero(band_of == b)[0]
+                p_band = len(members) / pilot_n
+                want = plan[k][b]
+                if len(members) == 0 or want == 0:
+                    band_rep.append({"band_x": BANDS_X[b:b + 2], "pilot_count": int(len(members)), "books": 0})
+                    continue
+                pick = members if len(members) <= want else rng.choice(members, size=want, replace=False)
+                for i in pick:
+                    seq = stops_of(int(i), bs, log)
+                    res = play_round(list_drawer(seq[1:]), base, free, True, forced_base_stops=seq[0])
+                    assert res.total_t == int(tot[i]), "fast path and reference engine disagree"
+                    xs_all.append(write(res))
+                    w0_all.append(p_band / len(pick))
+                band_rep.append({"band_x": BANDS_X[b:b + 2], "pilot_count": int(len(members)), "p_band": p_band, "books": int(len(pick))})
+            xs = np.array(xs_all)
+            w, lam, kl = _tilt(xs, np.array(w0_all), target)
+            payouts += (xs * 10).tolist()
+            weights += [max(1, int(round(v))) for v in w * p_k[k] * WEIGHT_TOTAL]
+            rep_strata.append({"name": f"bonus_{k}_trophies", "probability": p_k[k], "books": len(xs), "target_mean_x": target / 10,
+                               "sample_mean_x": float((xs * np.array(w0_all)).sum() / np.sum(w0_all) / 10), "kl": kl,
+                               "max_payout_x": float(xs.max() / 10), "pilot_rounds": pilot_n, "bands": band_rep})
 
     with open(lut_path, "w", encoding="utf-8", newline="\n") as f:
-        for i, (wt, po) in enumerate(zip(weights_all, payouts), start=1):
-            f.write(f"{i},{wt},{po}\n")
-
-    index = {"modes": [{"name": "base", "cost": 1.0, "events": "books_base.jsonl.zst", "weights": "lookUpTable_base_0.csv"}]}
+        for i, (wt, po) in enumerate(zip(weights, payouts), start=1):
+            f.write(f"{i},{wt},{int(po)}\n")
     with open(os.path.join(out_dir, "index.json"), "w", encoding="utf-8") as f:
-        json.dump(index, f, indent=4)
-
-    W = np.array(weights_all, dtype=np.float64)
-    P = np.array(payouts, dtype=np.float64) / 100.0
-    lut_rtp = float((W * P).sum() / W.sum())
-    lut_sd = float(math.sqrt((W * P * P).sum() / W.sum() - lut_rtp ** 2))
+        json.dump({"modes": [{"name": "base", "cost": 1.0, "events": "books_base.jsonl.zst", "weights": "lookUpTable_base_0.csv"}]}, f, indent=4)
+    W = np.array(weights, dtype=np.float64)
+    P = np.array(payouts, dtype=np.float64) / 100
+    rtp = float((W * P).sum() / W.sum())
     summary = {
-        "mode": "base",
-        "books": len(payouts),
-        "lut_rtp": lut_rtp,
-        "exact_model_rtp_uncapped": ex["rtp"],
-        "lut_minus_exact": lut_rtp - ex["rtp"],
-        "lut_std_dev": lut_sd,
-        "lut_hit_rate": float(W[P > 0].sum() / W.sum()),
-        "lut_max_payout_x": float(P.max()),
-        "weight_sum": int(sum(weights_all)),
-        "strata": report_strata,
-        "sha256_books": _sha(books_path),
-        "sha256_lut": _sha(lut_path),
-        "seed": seed,
-        "math_version": C.MATH_VERSION,
+        "mode": "base", "books": len(payouts), "lut_rtp": rtp, "exact_model_rtp_uncapped": ex["rtp"],
+        "lut_minus_exact": rtp - ex["rtp"], "lut_std_dev": float(math.sqrt((W * P * P).sum() / W.sum() - rtp ** 2)),
+        "lut_hit_rate": float(W[P > 0].sum() / W.sum()), "lut_max_payout_x": float(P.max()),
+        "weight_sum": int(sum(weights)), "strata": rep_strata, "sha256_books": _sha(books_path), "sha256_lut": _sha(lut_path),
+        "seed": seed, "math_version": C.MATH_VERSION,
     }
-    with open(os.path.join(out_dir, "export_summary.json"), "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2)
+    json.dump(summary, open(os.path.join(out_dir, "export_summary.json"), "w"), indent=2)
     return summary
 
 
-def _sha(path: str) -> str:
+def _sha(p):
     h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
+    with open(p, "rb") as f:
+        for ch in iter(lambda: f.read(1 << 20), b""):
+            h.update(ch)
     return h.hexdigest()
 
 
-def _exact_cond_base_means() -> dict[int, float]:
-    """E[base spin payout | k scatters] computed by exact enumeration."""
-    from .exact import base_stats
-
-    bs = base_stats()
-    return {k: bs.sc_EB[k] / bs.sc_prob[k] for k in (3, 4, 5)}
+DEFAULT_PLAN = {3: [8000, 300, 120, 40], 4: [2500, 200, 100, 40], 5: [800, 120, 60, 40], 6: [300, 80, 60, 40]}
 
 
-def main() -> None:
+def main():
     import argparse
 
     root = os.path.dirname(C.HERE)
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.join(os.path.dirname(root), "stake", "publish_files"))
     ap.add_argument("--n-base", type=int, default=100_000)
-    ap.add_argument("--n3", type=int, default=8_000)
-    ap.add_argument("--n4", type=int, default=2_000)
-    ap.add_argument("--n5", type=int, default=500)
+    ap.add_argument("--pilot", type=int, default=1_000_000)
     ap.add_argument("--seed", type=int, default=777)
     ap.add_argument("--exact", default=os.path.join(root, "reports", "exact.json"))
     a = ap.parse_args()
-    s = export(a.out, a.n_base, {3: a.n3, 4: a.n4, 5: a.n5}, a.seed, a.exact)
+    s = export(a.out, a.n_base, DEFAULT_PLAN, a.pilot, a.seed, a.exact)
     print(json.dumps({k: v for k, v in s.items() if k != "strata"}, indent=2))
     for st in s["strata"]:
-        print(st)
+        print(st["name"], st["books"], round(st["target_mean_x"], 3), round(st["sample_mean_x"], 3), f"kl={st['kl']:.2e}", st["max_payout_x"], st["bands"])
 
 
 if __name__ == "__main__":
