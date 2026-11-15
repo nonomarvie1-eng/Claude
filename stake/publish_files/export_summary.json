@@ -1,0 +1,65 @@
+{
+  "mode": "base",
+  "books": 110500,
+  "lut_rtp": 0.9648565015027272,
+  "exact_model_rtp_uncapped": 0.9648565014940598,
+  "lut_minus_exact": 8.667400130946135e-12,
+  "lut_std_dev": 6.607529956367716,
+  "lut_hit_rate": 0.3792414614187162,
+  "lut_max_payout_x": 1137.1,
+  "weight_sum": 999999999992706,
+  "strata": [
+    {
+      "name": "no_bonus",
+      "probability": 0.9930810247781584,
+      "books": 100000,
+      "target_mean_x": 0.6308648354137298,
+      "sample_mean_x": 0.630361,
+      "tilt_lambda": 0.00031253884425213154,
+      "kl_divergence_from_uniform": 4.8923235364056216e-08,
+      "max_weight_ratio_vs_uniform": 1.0127704146656602,
+      "min_weight_ratio_vs_uniform": 0.9998775924019343,
+      "max_payout_x": 66.0
+    },
+    {
+      "name": "bonus_3_scatters",
+      "probability": 0.0065997636359994396,
+      "books": 8000,
+      "target_mean_x": 47.77512772292941,
+      "sample_mean_x": 47.5947625,
+      "tilt_lambda": 0.0030516616546241663,
+      "kl_divergence_from_uniform": 4.699167999368636e-06,
+      "max_weight_ratio_vs_uniform": 1.054613365259486,
+      "min_weight_ratio_vs_uniform": 0.9976277555146997,
+      "max_payout_x": 1070.5
+    },
+    {
+      "name": "bonus_4_scatters",
+      "probability": 0.0003134427017607115,
+      "books": 2000,
+      "target_mean_x": 71.04212646170399,
+      "sample_mean_x": 71.04355000000001,
+      "tilt_lambda": -1.898030177323277e-05,
+      "kl_divergence_from_uniform": 1.8011594730458766e-10,
+      "max_weight_ratio_vs_uniform": 1.000015447465105,
+      "min_weight_ratio_vs_uniform": 0.9997302626645426,
+      "max_payout_x": 1137.1
+    },
+    {
+      "name": "bonus_5_scatters",
+      "probability": 5.768884081485488e-06,
+      "books": 500,
+      "target_mean_x": 135.9738774098825,
+      "sample_mean_x": 136.783,
+      "tilt_lambda": -0.009277891675373254,
+      "kl_divergence_from_uniform": 4.221079135956256e-05,
+      "max_weight_ratio_vs_uniform": 1.0090550822443833,
+      "min_weight_ratio_vs_uniform": 0.9241619144646998,
+      "max_payout_x": 888.6
+    }
+  ],
+  "sha256_books": "68f7e09f74955c985443929826e79a03000a8a2de7bb3654ad96b164c7ecea54",
+  "sha256_lut": "aefc1ce28450deac082a986d6329282e26a195f79c23b965b1926dd9721354e6",
+  "seed": 777,
+  "math_version": "1.0.0"
+}

@@ -1,0 +1,13 @@
+[project]
+name = "atelier-math"
+version = "1.0.0"
+description = "Midnight Atelier slot math engine (exact analysis, Monte-Carlo, Stake Engine export)"
+requires-python = ">=3.11"
+dependencies = ["numpy>=2.0", "zstandard>=0.23", "matplotlib>=3.8", "scipy>=1.11"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

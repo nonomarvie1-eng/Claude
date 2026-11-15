@@ -1,0 +1,43 @@
+{
+  "sdk_commit": "141b4e89065ac4400769709a919259a923430c4d",
+  "submission_issues": [],
+  "risk_failures": {
+    "base": {}
+  },
+  "modes": {
+    "base": {
+      "num_events": 110500.0,
+      "weight_range": 999999999992706.0,
+      "min_win": 0.0,
+      "max_win": 113710.0,
+      "min_diff": 10.0,
+      "average_win": 0.9649,
+      "cost": 1.0,
+      "rtp": 0.9649,
+      "std": 6.608,
+      "var": 43.659,
+      "m2m": 0.0,
+      "hr_max": 6382473.136,
+      "non_zero_hr": 2.637,
+      "prob_nil": 0.6208,
+      "num_non_zero_payouts": 47984.0,
+      "prob_less_bet": 0.7842,
+      "skew": 38.74,
+      "excess_kurtosis": 2764.058,
+      "prob5k": 0.0,
+      "prob10k": 0.0,
+      "prob25k": 0.0,
+      "prob50k": 0.0,
+      "prob100k": 0.0,
+      "etl40b": 0.2613,
+      "etl10k": 0.0,
+      "norm_etl40": 0.2613,
+      "norm_etl10k": 0.0,
+      "sum_etl": 0.2613,
+      "sum_etl_abs": 0.2613,
+      "cvar": 157.048,
+      "cvar_abs": 157.048,
+      "name": null
+    }
+  }
+}
