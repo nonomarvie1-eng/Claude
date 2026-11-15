@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+<style>
+  .cinzel{font-family:'Cinzel',serif;font-weight:700}
+  .marcellus{font-family:'Marcellus',serif}
+  .poiret{font-family:'Poiret One',sans-serif}
+  
+</style>
+<defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="0.35" y2="1">
+    <stop offset="0" stop-color="#fff6c9"/><stop offset="0.18" stop-color="#f4d27a"/>
+    <stop offset="0.45" stop-color="#b8842a"/><stop offset="0.62" stop-color="#f1cf72"/>
+    <stop offset="0.82" stop-color="#9a6a1c"/><stop offset="1" stop-color="#5c3a0c"/>
+  </linearGradient>
+  <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#7a5212"/><stop offset="0.25" stop-color="#f6d98a"/>
+    <stop offset="0.5" stop-color="#b8842a"/><stop offset="0.75" stop-color="#fff0b0"/>
+    <stop offset="1" stop-color="#6b4510"/>
+  </linearGradient>
+  <radialGradient id="goldR" cx="0.38" cy="0.32" r="0.75">
+    <stop offset="0" stop-color="#fff7cf"/><stop offset="0.35" stop-color="#ecc463"/>
+    <stop offset="0.75" stop-color="#9c6b1d"/><stop offset="1" stop-color="#4f320a"/>
+  </radialGradient>
+  <linearGradient id="copper" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#ffd9bd"/><stop offset="0.25" stop-color="#e3925a"/>
+    <stop offset="0.55" stop-color="#8f4020"/><stop offset="0.75" stop-color="#e8a172"/>
+    <stop offset="1" stop-color="#4e1d0a"/>
+  </linearGradient>
+  <linearGradient id="silver" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#cfd8e4"/>
+    <stop offset="0.55" stop-color="#6f7c8f"/><stop offset="0.78" stop-color="#e9eef5"/>
+    <stop offset="1" stop-color="#3a4352"/>
+  </linearGradient>
+  <linearGradient id="blued" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8fb6ff"/><stop offset="0.4" stop-color="#2853b8"/>
+    <stop offset="1" stop-color="#0b1c55"/>
+  </linearGradient>
+  <radialGradient id="enamel" cx="0.4" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#fffaf0"/><stop offset="0.7" stop-color="#efe4cc"/>
+    <stop offset="1" stop-color="#c9b48a"/>
+  </radialGradient>
+  <radialGradient id="navyDisc" cx="0.45" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#22397c"/><stop offset="0.6" stop-color="#0f1c45"/>
+    <stop offset="1" stop-color="#060b20"/>
+  </radialGradient>
+  <radialGradient id="ruby" cx="0.38" cy="0.3" r="0.8">
+    <stop offset="0" stop-color="#ffc2cc"/><stop offset="0.3" stop-color="#ff3d64"/>
+    <stop offset="0.7" stop-color="#a0062c"/><stop offset="1" stop-color="#3d0010"/>
+  </radialGradient>
+  <radialGradient id="sapphire" cx="0.38" cy="0.3" r="0.8">
+    <stop offset="0" stop-color="#d6e6ff"/><stop offset="0.3" stop-color="#4d8cff"/>
+    <stop offset="0.7" stop-color="#123a9e"/><stop offset="1" stop-color="#040f3a"/>
+  </radialGradient>
+  <radialGradient id="glass" cx="0.35" cy="0.3" r="0.9">
+    <stop offset="0" stop-color="#e8f3ff" stop-opacity="0.55"/><stop offset="0.6" stop-color="#7fa8e0" stop-opacity="0.18"/>
+    <stop offset="1" stop-color="#1b3570" stop-opacity="0.35"/>
+  </radialGradient>
+  <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#ffe9a8" stop-opacity="0.85"/><stop offset="0.45" stop-color="#f0b84a" stop-opacity="0.35"/>
+    <stop offset="1" stop-color="#f0b84a" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="haloBlue" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#bcd4ff" stop-opacity="0.8"/><stop offset="0.5" stop-color="#5a86ff" stop-opacity="0.3"/>
+    <stop offset="1" stop-color="#5a86ff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="greenDisc" cx="0.45" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#2f8a5c"/><stop offset="0.6" stop-color="#14492f"/>
+    <stop offset="1" stop-color="#06180f"/>
+  </radialGradient>
+  <radialGradient id="ballG" cx="0.38" cy="0.32" r="0.8">
+    <stop offset="0" stop-color="#f9ffc2"/><stop offset="0.45" stop-color="#dcef4c"/>
+    <stop offset="0.85" stop-color="#9fb526"/><stop offset="1" stop-color="#5f6e12"/>
+  </radialGradient>
+  <linearGradient id="clay" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#f0a274"/><stop offset="0.45" stop-color="#c8643a"/>
+    <stop offset="1" stop-color="#6e2a12"/>
+  </linearGradient>
+  <linearGradient id="ivory" x1="0" y1="0" x2="0.5" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#f1e8d2"/>
+    <stop offset="1" stop-color="#c2b48e"/>
+  </linearGradient>
+  <linearGradient id="glassG" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#d8f2e4" stop-opacity="0.35"/><stop offset="0.5" stop-color="#7fc7a0" stop-opacity="0.12"/>
+    <stop offset="1" stop-color="#1b5a3e" stop-opacity="0.4"/>
+  </linearGradient>
+  <radialGradient id="haloGreen" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#f6ffc0" stop-opacity="0.75"/><stop offset="0.5" stop-color="#9fd16a" stop-opacity="0.25"/>
+    <stop offset="1" stop-color="#9fd16a" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.6"/>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
+</defs>
+    <g filter="url(#shadow)">
+      <circle cx="150" cy="150" r="146" fill="url(#gold)"/>
+      <circle cx="150" cy="150" r="138" fill="#1a1204"/>
+      <circle cx="150" cy="150" r="136" fill="url(#greenDisc)"/>
+    </g>
+    <line x1="51.3" y1="221.71" x2="46.45" y2="225.24" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="41.3" y1="205.39" x2="35.95" y2="208.11" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="33.97" y1="187.7" x2="28.26" y2="189.55" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="29.5" y1="169.09" x2="23.58" y2="170.02" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="28" y1="150" x2="22" y2="150" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="29.5" y1="130.91" x2="23.58" y2="129.98" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="33.97" y1="112.3" x2="28.26" y2="110.45" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="41.3" y1="94.61" x2="35.95" y2="91.89" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="51.3" y1="78.29" x2="46.45" y2="74.76" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="63.73" y1="63.73" x2="59.49" y2="59.49" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="78.29" y1="51.3" x2="74.76" y2="46.45" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="94.61" y1="41.3" x2="91.89" y2="35.95" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="112.3" y1="33.97" x2="110.45" y2="28.26" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="130.91" y1="29.5" x2="129.98" y2="23.58" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="150" y1="28" x2="150" y2="22" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="169.09" y1="29.5" x2="170.02" y2="23.58" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="187.7" y1="33.97" x2="189.55" y2="28.26" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="205.39" y1="41.3" x2="208.11" y2="35.95" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="221.71" y1="51.3" x2="225.24" y2="46.45" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="236.27" y1="63.73" x2="240.51" y2="59.49" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="248.7" y1="78.29" x2="253.55" y2="74.76" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="258.7" y1="94.61" x2="264.05" y2="91.89" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="266.03" y1="112.3" x2="271.74" y2="110.45" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="270.5" y1="130.91" x2="276.42" y2="129.98" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="272" y1="150" x2="278" y2="150" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="270.5" y1="169.09" x2="276.42" y2="170.02" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="266.03" y1="187.7" x2="271.74" y2="189.55" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="258.7" y1="205.39" x2="264.05" y2="208.11" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="248.7" y1="221.71" x2="253.55" y2="225.24" stroke="#e3b552" stroke-opacity="0.6" stroke-width="1.5"/><line x1="54.54" y1="219.36" x2="43.21" y2="227.59" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="69.1" y="217.78" text-anchor="middle" class="cinzel" font-size="22" fill="#f5eedc">×1</text><line x1="32" y1="150" x2="18" y2="150" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="50" y="159" text-anchor="middle" class="cinzel" font-size="22" fill="#f5eedc">×2</text><line x1="54.54" y1="80.64" x2="43.21" y2="72.41" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="69.1" y="100.22" text-anchor="middle" class="cinzel" font-size="22" fill="#f5eedc">×3</text><line x1="113.54" y1="37.78" x2="109.21" y2="24.46" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="119.1" y="63.89" text-anchor="middle" class="cinzel" font-size="22" fill="#f5eedc">×4</text><line x1="186.46" y1="37.78" x2="190.79" y2="24.46" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="180.9" y="63.89" text-anchor="middle" class="cinzel" font-size="22" fill="#f5eedc">×5</text><line x1="245.46" y1="80.64" x2="256.79" y2="72.41" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="230.9" y="100.22" text-anchor="middle" class="cinzel" font-size="22" fill="#f5eedc">×6</text><line x1="268" y1="150" x2="282" y2="150" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="250" y="159" text-anchor="middle" class="cinzel" font-size="22" fill="#f5eedc">×8</text><line x1="245.46" y1="219.36" x2="256.79" y2="227.59" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/><text x="230.9" y="217.78" text-anchor="middle" class="cinzel" font-size="26" fill="#ffe7a0">×10</text>
+    <text x="150" y="262" text-anchor="middle" class="poiret" font-size="16" letter-spacing="6" fill="#f5eedc" fill-opacity="0.85">RALLY</text>
+  </svg>

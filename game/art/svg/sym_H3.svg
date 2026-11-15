@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<style>
+  .cinzel{font-family:'Cinzel',serif;font-weight:700}
+  .marcellus{font-family:'Marcellus',serif}
+  .poiret{font-family:'Poiret One',sans-serif}
+  
+</style>
+<defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="0.35" y2="1">
+    <stop offset="0" stop-color="#fff6c9"/><stop offset="0.18" stop-color="#f4d27a"/>
+    <stop offset="0.45" stop-color="#b8842a"/><stop offset="0.62" stop-color="#f1cf72"/>
+    <stop offset="0.82" stop-color="#9a6a1c"/><stop offset="1" stop-color="#5c3a0c"/>
+  </linearGradient>
+  <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#7a5212"/><stop offset="0.25" stop-color="#f6d98a"/>
+    <stop offset="0.5" stop-color="#b8842a"/><stop offset="0.75" stop-color="#fff0b0"/>
+    <stop offset="1" stop-color="#6b4510"/>
+  </linearGradient>
+  <radialGradient id="goldR" cx="0.38" cy="0.32" r="0.75">
+    <stop offset="0" stop-color="#fff7cf"/><stop offset="0.35" stop-color="#ecc463"/>
+    <stop offset="0.75" stop-color="#9c6b1d"/><stop offset="1" stop-color="#4f320a"/>
+  </radialGradient>
+  <linearGradient id="copper" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#ffd9bd"/><stop offset="0.25" stop-color="#e3925a"/>
+    <stop offset="0.55" stop-color="#8f4020"/><stop offset="0.75" stop-color="#e8a172"/>
+    <stop offset="1" stop-color="#4e1d0a"/>
+  </linearGradient>
+  <linearGradient id="silver" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#cfd8e4"/>
+    <stop offset="0.55" stop-color="#6f7c8f"/><stop offset="0.78" stop-color="#e9eef5"/>
+    <stop offset="1" stop-color="#3a4352"/>
+  </linearGradient>
+  <linearGradient id="blued" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8fb6ff"/><stop offset="0.4" stop-color="#2853b8"/>
+    <stop offset="1" stop-color="#0b1c55"/>
+  </linearGradient>
+  <radialGradient id="enamel" cx="0.4" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#fffaf0"/><stop offset="0.7" stop-color="#efe4cc"/>
+    <stop offset="1" stop-color="#c9b48a"/>
+  </radialGradient>
+  <radialGradient id="navyDisc" cx="0.45" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#22397c"/><stop offset="0.6" stop-color="#0f1c45"/>
+    <stop offset="1" stop-color="#060b20"/>
+  </radialGradient>
+  <radialGradient id="ruby" cx="0.38" cy="0.3" r="0.8">
+    <stop offset="0" stop-color="#ffc2cc"/><stop offset="0.3" stop-color="#ff3d64"/>
+    <stop offset="0.7" stop-color="#a0062c"/><stop offset="1" stop-color="#3d0010"/>
+  </radialGradient>
+  <radialGradient id="sapphire" cx="0.38" cy="0.3" r="0.8">
+    <stop offset="0" stop-color="#d6e6ff"/><stop offset="0.3" stop-color="#4d8cff"/>
+    <stop offset="0.7" stop-color="#123a9e"/><stop offset="1" stop-color="#040f3a"/>
+  </radialGradient>
+  <radialGradient id="glass" cx="0.35" cy="0.3" r="0.9">
+    <stop offset="0" stop-color="#e8f3ff" stop-opacity="0.55"/><stop offset="0.6" stop-color="#7fa8e0" stop-opacity="0.18"/>
+    <stop offset="1" stop-color="#1b3570" stop-opacity="0.35"/>
+  </radialGradient>
+  <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#ffe9a8" stop-opacity="0.85"/><stop offset="0.45" stop-color="#f0b84a" stop-opacity="0.35"/>
+    <stop offset="1" stop-color="#f0b84a" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="haloBlue" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#bcd4ff" stop-opacity="0.8"/><stop offset="0.5" stop-color="#5a86ff" stop-opacity="0.3"/>
+    <stop offset="1" stop-color="#5a86ff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="greenDisc" cx="0.45" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#2f8a5c"/><stop offset="0.6" stop-color="#14492f"/>
+    <stop offset="1" stop-color="#06180f"/>
+  </radialGradient>
+  <radialGradient id="ballG" cx="0.38" cy="0.32" r="0.8">
+    <stop offset="0" stop-color="#f9ffc2"/><stop offset="0.45" stop-color="#dcef4c"/>
+    <stop offset="0.85" stop-color="#9fb526"/><stop offset="1" stop-color="#5f6e12"/>
+  </radialGradient>
+  <linearGradient id="clay" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#f0a274"/><stop offset="0.45" stop-color="#c8643a"/>
+    <stop offset="1" stop-color="#6e2a12"/>
+  </linearGradient>
+  <linearGradient id="ivory" x1="0" y1="0" x2="0.5" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#f1e8d2"/>
+    <stop offset="1" stop-color="#c2b48e"/>
+  </linearGradient>
+  <linearGradient id="glassG" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#d8f2e4" stop-opacity="0.35"/><stop offset="0.5" stop-color="#7fc7a0" stop-opacity="0.12"/>
+    <stop offset="1" stop-color="#1b5a3e" stop-opacity="0.4"/>
+  </linearGradient>
+  <radialGradient id="haloGreen" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#f6ffc0" stop-opacity="0.75"/><stop offset="0.5" stop-color="#9fd16a" stop-opacity="0.25"/>
+    <stop offset="1" stop-color="#9fd16a" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.6"/>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
+</defs>
+  <g filter="url(#shadow)">
+    <circle cx="128" cy="128" r="114" fill="url(#gold)"/>
+    <circle cx="128" cy="128" r="109" fill="#1a1204"/>
+    <circle cx="128" cy="128" r="107" fill="url(#greenDisc)"/>
+  </g><line x1="190.7" y1="128" x2="234.02" y2="128" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="188.56" y1="144.23" x2="230.41" y2="155.44" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="182.3" y1="159.35" x2="219.82" y2="181.01" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="172.34" y1="172.34" x2="202.97" y2="202.97" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="159.35" y1="182.3" x2="181.01" y2="219.82" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="144.23" y1="188.56" x2="155.44" y2="230.41" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="128" y1="190.7" x2="128" y2="234.02" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="111.77" y1="188.56" x2="100.56" y2="230.41" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="96.65" y1="182.3" x2="74.99" y2="219.82" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="83.66" y1="172.34" x2="53.03" y2="202.97" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="73.7" y1="159.35" x2="36.18" y2="181.01" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="67.44" y1="144.23" x2="25.59" y2="155.44" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="65.3" y1="128" x2="21.98" y2="128" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="67.44" y1="111.77" x2="25.59" y2="100.56" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="73.7" y1="96.65" x2="36.18" y2="74.99" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="83.66" y1="83.66" x2="53.03" y2="53.03" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="96.65" y1="73.7" x2="74.99" y2="36.18" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="111.77" y1="67.44" x2="100.56" y2="25.59" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="128" y1="65.3" x2="128" y2="21.98" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="144.23" y1="67.44" x2="155.44" y2="25.59" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="159.35" y1="73.7" x2="181.01" y2="36.18" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="172.34" y1="83.66" x2="202.97" y2="53.03" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/><line x1="182.3" y1="96.65" x2="219.82" y2="74.99" stroke="#e6d6a8" stroke-opacity="0.16" stroke-width="2.4"/><line x1="188.56" y1="111.77" x2="230.41" y2="100.56" stroke="#e6d6a8" stroke-opacity="0.08" stroke-width="1.2"/>
+  <circle cx="128" cy="128" r="100" fill="none" stroke="#f5eedc" stroke-opacity="0.35" stroke-width="1.5"/>
+  <g filter="url(#shadow)">
+    <rect x="86" y="44" width="84" height="176" rx="12" fill="url(#glassG)" stroke="#f5eedc" stroke-opacity="0.7" stroke-width="2.5"/>
+    <circle cx="128" cy="92" r="34" fill="url(#ballG)"/>
+  <path d="M95.7,81.8 C121.68,85.2 121.68,120.9 112.7,122.6" fill="none" stroke="#f8f6ea" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M143.3,61.4 C134.32,63.1 134.32,98.8 160.3,102.2" fill="none" stroke="#f8f6ea" stroke-width="3.4" stroke-linecap="round"/>
+  <ellipse cx="116.1" cy="77.72" rx="10.88" ry="6.12" fill="#fff" opacity="0.45" transform="rotate(-30 116.1 77.72)"/><circle cx="128" cy="152" r="34" fill="url(#ballG)"/>
+  <path d="M95.7,141.8 C121.68,145.2 121.68,180.9 112.7,182.6" fill="none" stroke="#f8f6ea" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M143.3,121.4 C134.32,123.1 134.32,158.8 160.3,162.2" fill="none" stroke="#f8f6ea" stroke-width="3.4" stroke-linecap="round"/>
+  <ellipse cx="116.1" cy="137.72" rx="10.88" ry="6.12" fill="#fff" opacity="0.45" transform="rotate(-30 116.1 137.72)"/>
+    <rect x="86" y="178" width="84" height="40" rx="6" fill="url(#ivory)"/>
+    <text x="128" y="206" text-anchor="middle" class="cinzel" font-size="18" letter-spacing="3" fill="#0b2a1e">CLUB</text>
+    <rect x="80" y="28" width="96" height="22" rx="8" fill="url(#gold)"/>
+    <rect x="80" y="214" width="96" height="16" rx="6" fill="url(#gold)"/>
+    <rect x="96" y="52" width="10" height="120" rx="5" fill="#fff" opacity="0.28"/>
+  </g>
+  </svg>

@@ -1,5 +1,5 @@
 {
-  "game": "midnight_atelier",
+  "game": "golden_rally",
   "math_version": "1.0.0",
   "method": "full-cycle enumeration + absorbing Markov chain (no win cap)",
   "base_cycle_boards": 168490125,
@@ -630,8 +630,8 @@
     "1550": 2
   },
   "timing_s": {
-    "base": 6.124422550201416,
-    "free": 0.899773120880127,
-    "chain": 0.03257560729980469
+    "base": 6.330752372741699,
+    "free": 0.9131903648376465,
+    "chain": 0.035097360610961914
   }
 }

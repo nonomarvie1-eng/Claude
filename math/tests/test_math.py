@@ -10,9 +10,9 @@ import numpy as np
 import pytest
 import zstandard as zstd
 
-from atelier_math import config as C
-from atelier_math import engine as E
-from atelier_math.engine import list_drawer, numpy_drawer, play_round
+from rally_math import config as C
+from rally_math import engine as E
+from rally_math.engine import list_drawer, numpy_drawer, play_round
 
 S = C.SYM
 BASE, FREE = C.base_reels(), C.free_reels()
@@ -51,8 +51,8 @@ def test_all_pays_are_rgs_compatible():
             assert isinstance(v, int) and v >= 1
     for v in C.SCATTER_PAY.values():
         assert isinstance(v, int) and v >= 1
-    assert all(isinstance(m, int) and m >= 1 for m in C.MAINSPRING_LADDER)
-    assert C.MAINSPRING_LADDER == sorted(C.MAINSPRING_LADDER)
+    assert all(isinstance(m, int) and m >= 1 for m in C.RALLY_LADDER)
+    assert C.RALLY_LADDER == sorted(C.RALLY_LADDER)
 
 
 def test_paytable_monotonic():
@@ -135,7 +135,7 @@ def test_book_consistency():
     assert n_bonus > 5
 
 
-def test_mainspring_multiplier_applies_to_line_wins():
+def test_rally_multiplier_applies_to_line_wins():
     """Construct a free spin with a wild and check the multiplier is applied
     to that very spin (wild winds before evaluation)."""
     # find a free-game stop combination with exactly one wild and a line win
@@ -149,11 +149,11 @@ def test_mainspring_multiplier_applies_to_line_wins():
     seq = [base_trigger] + [stops] * 10
     r = play_round(list_drawer(seq), BASE, FREE)
     lw = sum(w.base_pay for w in E.evaluate_lines(board))
-    expected = sum(lw * C.MAINSPRING_LADDER[min(i, 7)] for i in range(1, 11))
+    expected = sum(lw * C.RALLY_LADDER[min(i, 7)] for i in range(1, 11))
     base_t = r.base_t
     assert r.free_t == expected
     assert r.total_t == min(base_t + expected, C.WINCAP_T)
-    assert r.final_multiplier == C.MAINSPRING_LADDER[7]
+    assert r.final_multiplier == C.RALLY_LADDER[7]
 
 
 def _find_base_with_scatters(k):
@@ -203,7 +203,7 @@ def test_wincap(monkeypatch):
 
 @pytest.fixture(scope="module")
 def exact():
-    from atelier_math.exact import full_report
+    from rally_math.exact import full_report
 
     return full_report(procs=os.cpu_count() or 2)
 
@@ -251,7 +251,7 @@ def test_scatter_distribution_matches_simulation(exact):
 
 
 def test_simulated_rtp_consistent_with_exact(exact):
-    from atelier_math.simulate import run
+    from rally_math.simulate import run
 
     rep = run(400_000, seed=99, procs=os.cpu_count() or 2)
     z = (rep["rtp_observed"] - exact["rtp"]) / rep["rtp_std_error"]
@@ -262,7 +262,7 @@ def test_simulated_rtp_consistent_with_exact(exact):
 # ---------------------------------------------------------------- export
 
 def test_small_export_is_valid(tmp_path, exact):
-    from atelier_math.export_stake import export
+    from rally_math.export_stake import export
 
     ex_path = tmp_path / "exact.json"
     ex_path.write_text(json.dumps(exact))

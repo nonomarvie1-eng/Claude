@@ -257,9 +257,9 @@ def play_round(
             w_pos = positions_of(board, C.WILD)
             if w_pos:
                 collected += len(w_pos)
-                new_mult = C.MAINSPRING_LADDER[min(collected, len(C.MAINSPRING_LADDER) - 1)]
+                new_mult = C.RALLY_LADDER[min(collected, len(C.RALLY_LADDER) - 1)]
                 emit({
-                    "type": "mainspringWind",
+                    "type": "rallyUp",
                     "added": len(w_pos),
                     "collected": collected,
                     "multiplier": new_mult,

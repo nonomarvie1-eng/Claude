@@ -1,6 +1,6 @@
 {
- "gameId": "midnight_atelier",
- "name": "Midnight Atelier",
+ "gameId": "golden_rally",
+ "name": "Golden Rally",
  "mathVersion": "1.0.0",
  "reels": 5,
  "rows": 3,
@@ -18,53 +18,53 @@
  ],
  "symbolInfo": {
   "W": {
-   "label": "Golden Key",
-   "fr": "Cl\u00e9 d'Or",
+   "label": "Golden Racket",
+   "fr": "Raquette d'Or",
    "role": "wild"
   },
   "S": {
-   "label": "Moon Dial",
-   "fr": "Cadran Lunaire",
+   "label": "Trophy",
+   "fr": "Troph\u00e9e",
    "role": "scatter"
   },
   "H1": {
-   "label": "Pocket Watch",
-   "fr": "Montre \u00e0 gousset",
+   "label": "Golden Ball",
+   "fr": "Balle d'Or",
    "role": "high"
   },
   "H2": {
-   "label": "Tourbillon",
-   "fr": "Tourbillon",
+   "label": "Umpire Chair",
+   "fr": "Chaise d'arbitre",
    "role": "high"
   },
   "H3": {
-   "label": "Hourglass",
-   "fr": "Sablier",
+   "label": "Ball Tube",
+   "fr": "Tube de balles",
    "role": "high"
   },
   "H4": {
-   "label": "Pendulum",
-   "fr": "Balancier",
+   "label": "Club Cap",
+   "fr": "Casquette du club",
    "role": "high"
   },
   "L1": {
-   "label": "Ruby Jewel",
-   "fr": "Rubis",
+   "label": "Advantage",
+   "fr": "Avantage",
    "role": "low"
   },
   "L2": {
-   "label": "Balance Wheel",
-   "fr": "Spiral",
+   "label": "Forty",
+   "fr": "Quarante",
    "role": "low"
   },
   "L3": {
-   "label": "Winding Crown",
-   "fr": "Couronne",
+   "label": "Thirty",
+   "fr": "Trente",
    "role": "low"
   },
   "L4": {
-   "label": "Brass Gear",
-   "fr": "Engrenage",
+   "label": "Fifteen",
+   "fr": "Quinze",
    "role": "low"
   }
  },
@@ -127,7 +127,7 @@
  },
  "fsRetrigger": 5,
  "fsMaxRemaining": 50,
- "mainspringLadder": [
+ "rallyLadder": [
   1,
   2,
   3,

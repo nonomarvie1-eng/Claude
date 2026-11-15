@@ -1,0 +1,35 @@
+# Risques juridiques et techniques
+
+Échelle : impact / probabilité (Faible, Moyen, Élevé).
+
+## Juridiques et réglementaires
+
+| Risque | Impact | Prob. | Mesure |
+|---|---|---|---|
+| Exploiter le jeu en argent réel sans licence dans une juridiction qui l'exige | Élevé | Moyen | Démo seulement. La distribution passe par un opérateur licencié (Stake). Avis juridique par marché obligatoire avant toute autre voie. |
+| France : les machines à sous en ligne en argent réel sont interdites (ANJ) | Élevé | — | Ne pas cibler de joueurs français en argent réel. Une démo gratuite, sans gain convertible, reste d'un autre ordre (vérifier les règles de publicité). |
+| Contrat Stake Engine défavorable (cession de propriété intellectuelle, exclusivité, GGR négatif à la charge du studio) | Élevé | [?] | Revue juridique avant signature. |
+| Contrefaçon de marque (nom, symboles) | Moyen | Faible-Moyen | Recherche d'antériorité, ressources 100 % originales, aucune référence à un tournoi, un joueur ou une marque réels. |
+| Thème tennis assimilé à un tournoi existant (« passing off ») | Moyen | Faible | Palette et éléments génériques ; aucun nom, lieu ou trophée réel. |
+| Publicité de jeux d'argent auprès de mineurs ou des publics protégés | Élevé | Faible | Aucune communication publique sans cadre légal ; style non enfantin. |
+| Exigences spécifiques des marchés : durée minimale d'un tour, interdiction de l'arrêt rapide, de l'autoplay ou de la célébration des pertes déguisées en gains (exemple : RTS 14 de l'UKGC) | Moyen | Moyen | Déjà en place : pas d'autoplay, pas d'arrêt manuel, pas de célébration des gains ≤ mise, `minimumRoundDuration` respecté, turbo désactivable par drapeau. |
+| Protection des données (RGPD) | Moyen | Faible | La démo ne collecte rien : seul le stockage local du navigateur est utilisé, sans cookie ni traceur. |
+
+## Techniques
+
+| Risque | Impact | Prob. | Mesure |
+|---|---|---|---|
+| Gain maximal affiché (5 000×) supérieur au maximum présent dans les books Stake (1 137,1×) | Moyen | Certain si non traité | Ajouter une strate de queue ou afficher le maximum réel avant soumission (`DISTRIBUTION_READINESS.md`). |
+| Champ du « book » dans la réponse `/wallet/play` (`state` ou `events`) non confirmé | Moyen | Moyen | Le client accepte les deux ; à valider sur le bac à sable Stake. |
+| Format exact des drapeaux de juridiction non documenté au complet | Faible | Moyen | Drapeaux inconnus ignorés sans erreur ; à valider sur le bac à sable. |
+| Performances sur appareils d'entrée de gamme (WebGL, flou de mouvement) | Moyen | Moyen | Mode « réduire les animations » ; à tester sur de vrais appareils. |
+| Safari iOS et Firefox non testés (seul Chromium est disponible ici) | Moyen | Moyen | Campagne de tests sur appareils réels avant soumission. |
+| Écart entre le moteur de démo (TypeScript) et le moteur de référence (Python) | Élevé | Faible | Test de parité sur 200 tours de référence (identiques à l'octet près), plus validation de chaque book avant affichage. |
+| Erreur de calcul RTP | Élevé | Faible | Deux méthodes exactes indépendantes, simulation de 10 millions de tours, outil officiel du SDK. |
+| Perte de session ou rechargement en cours de tour | Moyen | Moyen | Reprise automatique du tour actif, réglé une seule fois (test navigateur). |
+| Ajout ultérieur d'un achat de bonus | Moyen | — | Volontairement absent : il est interdit sur plusieurs marchés et exige un mode séparé avec son propre RTP. |
+
+## Ce qui n'est **pas** garanti
+
+- Aucune approbation Stake Engine, aucune certification de laboratoire et aucune conformité juridique ne sont simulées ni revendiquées.
+- Les revenus ne sont pas garantis (`BUSINESS.md`).

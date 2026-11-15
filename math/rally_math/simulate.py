@@ -43,7 +43,7 @@ def _worker(args: tuple[int, np.random.SeedSequence]) -> dict:
             fs_spins += r.fs_spins
             retr += r.retriggers
             free_sum += r.free_t
-            if r.final_multiplier == C.MAINSPRING_LADDER[-1]:
+            if r.final_multiplier == C.RALLY_LADDER[-1]:
                 maxmult_hits += 1
         if r.capped:
             capped += 1

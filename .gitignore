@@ -7,3 +7,4 @@ game/test-results/
 game/playwright-report/
 .pytest_cache/
 *.log
+dist-single/

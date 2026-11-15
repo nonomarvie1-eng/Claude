@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<style>
+  .cinzel{font-family:'Cinzel',serif;font-weight:700}
+  .marcellus{font-family:'Marcellus',serif}
+  .poiret{font-family:'Poiret One',sans-serif}
+  
+</style>
+<defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="0.35" y2="1">
+    <stop offset="0" stop-color="#fff6c9"/><stop offset="0.18" stop-color="#f4d27a"/>
+    <stop offset="0.45" stop-color="#b8842a"/><stop offset="0.62" stop-color="#f1cf72"/>
+    <stop offset="0.82" stop-color="#9a6a1c"/><stop offset="1" stop-color="#5c3a0c"/>
+  </linearGradient>
+  <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#7a5212"/><stop offset="0.25" stop-color="#f6d98a"/>
+    <stop offset="0.5" stop-color="#b8842a"/><stop offset="0.75" stop-color="#fff0b0"/>
+    <stop offset="1" stop-color="#6b4510"/>
+  </linearGradient>
+  <radialGradient id="goldR" cx="0.38" cy="0.32" r="0.75">
+    <stop offset="0" stop-color="#fff7cf"/><stop offset="0.35" stop-color="#ecc463"/>
+    <stop offset="0.75" stop-color="#9c6b1d"/><stop offset="1" stop-color="#4f320a"/>
+  </radialGradient>
+  <linearGradient id="copper" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#ffd9bd"/><stop offset="0.25" stop-color="#e3925a"/>
+    <stop offset="0.55" stop-color="#8f4020"/><stop offset="0.75" stop-color="#e8a172"/>
+    <stop offset="1" stop-color="#4e1d0a"/>
+  </linearGradient>
+  <linearGradient id="silver" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#cfd8e4"/>
+    <stop offset="0.55" stop-color="#6f7c8f"/><stop offset="0.78" stop-color="#e9eef5"/>
+    <stop offset="1" stop-color="#3a4352"/>
+  </linearGradient>
+  <linearGradient id="blued" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8fb6ff"/><stop offset="0.4" stop-color="#2853b8"/>
+    <stop offset="1" stop-color="#0b1c55"/>
+  </linearGradient>
+  <radialGradient id="enamel" cx="0.4" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#fffaf0"/><stop offset="0.7" stop-color="#efe4cc"/>
+    <stop offset="1" stop-color="#c9b48a"/>
+  </radialGradient>
+  <radialGradient id="navyDisc" cx="0.45" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#22397c"/><stop offset="0.6" stop-color="#0f1c45"/>
+    <stop offset="1" stop-color="#060b20"/>
+  </radialGradient>
+  <radialGradient id="ruby" cx="0.38" cy="0.3" r="0.8">
+    <stop offset="0" stop-color="#ffc2cc"/><stop offset="0.3" stop-color="#ff3d64"/>
+    <stop offset="0.7" stop-color="#a0062c"/><stop offset="1" stop-color="#3d0010"/>
+  </radialGradient>
+  <radialGradient id="sapphire" cx="0.38" cy="0.3" r="0.8">
+    <stop offset="0" stop-color="#d6e6ff"/><stop offset="0.3" stop-color="#4d8cff"/>
+    <stop offset="0.7" stop-color="#123a9e"/><stop offset="1" stop-color="#040f3a"/>
+  </radialGradient>
+  <radialGradient id="glass" cx="0.35" cy="0.3" r="0.9">
+    <stop offset="0" stop-color="#e8f3ff" stop-opacity="0.55"/><stop offset="0.6" stop-color="#7fa8e0" stop-opacity="0.18"/>
+    <stop offset="1" stop-color="#1b3570" stop-opacity="0.35"/>
+  </radialGradient>
+  <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#ffe9a8" stop-opacity="0.85"/><stop offset="0.45" stop-color="#f0b84a" stop-opacity="0.35"/>
+    <stop offset="1" stop-color="#f0b84a" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="haloBlue" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#bcd4ff" stop-opacity="0.8"/><stop offset="0.5" stop-color="#5a86ff" stop-opacity="0.3"/>
+    <stop offset="1" stop-color="#5a86ff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="greenDisc" cx="0.45" cy="0.35" r="0.8">
+    <stop offset="0" stop-color="#2f8a5c"/><stop offset="0.6" stop-color="#14492f"/>
+    <stop offset="1" stop-color="#06180f"/>
+  </radialGradient>
+  <radialGradient id="ballG" cx="0.38" cy="0.32" r="0.8">
+    <stop offset="0" stop-color="#f9ffc2"/><stop offset="0.45" stop-color="#dcef4c"/>
+    <stop offset="0.85" stop-color="#9fb526"/><stop offset="1" stop-color="#5f6e12"/>
+  </radialGradient>
+  <linearGradient id="clay" x1="0" y1="0" x2="0.4" y2="1">
+    <stop offset="0" stop-color="#f0a274"/><stop offset="0.45" stop-color="#c8643a"/>
+    <stop offset="1" stop-color="#6e2a12"/>
+  </linearGradient>
+  <linearGradient id="ivory" x1="0" y1="0" x2="0.5" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#f1e8d2"/>
+    <stop offset="1" stop-color="#c2b48e"/>
+  </linearGradient>
+  <linearGradient id="glassG" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#d8f2e4" stop-opacity="0.35"/><stop offset="0.5" stop-color="#7fc7a0" stop-opacity="0.12"/>
+    <stop offset="1" stop-color="#1b5a3e" stop-opacity="0.4"/>
+  </linearGradient>
+  <radialGradient id="haloGreen" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#f6ffc0" stop-opacity="0.75"/><stop offset="0.5" stop-color="#9fd16a" stop-opacity="0.25"/>
+    <stop offset="1" stop-color="#9fd16a" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity="0.6"/>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
+</defs>
+  <circle cx="128" cy="124" r="112" fill="url(#halo)" opacity="0.7"/>
+  <ellipse cx="160.92" cy="214.18" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(129.95 160.92 214.18)"/><ellipse cx="183.78" cy="202.13" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(114.48 183.78 202.13)"/><ellipse cx="202.6" cy="184.42" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(99.01 202.6 184.42)"/><ellipse cx="216.01" cy="162.34" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(83.54 216.01 162.34)"/><ellipse cx="223.05" cy="137.47" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(68.07 223.05 137.47)"/><ellipse cx="223.2" cy="111.63" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(52.6 223.2 111.63)"/><ellipse cx="216.45" cy="86.69" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(37.13 216.45 86.69)"/><ellipse cx="203.29" cy="64.45" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(21.66 203.29 64.45)"/><ellipse cx="184.68" cy="46.52" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(6.19 184.68 46.52)"/><ellipse cx="95.08" cy="214.18" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(50.05 95.08 214.18)"/><ellipse cx="72.22" cy="202.13" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(65.52 72.22 202.13)"/><ellipse cx="53.4" cy="184.42" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(80.99 53.4 184.42)"/><ellipse cx="39.99" cy="162.34" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(96.46 39.99 162.34)"/><ellipse cx="32.95" cy="137.47" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(111.93 32.95 137.47)"/><ellipse cx="32.8" cy="111.63" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(127.4 32.8 111.63)"/><ellipse cx="39.55" cy="86.69" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(142.87 39.55 86.69)"/><ellipse cx="52.71" cy="64.45" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(158.34 52.71 64.45)"/><ellipse cx="71.32" cy="46.52" rx="16.32" ry="6.72" fill="url(#gold)" transform="rotate(173.81 71.32 46.52)"/>
+  <g filter="url(#shadow)"><circle cx="128" cy="124" r="66" fill="url(#goldR)"/>
+  <path d="M65.3,104.2 C115.72,110.8 115.72,180.1 98.3,183.4" fill="none" stroke="#fff5d0" stroke-width="6.6" stroke-linecap="round"/>
+  <path d="M157.7,64.6 C140.28,67.9 140.28,137.2 190.7,143.8" fill="none" stroke="#fff5d0" stroke-width="6.6" stroke-linecap="round"/>
+  <ellipse cx="104.9" cy="96.28" rx="21.12" ry="11.88" fill="#fff" opacity="0.45" transform="rotate(-30 104.9 96.28)"/></g>
+  <circle cx="128" cy="228" r="8.2" fill="url(#gold)"/>
+  <circle cx="128" cy="228" r="6" fill="url(#ruby)"/>
+  <circle cx="125.9" cy="225.9" r="1.68" fill="#fff" opacity="0.8"/>
+  </svg>

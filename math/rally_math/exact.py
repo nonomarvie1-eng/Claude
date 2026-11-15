@@ -1,4 +1,4 @@
-"""Exact (closed-form) analysis of MIDNIGHT ATELIER.
+"""Exact (closed-form) analysis of GOLDEN RALLY.
 
 Method
 ------
@@ -193,7 +193,7 @@ def free_stats(procs: int = 4) -> FreeStats:
 
 def bonus_chain(fs: FreeStats) -> dict:
     RMAX = C.FS_MAX_REMAINING
-    NL = len(C.MAINSPRING_LADDER)
+    NL = len(C.RALLY_LADDER)
     top = NL - 1
     states = [(r, n) for r in range(1, RMAX + 1) for n in range(NL)]
     sid = {s: i for i, s in enumerate(states)}
@@ -214,7 +214,7 @@ def bonus_chain(fs: FreeStats) -> dict:
                 if pk == 0:
                     continue
                 n2 = min(n + w, top)
-                m = C.MAINSPRING_LADDER[n2]
+                m = C.RALLY_LADDER[n2]
                 sp = C.SCATTER_PAY.get(sc, 0)
                 Es = m * e1[w, sc] + sp
                 Es2 = m * m * e2[w, sc] + 2 * m * sp * e1[w, sc] + sp * sp
@@ -273,7 +273,7 @@ def bonus_chain(fs: FreeStats) -> dict:
                 if sc >= 3:
                     r2 += min(C.FS_RETRIGGER, RMAX - r2)
                 if r2 <= 0:
-                    term[i] += pk * C.MAINSPRING_LADDER[n2]
+                    term[i] += pk * C.RALLY_LADDER[n2]
     fm = np.linalg.solve(A, term)
     resid = float(np.abs(A @ V1 - a1).max())
     out = {}

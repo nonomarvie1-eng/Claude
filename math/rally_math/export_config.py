@@ -29,7 +29,7 @@ def game_config(exact: dict | None) -> dict:
         "fsAward": {str(k): v for k, v in C.FS_AWARD.items()},
         "fsRetrigger": C.FS_RETRIGGER,
         "fsMaxRemaining": C.FS_MAX_REMAINING,
-        "mainspringLadder": C.MAINSPRING_LADDER,
+        "rallyLadder": C.RALLY_LADDER,
         "wincapX": C.WINCAP_X,
         "paylines": C.PAYLINES,
         "winLevels": C.WIN_LEVELS[:-1] + [{"name": "max", "min": C.WINCAP_X}],

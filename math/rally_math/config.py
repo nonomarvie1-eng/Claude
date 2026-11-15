@@ -1,4 +1,4 @@
-"""MIDNIGHT ATELIER — single source of truth for the game rules.
+"""GOLDEN RALLY — single source of truth for the game rules.
 
 All monetary values inside the math engine are integers expressed in
 *tenths of the total bet* ("t-units").  1 t-unit = 0.1x bet.
@@ -8,7 +8,7 @@ RGS verifier in engineio/math-sdk `utils/rgs_verification.py`).
 
 Everything the frontend needs (symbols, paytable, paylines, reel strips,
 feature parameters) is exported to `shared/game-config.json` by
-`atelier_math.export_config` so that the TypeScript demo engine uses exactly
+`rally_math.export_config` so that the TypeScript demo engine uses exactly
 the same rules.
 """
 
@@ -18,8 +18,8 @@ import csv
 import os
 from dataclasses import dataclass, field
 
-GAME_ID = "midnight_atelier"
-GAME_NAME = "Midnight Atelier"
+GAME_ID = "golden_rally"
+GAME_NAME = "Golden Rally"
 MATH_VERSION = "1.0.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -37,16 +37,16 @@ WILD = SYM["W"]
 SCATTER = SYM["S"]
 
 SYMBOL_INFO = {
-    "W": {"label": "Golden Key", "fr": "Clé d'Or", "role": "wild"},
-    "S": {"label": "Moon Dial", "fr": "Cadran Lunaire", "role": "scatter"},
-    "H1": {"label": "Pocket Watch", "fr": "Montre à gousset", "role": "high"},
-    "H2": {"label": "Tourbillon", "fr": "Tourbillon", "role": "high"},
-    "H3": {"label": "Hourglass", "fr": "Sablier", "role": "high"},
-    "H4": {"label": "Pendulum", "fr": "Balancier", "role": "high"},
-    "L1": {"label": "Ruby Jewel", "fr": "Rubis", "role": "low"},
-    "L2": {"label": "Balance Wheel", "fr": "Spiral", "role": "low"},
-    "L3": {"label": "Winding Crown", "fr": "Couronne", "role": "low"},
-    "L4": {"label": "Brass Gear", "fr": "Engrenage", "role": "low"},
+    "W": {"label": "Golden Racket", "fr": "Raquette d'Or", "role": "wild"},
+    "S": {"label": "Trophy", "fr": "Trophée", "role": "scatter"},
+    "H1": {"label": "Golden Ball", "fr": "Balle d'Or", "role": "high"},
+    "H2": {"label": "Umpire Chair", "fr": "Chaise d'arbitre", "role": "high"},
+    "H3": {"label": "Ball Tube", "fr": "Tube de balles", "role": "high"},
+    "H4": {"label": "Club Cap", "fr": "Casquette du club", "role": "high"},
+    "L1": {"label": "Advantage", "fr": "Avantage", "role": "low"},
+    "L2": {"label": "Forty", "fr": "Quarante", "role": "low"},
+    "L3": {"label": "Thirty", "fr": "Trente", "role": "low"},
+    "L4": {"label": "Fifteen", "fr": "Quinze", "role": "low"},
 }
 
 # Line pays, in t-units (tenths of TOTAL bet), for 3 / 4 / 5 of a kind.
@@ -71,11 +71,11 @@ FS_AWARD = {3: 10, 4: 12, 5: 15}
 FS_RETRIGGER = 5
 FS_MAX_REMAINING = 50  # remaining free spins can never exceed this value
 
-# "Mainspring" ladder: multiplier applied to line wins during free spins,
-# indexed by the number of Golden Key wilds collected so far (persistent
-# for the whole bonus).  Wilds landing on a spin wind the mainspring
+# "Rally" ladder: multiplier applied to line wins during free spins,
+# indexed by the number of Golden Racket wilds collected so far (persistent
+# for the whole bonus).  Wilds landing on a spin extend the rally
 # BEFORE that spin's line wins are evaluated.
-MAINSPRING_LADDER = [1, 2, 3, 4, 5, 6, 8, 10]
+RALLY_LADDER = [1, 2, 3, 4, 5, 6, 8, 10]
 
 WINCAP_X = 5000  # maximum total win per round, in multiples of the bet
 WINCAP_T = WINCAP_X * 10
