@@ -1,5 +1,15 @@
 # Changelog
 
+## FIRST-SERVE-01 — chargement et entrée en jeu « The First Serve » (2026-11-16)
+- Nouvelle scène de chargement PixiJS séparée (`render/intro.ts`) : stade nocturne réel, projecteurs qui s'allument avec la progression réelle, logo révélé sur un tableau d'affichage, barre de progression sur la ligne de fond avec la Balle d'or.
+- Pré-chargement HTML avec le vrai fond de stade avant le script (aucun faux pourcentage) ; chargement en deux temps (orientation courante d'abord).
+- Transition de 600 ms (rebond de la balle, tableau d'affichage → cadre des rouleaux, léger rapprochement de caméra), passable, fondu de 180 ms avec réduction des mouvements.
+- Carte de fonctionnalité Golden Serve · Return Spins à la première visite (vrais symboles, texte exact, sans RTP ni gain maximal) ; accès direct ensuite ; disposition dédiée au téléphone en paysage.
+- Son seulement après un geste ; connexion lente et erreur de chargement gérées.
+- Script principal 965 → 617 Ko (fixtures de test retirées du jeu par un plugin Vite).
+- `Loading.svelte` supprimé (remplacé par `Intro.svelte`). Mécaniques de bonus inchangées.
+- Tests : e2e intro 50/50 (49/49 sur le fichier publié), Return Spins 104/104, vitest 39. Détails : docs/FIRST_SERVE_INTRO.md.
+
 ## Build de test RETURN-01 — GOLDEN SERVE : RETURN SPINS (2026-11-16, tranche verticale, crédits fictifs)
 - Le bonus reste une slot : une Balle d'or frappe une zone (rouleaux 1-2, 3-4 ou 5-6) et seuls ces rouleaux sont relancés ; chaque arrêt est réévalué (15 625 façons) et payé, affiché séparément puis cumulé. Return Spins bornés (2 / 2 / 3), Golden Smash sur 4 rouleaux.
 - Rally Challenge (8 tours) et Championship Night (12 tours) joués sur les rouleaux.

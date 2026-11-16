@@ -1,0 +1,251 @@
+{
+ "url": "http://localhost:4190/index.html?lang=fr",
+ "failures": 0,
+ "results": [
+  {
+   "name": "390: stadium pre-boot layer shown before the game script",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: real progress, monotonic, ends at 100",
+   "ok": true,
+   "detail": "21 samples, 10,15,22,26,29,32,50,71,100…"
+  },
+  {
+   "name": "390: the four light banks switched on with the progress",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: preboot removed once the scene is up",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: no sound before a gesture",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: first visit shows the feature card with continue and skip",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: the feature card never covers the buttons",
+   "ok": true,
+   "detail": "card bottom 596 / button top 694"
+  },
+  {
+   "name": "390: continue button fully on screen, >= 44 px",
+   "ok": true,
+   "detail": "{\"top\":694,\"h\":52}"
+  },
+  {
+   "name": "390: HUD hidden during the transition",
+   "ok": true,
+   "detail": "opacity 0.108769"
+  },
+  {
+   "name": "390: transition animation 0.5–0.8 s",
+   "ok": true,
+   "detail": "633 ms animation · 744 ms wall @ 15 fps (software rendering)"
+  },
+  {
+   "name": "390: sound started by the PLAY gesture",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: intro canvas removed, reels visible",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: a spin works after the entry",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: returning visit goes straight to the grid (no card)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: returning visit: no sound before a gesture",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: first gesture unlocks the sound",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: stadium pre-boot layer shown before the game script",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: real progress, monotonic, ends at 100",
+   "ok": true,
+   "detail": "27 samples, 3,5,15,19,26,29,32,36,50,71,82,100…"
+  },
+  {
+   "name": "pixel7-landscape: the four light banks switched on with the progress",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: preboot removed once the scene is up",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: no sound before a gesture",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: first visit shows the feature card with continue and skip",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: the feature card never covers the buttons",
+   "ok": true,
+   "detail": "card bottom 0 / button top 121"
+  },
+  {
+   "name": "pixel7-landscape: continue button fully on screen, >= 44 px",
+   "ok": true,
+   "detail": "{\"top\":121,\"h\":52}"
+  },
+  {
+   "name": "pixel7-landscape: skip link enters the game",
+   "ok": true,
+   "detail": "1797 ms"
+  },
+  {
+   "name": "pixel7-landscape: no overflow, no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: stadium pre-boot layer shown before the game script",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: real progress, monotonic, ends at 100",
+   "ok": true,
+   "detail": "27 samples, 3,5,10,15,19,26,29,32,39,57,68,78…"
+  },
+  {
+   "name": "1440x900: the four light banks switched on with the progress",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: preboot removed once the scene is up",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: no sound before a gesture",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: first visit shows the feature card with continue and skip",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: the feature card never covers the buttons",
+   "ok": true,
+   "detail": "card bottom 713 / button top 750"
+  },
+  {
+   "name": "1440x900: continue button fully on screen, >= 44 px",
+   "ok": true,
+   "detail": "{\"top\":750,\"h\":52}"
+  },
+  {
+   "name": "1440x900: skip link enters the game",
+   "ok": true,
+   "detail": "1728 ms"
+  },
+  {
+   "name": "1440x900: no overflow, no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: stadium pre-boot layer shown before the game script",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: real progress, monotonic, ends at 100",
+   "ok": true,
+   "detail": "24 samples, 3,5,15,19,26,29,32,54,75,82,100…"
+  },
+  {
+   "name": "320x568: the four light banks switched on with the progress",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: preboot removed once the scene is up",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: no sound before a gesture",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: first visit shows the feature card with continue and skip",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: the feature card never covers the buttons",
+   "ok": true,
+   "detail": "card bottom 387 / button top 418"
+  },
+  {
+   "name": "320x568: continue button fully on screen, >= 44 px",
+   "ok": true,
+   "detail": "{\"top\":418,\"h\":52}"
+  },
+  {
+   "name": "320x568: skip link enters the game",
+   "ok": true,
+   "detail": "664 ms"
+  },
+  {
+   "name": "320x568: no overflow, no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "reduced motion: short crossfade only (≤ 0.3 s of animation)",
+   "ok": true,
+   "detail": "183 ms"
+  },
+  {
+   "name": "tap skips the transition (shorter than the slowed-down one)",
+   "ok": true,
+   "detail": "550 ms of animation at 0.25x speed"
+  }
+ ]
+}

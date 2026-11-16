@@ -6,9 +6,28 @@
     <meta name="theme-color" content="#06150f" />
     <meta name="description" content="Golden Rally — démonstration jouable, crédits fictifs sans valeur monétaire." />
     <title>Golden Rally</title>
-    <style>html,body{margin:0;height:100%;background:#06150f;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}</style>
+    <style>html,body{margin:0;height:100%;background:#071826;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
+      #preboot{position:fixed;inset:0;z-index:40;background:#071826}
+      #preboot .pb-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.55)}
+      #preboot .pb-logo{position:absolute;left:50%;top:42%;width:min(74vw,520px);transform:translate(-50%,-50%);opacity:.92}
+      #preboot .pb-line{position:absolute;left:8%;right:8%;bottom:calc(19% + 34px);height:3px;background:rgba(244,233,212,.35);overflow:hidden;border-radius:2px}
+      #preboot .pb-line i{position:absolute;top:0;bottom:0;width:22%;background:linear-gradient(90deg,transparent,#f2cf6b,transparent);animation:pbmove 1.4s ease-in-out infinite}
+      @keyframes pbmove{from{left:-22%}to{left:100%}}
+      @media (prefers-reduced-motion:reduce){#preboot .pb-line i{animation:none;left:39%;opacity:.7}}
+      #preboot .pb-cap{position:absolute;left:0;right:0;bottom:19%;margin:0;text-align:center;font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.3em;color:#d6b36a}</style>
   </head>
   <body>
+    <!-- pre-boot: the real night stadium shows from the first bytes, before the game script
+         has arrived (no fake progress here: the real progress starts with the script) -->
+    <div id="preboot" aria-hidden="true">
+      <picture>
+        <source media="(orientation: landscape)" srcset="/src/assets/img/bg_landscape.jpg" />
+        <img class="pb-bg" src="/src/assets/img/bg_portrait.jpg" alt="" />
+      </picture>
+      <img class="pb-logo" src="/src/assets/img/logo.webp" alt="" />
+      <div class="pb-line" role="progressbar" aria-label="Chargement" aria-busy="true"><i></i></div>
+      <p class="pb-cap">GOLDEN RALLY · THE FIRST SERVE</p>
+    </div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

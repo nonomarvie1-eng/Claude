@@ -3,9 +3,9 @@
  "failures": 0,
  "results": [
   {
-   "name": "390x844: build id RETURN-01 visible",
+   "name": "390x844: build id FIRST-SERVE-01 visible",
    "ok": true,
-   "detail": "RETURN-01"
+   "detail": "FIRST-SERVE-01"
   },
   {
    "name": "390x844: no buy / modes button, no test button in the player HUD",
@@ -280,7 +280,7 @@
   {
    "name": "skip (taps): same result, faster",
    "ok": true,
-   "detail": "10021 ms vs 13714 ms"
+   "detail": "10077 ms vs 13658 ms"
   },
   {
    "name": "normal-1: clean start (no plate, overlay, ball or zone left)",
@@ -305,7 +305,7 @@
   {
    "name": "normal-1: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
    "ok": true,
-   "detail": "0 = 0x"
+   "detail": "0.3 = 0.3x"
   },
   {
    "name": "normal spin 1: never forced",
@@ -365,7 +365,7 @@
   {
    "name": "normal-3: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
    "ok": true,
-   "detail": "0 = 0x"
+   "detail": "0.2 = 0.2x"
   },
   {
    "name": "normal spin 3: never forced",

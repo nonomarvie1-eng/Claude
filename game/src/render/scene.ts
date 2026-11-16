@@ -64,9 +64,21 @@ function decode(url: string): Promise<HTMLImageElement> {
   return img.decode().then(() => img);
 }
 
-export async function loadTextures(onProgress: (p: number) => void): Promise<Record<string, Texture>> {
-  const entries = Object.entries(imgs);
-  const out: Record<string, Texture> = {};
+/** Names of the images needed by the loading / entry scene (loaded first). */
+export function introImages(portrait: boolean) {
+  const o = portrait ? 'portrait' : 'landscape';
+  return [`bg_${o}`, `fore_${o}`, `crowd_${o}`, 'logo', 'glow', 'sym_G'];
+}
+
+/** Decodes the game images.  `only` restricts the set; `have` are already decoded (not decoded twice).
+ *  onProgress receives the real fraction of images decoded. */
+export async function loadTextures(onProgress: (p: number) => void, only?: string[], have: Record<string, Texture> = {}): Promise<Record<string, Texture>> {
+  const all = Object.entries(imgs).filter(([k]) => {
+    const n = k.split('/').pop()!.replace(/\.(webp|jpg)$/, '');
+    return !only || only.includes(n);
+  });
+  const entries = all.filter(([k]) => !(k.split('/').pop()!.replace(/\.(webp|jpg)$/, '') in have));
+  const out: Record<string, Texture> = { ...have };
   let done = 0;
   await Promise.all(
     entries.map(async ([k, url]) => {
@@ -612,14 +624,14 @@ export class RallyScene implements View {
   }
 
   /** Start screen: only the stadium is shown (reels hidden). */
-  setIntro(on: boolean) {
+  setIntro(on: boolean, fadeMs?: number) {
     if (on) {
       this.world.visible = false;
       return;
     }
     this.world.visible = true;
     this.world.alpha = 0;
-    void this.tw.tween(this.prefs.reducedMotion ? 150 : 600, (u) => (this.world.alpha = u));
+    void this.tw.tween(fadeMs ?? (this.prefs.reducedMotion ? 150 : 600), (u) => (this.world.alpha = u));
   }
 
   /** Launch: Ace welcomes the player (once, after the start screen). */

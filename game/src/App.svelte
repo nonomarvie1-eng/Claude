@@ -2,11 +2,14 @@
   import { onMount } from 'svelte';
   import { game } from './game/state.svelte';
   import { Controller } from './game/controller';
-  import { RallyScene, loadTextures } from './render/scene';
+  import { RallyScene, loadTextures, introImages } from './render/scene';
   import { audio } from './audio/audio';
   import { createRgs } from './rgs';
   import Hud from './ui/Hud.svelte';
-  import Loading from './ui/Loading.svelte';
+  import Intro from './ui/Intro.svelte';
+  import { IntroScene } from './render/intro';
+  import { STORE_NS } from './engine/gameplay';
+  import { tick } from 'svelte';
   import Modal from './ui/Modal.svelte';
   import Paytable from './ui/Paytable.svelte';
   import Settings from './ui/Settings.svelte';
@@ -19,10 +22,35 @@
   const scene = new RallyScene();
   const t = $derived(game.t);
 
+  // ---- THE FIRST SERVE: loading -> (first visit: feature card) -> transition -> reels
+  let introHost: HTMLDivElement | undefined = $state();
+  let intro: IntroScene | null = null;
+  let showCard = $state(false);
+  let entering = $state(false);
+  let slow = $state(false);
+  let failed = $state(false);
+  const SEEN_KEY = `golden-rally-first-serve-seen-${STORE_NS}`;
+  const seen = () => { try { return localStorage.getItem(SEEN_KEY) === '1'; } catch { return false; } };
+  const markSeen = () => { try { localStorage.setItem(SEEN_KEY, '1'); } catch { /* private mode */ } };
+  // real progress: intro images 15 %, game images 70 %, fonts 5 %, scene + session objects 10 %
+  const progress = (p: number) => {
+    game.loadProgress = Math.max(game.loadProgress, p);
+    intro?.setProgress(game.loadProgress);
+  };
+
   onMount(async () => {
+    const slowTimer = setTimeout(() => (slow = true), 7000);
     try {
-      const tex = await loadTextures((p) => (game.loadProgress = p * 0.9));
-      await Promise.all([document.fonts.load('700 40px Cinzel'), document.fonts.load('500 20px Inter'), document.fonts.load('700 20px Inter'), document.fonts.load('800 20px Inter')]).catch(() => {});
+      await Promise.all([document.fonts.load('700 40px Cinzel'), document.fonts.load('600 20px Cinzel'), document.fonts.load('700 13px Inter'), document.fonts.load('500 20px Inter'), document.fonts.load('800 20px Inter')]).catch(() => {});
+      const introTex = await loadTextures((p) => progress(0.15 * p), introImages(innerHeight > innerWidth * 1.05));
+      intro = new IntroScene(introTex, { preparing: game.t.introPreparing, ready: game.t.introReady, subtitle: 'THE FIRST SERVE' });
+      intro.reducedMotion = game.prefs.reducedMotion;
+      await intro.init(introHost!);
+      document.getElementById('preboot')?.remove();
+      (window as unknown as { __rallyIntro: unknown }).__rallyIntro = intro;
+      intro.setProgress(game.loadProgress);
+      const tex = await loadTextures((p) => progress(0.15 + 0.7 * p), undefined, introTex);
+      progress(0.9);
       await scene.init(host, tex, game.t);
       // expose layout rectangles for automated layout checks (demo/QA only)
       scene.onLayout = (l) => ((window as unknown as { __rallyLayout: unknown }).__rallyLayout = l);
@@ -32,18 +60,74 @@
       ctrl = new Controller(createRgs(), scene);
       // demo-only QA handle (simulate server errors in automated tests)
       if (ctrl.rgs.kind === 'demo') (window as unknown as { __rallyDemo: unknown }).__rallyDemo = ctrl.rgs;
-      game.loadProgress = 1;
+      progress(1);
+      clearTimeout(slowTimer);
+      slow = false;
+      intro.addTextures(tex);
+      intro.ready();
       game.phase = 'ready';
+      if (seen()) void enter(false); // returning player: straight to the reels, no artificial delay
+      else {
+        intro.showFeatureCard(tex, { title: game.t.introFeatureKicker, name: 'GOLDEN SERVE · RETURN SPINS', text1: game.t.introFeature1, text2: game.t.introFeature2, zone: game.t.introZone });
+        showCard = true;
+      }
     } catch (e) {
       console.error(e);
-      game.error = { message: game.t.genericError, retryable: false, fatal: true };
-      game.phase = 'error';
+      clearTimeout(slowTimer);
+      document.getElementById('preboot')?.remove();
+      failed = true;
     }
     // WebGL context loss (mobile background, GPU reset)
     host.addEventListener('webglcontextlost', () => {
       game.error = { message: game.t.genericError, retryable: false, fatal: true };
     }, true);
   });
+
+  /** Sound only after a real user gesture (autoplay policies). */
+  let audioStarted = false;
+  async function startAudio() {
+    if (audioStarted) return;
+    audioStarted = true;
+    await audio.unlock();
+    audio.setMusic('music_base');
+    audio.startLoop('ambience', 0.5);
+  }
+  function armAudioOnFirstGesture() {
+    const go = () => {
+      window.removeEventListener('pointerdown', go, true);
+      window.removeEventListener('keydown', go, true);
+      void startAudio();
+    };
+    window.addEventListener('pointerdown', go, true);
+    window.addEventListener('keydown', go, true);
+  }
+
+  async function enter(fromGesture: boolean) {
+    if (!ctrl || !intro || entering || game.phase !== 'ready') return;
+    markSeen();
+    if (fromGesture) void startAudio();
+    else armAudioOnFirstGesture();
+    entering = true;
+    showCard = false;
+    game.phase = 'spinning'; // the HUD mounts (hidden while entering) so the reels get their final layout
+    await tick();
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    scene.layout();
+    const L = scene.layoutInfo;
+    const target = L ? L.board : { x: 0, y: 0, w: 1, h: 1 };
+    await intro.enter(target, () => scene.setIntro(false, game.prefs.reducedMotion ? 150 : 260));
+    intro.destroy();
+    intro = null;
+    entering = false;
+    try {
+      await ctrl.boot(); // session, interrupted round resumed and closed if any
+      game.phase = 'idle';
+      scene.welcome();
+    } catch (e) {
+      game.error = { message: game.t.networkError, retryable: true, fatal: false };
+      game.phase = 'error';
+    }
+  }
 
   function applyPrefs() {
     scene.prefs.reducedMotion = game.prefs.reducedMotion;
@@ -68,29 +152,13 @@
     applyPrefs();
   });
 
-  async function start() {
-    if (!ctrl) return;
-    await audio.unlock();
-    audio.setMusic('music_base');
-    audio.startLoop('ambience', 0.5);
-    scene.setIntro(false);
-    game.phase = 'spinning';
-    try {
-      await ctrl.boot();
-      game.phase = 'idle';
-      scene.welcome();
-    } catch (e) {
-      game.error = { message: game.t.networkError, retryable: true, fatal: false };
-      game.phase = 'error';
-    }
-  }
 
   function onKey(e: KeyboardEvent) {
     if (e.code !== 'Space' || game.jurisdiction.disabledSpacebar) return;
     const el = e.target as HTMLElement;
     if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA' || el.tagName === 'BUTTON')) return;
     e.preventDefault();
-    if (game.phase === 'ready') void start();
+    if (game.phase === 'ready') void enter(true);
     else if (game.autoplay) ctrl?.stopAutoplay();
     else void ctrl?.spin();
   }
@@ -102,11 +170,11 @@
   <div class="stage" bind:this={host}></div>
 
   {#if game.phase !== 'loading' && game.phase !== 'ready'}
-    <Hud {ctrl} />
+    <div class="hudwrap" class:entering><Hud {ctrl} /></div>
   {/if}
 
-  {#if game.phase === 'loading' || game.phase === 'ready'}
-    <Loading onstart={start} />
+  {#if game.phase === 'loading' || game.phase === 'ready' || entering || failed}
+    <Intro bind:host={introHost} {showCard} {entering} {slow} {failed} oncontinue={() => enter(true)} onskiptransition={() => intro?.skipTransition()} />
   {/if}
 
   {#if game.notice}
@@ -146,6 +214,9 @@
 <style>
   main { position: fixed; inset: 0; overflow: hidden; }
   .stage { position: absolute; inset: 0; }
+  .hudwrap { display: contents; }
+  .hudwrap :global(.top), .hudwrap :global(.hud) { transition: opacity .25s ease-out; }
+  .hudwrap.entering :global(.top), .hudwrap.entering :global(.hud) { opacity: 0; pointer-events: none; }
   .toast, .banner {
     position: absolute; left: 50%; transform: translateX(-50%); z-index: 30;
     padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600; letter-spacing: .02em;
