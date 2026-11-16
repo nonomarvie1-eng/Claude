@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200">
+    <text x="120" y="52" text-anchor="middle" font-family="Figtree" font-weight="600" font-size="14" letter-spacing="4.2" fill="#b8893a">FAMILLE</text>
+    <text x="120" y="112" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-weight="600" font-size="62" fill="#24402f">Martin</text>
+    <g transform="translate(120 138) scale(1.8)" stroke="#3d6b4f" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="M-18 0h34"/><path d="M-6 0c-3-5-8-6-11-6M-6 0c-3 5-8 6-11 6M6 0c-3-5-8-6-11-6M6 0c-3 5-8 6-11 6"/><circle cx="17" cy="0" r="2.6" fill="#a3312f" stroke="none"/></g>
+    <text x="120" y="170" text-anchor="middle" font-family="Figtree" font-weight="600" font-size="9" letter-spacing="2.6999999999999997" fill="#3d6b4f">NOËL 2026</text></svg>

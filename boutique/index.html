@@ -1,0 +1,695 @@
+<title>Sapin &amp; Lin</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: déco de Noël naturelle — hero avec arche illustrée, collections, grille, kit, personnalisation en 3 étapes, FAQ, fiche produit et panier coulissants. Thème clair unique (choix volontaire). */
+:root {
+  color-scheme: light;
+  --linen: #f3eee6;
+  --paper: #fbf9f5;
+  --wood: #c9a27a;
+  --wood-dk: #8d6748;
+  --pine: #24402f;
+  --pine-2: #3d6b4f;
+  --berry: #a3312f;
+  --ink: #22261f;
+  --muted: #6e6c64;
+  --line: #e4ddd1;
+  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { background-color: var(--linen); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55;
+  /* trame de lin discrète */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 .5h6M0 3.5h6' stroke='%23d8ccb9' stroke-width='.6' opacity='.55'/%3E%3Cpath d='M1.5 0v6M4.5 0v6' stroke='%23ffffff' stroke-width='.6' opacity='.5'/%3E%3C/svg%3E"); }
+.band-wood { background: #e9dcc8; background-image: radial-gradient(rgba(141,103,72,.10) 1px, transparent 1.4px); background-size: 14px 14px; margin-top: 44px; padding-bottom: 44px; }
+.band-wood section.block { padding-top: 40px; }
+.sprig { display: block; width: 120px; height: 24px; margin: 0 auto; color: var(--pine-2); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 1140px; margin: 0 auto; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); }
+button { font: inherit; cursor: pointer; color: inherit; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--berry); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; margin: 0; text-wrap: balance; }
+.kicker { font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--wood-dk); }
+
+.announce { background: var(--berry); color: #fff; font-size: 12.5px; letter-spacing: .02em; text-align: center; }
+.announce .wrap { padding-block: 8px; }
+
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: rgba(251,249,245,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; }
+.logo { font-family: var(--display); font-weight: 600; font-size: 27px; color: var(--pine); }
+.logo i { font-style: italic; color: var(--berry); font-weight: 500; }
+nav.links { display: flex; gap: 22px; font-size: 14px; }
+nav.links a { color: var(--ink); text-decoration: none; }
+nav.links a:hover { color: var(--berry); }
+.cart-btn { position: relative; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); display: grid; place-items: center; color: var(--pine); }
+.cart-btn svg { width: 21px; height: 21px; }
+.cart-btn .count { position: absolute; top: -3px; right: -3px; background: var(--berry); color: #fff; border-radius: 999px; min-width: 19px; height: 19px; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; font-variant-numeric: tabular-nums; }
+.cart-btn .count[data-zero] { display: none; }
+
+/* Hero */
+.hero { background: radial-gradient(120% 80% at 70% 0%, #2f5640, var(--pine) 65%); color: var(--linen); position: relative; overflow: hidden; }
+.hero canvas.snow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero .wrap { position: relative; }
+.hero h1 { color: var(--linen) !important; }
+.hero h1 em { color: #e3c9a8 !important; }
+.hero p { color: rgba(243,238,230,.78) !important; }
+.hero .btn-pine { background: var(--linen); color: var(--pine); }
+.hero .link { color: var(--linen); }
+.hero .dates { color: rgba(243,238,230,.7) !important; }
+.hero .dates b { color: #fff !important; }
+.hero .arch { box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.hero .wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 36px; align-items: center; padding-block: 48px 56px; }
+.hero h1 { font-size: clamp(46px, 7.4vw, 78px); line-height: .96; color: var(--pine); margin: 14px 0 16px; }
+.hero h1 em { font-weight: 500; color: var(--berry); }
+.hero p { color: var(--muted); font-size: 17px; max-width: 40ch; margin: 0 0 24px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 14px 24px; font-weight: 600; font-size: 15px; text-decoration: none; }
+.btn-pine { background: var(--pine); color: var(--linen); }
+.btn-ghost { background: transparent; border: 1px solid var(--pine); color: var(--pine); }
+.btn-berry { background: var(--berry); color: #fff; }
+.dates { margin-top: 24px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); }
+.dates b { color: var(--pine); font-variant-numeric: tabular-nums; }
+.arch { position: relative; aspect-ratio: 5 / 6; max-width: 100%; width: 100%; max-height: 520px; border-radius: 999px 999px 18px 18px; overflow: hidden; background: linear-gradient(#e9eee8, #d7e1d8); justify-self: center; }
+.arch svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.sheet .art, .line .sw { position: relative; }
+.preview-name { position: absolute; left: 12px; bottom: 12px; background: rgba(251,249,245,.94); color: var(--ink); font-size: 13px; padding: 6px 12px; border-radius: 999px; }
+.preview-name b { color: var(--berry); }
+.arch .tag { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); background: var(--paper); color: var(--ink); font-size: 13px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+.arch .tag b { color: var(--berry); }
+.link { color: var(--pine); font-weight: 600; text-decoration: none; font-size: 14.5px; }
+.link:hover { color: var(--berry); }
+.actions { align-items: center; gap: 18px; }
+
+/* Best-sellers */
+.best { padding-block: 40px 4px; }
+.strip { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+  padding-left: max(18px, calc(50vw - 552px)); padding-right: max(18px, calc(50vw - 552px)); scroll-padding-left: max(18px, calc(50vw - 552px)); padding-bottom: 6px; }
+.strip::-webkit-scrollbar { display: none; }
+.strip .card { scroll-snap-align: start; }
+.sway { transform-box: fill-box; transform-origin: 50% 0; animation: sway 5s ease-in-out infinite alternate; }
+.sway.b { animation-duration: 6s; animation-delay: -2s; }
+.sway.c { animation-duration: 4.4s; animation-delay: -1s; }
+@keyframes sway { from { transform: rotate(-3.5deg); } to { transform: rotate(3.5deg); } }
+
+/* Sections */
+section.block { padding-block: 52px 8px; }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.section-head h2 { font-size: clamp(32px, 4.4vw, 44px); line-height: 1.05; color: var(--pine); }
+.section-head span { color: var(--muted); font-size: 14px; }
+
+.rayons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.rayon { border: 0; padding: 0; background: none; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+.rayon .art { position: relative; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 200px 200px 14px 14px; overflow: hidden; outline: 2px solid transparent; outline-offset: 3px; transition: outline-color .2s, transform .25s; }
+.rayon:hover .art { transform: translateY(-3px); }
+.rayon[aria-pressed="true"] .art { outline-color: var(--pine); }
+.rayon b { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--pine); line-height: 1.1; }
+.rayon small { display: block; color: var(--muted); font-size: 13px; }
+
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 16px; padding-bottom: 20px; }
+.card { display: flex; flex-direction: column; gap: 8px; min-width: 0; background: #fff; border-radius: 18px; padding: 8px 8px 12px; box-shadow: 0 1px 2px rgba(60,40,20,.06), 0 8px 24px rgba(60,40,20,.06); }
+.card h3, .card .sub, .card .row { padding-inline: 4px; }
+.card .open { border: 0; padding: 0; background: none; text-align: left; display: flex; flex-direction: column; gap: 8px; }
+.card .art { position: relative; aspect-ratio: 1 / 1; max-width: 100%; border-radius: 14px; overflow: hidden; transition: transform .25s; }
+.card .open:hover .art { transform: translateY(-3px); }
+.badge { position: absolute; top: 10px; left: 10px; background: var(--paper); color: var(--pine); font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 4px 9px; border-radius: 999px; }
+.badge.perso { background: var(--berry); color: #fff; }
+.card h3 { font-family: var(--body); font-weight: 600; font-size: 15px; line-height: 1.3; }
+.card .sub { color: var(--muted); font-size: 13px; }
+.card .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.price { font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; }
+.price s { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 6px; }
+.add { border: 1px solid var(--pine); background: none; color: var(--pine); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.add:hover { background: var(--pine); color: var(--linen); }
+
+/* Kit */
+.kit { margin-top: 36px; background: var(--pine); color: var(--linen); border-radius: 22px; overflow: hidden; display: grid; grid-template-columns: 1fr 1.1fr; }
+.kit .art { min-height: 280px; position: relative; }
+.kit .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.kit .txt { padding: 34px 32px; display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+.kit h2 { font-size: clamp(32px, 4vw, 42px); line-height: 1.05; }
+.kit ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14.5px; color: rgba(243,238,230,.85); }
+.kit li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed rgba(243,238,230,.18); padding-bottom: 6px; font-variant-numeric: tabular-nums; }
+.kit .deal { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.kit .deal b { font-size: 28px; font-variant-numeric: tabular-nums; }
+.kit .deal s { opacity: .6; font-variant-numeric: tabular-nums; }
+.kit .deal span { background: var(--berry); color: #fff; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.kit .btn { align-self: flex-start; background: var(--linen); color: var(--pine); }
+
+/* Personnalisation */
+.perso-band { background: var(--linen); margin-top: 52px; }
+.perso-band .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; padding-block: 52px; }
+.perso-band h2 { font-size: clamp(32px, 4.6vw, 46px); line-height: 1.05; color: var(--pine); margin: 10px 0 18px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.steps li { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+.steps .n { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--wood); display: grid; place-items: center; font-family: var(--display); font-size: 19px; font-weight: 600; color: var(--wood-dk); }
+.steps b { display: block; }
+.steps span { color: var(--muted); font-size: 14px; }
+.tryit { background: var(--paper); border-radius: 18px; padding: 20px; display: grid; gap: 14px; }
+.tryit .art { aspect-ratio: 1 / 1; max-width: 300px; width: 100%; margin: 0 auto; border-radius: 14px; overflow: hidden; }
+label.f { font-size: 13px; font-weight: 600; color: var(--pine); display: block; margin-bottom: 6px; }
+input.f { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 12px; font: inherit; font-size: 16px; color: var(--ink); }
+.hint { display: block; color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+/* FAQ */
+.faq { max-width: 760px; }
+.faq details { border-bottom: 1px solid var(--line); padding-block: 4px; }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; padding-block: 14px; font-weight: 600; font-size: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-size: 22px; line-height: 1; color: var(--wood-dk); }
+.faq details[open] summary::after { content: "−"; }
+.faq p { margin: 0 0 16px; color: var(--muted); max-width: 62ch; }
+
+.trust .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-block: 40px; }
+.trust div { display: flex; gap: 12px; align-items: flex-start; }
+.trust svg { flex: none; width: 26px; height: 26px; color: var(--wood-dk); }
+.trust b { display: block; font-size: 15px; }
+.trust span { color: var(--muted); font-size: 13.5px; }
+
+footer { background: var(--pine); color: rgba(243,238,230,.7); font-size: 13px; }
+footer .wrap { padding-block: 28px calc(28px + var(--barH, 0px)); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+footer .logo { font-size: 23px; color: var(--linen); }
+
+/* Fiches et panier */
+.scrim { position: fixed; inset: 0; background: rgba(20,28,22,.45); z-index: 20; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100%); background: var(--paper); z-index: 21; display: flex; flex-direction: column; gap: 14px;
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 20px) 20px; }
+.drawer-head { display: flex; justify-content: space-between; align-items: center; }
+.drawer-head h2 { font-size: 32px; color: var(--pine); }
+.close { background: var(--linen); border: 0; width: 38px; height: 38px; border-radius: 50%; font-size: 22px; line-height: 1; flex: none; }
+.ship { background: var(--linen); border-radius: 12px; padding: 12px 14px; font-size: 13.5px; }
+.bar { height: 6px; background: var(--line); border-radius: 99px; margin-top: 8px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--pine); width: 0; transition: width .3s; }
+.lines { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.line { display: grid; grid-template-columns: 58px 1fr auto; gap: 12px; align-items: center; }
+.line .sw { width: 58px; height: 58px; border-radius: 10px; overflow: hidden; }
+.line .t { font-size: 14px; font-weight: 600; }
+.line .nm { font-size: 12.5px; color: var(--berry); }
+.qty { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 4px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.line .qty { margin-top: 6px; }
+.qty button { width: 26px; height: 26px; border: 0; background: none; font-size: 16px; line-height: 1; }
+.line .p { font-weight: 700; font-variant-numeric: tabular-nums; }
+.empty { color: var(--muted); text-align: center; padding: 40px 0; }
+.total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; border-top: 1px solid var(--line); padding-top: 14px; font-variant-numeric: tabular-nums; }
+.wide { width: 100%; }
+.wide:disabled { opacity: .45; cursor: default; }
+.note { font-size: 12.5px; color: var(--muted); text-align: center; min-height: 1em; }
+
+.sheet { position: fixed; z-index: 22; background: var(--paper); left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(820px, calc(100% - 40px)); max-height: calc(100% - 40px); overflow-y: auto; border-radius: 20px; display: grid; grid-template-columns: 1fr 1fr; }
+.sheet .art { aspect-ratio: 1 / 1; max-width: 100%; }
+.sheet .body { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.sheet .body .close { align-self: flex-end; margin-bottom: -10px; }
+.sheet h2 { font-size: 34px; line-height: 1.05; color: var(--pine); }
+.sheet .desc { color: var(--muted); margin: 0; }
+.sheet .specs { font-size: 13.5px; display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.sheet .specs li::before { content: "·"; color: var(--wood-dk); margin-right: 8px; font-weight: 700; }
+.sheet .buy { display: flex; gap: 10px; align-items: center; margin-top: auto; }
+.sheet .buy .btn { flex: 1; }
+
+.cartbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; background: var(--pine); color: var(--linen); display: none;
+  padding: 12px max(18px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 12px) max(18px, env(safe-area-inset-left, 0px)); }
+.cartbar button { width: 100%; display: flex; justify-content: space-between; align-items: center; background: var(--linen); color: var(--pine); border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 86px); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 999px; font-size: 14px; z-index: 30; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  nav.links { display: none; }
+  .hero .wrap { grid-template-columns: 1fr; gap: 20px; padding-block: 16px 30px; }
+  .arch { max-width: none; aspect-ratio: 1 / 1; max-height: 380px; border-radius: 22px; }
+  .hero h1 { font-size: 44px; margin: 0 0 10px; }
+  .hero p { font-size: 16px; margin-bottom: 18px; }
+  .dates { margin-top: 18px; gap: 4px 14px; font-size: 13px; }
+  .strip { grid-auto-columns: 44%; }
+  .grid { grid-template-columns: repeat(3, 1fr); }
+  .kit, .perso-band .wrap { grid-template-columns: 1fr; }
+  .sheet { left: 0; right: 0; top: auto; bottom: 0; transform: none; width: 100%; max-height: 92%; border-radius: 20px 20px 0 0; grid-template-columns: 1fr;
+    padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .sheet .art { aspect-ratio: 16 / 11; }
+  .sheet .body { padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+  .sheet .body .close { position: absolute; top: 14px; right: 14px; margin: 0; background: var(--paper); }
+  .cartbar.on { display: block; }
+}
+@media (max-width: 640px) {
+  .rayons { grid-template-columns: repeat(2, 1fr); gap: 18px 12px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 24px 12px; }
+  .card h3 { font-size: 14px; }
+  .card .row { flex-wrap: wrap; }
+  .kit .txt { padding: 26px 22px; }
+  .kit .art { min-height: 220px; }
+  .trust .wrap { grid-template-columns: 1fr; gap: 14px; }
+  .sheet h2 { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="announce"><div class="wrap">Livraison offerte dès 49 € · Personnalisation offerte</div></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="logo">Sapin <i>&amp;</i> Lin</div>
+    <nav class="links" aria-label="Menu">
+      <a href="#shop">Collections</a><a href="#kit">Le pack</a><a href="#perso">Personnalisation</a><a href="#faq">Questions</a>
+    </nav>
+    <button class="cart-btn" id="openCart" aria-label="Ouvrir le panier">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.3 12H6.3z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <span class="count" id="cartCount" data-zero>0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <canvas class="snow" id="snow" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="arch" id="heroArt">
+      <img class="ph" src="img/photo-premier-noel-bebe.jpg" alt="Médaillon « Mon premier Noël » au prénom Emma, accroché au sapin">
+      <span class="tag">Médaillon au prénom · <b>dès 14,90 €</b></span>
+    </div>
+    <div class="hero-copy">
+      <h1>Le souvenir de Noël <em>à votre nom</em>.</h1>
+      <p>Médaillons, chaussettes, mugs et pulls personnalisés. Imprimés en Europe, livrés avant Noël.</p>
+      <div class="actions">
+        <a class="btn btn-pine" href="#best">Voir les best-sellers</a>
+        <a class="link" href="#perso">Personnaliser →</a>
+      </div>
+      <div class="dates"><span>Noël dans <b id="days">–</b> <span id="daysWord">jours</span></span><span>Commandez avant le <b>12 décembre</b></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="best" id="best">
+  <div class="wrap">
+    <div class="section-head"><h2>Les best-sellers</h2><a class="link" href="#shop">Tout voir →</a></div>
+  </div>
+  <div class="strip" id="strip"></div>
+</section>
+
+<div class="band-wood">
+<section class="block wrap" id="shop">
+  <svg class="sprig" viewBox="0 0 120 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M8 12h104"/><path d="M30 12c-4-6-10-8-14-8M30 12c-4 6-10 8-14 8M60 12c-4-7-11-9-16-9M60 12c-4 7-11 9-16 9M90 12c-4-6-10-8-14-8M90 12c-4 6-10 8-14 8"/><circle cx="104" cy="12" r="3" fill="#a3312f" stroke="none"/></svg>
+  <div class="section-head" style="justify-content:center;margin-top:10px"><h2>Les collections</h2></div>
+  <div class="rayons" id="rayons"></div>
+</section>
+</div>
+
+<section class="block wrap">
+  <div class="section-head"><h2 id="shelfTitle">Toute la collection</h2><span id="resultCount"></span></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="kit" id="kit">
+    <div class="art" id="kitArt" aria-hidden="true"></div>
+    <div class="txt">
+      <div class="kicker" style="color:var(--wood)">Le cadeau tout prêt</div>
+      <h2>Le pack déco au prénom</h2>
+      <ul id="kitList"></ul>
+      <div class="deal"><b id="kitPrice"></b><s id="kitOld"></s><span id="kitSave"></span></div>
+      <button class="btn" id="addKit">Personnaliser le pack</button>
+    </div>
+  </div>
+</section>
+
+<section class="perso-band" id="perso">
+  <div class="wrap">
+    <div>
+      <div class="kicker">Personnalisation offerte</div>
+      <h2>Un prénom, et la décoration devient un souvenir.</h2>
+      <ol class="steps">
+        <li><span class="n">1</span><p style="margin:0"><b>Choisissez votre article</b><span>Médaillon, chaussette, mug, coussin ou pull.</span></p></li>
+        <li><span class="n">2</span><p style="margin:0"><b>Écrivez le prénom</b><span>Vous voyez le résultat avant de commander.</span></p></li>
+        <li><span class="n">3</span><p style="margin:0"><b>On imprime et on expédie</b><span>Fabriqué à la commande en Europe, en 2 à 5 jours.</span></p></li>
+      </ol>
+    </div>
+    <div class="tryit">
+      <div class="art" id="tryArt"></div>
+      <div>
+        <label class="f" for="tryName">Essayez avec un prénom</label>
+        <input class="f" id="tryName" maxlength="10" value="Emma" autocomplete="off">
+        <span class="hint">10 lettres maximum</span>
+      </div>
+      <button class="btn btn-pine" id="tryAdd">Commander ce médaillon · 14,90 €</button>
+    </div>
+  </div>
+</section>
+
+<section class="block wrap faq" id="faq">
+  <div class="section-head"><h2>Vos questions</h2></div>
+  <details><summary>Quand vais-je recevoir ma commande ?</summary><p>Chaque article est fabriqué à la commande en Europe en 2 à 5 jours, puis livré en 3 à 5 jours. Pour le recevoir avant Noël, commandez avant le 12 décembre.</p></details>
+  <details><summary>Comment fonctionne la personnalisation ?</summary><p>Vous écrivez le prénom sur la fiche du produit, vous voyez un aperçu, puis vous l'ajoutez au panier. Le prénom est imprimé à la commande, sans supplément.</p></details>
+  <details><summary>Puis-je retourner un article ?</summary><p>Les articles personnalisés étant fabriqués pour vous, ils ne peuvent pas être repris, sauf défaut ou erreur d'impression : dans ce cas, on les remplace.</p></details>
+  <details><summary>Comment choisir la taille d'un pull ?</summary><p>Un guide des tailles est affiché sur chaque fiche. Dans le doute, prenez la taille au-dessus : les pulls de Noël se portent amples.</p></details>
+</section>
+
+<section class="trust">
+  <div class="wrap">
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 7 6 7 11a7 7 0 0 1-14 0c0-5 4-7 7-11z"/><path d="M12 21v-8"/></svg><p style="margin:0"><b>Imprimé en Europe</b><span>Fabriqué à la commande, près de chez vous.</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><p style="margin:0"><b>Livré avant Noël</b><span>Voir les dates limites ci-dessus.</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><p style="margin:0"><b>Paiement sécurisé</b><span>Carte bancaire, Apple Pay, PayPal.</span></p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo">Sapin <i>&amp;</i> Lin</div>
+    <span>Maquette : produits, prix et délais donnés à titre d'exemple.</span>
+  </div>
+</footer>
+
+<div class="cartbar" id="cartbar"><button id="cartbarBtn"><span id="cartbarCount"></span><span id="cartbarTotal"></span></button></div>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<aside class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="art" id="sheetArt"></div>
+  <div class="body">
+    <button class="close" id="closeSheet" aria-label="Fermer">×</button>
+    <div class="kicker" id="sheetCat"></div>
+    <h2 id="sheetTitle"></h2>
+    <div class="price" id="sheetPrice"></div>
+    <p class="desc" id="sheetDesc"></p>
+    <ul class="specs" id="sheetSpecs"></ul>
+    <div id="sheetPerso">
+      <label class="f" for="sheetName">Prénom à graver</label>
+      <input class="f" id="sheetName" maxlength="14" autocomplete="off" placeholder="Ex. : Emma">
+      <span class="hint" id="sheetHint"></span>
+    </div>
+    <div class="buy">
+      <div class="qty"><button id="qDec" aria-label="Diminuer">−</button><span id="qVal">1</span><button id="qInc" aria-label="Augmenter">+</button></div>
+      <button class="btn btn-pine" id="sheetAdd">Ajouter</button>
+    </div>
+  </div>
+</aside>
+
+<aside class="drawer" id="drawer" hidden aria-label="Panier">
+  <div class="drawer-head"><h2>Votre panier</h2><button class="close" id="closeCart" aria-label="Fermer le panier">×</button></div>
+  <div class="ship" id="ship"></div>
+  <div class="lines" id="lines"></div>
+  <div class="total"><span>Total</span><span id="total">0,00 €</span></div>
+  <button class="btn btn-berry wide" id="checkout">Commander</button>
+  <div class="note" id="note"></div>
+</aside>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- Illustrations ---------- */
+const W = "#c9a27a", WD = "#8d6748", WL = "#e3c9a8", P = "#24402f", P2 = "#3d6b4f", P3 = "#4f7d5f", R = "#a3312f", L = "#f3eee6", LD = "#e2d8c8";
+let uid = 0;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fit = (name, big, small, at) => name.length > at ? small : big;
+function scene(bgA, bgB, body, vb = "0 0 200 200") {
+  const g = "g" + (++uid);
+  return `<svg viewBox="${vb}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient></defs>
+    <rect x="-500" y="-500" width="1400" height="1400" fill="url(#${g})"/>${body}</svg>`;
+}
+const bauble = (name, cx = 100, cy = 112, r = 56) => `<path d="M${cx} ${cy - r - 60}v60" stroke="${WD}" stroke-width="1.5"/><path d="M${cx - 8} ${cy - r - 2}h16" stroke="${R}" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="${W}"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${WD}" stroke-width="1.2" opacity=".5"/>
+  <path d="M${cx - 42} ${cy - 20}c20 8 64 8 84 0M${cx - 48} ${cy + 8}c24 8 72 8 96 0M${cx - 40} ${cy + 34}c20 6 60 6 80 0" stroke="${WD}" stroke-width=".8" fill="none" opacity=".35"/>
+  <text x="${cx}" y="${cy + 10}" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="600" font-size="${(name.length > 7 ? 21 : name.length > 5 ? 26 : 31) * r / 56}" fill="#5a3f2b">${esc(name)}</text>`;
+const star = (cx, cy, s, fill, stroke) => `<g transform="translate(${cx} ${cy}) scale(${s / 30})"><path d="M0-30l8.8 18 19.7 2.9-14.3 13.9 3.4 19.7L0 15.2l-17.6 9.3 3.4-19.7L-28.5-9.1l19.7-2.9z" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/></g>`;
+const ART = {
+  woodBauble: (name = "Emma") => bauble(name),
+  feltBalls: () => [[70,90,R],[112,80,L],[140,118,P2],[96,124,W],[62,140,LD],[124,154,R]].map(([x,y,c]) => `<circle cx="${x}" cy="${y}" r="24" fill="${c}"/><circle cx="${x-7}" cy="${y-8}" r="5" fill="#fff" opacity=".18"/>`).join(""),
+  woodStars: () => [[70,60,30],[132,90,24],[86,140,26]].map(([x,y,s]) => `<path d="M${x} 0v${y - s}" stroke="${WD}" stroke-width="1.2"/>${star(x, y, s, W, WD)}`).join(""),
+  reindeer: () => `<path d="M100 0v40" stroke="${WD}" stroke-width="1.2"/><path d="M100 40c-30 0-40 30-34 56 6 26 22 44 34 54 12-10 28-28 34-54 6-26-4-56-34-56z" fill="${LD}"/>
+    <path d="M78 56c-14-6-20-20-18-34M70 40c-8 2-14-2-18-8M122 56c14-6 20-20 18-34M130 40c8 2 14-2 18-8" stroke="${WD}" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <circle cx="88" cy="96" r="3.5" fill="${P}"/><circle cx="112" cy="96" r="3.5" fill="${P}"/><circle cx="100" cy="138" r="8" fill="${R}"/>`,
+  garland: () => `<path d="M-10 70c60 50 160 50 220 0" stroke="${L}" stroke-width="1" opacity=".5" fill="none"/><path d="M-10 120c60 50 160 50 220 0" stroke="${L}" stroke-width="1" opacity=".5" fill="none"/>` +
+    [[20,88],[56,104],[100,110],[144,104],[180,88],[20,138],[56,154],[100,160],[144,154],[180,138]].map(([x,y],i) => `<circle cx="${x}" cy="${y}" r="17" fill="#fff6e0" opacity=".22"/><circle cx="${x}" cy="${y}" r="11" fill="${i%3===0?LD:i%3===1?"#fffaf0":WL}"/>`).join(""),
+  topper: () => `<g transform="translate(100 88)"><path d="M0-60l17.6 36 39.4 5.8-28.5 27.8 6.7 39.3L0 30.3l-35.2 18.6 6.7-39.3L-57-18.2l39.4-5.8z" fill="none" stroke="${W}" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M0-60l17.6 36 39.4 5.8-28.5 27.8 6.7 39.3L0 30.3l-35.2 18.6 6.7-39.3L-57-18.2l39.4-5.8z" fill="none" stroke="${WD}" stroke-width="1" stroke-dasharray="3 4"/></g><rect x="94" y="136" width="12" height="44" rx="3" fill="${WD}"/>`,
+  feltTree: () => `<path d="M100 30l46 70h-92z" fill="${P2}"/><path d="M100 64l56 80H44z" fill="${P}"/><path d="M100 104l64 72H36z" fill="${P2}"/>
+    <rect x="92" y="176" width="16" height="14" fill="${WD}"/><g fill="${L}"><circle cx="86" cy="96" r="4"/><circle cx="118" cy="130" r="4"/><circle cx="80" cy="160" r="4"/><circle cx="130" cy="164" r="4"/></g><circle cx="100" cy="28" r="6" fill="${R}"/>`,
+  village: () => `<rect x="20" y="96" width="50" height="76" fill="${WL}"/><path d="M14 100l31-34 31 34z" fill="${W}"/><rect x="34" y="116" width="12" height="14" fill="#ffd57a"/><rect x="52" y="144" width="12" height="28" fill="${WD}"/>
+    <rect x="76" y="70" width="58" height="102" fill="${LD}"/><path d="M70 74l35-40 35 40z" fill="${WD}"/><rect x="90" y="92" width="12" height="16" fill="#ffd57a"/><rect x="110" y="92" width="12" height="16" fill="#ffd57a"/><rect x="98" y="138" width="14" height="34" fill="${W}"/>
+    <rect x="140" y="110" width="44" height="62" fill="${WL}"/><path d="M134 114l28-30 28 30z" fill="${W}"/><rect x="154" y="128" width="14" height="14" fill="#ffd57a"/><rect x="10" y="172" width="180" height="8" rx="3" fill="${WD}"/>
+    <g fill="#fff" opacity=".7"><circle cx="30" cy="30" r="1.5"/><circle cx="150" cy="24" r="1.5"/><circle cx="176" cy="60" r="1.2"/><circle cx="60" cy="50" r="1.2"/></g>`,
+  runner: () => `<rect x="0" y="80" width="200" height="120" fill="${WL}"/><rect x="66" y="80" width="68" height="120" fill="${L}"/><path d="M66 80v120M134 80v120" stroke="${LD}" stroke-width="3"/>
+    <circle cx="100" cy="118" r="18" fill="${P2}"/><circle cx="92" cy="110" r="4" fill="${R}"/><circle cx="108" cy="124" r="4" fill="${R}"/>`,
+  napkin: () => `<rect x="40" y="96" width="120" height="44" rx="22" fill="${L}"/><rect x="40" y="96" width="120" height="44" rx="22" fill="none" stroke="${LD}" stroke-width="2"/>
+    <rect x="88" y="90" width="24" height="56" rx="4" fill="${W}"/><path d="M100 98l10 16h-6l8 12H88l8-12h-6z" fill="${P}"/>`,
+  candles: () => `<rect x="32" y="130" width="136" height="34" rx="16" fill="${W}"/><path d="M40 146h120" stroke="${WD}" stroke-width="1" opacity=".4"/><circle cx="168" cy="147" r="10" fill="${WL}"/><circle cx="168" cy="147" r="5" fill="none" stroke="${WD}"/>
+    ${[60,100,140].map((x,i)=>`<rect x="${x-9}" y="${78+i%2*12}" width="18" height="${52-i%2*12}" rx="3" fill="#fffaf0"/><path d="M${x} ${78+i%2*12}v-8" stroke="#3a2a22" stroke-width="2"/><path d="M${x} ${48+i%2*12}c-7 9-6 18 0 20 6-2 7-11 0-20z" fill="#f2b440"/>`).join("")}`,
+  placecard: (name = "Louis") => `<rect x="36" y="78" width="128" height="70" rx="6" fill="${W}"/><circle cx="54" cy="96" r="4" fill="${WD}"/>
+    <path d="M58 94c14-14 24-20 30-20" stroke="${P}" stroke-width="1.2" fill="none"/><text x="100" y="126" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="600" font-size="${fit(name, 28, 20, 7)}" fill="#5a3f2b">${esc(name)}</text>
+    <path d="M60 148v18M140 148v18" stroke="${WD}" stroke-width="5" stroke-linecap="round"/>`,
+  stocking: (name = "Jules") => `<path d="M100 0v28" stroke="${WD}" stroke-width="1.2"/><path d="M72 40h56v86l20 28c12 18-10 40-28 26l-48-38z" fill="${R}"/><rect x="62" y="30" width="76" height="30" rx="4" fill="${L}"/>
+    <text x="100" y="51" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="600" font-size="${fit(name, 20, 15, 7)}" fill="${P}">${esc(name)}</text><path d="M80 90h40M80 100h40" stroke="#fff" stroke-width="2" stroke-dasharray="4 4" opacity=".6"/>`,
+  wreath: (name = "Famille Martin") => `<circle cx="100" cy="104" r="58" fill="none" stroke="${P}" stroke-width="22"/>` +
+    Array.from({length: 18}, (_, i) => { const a = i / 18 * Math.PI * 2, x = 100 + Math.cos(a) * 58, y = 104 + Math.sin(a) * 58; return `<ellipse cx="${x}" cy="${y}" rx="12" ry="5" fill="${i%2?P2:P3}" transform="rotate(${a*57.3+60} ${x} ${y})"/>`; }).join("") +
+    `<circle cx="72" cy="66" r="5" fill="${R}"/><circle cx="140" cy="128" r="5" fill="${R}"/><path d="M100 160l-14 24M100 160l14 24" stroke="${R}" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="158" r="7" fill="${R}"/>
+    <rect x="58" y="94" width="84" height="22" rx="4" fill="${L}"/><text x="100" y="110" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-weight="600" font-size="${fit(name, 14, 11, 14)}" fill="${P}">${esc(name)}</text>`,
+  pinecones: () => [[64,132,1],[112,120,1.2],[148,146,.9]].map(([x,y,s]) => `<g transform="translate(${x} ${y}) scale(${s})">${Array.from({length:5},(_,r)=>`<ellipse cx="0" cy="${-r*9}" rx="${16-r*2.4}" ry="7" fill="${r%2?WD:"#7a5a3e"}"/>`).join("")}</g>`).join("") + `<path d="M30 176c50-10 90-10 140 0" stroke="${P2}" stroke-width="4" fill="none"/>`,
+  linenStar: () => `<path d="M100 0v44" stroke="${WD}" stroke-width="1.2"/><g transform="translate(100 112)"><path d="M0-64l16 38 40 4-30 27 9 40L0 24l-35 21 9-40-30-27 40-4z" fill="${L}" stroke="${LD}" stroke-width="3" stroke-linejoin="round"/><path d="M0-64l16 38 40 4-30 27 9 40L0 24l-35 21 9-40-30-27 40-4z" fill="none" stroke="${WD}" stroke-width="1" stroke-dasharray="3 3" transform="scale(.86)"/></g>`
+};
+const art = (key, a, b, arg) => scene(a, b, ART[key](arg));
+
+/* ---------- Illustrations des produits Printify ---------- */
+const GOLD = "#b8893a";
+const sprigS = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})" stroke="${P2}" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="M-18 0h34"/><path d="M-6 0c-3-5-8-6-11-6M-6 0c-3 5-8 6-11 6M6 0c-3-5-8-6-11-6M6 0c-3 5-8 6-11 6"/><circle cx="17" cy="0" r="2.6" fill="${R}" stroke="none"/></g>`;
+const script = (x, y, txt, size, fill = P) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="600" font-size="${size}" fill="${fill}">${esc(txt)}</text>`;
+const caps = (x, y, txt, size, fill = GOLD) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="600" font-size="${size}" letter-spacing="${size * .28}" fill="${fill}">${esc(txt)}</text>`;
+const sz = (n, a, b, c) => n.length > 8 ? c : n.length > 5 ? b : a;
+Object.assign(ART, {
+  ornament: (name = "Emma") => `<path d="M100 0v48" stroke="${WD}" stroke-width="1.5"/><rect x="90" y="46" width="20" height="12" rx="2" fill="${GOLD}"/>
+    <circle cx="100" cy="114" r="58" fill="#fdfbf7"/><circle cx="100" cy="114" r="58" fill="none" stroke="${LD}" stroke-width="2"/>
+    <ellipse cx="74" cy="84" rx="13" ry="7" fill="#fff" transform="rotate(-35 74 84)"/>
+    ${caps(100, 98, "NOËL 2026", 7)}${script(100, 124, name, sz(name, 32, 26, 20))}${sprigS(100, 142, .85)}`,
+  stocking: (name = "Jules") => `<path d="M100 0v28" stroke="${WD}" stroke-width="1.2"/><path d="M72 40h56v86l20 28c12 18-10 40-28 26l-48-38z" fill="${R}"/>
+    <path d="M78 66v54l46 36" stroke="#fff" stroke-width="1.4" stroke-dasharray="3 4" fill="none" opacity=".5"/><rect x="62" y="30" width="76" height="30" rx="4" fill="#fdfbf7"/>
+    ${script(100, 51, name, sz(name, 20, 17, 14))}`,
+  cushion: (name = "Martin") => `<path d="M38 44q62-10 124 0q10 60 0 120q-62 10-124 0q-10-60 0-120z" fill="#fdfbf7"/><path d="M48 54q52-8 104 0q8 50 0 100q-52 8-104 0q-8-50 0-100z" fill="none" stroke="${LD}" stroke-width="1.5" stroke-dasharray="4 4"/>
+    ${caps(100, 88, "FAMILLE", 9)}${script(100, 116, name, sz(name, 30, 26, 20))}${sprigS(100, 134, 1)}${caps(100, 152, "NOËL 2026", 6, P2)}`,
+  blanket: () => `<rect x="30" y="76" width="140" height="92" rx="10" fill="${P}"/><rect x="30" y="56" width="140" height="40" rx="10" fill="${P2}"/>` +
+    [0,1,2,3,4].map(i => `<path d="M${46 + i * 27} ${112}l8 14h-16z" fill="#fdfbf7" opacity=".85"/><path d="M${46 + i * 27} ${140}l8 14h-16z" fill="#fdfbf7" opacity=".85"/>`).join("") +
+    [0,1,2,3,4,5,6].map(i => `<circle cx="${40 + i * 20}" cy="76" r="3" fill="#fdfbf7" opacity=".7"/>`).join("") + `<path d="M30 96h140" stroke="#1a3023" stroke-width="2"/>`,
+  mug: (name = "Léa") => `<path d="M138 88h12a20 20 0 0 1 0 40h-12" stroke="#fdfbf7" stroke-width="10" fill="none"/><path d="M138 88h12a20 20 0 0 1 0 40h-12" stroke="${LD}" stroke-width="1" fill="none"/>
+    <rect x="52" y="64" width="90" height="106" rx="10" fill="#fdfbf7"/><rect x="52" y="64" width="90" height="106" rx="10" fill="none" stroke="${LD}" stroke-width="1.5"/>
+    ${caps(97, 100, "NOËL", 8)}${script(97, 128, name, sz(name, 30, 24, 18))}${sprigS(97, 146, .9)}
+    <path d="M80 54c-4-8 4-12 0-20M100 54c-4-8 4-12 0-20" stroke="${WD}" stroke-width="2" stroke-linecap="round" fill="none" opacity=".35"/>`,
+  sweater: (name = "Martin") => `<path d="M64 40l-34 22 12 34 16-8v84h84V88l16 8 12-34-34-22c-6 12-18 18-36 18s-30-6-36-18z" fill="${P}"/>
+    <path d="M58 140h84" stroke="${R}" stroke-width="10"/>${[0,1,2,3,4,5].map(i => `<path d="M${64 + i * 14} 140l4-4 4 4-4 4z" fill="#fdfbf7"/>`).join("")}
+    ${caps(100, 82, "FAMILLE", 7, "#e3c9a8")}${script(100, 108, name, sz(name, 24, 21, 16), "#fdfbf7")}<path d="M88 40c6 6 18 6 24 0" stroke="#1a3023" stroke-width="3" fill="none"/>`,
+  kidTee: (name = "Lucas") => `<path d="M72 50l-30 18 12 28 14-6v76h64V90l14 6 12-28-30-18c-4 10-14 14-28 14s-24-4-28-14z" fill="${R}"/>
+    ${caps(100, 96, "PETIT LUTIN", 7, "#fdfbf7")}${script(100, 122, name, sz(name, 24, 20, 16), "#fdfbf7")}${star(100, 144, 8, "#e3c9a8", "#e3c9a8")}`,
+  poster: (name = "Martin") => `<rect x="44" y="24" width="112" height="152" fill="${WD}"/><rect x="52" y="32" width="96" height="136" fill="#fdfbf7"/>
+    ${caps(100, 60, "NOTRE NOËL", 7)}${script(100, 88, "Famille", 20)}${script(100, 112, name, sz(name, 24, 21, 16))}
+    <path d="M100 124l12 18h-7l9 14H86l9-14h-7z" fill="${P2}"/><rect x="97" y="156" width="6" height="5" fill="${WD}"/>${caps(100, 172 - 4, "2026", 6, P2)}`,
+  puzzle: () => `<rect x="36" y="44" width="128" height="112" rx="4" fill="#20364a"/>` +
+    `<path d="M100 66l26 40h-14l18 28H70l18-28H74z" fill="${P2}"/><rect x="95" y="134" width="10" height="10" fill="${WD}"/>` +
+    [[60,70],[140,80],[70,120],[150,130],[118,60]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join("") +
+    `<path d="M36 100h40c0-8 12-8 12 0h40M100 44v40c-8 0-8 12 0 12v60" stroke="#fff" stroke-width="1.2" opacity=".35" fill="none"/>
+    <path d="M150 150l20 6-8 20-20-6z" fill="#20364a" stroke="#fff" stroke-opacity=".4"/>`,
+  tote: () => `<path d="M76 70c0-34 48-34 48 0" stroke="${WD}" stroke-width="5" fill="none"/><rect x="50" y="66" width="100" height="112" rx="4" fill="#efe4d0"/>
+    ${sprigS(80, 100, 1)}${sprigS(122, 124, 1)}${sprigS(82, 150, 1)}${star(126, 96, 6, GOLD, GOLD)}${star(76, 126, 5, R, R)}${star(124, 160, 5, GOLD, GOLD)}`
+});
+
+/* ---------- Catalogue (exemples, à remplacer par vos produits Printify) ---------- */
+const PRODUCTS = [
+  { id: 1,  t: "Médaillon « Joyeux Noël » au prénom", s: "Céramique, Ø 7,5 cm",      p: 14.90, c: "deco",    perso: "Emma",   b: "Best-seller", img: "img/photo-prenom-couronne.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Un médaillon en céramique à suspendre au sapin, avec une couronne de sapin et de houx, et le prénom de votre choix. Le petit souvenir que l'on ressort chaque Noël.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
+  { id: 11, t: "Médaillon « Mon premier Noël »",  s: "Pour le premier Noël de bébé", p: 16.90, c: "deco",    perso: "Emma",   b: "Coup de cœur", img: "img/photo-premier-noel-bebe.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Pour célébrer le tout premier Noël de bébé, avec son prénom et l'année. Le cadeau de naissance que les parents gardent toute leur vie.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
+  { id: 12, t: "Médaillon « Notre premier Noël »", s: "Pour les couples",            p: 16.90, c: "deco",    perso: "Léa & Tom", label: "Vos deux prénoms", img: "img/photo-notre-premier-noel.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Pour un premier Noël à deux : vos deux prénoms, un cœur doré et l'année, sur un fond vert sapin.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
+  { id: 13, t: "Médaillon « La famille »",         s: "Village sous la neige",       p: 16.90, c: "deco",    perso: "Martin", label: "Nom de famille", img: "img/photo-famille.jpg", k: ["ornament", "#efe7da", "#e3d6c2"], d: "Un petit village sous la neige et votre nom de famille en lettres dorées. À accrocher au sapin chaque année.", sp: ["Céramique, Ø 7,5 cm", "Ruban rouge inclus", "Imprimé en Europe"] },
+  { id: 2,  t: "Chaussette de Noël au prénom",    s: "Velours doux, 45 cm",          p: 24.90, c: "deco",    perso: "Jules",  k: ["stocking", "#f1ebe2", "#e6ddd0"], d: "La chaussette à accrocher à la cheminée, avec le prénom de chacun. Une par membre de la famille.", sp: ["Velours doux", "45 cm, avec attache", "Imprimée en Europe"] },
+  { id: 3,  t: "Coussin « Famille » au nom",      s: "45 × 45 cm",                   p: 34.90, c: "deco",    perso: "Martin", label: "Nom de famille", k: ["cushion", "#e9eee8", "#d9e3da"], d: "Un coussin doux avec votre nom de famille et l'année. Il s'installe sur le canapé pour tout l'hiver.", sp: ["45 × 45 cm", "Housse et garnissage inclus", "Imprimé en Europe"] },
+  { id: 4,  t: "Plaid polaire motif sapins",      s: "127 × 152 cm",                 p: 54.90, c: "cocon",   k: ["blanket", "#efe7da", "#e3d6c2"], d: "Un grand plaid tout doux, vert sapin, pour les soirées films de décembre.", sp: ["Polaire douce", "127 × 152 cm", "Lavable en machine"] },
+  { id: 5,  t: "Mug au prénom",                   s: "Céramique, 33 cl",             p: 19.90, c: "cocon",   perso: "Léa",    k: ["mug", "#e9eee8", "#d9e3da"], d: "Le mug du chocolat chaud, avec un prénom et un brin de sapin.", sp: ["Céramique 33 cl", "Lave-vaisselle et micro-ondes", "Imprimé en Europe"] },
+  { id: 6,  t: "Pull de Noël au nom de famille",  s: "Du S au XXL",                  p: 44.90, c: "famille", perso: "Martin", label: "Nom de famille", b: "Best-seller", k: ["sweater", "#f1ebe2", "#e6ddd0"], d: "Le pull assorti pour la photo de famille. Même nom pour tout le monde, une taille pour chacun.", sp: ["Coton mélangé", "Tailles adulte S à XXL", "Imprimé en Europe"] },
+  { id: 7,  t: "T-shirt enfant « Petit lutin »",  s: "De 2 à 12 ans",                p: 24.90, c: "famille", perso: "Lucas",  k: ["kidTee", "#efe7da", "#e3d6c2"], d: "Pour les enfants qui aident le Père Noël. Avec leur prénom en grand.", sp: ["100 % coton", "Tailles 2 à 12 ans", "Imprimé en Europe"] },
+  { id: 8,  t: "Affiche « Notre Noël »",          s: "Format A3",                    p: 29.90, c: "offrir",  perso: "Martin", label: "Nom de famille", b: "Nouveau", k: ["poster", "#f1ebe2", "#e6ddd0"], d: "Une affiche au nom de votre famille pour garder la trace de ce Noël. Cadre non inclus.", sp: ["A3, papier mat épais", "Cadre non inclus", "Imprimée en Europe"] },
+  { id: 9,  t: "Puzzle de Noël 500 pièces",       s: "Pour toute la famille",        p: 32.90, c: "offrir",  k: ["puzzle", "#e9eee8", "#d9e3da"], d: "Un puzzle à faire ensemble entre le repas et les cadeaux.", sp: ["500 pièces", "Boîte incluse", "Imprimé en Europe"] },
+  { id: 10, t: "Tote bag de Noël",                s: "Coton, 38 × 42 cm",            p: 19.90, c: "offrir",  k: ["tote", "#efe7da", "#e3d6c2"], d: "Un sac en coton avec un motif de branches et d'étoiles. Pour les courses de Noël, puis toute l'année.", sp: ["100 % coton", "38 × 42 cm", "Imprimé en Europe"] }
+];
+const KIT = { id: 100, t: "Pack déco au prénom", c: "deco", perso: "Emma", items: [1, 2, 5], p: 49.90, img: "img/photo-prenom-couronne.jpg", k: ["ornament", "#efe7da", "#e3d6c2"],
+  d: "Le médaillon, la chaussette et le mug, avec le même prénom. Le cadeau tout prêt pour un enfant, un filleul ou une petite-fille.", sp: ["Médaillon « Joyeux Noël » au prénom", "Chaussette de Noël au prénom", "Mug au prénom"] };
+const RAYONS = [
+  { f: "deco",    n: "Déco au prénom", s: "Médaillons, chaussettes, coussins", img: "img/photo-prenom-couronne.jpg", k: ["ornament", "#efe7da", "#e3d6c2"] },
+  { f: "cocon",   n: "Cocooning",      s: "Plaids et mugs",                k: ["blanket", "#e9eee8", "#d9e3da"] },
+  { f: "famille", n: "En famille",     s: "Pulls et t-shirts assortis",    k: ["sweater", "#f1ebe2", "#e6ddd0"] },
+  { f: "offrir",  n: "À offrir",       s: "Affiches, puzzles, tote bags",  k: ["poster", "#efe7da", "#e3d6c2"] }
+];
+const TITLES = { all: "Toute la collection", deco: "Déco au prénom", cocon: "Cocooning", famille: "En famille", offrir: "À offrir" };
+const FREE_SHIP = 49;
+const eur = n => n.toFixed(2).replace(".", ",") + " €";
+const $ = id => document.getElementById(id);
+const byId = id => id == KIT.id ? KIT : PRODUCTS.find(p => p.id == id);
+const artOf = (k, arg) => art(k[0], k[1], k[2], arg);
+
+/* Panier : clé = id|prénom */
+let filter = "all";
+let cart = {};
+try { cart = JSON.parse(localStorage.getItem("sapinlin-cart2") || "{}") || {}; } catch (e) { cart = {}; }
+const save = () => { try { localStorage.setItem("sapinlin-cart2", JSON.stringify(cart)); } catch (e) {} };
+function addToCart(id, qty = 1, name = "") {
+  const key = id + "|" + name;
+  cart[key] = (cart[key] || 0) + qty; save(); renderCart();
+  toast(name ? `« ${name} » ajouté au panier` : "Ajouté au panier");
+}
+
+/* ---------- Rendu ---------- */
+function renderHero() {
+  const body = `
+    <path d="M-20 34c60 34 180 34 240 0" stroke="${P}" stroke-width="10" fill="none" stroke-linecap="round"/>
+    ${Array.from({ length: 22 }, (_, i) => { const x = -10 + i * 10, y = 34 + Math.sin(i / 21 * Math.PI) * 26; return `<ellipse cx="${x}" cy="${y + (i % 2 ? 6 : -6)}" rx="12" ry="4.5" fill="${i % 3 ? P2 : P3}" transform="rotate(${i % 2 ? 25 : -25} ${x} ${y})"/>`; }).join("")}
+    ${[[30, 50], [80, 58], [128, 58], [176, 48]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="#fff3c8"/><circle cx="${x}" cy="${y}" r="10" fill="#fff3c8" opacity=".25"/>`).join("")}
+    <g class="sway"><path d="M56 56v40" stroke="${WD}" stroke-width="1.2"/>${star(56, 116, 22, W, WD)}</g>
+    <g class="sway b"><path d="M100 60v32" stroke="${WD}" stroke-width="1.2"/><g transform="translate(17 52) scale(.83)">${ART.ornament("Noël").replace(/^<path[^>]*\/>/, "")}</g></g>
+    <g class="sway c"><path d="M150 56v28" stroke="${WD}" stroke-width="1.2"/><g transform="translate(150 118) scale(.55)"><path d="M0-64l16 38 40 4-30 27 9 40L0 24l-35 21 9-40-30-27 40-4z" fill="${L}" stroke="${LD}" stroke-width="3" stroke-linejoin="round"/></g></g>
+    <g fill="#fff" opacity=".8">${[[24,150],[170,170],[40,210],[150,214],[70,226],[184,120],[16,96]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.6"/>`).join("")}</g>`;
+  $("heroArt").insertAdjacentHTML("afterbegin", scene("#e9eee8", "#d4dfd5", body, "0 0 200 240"));
+}
+function cardHTML(p) {
+  return `
+    <article class="card">
+      <button class="open" data-open="${p.id}" aria-label="Voir ${p.t}">
+        <div class="art">${p.img ? `<img class="ph" src="${p.img}" alt="${esc(p.t)}" loading="lazy">` : artOf(p.k, p.perso)}
+          ${p.b ? `<span class="badge${p.perso ? " perso" : ""}">${p.b}</span>` : p.perso ? `<span class="badge perso">À votre nom</span>` : ""}
+        </div>
+        <h3>${p.t}</h3>
+        <span class="sub">${p.s}</span>
+      </button>
+      <div class="row"><span class="price">${eur(p.p)}</span>
+        <button class="add" data-${p.perso ? "open" : "add"}="${p.id}">${p.perso ? "Personnaliser" : "Ajouter"}</button></div>
+    </article>`;
+}
+function renderBest() { $("strip").innerHTML = [11, 1, 12, 13, 6, 2].map(byId).map(cardHTML).join(""); }
+function renderRayons() {
+  $("rayons").innerHTML = RAYONS.map(r => `
+    <button class="rayon" data-f="${r.f}" aria-pressed="${filter === r.f}">
+      <div class="art">${r.img ? `<img class="ph" src="${r.img}" alt="">` : artOf(r.k)}</div>
+      <div><b>${r.n}</b><small>${r.s}</small></div>
+    </button>`).join("");
+}
+function renderGrid() {
+  const list = PRODUCTS.filter(p => filter === "all" || (filter === "perso" ? p.perso : p.c === filter));
+  $("shelfTitle").textContent = TITLES[filter];
+  $("resultCount").textContent = list.length + " articles";
+  $("grid").innerHTML = list.map(cardHTML).join("");
+}
+function renderKit() {
+  const items = KIT.items.map(byId);
+  const old = items.reduce((s, p) => s + p.p, 0);
+  $("kitArt").innerHTML = scene("#2d4a38", "#1f3328", `
+    <g transform="translate(-6 20) scale(.62)">${ART.stocking("Emma")}</g>
+    <g transform="translate(58 30) scale(.7)">${ART.ornament("Emma")}</g>
+    <g transform="translate(110 70) scale(.5)">${ART.mug("Emma")}</g>`);
+  $("kitList").innerHTML = items.map(p => `<li><span>${p.t}</span><span>${eur(p.p)}</span></li>`).join("");
+  $("kitPrice").textContent = eur(KIT.p);
+  $("kitOld").textContent = eur(old);
+  $("kitSave").textContent = "−" + eur(old - KIT.p);
+}
+function renderTry() { $("tryArt").innerHTML = art("ornament", "#efe7da", "#e3d6c2", ($("tryName").value.trim() || "Emma").slice(0, 10)); }
+
+function renderCart() {
+  const keys = Object.keys(cart).filter(k => cart[k] > 0);
+  const count = keys.reduce((s, k) => s + cart[k], 0);
+  const total = keys.reduce((s, k) => s + cart[k] * byId(k.split("|")[0]).p, 0);
+  const c = $("cartCount"); c.textContent = count; count ? c.removeAttribute("data-zero") : c.setAttribute("data-zero", "");
+  $("total").textContent = eur(total);
+  const left = FREE_SHIP - total;
+  $("ship").innerHTML = (left > 0 ? `Plus que <b>${eur(left)}</b> pour la livraison offerte.` : `<b>La livraison est offerte.</b>`) +
+    `<div class="bar"><i style="width:${Math.min(100, total / FREE_SHIP * 100)}%"></i></div>`;
+  $("lines").innerHTML = keys.length ? keys.map(k => {
+    const [id, name] = k.split("|"); const p = byId(id);
+    return `<div class="line"><div class="sw">${p.img ? `<img class="ph" src="${p.img}" alt="">` : artOf(p.k, name || p.perso)}</div>
+      <div style="min-width:0"><div class="t">${p.t}</div>${name ? `<div class="nm">Personnalisé : ${esc(name)}</div>` : ""}
+      <div class="qty"><button data-dec="${esc(k)}" aria-label="Retirer un">−</button>${cart[k]}<button data-inc="${esc(k)}" aria-label="Ajouter un">+</button></div></div>
+      <div class="p">${eur(p.p * cart[k])}</div></div>`;
+  }).join("") : `<div class="empty">Votre panier est vide.</div>`;
+  $("checkout").disabled = !keys.length;
+  $("cartbarCount").textContent = `Voir le panier · ${count} article${count > 1 ? "s" : ""}`;
+  $("cartbarTotal").textContent = eur(total);
+  $("cartbar").classList.toggle("on", count > 0);
+  document.documentElement.style.setProperty("--barH", count > 0 ? "72px" : "0px");
+}
+
+/* ---------- Fiche produit ---------- */
+let current = null, qty = 1;
+function openSheet(id) {
+  const p = byId(id); current = p; qty = 1;
+  $("sheetCat").textContent = TITLES[p.c];
+  $("sheetTitle").textContent = p.t;
+  $("sheetPrice").textContent = eur(p.p);
+  $("sheetDesc").textContent = p.d;
+  $("sheetSpecs").innerHTML = p.sp.map(s => `<li>${s}</li>`).join("");
+  $("sheetPerso").hidden = !p.perso;
+  if (p.perso) {
+    $("sheetName").value = "";
+    $("sheetName").placeholder = "Ex. : " + p.perso;
+    $("sheetName").maxLength = p.label ? 14 : 10;
+    document.querySelector('label[for="sheetName"]').textContent = p.label || "Prénom à imprimer";
+    $("sheetHint").textContent = p.hint || `${$("sheetName").maxLength} caractères maximum. L'aperçu se met à jour pendant que vous écrivez.`;
+  }
+  updateSheet();
+  $("sheet").hidden = false; $("scrim").hidden = false;
+  if (p.perso && window.matchMedia("(min-width: 901px)").matches) $("sheetName").focus();
+}
+function updateSheet() {
+  const p = current, name = p.perso ? $("sheetName").value.trim() : "";
+  $("sheetArt").innerHTML = p.img ? `<img class="ph" src="${p.img}" alt="${esc(p.t)}"><span class="preview-name"${name ? "" : " hidden"}>Votre texte : <b>${esc(name)}</b></span>` : artOf(p.k, p.perso ? (name || p.perso) : undefined);
+  $("qVal").textContent = qty;
+  $("sheetAdd").textContent = `Ajouter · ${eur(p.p * qty)}`;
+}
+function closeAll() { $("sheet").hidden = true; $("drawer").hidden = true; $("scrim").hidden = true; $("note").textContent = ""; }
+
+let toastTimer;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 1900); }
+
+/* ---------- Événements ---------- */
+document.addEventListener("click", e => {
+  const o = e.target.closest("[data-open]"), a = e.target.closest("[data-add]"), inc = e.target.closest("[data-inc]"), dec = e.target.closest("[data-dec]"), ray = e.target.closest(".rayon");
+  if (o) openSheet(o.dataset.open);
+  if (a) addToCart(a.dataset.add);
+  if (inc) { cart[inc.dataset.inc]++; save(); renderCart(); }
+  if (dec) { const k = dec.dataset.dec; cart[k]--; if (cart[k] <= 0) delete cart[k]; save(); renderCart(); }
+  if (ray) { filter = filter === ray.dataset.f ? "all" : ray.dataset.f; renderRayons(); renderGrid(); $("shelfTitle").scrollIntoView({ block: "start" }); }
+});
+$("sheetName").addEventListener("input", updateSheet);
+$("qInc").onclick = () => { qty = Math.min(20, qty + 1); updateSheet(); };
+$("qDec").onclick = () => { qty = Math.max(1, qty - 1); updateSheet(); };
+$("sheetAdd").onclick = () => {
+  const name = current.perso ? $("sheetName").value.trim() : "";
+  if (current.perso && !name) { $("sheetHint").textContent = "Écrivez le prénom à imprimer pour continuer."; $("sheetName").focus(); return; }
+  addToCart(current.id, qty, name); closeAll();
+};
+$("addKit").onclick = () => openSheet(KIT.id);
+$("tryName").addEventListener("input", renderTry);
+$("tryAdd").onclick = () => addToCart(1, 1, ($("tryName").value.trim() || "Emma").slice(0, 10));
+$("openCart").onclick = $("cartbarBtn").onclick = () => { $("drawer").hidden = false; $("scrim").hidden = false; };
+$("closeCart").onclick = $("closeSheet").onclick = $("scrim").onclick = closeAll;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeAll(); });
+$("checkout").onclick = () => { $("note").textContent = "Le paiement sera activé quand la boutique sera reliée à Shopify."; };
+
+(function () {
+  const now = new Date();
+  let x = new Date(now.getFullYear(), 11, 25);
+  if (now > x) x = new Date(now.getFullYear() + 1, 11, 25);
+  const d = Math.ceil((x - now) / 86400000);
+  $("days").textContent = d; $("daysWord").textContent = d > 1 ? "jours" : "jour";
+})();
+
+/* Neige légère dans le haut de page */
+(function () {
+  const c = $("snow"), ctx = c.getContext("2d");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w, h, flakes = [];
+  function size() {
+    const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    w = r.width; h = r.height; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    flakes = Array.from({ length: Math.round(w / 8) }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.8 + .5, s: Math.random() * .45 + .15, o: Math.random() * .5 + .2 }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    for (const f of flakes) {
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${f.o})`; ctx.fill();
+      if (!still) { f.y += f.s; f.x += Math.sin(f.y / 30) * .2; if (f.y > h + 4) { f.y = -4; f.x = Math.random() * w; } }
+    }
+    if (!still) requestAnimationFrame(draw);
+  }
+  size(); draw(); window.addEventListener("resize", size);
+})();
+
+renderBest(); renderRayons(); renderGrid(); renderKit(); renderTry(); renderCart();
+</script>
