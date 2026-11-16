@@ -140,6 +140,7 @@ class RoundResult:
     base_t: int
     free_t: int
     triggered: bool
+    level: str | None
     fs_spins: int
     retriggers: int
     final_multiplier: int
@@ -173,9 +174,13 @@ def _scatter_win(sc_pos, sc_pay):
 
 
 def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events: bool = True,
-               forced_base_stops: list[int] | None = None, bought: bool = False) -> RoundResult:
-    """bought=True: bonus-buy mode; forced_base_stops must show a Trophy count
-    listed in BUY_SCATTER_WEIGHTS; the Tie-Break then follows the normal rules."""
+               forced_base_stops: list[int] | None = None, mode: str = "base") -> RoundResult:
+    """One complete round (base spin + whole bonus), stateless.
+
+    mode "base" / "bonus_chance": `base` is the reel set of that mode.
+    mode "buy_tiebreak" / "buy_super": forced_base_stops must show exactly
+    BUY_SCATTERS[mode] scatters (3 -> Tie-Break, 4 -> Super Tie-Break); the
+    bonus then follows the normal rules."""
     ev: list[dict] | None = [] if record_events else None
     all_stops = []
 
@@ -204,14 +209,19 @@ def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events
     capped = base_t >= C.WINCAP_T
     total = min(base_t, C.WINCAP_T)
     triggered = n_sc >= 3 and not capped
+    bought = mode in C.BUY_SCATTERS
     if bought:
-        assert n_sc in C.BUY_SCATTER_WEIGHTS, "bought round must show a buy trophy count"
+        assert n_sc == C.BUY_SCATTERS[mode], "bought round must show exactly the bought scatter count"
     free_t = fs_spins = retrig = collected = 0
-    mult = 1
+    level = C.bonus_level(n_sc) if triggered else None
+    start = C.BONUS_LEVELS[level]["start_index"] if level else 0
+    top = len(C.RALLY_LADDER) - 1
+    mult = C.RALLY_LADDER[start]
     if triggered:
         remaining = C.FS_AWARD[n_sc]
         awarded = remaining
-        emit({"type": "freeSpinTrigger", "totalFs": remaining, "positions": sc_pos, **({"bought": True} if bought else {})})
+        emit({"type": "freeSpinTrigger", "totalFs": remaining, "positions": sc_pos, "level": level,
+              "startMultiplier": mult, **({"bought": True} if bought else {})})
         while remaining > 0:
             remaining -= 1
             fs_spins += 1
@@ -227,7 +237,7 @@ def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events
             w_pos = positions_of(board, C.WILD)
             if w_pos:
                 collected += len(w_pos)
-                new_mult = C.RALLY_LADDER[min(collected, len(C.RALLY_LADDER) - 1)]
+                new_mult = C.RALLY_LADDER[min(start + collected, top)]
                 emit({"type": "rallyUp", "added": len(w_pos), "collected": collected, "multiplier": new_mult,
                       "previousMultiplier": mult, "positions": w_pos})
                 mult = new_mult
@@ -258,7 +268,7 @@ def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events
         total = min(base_t + free_t, C.WINCAP_T)
         emit({"type": "freeSpinEnd", "amount": total * 10, "winLevel": C.win_level(total / 10)})
     emit({"type": "finalWin", "amount": total * 10})
-    return RoundResult(total, base_t, free_t, triggered, fs_spins, retrig, mult, capped, ev, all_stops)
+    return RoundResult(total, base_t, free_t, triggered, level, fs_spins, retrig, mult, capped, ev, all_stops)
 
 
 def make_book(book_id: int, res: RoundResult) -> dict:

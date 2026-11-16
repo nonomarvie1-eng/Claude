@@ -1,0 +1,83 @@
+{
+  "project": "Golden Rally: Match Point",
+  "symbols": [
+    {
+      "name": "tennis_ball",
+      "label": "Balle de tennis",
+      "file": "tennis_ball.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "tennis_shoe",
+      "label": "Chaussure blanche et bleue",
+      "file": "tennis_shoe.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "tennis_cap",
+      "label": "Casquette orange",
+      "file": "tennis_cap.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "water_bottle",
+      "label": "Gourde bleu électrique",
+      "file": "water_bottle.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "red_wristband",
+      "label": "Poignet rouge",
+      "file": "red_wristband.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "tennis_racket",
+      "label": "Raquette argentée",
+      "file": "tennis_racket.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "tennis_bag",
+      "label": "Sac bleu nuit",
+      "file": "tennis_bag.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "gold_trophy",
+      "label": "Trophée doré",
+      "file": "gold_trophy.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "ace_mascot",
+      "label": "Ace le chien",
+      "file": "ace_mascot.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "wild_magenta",
+      "label": "WILD rose magenta",
+      "file": "wild_magenta.png",
+      "size": "512x512",
+      "alpha": true
+    },
+    {
+      "name": "scatter_blue",
+      "label": "SCATTER bleu électrique",
+      "file": "scatter_blue.png",
+      "size": "512x512",
+      "alpha": true
+    }
+  ],
+  "note": "Graphismes uniquement. Ne modifiez pas le RTP, les gains, les rôles logiques ou la distribution des symboles sans étude mathématique et validation."
+}

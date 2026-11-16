@@ -27,7 +27,7 @@ export type BookEvent =
   | { index: number; type: 'reveal'; gameType: GameType; board: Board; stops: number[]; paddingAbove: SymbolName[]; paddingBelow: SymbolName[]; anticipation: number[] }
   | { index: number; type: 'winInfo'; gameType: GameType; multiplier: number; totalWin: number; wins: WinLine[] }
   | { index: number; type: 'setWin'; amount: number; winLevel: string }
-  | { index: number; type: 'freeSpinTrigger'; totalFs: number; positions: Position[]; bought?: boolean }
+  | { index: number; type: 'freeSpinTrigger'; totalFs: number; positions: Position[]; level: BonusLevel; startMultiplier: number; bought?: boolean }
   | { index: number; type: 'updateFreeSpin'; amount: number; total: number }
   | { index: number; type: 'rallyUp'; added: number; collected: number; multiplier: number; previousMultiplier: number; positions: Position[] }
   | { index: number; type: 'freeSpinRetrigger'; totalFs: number; added: number; positions: Position[] }
@@ -40,6 +40,26 @@ export interface Book {
   id: number;
   payoutMultiplier: number;
   events: BookEvent[];
+}
+
+export type BonusLevel = 'tiebreak' | 'super';
+export type ModeName = 'base' | 'bonus_chance' | 'buy_tiebreak' | 'buy_super';
+export const MODE_NAMES: ModeName[] = ['base', 'bonus_chance', 'buy_tiebreak', 'buy_super'];
+
+/** Validated statistics of one bet mode, exported by the Python maths. */
+export interface ModeInfo {
+  cost: number;
+  kind: 'spin' | 'buy';
+  scatters: number | null;
+  level: BonusLevel | null;
+  spins: number | null;
+  rtp: number | null;
+  bonusOneIn: number | null;
+  tiebreakOneIn: number | null;
+  superOneIn: number | null;
+  hitFrequency: number | null;
+  stdDevX: number | null;
+  meanX: number | null;
 }
 
 export interface GameConfig {
@@ -58,9 +78,10 @@ export interface GameConfig {
   rallyLadder: number[];
   wincapX: number;
   minKind: number;
-  buyBonus: { cost: number; scatterWeights: Record<string, number>; rtp: number | null };
+  bonusLevels: Record<BonusLevel, { start_index: number; startMultiplier: number; fr: string; en: string }>;
+  modes: Record<ModeName, ModeInfo>;
   payModel: string;
   winLevels: { name: string; min: number }[];
-  reelStrips: { base: SymbolName[][]; free: SymbolName[][] };
+  reelStrips: { base: SymbolName[][]; free: SymbolName[][]; bonusChance: SymbolName[][] };
   stats?: { rtp: number; hitFrequency: number; bonusOneIn: number; stdDev: number; method: string };
 }

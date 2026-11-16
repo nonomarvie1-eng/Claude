@@ -1,4 +1,8 @@
-# Golden Rally — Match Point · Conception du jeu (v4)
+# Golden Rally — Match Point · Conception du jeu (v5)
+
+## v5 : 11 symboles colorés, deux bonus, quatre modes
+
+Règles, symboles, bonus, achats et Bonus Chance : voir [GAME_MODES.md](GAME_MODES.md). Les mathématiques ont été recalculées (maths 3.0.0, [MATH_REPORT.md](MATH_REPORT.md)). Les sections ci-dessous décrivent l'historique (v4 et avant) ; leurs chiffres de RTP sont remplacés par ceux de la v5.
 
 ## Refonte premium v4 (pack de symboles client)
 

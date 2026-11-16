@@ -14,34 +14,31 @@ import numpy as np
 
 from .config import NUM_REELS, NUM_ROWS, REELS_DIR, SYMBOLS
 
+# Paying symbols are stacked in blocks of 1, 2 or 3 (probabilities below):
+# fewer, bigger and more readable wins (hit rate ~28% instead of ~67%).
+STACK = (0.3, 0.4, 0.3)
+
+# v3 balance (derived with tune.py, exact maths): see docs/MATH_REPORT.md
+_H = {"H1": 8, "H2": 9, "H3": 10, "H4": 11}
+_L = {"L1": 12, "L2": 12, "L3": 13, "L4": 13}
+
 BASE_COUNTS: dict[str, list[int]] = {
-    "W":  [0, 1, 1, 1, 1, 1],
-    "S":  [1, 2, 1, 2, 1, 2],
-    "H1": [7, 7, 7, 7, 7, 7],
-    "H2": [8, 8, 8, 8, 8, 8],
-    "H3": [9, 9, 9, 9, 9, 9],
-    "H4": [10, 10, 10, 10, 10, 10],
-    "H5": [10, 10, 10, 10, 10, 10],
-    "L1": [11, 11, 11, 11, 11, 11],
-    "L2": [11, 11, 11, 11, 11, 11],
-    "L3": [12, 12, 12, 12, 12, 12],
-    "L4": [12, 12, 12, 12, 12, 12],
-    "L5": [13, 13, 13, 13, 13, 13],
+    "W": [0, 0, 1, 1, 1, 1],
+    "S": [1, 2, 1, 2, 1, 2],
+    **{k: [v] * NUM_REELS for k, v in _H.items()},
+    **{k: [v] * NUM_REELS for k, v in _L.items()},
+    "L5": [15, 15, 15, 16, 16, 16],
 }
 
+# Bonus Chance mode: BASE plus extra scatters (chosen in tune.py)
+BC_COUNTS: dict[str, list[int]] = {**BASE_COUNTS, "S": [2, 2, 2, 2, 2, 2]}
+
 FREE_COUNTS: dict[str, list[int]] = {
-    "W":  [0, 3, 3, 3, 3, 3],
-    "S":  [1, 1, 1, 1, 1, 1],
-    "H1": [7, 7, 7, 7, 7, 7],
-    "H2": [8, 8, 8, 8, 8, 8],
-    "H3": [9, 9, 9, 9, 9, 9],
-    "H4": [10, 10, 10, 10, 10, 10],
-    "H5": [10, 10, 10, 10, 10, 10],
-    "L1": [11, 11, 11, 11, 11, 11],
-    "L2": [11, 11, 11, 11, 11, 11],
-    "L3": [12, 12, 12, 12, 12, 12],
-    "L4": [12, 12, 12, 12, 12, 12],
-    "L5": [13, 13, 13, 13, 13, 13],
+    "W": [0, 2, 3, 3, 2, 2],
+    "S": [1, 1, 1, 1, 1, 1],
+    **{k: [v] * NUM_REELS for k, v in _H.items()},
+    **{k: [v] * NUM_REELS for k, v in _L.items()},
+    "L5": [14] * NUM_REELS,
 }
 
 
@@ -67,12 +64,33 @@ def build_strip(counts: dict[str, int], rng: np.random.Generator, max_tries: int
     raise RuntimeError("could not build a valid strip with these counts")
 
 
-def build_reelset(counts: dict[str, list[int]], seed: int) -> list[list[str]]:
+def build_strip_stacked(counts: dict[str, int], rng: np.random.Generator, stack: tuple[float, ...],
+                        max_tries: int = 500_000) -> list[str]:
+    """Paying symbols are cut into blocks of 1..len(stack) identical symbols
+    (block size drawn with probabilities `stack`); Wild and Scatter stay single.
+    Symbol counts are preserved exactly."""
+    sizes = np.arange(1, len(stack) + 1)
+    for _ in range(max_tries):
+        blocks = []
+        for s, c in counts.items():
+            left = c
+            while left > 0:
+                b = 1 if s in ("W", "S") else int(min(left, rng.choice(sizes, p=stack)))
+                blocks.append([s] * b)
+                left -= b
+        order = rng.permutation(len(blocks))
+        strip = [x for i in order for x in blocks[i]]
+        if _valid(strip):
+            return [str(x) for x in strip]
+    raise RuntimeError("could not build a valid stacked strip")
+
+
+def build_reelset(counts: dict[str, list[int]], seed: int, stack: tuple[float, ...] | None = None) -> list[list[str]]:
     rng = np.random.default_rng(seed)
     strips = []
     for r in range(NUM_REELS):
         c = {s: counts[s][r] for s in SYMBOLS if counts.get(s, [0] * NUM_REELS)[r] > 0}
-        strips.append(build_strip(c, rng))
+        strips.append(build_strip_stacked(c, rng, stack) if stack else build_strip(c, rng))
     return strips
 
 
@@ -88,8 +106,9 @@ def write_reelset(name: str, strips: list[list[str]]) -> str:
 
 
 def main() -> None:
-    write_reelset("BASE", build_reelset(BASE_COUNTS, seed=1))
-    write_reelset("FREE", build_reelset(FREE_COUNTS, seed=2))
+    write_reelset("BASE", build_reelset(BASE_COUNTS, seed=27, stack=STACK))
+    write_reelset("FREE", build_reelset(FREE_COUNTS, seed=6, stack=STACK))
+    write_reelset("BASE_BC", build_reelset(BC_COUNTS, seed=43, stack=STACK))
     print("reel strips written to", REELS_DIR)
 
 

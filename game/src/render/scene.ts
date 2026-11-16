@@ -5,7 +5,7 @@ import { Application, BlurFilter, Container, FillGradient, Graphics, Sprite, Tex
 import { audio } from '../audio/audio';
 import { STRIPS } from '../engine/engine';
 import { RULES } from '../engine/rules';
-import type { Board, GameType, Position, SymbolName, WinLine } from '../engine/types';
+import type { Board, BonusLevel, GameType, ModeName, Position, SymbolName, WinLine } from '../engine/types';
 import type { View, WinTier } from '../game/player';
 import { money } from '../game/format';
 import type { Strings } from '../i18n/strings';
@@ -185,6 +185,7 @@ export class RallyScene implements View {
   private winLayer = new Container();
   private lineGfx = new Graphics();
   private glowLayer = new Container();
+  private badgeLayer = new Container();
   private antGfx = new Graphics();
   private plate = new Container();
   private plateBg = new Graphics();
@@ -255,7 +256,7 @@ export class RallyScene implements View {
     this.board.addChild(this.reelLayer, this.antGfx);
     this.winLayer.x = FRAME_M;
     this.winLayer.y = FRAME_M;
-    this.winLayer.addChild(this.glowLayer, this.lineGfx);
+    this.winLayer.addChild(this.glowLayer, this.lineGfx, this.badgeLayer);
     this.board.addChild(this.winLayer);
     // win plate: sits on the bottom edge of the frame, never over the symbols
     this.winText = new Text({ text: '', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 40, fill: '#F2E5C3', letterSpacing: 2, align: 'center' } });
@@ -343,7 +344,8 @@ export class RallyScene implements View {
     this.tb.removeChildren().forEach((c) => c.destroy({ children: true }));
     const [W, H] = variant === 'tall' ? [300, 560] : variant === 'wide' ? [1000, 200] : [640, 196];
     const bg = new Graphics();
-    bg.roundRect(-W / 2, -H / 2, W, H, 24).fill({ color: C.night, alpha: 0.9 }).stroke({ color: C.gold, width: 3 });
+    const sup = this.level === 'super';
+    bg.roundRect(-W / 2, -H / 2, W, H, 24).fill({ color: sup ? 0x0b1f4a : C.night, alpha: 0.92 }).stroke({ color: sup ? 0x37b6ff : C.gold, width: sup ? 4 : 3 });
     bg.roundRect(-W / 2 + 9, -H / 2 + 9, W - 18, H - 18, 17).stroke({ color: C.cream, width: 1, alpha: 0.22 });
     this.tb.addChild(bg);
     const lblSize = variant === 'tall' ? 22 : 24;
@@ -365,8 +367,9 @@ export class RallyScene implements View {
       const kicker = new Text({ text: 'GOLDEN RALLY', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 22, fill: '#D5A64B', letterSpacing: 6 } });
       kicker.anchor.set(0.5);
       kicker.y = -H / 2 + 40;
-      const title = this.goldText(this.t.tbTitle, 46);
+      const title = this.goldText(this.level === 'super' ? this.t.stbTitle : this.t.tbTitle, this.level === 'super' ? 34 : 46);
       title.y = -H / 2 + 86;
+      if (title.width > W - 36) title.scale.set((W - 36) / title.width);
       this.tb.addChild(kicker, title);
       const y0 = -H / 2 + 150;
       const step = 128;
@@ -374,7 +377,7 @@ export class RallyScene implements View {
       bg.moveTo(-W / 2 + 34, y0 - 22).lineTo(W / 2 - 34, y0 - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       cells = [mk(this.t.tbRound, 0, y0, W - 40), mk(this.t.tbMult, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
     } else {
-      const title = this.goldText(`GOLDEN RALLY · ${this.t.tbTitle}`, variant === 'wide' ? 40 : 34);
+      const title = this.goldText(`GOLDEN RALLY · ${this.level === 'super' ? this.t.stbTitle : this.t.tbTitle}`, variant === 'wide' ? 40 : 34);
       title.y = -H / 2 + 38;
       if (title.width > W - 150) title.scale.set((W - 150) / title.width);
       this.tb.addChild(title);
@@ -432,7 +435,7 @@ export class RallyScene implements View {
 
   // ---------------------------------------------------------------- Ace
   private buildAce() {
-    const disc = new Sprite(this.tex.sym_H5);
+    const disc = new Sprite(this.tex.sym_H1);
     disc.anchor.set(0.5);
     disc.width = disc.height = 240;
     const shadow = new Graphics().ellipse(0, 128, 92, 16).fill({ color: 0x000000, alpha: 0.35 });
@@ -678,7 +681,12 @@ export class RallyScene implements View {
     const g = this.frameLight.clear();
     for (let i = 0; i < 4; i++) {
       const o = 8 + i * 10;
-      g.roundRect(-o, -o, FRAME_W + 2 * o, FRAME_H + 2 * o, 24 + o).stroke({ color: i === 0 ? C.gold : C.tennis, width: i === 0 ? 4 : 8, alpha: i === 0 ? 0.9 : 0.16 - i * 0.03 });
+      const sup = this.level === 'super';
+      g.roundRect(-o, -o, FRAME_W + 2 * o, FRAME_H + 2 * o, 24 + o).stroke({
+        color: i === 0 ? (sup ? 0xfff3c8 : C.gold) : sup ? 0x37b6ff : C.tennis,
+        width: i === 0 ? 4 : 8,
+        alpha: i === 0 ? 0.95 : (sup ? 0.3 : 0.16) - i * 0.04,
+      });
     }
   }
 
@@ -691,10 +699,11 @@ export class RallyScene implements View {
     const target = this.mode === 'freegame' ? 1 : 0;
     this.bonusMix += clamp(target - this.bonusMix, -dt * 1.2, dt * 1.2);
     const k = this.bonusMix;
-    const tint = lerpColor(0xffffff, 0x86a2e6, k);
-    this.sky.tint = tint;
-    this.crowd.tint = lerpColor(0xffffff, 0x7088c4, k);
-    this.fore.tint = lerpColor(0xffffff, 0xa8d0c4, k);
+    const sup = this.level === 'super';
+    // Tie-Break: warmer emerald/gold night; Super Tie-Break: electric blue + white gold
+    this.sky.tint = lerpColor(0xffffff, sup ? 0x5f8cff : 0xc9d8b8, k);
+    this.crowd.tint = lerpColor(0xffffff, sup ? 0x5878d8 : 0xb7c79a, k);
+    this.fore.tint = lerpColor(0xffffff, sup ? 0x8fb8f0 : 0xd8e8c0, k);
     this.frameLight.alpha = k * (rm ? 1 : 0.85 + 0.15 * Math.sin(this.time * 2));
     if (!rm) {
       const jump = this.cheerAmp > 0 ? -Math.abs(Math.sin(this.time * 9)) * 18 * this.cheerAmp : 0;
@@ -835,7 +844,17 @@ export class RallyScene implements View {
   }
 
   // ---------------------------------------------------------------- View API
-  setMode(mode: GameType) {
+  /** Bonus level being played ('super' = Super Tie-Break look). */
+  level: BonusLevel = 'tiebreak';
+
+  setMode(mode: GameType, level: BonusLevel | null = null) {
+    if (mode === 'freegame' && level && level !== this.level) {
+      this.level = level;
+      const v = this.tbVariant;
+      this.tbVariant = null;
+      if (v) this.buildTieBreakPanel(v);
+      this.drawFrameLight();
+    }
     if (mode === this.mode) return;
     this.mode = mode;
     const toBonus = mode === 'freegame';
@@ -868,8 +887,9 @@ export class RallyScene implements View {
     });
   }
 
-  async spinTo(_board: Board, stops: number[], gameType: GameType, anticipation: number[], quick: boolean) {
-    const strips = gameType === 'freegame' ? STRIPS.free : STRIPS.base;
+  async spinTo(_board: Board, stops: number[], gameType: GameType, anticipation: number[], quick: boolean, betMode: ModeName = 'base') {
+    // the stops index the reel set of the round's bet mode
+    const strips = gameType === 'freegame' ? STRIPS.free : betMode === 'bonus_chance' ? STRIPS.bonusChance : STRIPS.base;
     const rm = this.prefs.reducedMotion;
     const turbo = this.prefs.turbo;
     const baseT = quick ? 260 : rm ? 420 : turbo ? 650 : gameType === 'freegame' ? 900 : 1050;
@@ -997,8 +1017,7 @@ export class RallyScene implements View {
   }
 
   clearWins() {
-    this.lineGfx.clear();
-    this.glowLayer.removeChildren().forEach((c) => c.destroy());
+    this.clearGroupGfx();
     this.setPlate('');
     for (const r of this.reels) for (const s of r.sprites) {
       s.alpha = 1;
@@ -1008,70 +1027,137 @@ export class RallyScene implements View {
     }
   }
 
-  private drawGroup(w: WinLine, alpha = 1) {
+  /** Colour of each symbol's connection (its dominant colour in the art). */
+  private static SYM_COLOR: Record<string, number> = {
+    W: 0xff3fb4, S: 0x37b6ff, H1: 0xe8a74a, H2: 0xf2c54b, H3: 0x8fb0ff, H4: 0xdfe4ec,
+    L1: 0xd4e948, L2: 0x7fb2ff, L3: 0xff8a4c, L4: 0x2f8cff, L5: 0xff4d5e,
+  };
+
+  private symName(sym: string) {
+    const info = RULES.symbolInfo[sym as SymbolName];
+    return info ? (this.lang === 'fr' ? info.fr : info.label) : sym;
+  }
+
+  /**
+   * Draws one winning combination exactly as returned by the engine:
+   * frames on its symbols (reel 1 .. reel k), a connector from reel 1 to the
+   * last reel through the matched cells, and the per-reel counts whose
+   * product is the number of ways.  Static: readable without animation.
+   */
+  private drawGroup(w: WinLine, alpha = 1, connector = true) {
     const g = this.lineGfx;
-    const color = w.kind === 'scatter' ? C.tennis : C.gold;
+    const color = RallyScene.SYM_COLOR[w.symbol] ?? C.gold;
+    const cx = (r: number) => r * CELL + CELL / 2;
+    const cy = (row: number) => row * CELL + CELL / 2;
     for (const p of w.positions) {
-      const x = p.reel * CELL + 7, y = p.row * CELL + 7, s = CELL - 14;
-      g.roundRect(x, y, s, s, 22).stroke({ color, width: 4, alpha });
-      g.roundRect(x + 5, y + 5, s - 10, s - 10, 18).stroke({ color: C.cream, width: 1.5, alpha: alpha * 0.5 });
+      const x = p.reel * CELL + 6, y = p.row * CELL + 6, sz = CELL - 12;
+      g.roundRect(x, y, sz, sz, 22).stroke({ color: 0x081b23, width: 9, alpha: alpha * 0.8 });
+      g.roundRect(x, y, sz, sz, 22).stroke({ color, width: 5, alpha });
+    }
+    if (w.kind !== 'ways' || !connector) return;
+    const reels = Array.from({ length: w.count }, (_, r) => w.positions.filter((p) => p.reel === r).map((p) => p.row));
+    const hub = reels.map((rows) => rows.reduce((a, x) => a + x, 0) / rows.length);
+    const path = (width: number, col: number, a: number) => {
+      g.moveTo(cx(0) - CELL * 0.42, cy(hub[0]));
+      reels.forEach((_, r) => g.lineTo(cx(r), cy(hub[r])));
+      g.stroke({ color: col, width, alpha: a, cap: 'round', join: 'round' });
+      reels.forEach((rows, r) => rows.forEach((row) => {
+        if (row === hub[r]) return;
+        g.moveTo(cx(r), cy(hub[r])).lineTo(cx(r), cy(row) + (row < hub[r] ? CELL * 0.3 : -CELL * 0.3));
+        g.stroke({ color: col, width: width * 0.7, alpha: a, cap: 'round' });
+      }));
+    };
+    path(14, 0x081b23, alpha * 0.55);
+    path(6, color, alpha);
+    // start marker (reel 1) and end cap (last reel of the combination)
+    const sx = cx(0) - CELL * 0.42, sy = cy(hub[0]);
+    g.poly([sx - 14, sy - 16, sx + 12, sy, sx - 14, sy + 16]).fill({ color, alpha }).stroke({ color: 0x081b23, width: 3, alpha });
+    g.circle(cx(w.count - 1), cy(hub[w.count - 1]), 10).fill({ color, alpha }).stroke({ color: 0x081b23, width: 3, alpha });
+    // per-reel counts in the top margin of the frame (product = ways)
+    reels.forEach((rows, r) => {
+      g.roundRect(cx(r) - 22, -FRAME_M + 2, 44, FRAME_M - 4, 12).fill({ color, alpha: alpha * 0.95 });
+    });
+    for (const [r, rows] of reels.entries()) {
+      const t = new Text({ text: String(rows.length), style: { fontFamily: 'Inter', fontWeight: '800', fontSize: 22, fill: '#081B23' } });
+      t.anchor.set(0.5);
+      t.position.set(cx(r), -FRAME_M / 2);
+      t.alpha = alpha;
+      this.badgeLayer.addChild(t);
     }
   }
 
   private groupLabel(w: WinLine) {
     const amt = money(Math.round((this.bet * w.win) / 100), this.currency, this.lang);
-    return w.kind === 'scatter' ? amt : `${w.ways} ${w.ways === 1 ? this.t.wayOne : this.t.ways} · ${amt}`;
+    if (w.kind === 'scatter') return `${w.count} × ${this.symName('S')} · ${amt}`;
+    const per = Array.from({ length: w.count }, (_, r) => w.positions.filter((p) => p.reel === r).length);
+    const ways = `${per.join('×')} = ${w.ways} ${w.ways === 1 ? this.t.wayOne : this.t.ways}`;
+    const reels = fmtS(this.t.reelsN, { n: w.count });
+    return `${this.symName(w.symbol)} · ${reels} · ${ways}${w.multiplier > 1 ? ` · ×${w.multiplier}` : ''} · ${amt}`;
   }
 
+  private setDim(active: Set<string>) {
+    this.reels.forEach((reel, r) => {
+      for (let row = 0; row < NROWS; row++) reel.cell(row).alpha = active.has(`${r}:${row}`) ? 1 : 0.32;
+    });
+  }
+
+  /** Last displayed wins (for the "show wins again" button). */
+  lastWins: { wins: WinLine[]; multiplier: number } | null = null;
+
   async showWins(wins: WinLine[], multiplier: number, tier: WinTier) {
-    const winning = new Set<string>();
-    for (const w of wins) for (const p of w.positions) winning.add(`${p.reel}:${p.row}`);
-    // other symbols stay visible (dimmed), winners get a soft light
-    this.reels.forEach((reel, r) => Array.from({ length: NROWS }, (_, i) => i).forEach((row) => {
-      const s = reel.cell(row);
-      if (!winning.has(`${r}:${row}`)) {
-        s.alpha = 0.5;
-      } else {
-        const glow = new Sprite(this.tex.glow);
-        glow.anchor.set(0.5);
-        glow.blendMode = 'add';
-        glow.tint = 0xf2e5c3;
-        glow.width = glow.height = CELL * 1.15;
-        glow.position.set(r * CELL + CELL / 2, row * CELL + CELL / 2);
-        glow.alpha = 0.35;
-        this.glowLayer.addChild(glow);
-        this.pulse(s, 1.07, 600);
-      }
-    }));
-    for (const w of wins) this.drawGroup(w);
+    this.lastWins = { wins, multiplier };
+    // demo/QA only: lets the browser tests compare what is drawn with the book
+    if (import.meta.env.VITE_ENABLE_RGS !== '1') (window as unknown as { __rallyShownWins: unknown }).__rallyShownWins = wins.map((w) => ({ symbol: w.symbol, kind: w.kind, count: w.count, ways: w.ways, win: w.win, positions: w.positions }));
+    const key = (p: Position) => `${p.reel}:${p.row}`;
+    const all = new Set<string>();
+    for (const w of wins) for (const p of w.positions) all.add(key(p));
+    const rm = this.prefs.reducedMotion;
+    // 1) all winning combinations together
+    this.setDim(all);
+    if (!rm) for (const k of all) {
+      const [r, row] = k.split(':').map(Number);
+      this.pulse(this.reels[r].cell(row), 1.06, 520);
+    }
+    for (const w of wins) this.drawGroup(w, 1, wins.length === 1);
     const total = wins.reduce((a, w) => a + w.win, 0);
     const amt = Math.round((this.bet * total) / 100);
-    const label = (multiplier > 1 ? `×${multiplier} · ` : '') + money(amt, this.currency, this.lang);
-    this.setPlate(label);
+    const totalLabel = (multiplier > 1 ? `×${multiplier} · ` : '') + money(amt, this.currency, this.lang);
+    this.setPlate(wins.length === 1 ? this.groupLabel(wins[0]) : totalLabel);
     // sound: wins not exceeding the bet are not celebrated
     if (tier === 'ldw') audio.play('line_tick', { volume: 0.35 });
     else if (tier === 'small') audio.play(amt / this.bet >= 3 ? 'win_1' : 'win_0', { volume: 0.7 });
     else if (tier !== 'none') audio.play('win_2', { volume: 0.8 });
-    if (tier !== 'ldw' && tier !== 'none') {
-      audio.play('racket', { volume: 0.5 });
-      for (const w of wins) for (const p of w.positions.slice(0, 1)) {
-        const c = this.cellWorld(p.reel, p.row);
-        this.burst(c.x, c.y, 5, 'sparkle', this.fx, { speed: 110, life: 0.5, scale: 0.3 });
-      }
+    if (tier !== 'ldw' && tier !== 'none') audio.play('racket', { volume: 0.5 });
+    const free = this.mode === 'freegame';
+    await this.tw.wait(wins.length === 1 ? (free ? 900 : 1200) : 800);
+    if (wins.length === 1 || this.prefs.turbo) return;
+    // 2) each combination on its own: its symbols, connector, counts and amount
+    const each = free ? 1000 : 1150;
+    for (const w of wins.slice(0, free ? 4 : 8)) {
+      this.clearGroupGfx();
+      this.setDim(new Set(w.positions.map(key)));
+      this.drawGroup(w);
+      this.setPlate(this.groupLabel(w));
+      await this.tw.wait(each);
     }
-    await this.tw.wait(this.mode === 'freegame' ? 750 : 950);
-    // cycle through the individual symbol groups once (base game only, up to 4)
-    if (this.mode === 'basegame' && wins.length > 1 && !this.prefs.turbo) {
-      for (const w of wins.slice(0, 4)) {
-        this.lineGfx.clear();
-        this.drawGroup(w);
-        this.setPlate(this.groupLabel(w));
-        await this.tw.wait(620);
-      }
-      this.lineGfx.clear();
-      for (const w of wins) this.drawGroup(w, 0.6);
-      this.setPlate(label);
-    }
+    // 3) back to all together, with the total
+    this.clearGroupGfx();
+    this.setDim(all);
+    for (const w of wins) this.drawGroup(w, 0.85, false);
+    this.setPlate(totalLabel);
+  }
+
+  private clearGroupGfx() {
+    this.lineGfx.clear();
+    this.glowLayer.removeChildren().forEach((c) => c.destroy());
+    this.badgeLayer.removeChildren().forEach((c) => c.destroy());
+  }
+
+  /** Shows the last wins again (button "show wins"); visual only. */
+  async replayWins() {
+    if (!this.lastWins) return;
+    this.clearWins();
+    await this.showWins(this.lastWins.wins, this.lastWins.multiplier, 'none');
   }
 
   async scatterCelebrate(positions: Position[]) {
@@ -1138,31 +1224,90 @@ export class RallyScene implements View {
     c.destroy({ children: true });
   }
 
-  async bonusIntro(spins: number) {
-    this.cheer(1.2);
+  private superText(text: string, size: number) {
+    const t = new Text({
+      text,
+      style: {
+        fontFamily: 'Cinzel', fontWeight: '700', fontSize: size, align: 'center', letterSpacing: size / 14,
+        fill: new FillGradient({ type: 'linear', start: { x: 0, y: 0 }, end: { x: 0, y: 1 }, textureSpace: 'local',
+          colorStops: [{ offset: 0, color: '#FFFFFF' }, { offset: 0.5, color: '#FFF3C8' }, { offset: 0.56, color: '#8FD3FF' }, { offset: 1, color: '#FFFFFF' }] }),
+        stroke: { color: '#0B1F4A', width: Math.max(4, size / 11), join: 'round' },
+        dropShadow: { color: '#37B6FF', alpha: 0.8, blur: size / 4, distance: 0 },
+      },
+    });
+    t.anchor.set(0.5);
+    return t;
+  }
+
+  /** Ace's Super Tie-Break entrance: jump, full turn and a burst of balls (visual only). */
+  private async aceSuper() {
+    if (this.prefs.reducedMotion) return this.aceSay(this.t.aceSuper, 900);
+    const w = this.app.screen.width, h = this.app.screen.height;
+    const size = clamp(Math.min(w, h) * 0.26, 110, 240);
+    const a = this.ace;
+    a.visible = true;
+    a.alpha = 1;
+    a.scale.set(size / 240);
+    this.aceBubble.visible = false;
+    const y0 = h - this.insets.bottom + size, yTop = this.insets.top + (h - this.insets.top - this.insets.bottom) * 0.42;
+    audio.play('pop', { volume: 0.5 });
+    await this.tw.tween(700, (u) => {
+      a.position.set(w / 2, y0 + (yTop - y0) * ease.outBack(u, 0.8));
+      a.rotation = Math.PI * 2 * ease.inOutCubic(u);
+    });
+    a.rotation = 0;
+    for (let i = 0; i < 3; i++) this.burst(w / 2, yTop, 1, 'ui_golden_ball', this.aceLayer, { speed: 420, life: 1.1, scale: 0.12 });
+    this.burst(w / 2, yTop, 30, 'sparkle', this.aceLayer, { speed: 360, life: 1, scale: 0.5 });
+    await this.tw.wait(500);
+    await this.tw.tween(380, (u) => a.position.set(w / 2, yTop + (y0 - yTop) * ease.inCubic(u)));
+    a.visible = false;
+  }
+
+  async bonusIntro(spins: number, level: BonusLevel = 'tiebreak', startMultiplier = 1, _bought = false) {
+    const sup = level === 'super';
+    this.cheer(sup ? 1.5 : 1.2);
     audio.play('bonus_trigger', { volume: 0.9 });
-    // Ace brings the golden ball onto the court (transition only)
-    await this.aceSay(this.t.aceBonus, 200, true);
-    audio.play('tiebreak', { volume: 0.8 });
+    // Ace brings the ball (Tie-Break) or makes his Super entrance (transition only)
+    if (!sup) await this.aceSay(this.t.aceBonus, 200, true);
+    audio.play('tiebreak', { volume: 0.8, rate: sup ? 1.12 : 1 });
     const c = this.makeOverlay();
     const inner = c.children[1] as Container;
+    if (sup) {
+      const halo = new Sprite(this.tex.glow);
+      halo.anchor.set(0.5);
+      halo.blendMode = 'add';
+      halo.tint = 0x37b6ff;
+      halo.width = halo.height = 760;
+      halo.alpha = 0.55;
+      halo.y = -190;
+      inner.addChild(halo);
+    }
     const emblem = new Sprite(this.tex.ui_tiebreak);
     emblem.anchor.set(0.5);
-    emblem.width = emblem.height = 380;
-    emblem.y = -200;
-    const num = this.goldText(String(spins), 150);
+    emblem.width = emblem.height = sup ? 300 : 360;
+    emblem.y = sup ? -150 : -200;
+    inner.addChild(emblem);
+    if (sup) {
+      const t = this.superText(this.t.stbTitle, 76);
+      t.y = -330;
+      this.fit(t, 680);
+      inner.addChild(t);
+    }
+    const num = sup ? this.superText(String(spins), 130) : this.goldText(String(spins), 150);
     num.y = 60;
-    const lbl = this.plainText(this.t.freeSpins.toUpperCase(), 34, '#D5A64B', '800');
+    const lbl = this.plainText(this.t.freeSpins.toUpperCase(), 34, sup ? '#8FD3FF' : '#D5A64B', '800');
     lbl.y = 150;
-    const sub = this.plainText(this.t.bonusIntroSub, 24);
+    const sub = this.plainText(sup ? fmtS(this.t.bonusIntroSubSuper, { m: startMultiplier }) : this.t.bonusIntroSub, 24);
     sub.y = 240;
     const tap = this.plainText(this.t.tapToContinue, 20, '#D4E948', '700');
     tap.y = 350;
-    inner.addChild(emblem, num, lbl, sub, tap);
+    inner.addChild(num, lbl, sub, tap);
     c.relayout?.();
     await this.fadeOverlay(c, 380, 300, async () => {
-      this.burst(this.app.screen.width / 2, this.app.screen.height / 2, 28, 'sparkle', this.overlay, { speed: 380, life: 1.1, scale: 0.5 });
-      await this.waitTapOr(3600);
+      this.burst(this.app.screen.width / 2, this.app.screen.height / 2, sup ? 44 : 28, 'sparkle', this.overlay, { speed: 380, life: 1.1, scale: 0.5 });
+      // Super: Ace's entrance plays over the introduction screen, never over the reels
+      if (sup) void this.aceSuper();
+      await this.waitTapOr(3800);
     });
   }
 
@@ -1231,12 +1376,12 @@ export class RallyScene implements View {
     const c = this.makeOverlay();
     const inner = c.children[1] as Container;
     const card = new Graphics()
-      .roundRect(-340, -300, 680, 600, 30).fill({ color: C.emerald, alpha: 0.96 }).stroke({ color: C.gold, width: 3 })
+      .roundRect(-340, -300, 680, 600, 30).fill({ color: this.level === 'super' ? 0x0b1f4a : C.emerald, alpha: 0.96 }).stroke({ color: this.level === 'super' ? 0x37b6ff : C.gold, width: 3 })
       .roundRect(-326, -286, 652, 572, 22).stroke({ color: C.cream, width: 1, alpha: 0.25 });
     const kicker = new Text({ text: 'GOLDEN RALLY', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 26, fill: '#D5A64B', letterSpacing: 8 } });
     kicker.anchor.set(0.5);
     kicker.y = -240;
-    const title = this.fit(this.goldText(this.t.bonusEnd, 46), 600);
+    const title = this.level === 'super' ? this.fit(this.superText(this.t.bonusEndSuper, 44), 600) : this.fit(this.goldText(this.t.bonusEnd, 46), 600);
     title.y = -180;
     const l1 = this.plainText(fmtS(this.t.recapSpins, { n: info.cur || info.total }), 30);
     l1.y = -90;

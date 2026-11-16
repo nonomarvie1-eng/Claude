@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 
 GAME_ID = "golden_rally"
 GAME_NAME = "Golden Rally — Match Point"
-MATH_VERSION = "2.0.0"
+MATH_VERSION = "3.0.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REELS_DIR = os.path.join(os.path.dirname(HERE), "reels")
@@ -28,59 +28,83 @@ NUM_REELS = 6
 NUM_ROWS = 5
 MIN_KIND = 3
 
-SYMBOLS = ["W", "S", "H1", "H2", "H3", "H4", "H5", "L1", "L2", "L3", "L4", "L5"]
+SYMBOLS = ["W", "S", "H1", "H2", "H3", "H4", "L1", "L2", "L3", "L4", "L5"]
 SYM = {name: i for i, name in enumerate(SYMBOLS)}
 WILD = SYM["W"]
 SCATTER = SYM["S"]
 PAYING = [s for s in SYMBOLS if s not in ("W", "S")]
 
+# v3 (11-symbol pack).  Old -> new mapping is documented in docs/GAME_MODES.md:
+# the old H5 id is removed; every other id keeps its role (wild, scatter,
+# premium H1..H4, classic L1..L5) with a new picture and new name.
 SYMBOL_INFO = {
-    "W": {"label": "Crowned Ball", "fr": "Balle couronnée", "role": "wild"},
-    "S": {"label": "Centre Court", "fr": "Le Central", "role": "scatter"},
-    "H1": {"label": "The Champion", "fr": "Le Champion", "role": "high"},
-    "H2": {"label": "The Star", "fr": "La Championne", "role": "high"},
-    "H3": {"label": "The Umpire", "fr": "L'Arbitre", "role": "high"},
-    "H4": {"label": "Victory Trophy", "fr": "Trophée de la victoire", "role": "high"},
-    "H5": {"label": "Ace, the ball-boy dog", "fr": "Ace, la mascotte", "role": "high"},
-    "L1": {"label": "Advantage", "fr": "Avantage", "role": "low"},
-    "L2": {"label": "Forty", "fr": "Quarante", "role": "low"},
-    "L3": {"label": "Thirty", "fr": "Trente", "role": "low"},
-    "L4": {"label": "Fifteen", "fr": "Quinze", "role": "low"},
-    "L5": {"label": "Love", "fr": "Zéro", "role": "low"},
+    "W": {"label": "Wild", "fr": "Wild", "role": "wild", "art": "wild_magenta"},
+    "S": {"label": "Stadium Scatter", "fr": "Scatter Stade", "role": "scatter", "art": "scatter_blue"},
+    "H1": {"label": "Ace, the mascot", "fr": "Ace, la mascotte", "role": "premium", "art": "ace_mascot"},
+    "H2": {"label": "Trophy", "fr": "Trophée", "role": "premium", "art": "gold_trophy"},
+    "H3": {"label": "Tennis bag", "fr": "Sac de tennis", "role": "premium", "art": "tennis_bag"},
+    "H4": {"label": "Racket", "fr": "Raquette", "role": "premium", "art": "tennis_racket"},
+    "L1": {"label": "Tennis ball", "fr": "Balle de tennis", "role": "classic", "art": "tennis_ball"},
+    "L2": {"label": "Shoe", "fr": "Chaussure", "role": "classic", "art": "tennis_shoe"},
+    "L3": {"label": "Cap", "fr": "Casquette", "role": "classic", "art": "tennis_cap"},
+    "L4": {"label": "Water bottle", "fr": "Gourde", "role": "classic", "art": "water_bottle"},
+    "L5": {"label": "Wristband", "fr": "Poignet éponge", "role": "classic", "art": "red_wristband"},
 }
 
 # Pay per way, in t-units (tenths of TOTAL bet), for 3..6 reels.
 PAYTABLE: dict[str, dict[int, int]] = {
     "H1": {3: 5, 4: 10, 5: 20, 6: 50},
-    "H2": {3: 4, 4: 8, 5: 15, 6: 30},
-    "H3": {3: 3, 4: 5, 5: 12, 6: 25},
-    "H4": {3: 2, 4: 4, 5: 10, 6: 20},
-    "H5": {3: 2, 4: 3, 5: 8, 6: 15},
-    "L1": {3: 1, 4: 2, 5: 4, 6: 7},
-    "L2": {3: 1, 4: 2, 5: 3, 6: 6},
-    "L3": {3: 1, 4: 1, 5: 3, 6: 5},
-    "L4": {3: 1, 4: 1, 5: 2, 6: 4},
-    "L5": {3: 1, 4: 1, 5: 2, 6: 4},
+    "H2": {3: 3, 4: 6, 5: 12, 6: 25},
+    "H3": {3: 2, 4: 4, 5: 8, 6: 15},
+    "H4": {3: 2, 4: 3, 5: 6, 6: 12},
+    "L1": {3: 1, 4: 2, 5: 3, 6: 4},
+    "L2": {3: 1, 4: 1, 5: 2, 6: 3},
+    "L3": {3: 1, 4: 1, 5: 2, 6: 3},
+    "L4": {3: 1, 4: 1, 5: 2, 6: 3},
+    "L5": {3: 1, 4: 1, 5: 2, 6: 2},
 }
 
-# Scatter (Trophy) pays, anywhere, never multiplied.
+# Scatter pays, anywhere, never multiplied.
 SCATTER_PAY = {3: 20, 4: 50, 5: 200, 6: 1000}
-FS_AWARD = {3: 9, 4: 12, 5: 15, 6: 20}
-FS_RETRIGGER = 5            # 3+ trophies during the bonus
+FS_RETRIGGER = 5            # 3+ scatters during either bonus
 FS_MAX_REMAINING = 50
 
-# "Rally" ladder (Tie-Break free spins): multiplier applied to way wins,
-# indexed by the number of Smash wilds collected since the bonus started.
-# Wilds landing on a spin extend the rally BEFORE that spin's wins are
-# evaluated.  The multiplier never goes down during the bonus.
+# Multiplier ladder shared by both bonuses: the ladder position is
+# start_index + Wilds collected since the bonus started (capped at the top).
+# Wilds landing on a spin move the ladder BEFORE that spin's wins are
+# evaluated.  The multiplier never goes down during a bonus.
 RALLY_LADDER = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20]
 
-# Bonus buy ("Acheter le Tie-Break"): separate bet mode costing BUY_COST x bet.
-# The bought spin shows k Trophies with fixed published probabilities
-# (weights / 16) — base board drawn with the exact conditional law given k —
-# then the Tie-Break is played with the normal rules (FS_AWARD[k] spins).
-BUY_COST = 100
-BUY_SCATTER_WEIGHTS = {3: 3, 4: 13}
+# Two bonus levels chosen by the number of scatters on the triggering spin.
+#   exactly 3 scatters      -> TIE-BREAK        (multiplier starts at x1)
+#   4, 5 or 6 scatters      -> SUPER TIE-BREAK  (multiplier starts at x2)
+# At most one scatter can show per reel (strip constraint), so 3..6 are the
+# only possible trigger counts.  5 and 6 scatters give more spins and a
+# bigger scatter pay, the bonus itself is the Super Tie-Break.
+BONUS_LEVELS = {
+    "tiebreak": {"start_index": 0, "fr": "TIE-BREAK", "en": "TIE-BREAK"},
+    "super": {"start_index": 1, "fr": "SUPER TIE-BREAK", "en": "SUPER TIE-BREAK"},
+}
+FS_AWARD = {3: 9, 4: 12, 5: 15, 6: 20}
+
+
+def bonus_level(n_scatters: int) -> str | None:
+    if n_scatters < 3:
+        return None
+    return "tiebreak" if n_scatters == 3 else "super"
+
+
+# Bet modes (Stake Engine "modes").  Costs of the buy / bonus-chance modes are
+# DERIVED from the exact maths (see tune.py / reports/exact.json) and written
+# here once validated; they are not guesses.
+#   base          normal spin, BASE reels
+#   bonus_chance  same rules, BASE_BC reels (more scatters), higher cost
+#   buy_tiebreak  bought spin shows exactly 3 scatters -> Tie-Break
+#   buy_super     bought spin shows exactly 4 scatters -> Super Tie-Break
+BONUS_CHANCE_COST = 1.4
+BUY_TIEBREAK_COST = 49.4
+BUY_SUPER_COST = 105.0
+BUY_SCATTERS = {"buy_tiebreak": 3, "buy_super": 4}
 
 WINCAP_X = 5000
 WINCAP_T = WINCAP_X * 10
@@ -133,3 +157,11 @@ def base_reels() -> ReelSet:
 
 def free_reels() -> ReelSet:
     return load_reelset("FREE")
+
+
+def bonus_chance_reels() -> ReelSet:
+    return load_reelset("BASE_BC")
+
+
+def mode_costs() -> dict[str, float]:
+    return {"base": 1.0, "bonus_chance": BONUS_CHANCE_COST, "buy_tiebreak": BUY_TIEBREAK_COST, "buy_super": BUY_SUPER_COST}

@@ -10,7 +10,9 @@
   const busy = $derived(game.phase !== 'idle');
   const idx = $derived(game.betLevels.indexOf(game.bet));
   const social = $derived(!!game.jurisdiction.socialCasino);
-  const canBuy = $derived(!game.jurisdiction.disabledBuyBonus && !game.inBonus);
+  const canBuy = $derived((!game.jurisdiction.disabledBuyBonus || !game.jurisdiction.disabledBonusChance) && !game.inBonus);
+  const chance = $derived(game.spinMode === 'bonus_chance');
+  const spinCost = $derived(Math.round(game.bet * RULES.modes[game.spinMode].cost));
   const canAuto = $derived(!game.jurisdiction.disabledAutoplay && !game.inBonus);
 
   let topEl: HTMLDivElement;
@@ -75,6 +77,9 @@
     <button class="icon" onclick={() => open('history')} aria-label={t.history} title={t.history} data-testid="btn-history">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
+    <button class="icon" onclick={() => ctrl?.replayLast()} disabled={busy || !game.history.length} aria-label={t.showWins} title={t.showWins} data-testid="btn-replay-last">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M4 4.5v4h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="m10.5 9 4 3-4 3z" fill="currentColor"/></svg>
+    </button>
     <button class="icon" onclick={() => open('settings')} aria-label={t.settings} title={t.settings} data-testid="btn-settings">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="7" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
     </button>
@@ -106,8 +111,9 @@
     </div>
   {:else}
     <div class="stat mid">
-      <span class="label">{social ? t.socialPlay : t.bet}</span>
+      <span class="label">{social ? t.socialPlay : t.bet}{#if chance} · <span class="chance-tag">{t.modeChance}</span>{/if}</span>
       <span class="value" data-testid="bet">{money(game.bet, game.currency, game.prefs.lang)}</span>
+      {#if chance}<span class="sub" data-testid="spin-cost">{t.modeSpinCost} : {money(spinCost, game.currency, game.prefs.lang)}</span>{/if}
     </div>
   {/if}
 
@@ -119,8 +125,8 @@
   <div class="controls">
     <div class="slot side buyslot">
       {#if canBuy}
-        <button class="buy" onclick={() => open('buy')} disabled={busy || !!game.autoplay} data-testid="btn-buy" aria-label={t.buyTitle}>
-          <span class="buy-top">BONUS</span><span class="buy-x">×{RULES.buyBonus.cost}</span>
+        <button class="buy" class:chance onclick={() => open('buy')} disabled={busy || !!game.autoplay} data-testid="btn-buy" aria-label={t.buyTitle}>
+          <span class="buy-top">{t.buyShort}</span><span class="buy-x">{chance ? `×${RULES.modes.bonus_chance.cost}` : 'MODES'}</span>
         </button>
       {/if}
     </div>
@@ -132,7 +138,7 @@
         <span class="stopbox" aria-hidden="true"></span><span class="left">{game.autoplay.remaining}</span>
       </button>
     {:else}
-      <button class="spin" class:busy onclick={() => ctrl?.spin()} disabled={busy} aria-label={t.spinAria} data-testid="spin">
+      <button class="spin" class:busy class:chance onclick={() => ctrl?.spin()} disabled={busy} aria-label={t.spinAria} data-testid="spin">
         <svg viewBox="0 0 48 48" aria-hidden="true" class="arrows">
           <path d="M35.5 17A13 13 0 0 0 12 15.5" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
           <path d="M37 9.5V17.5H29" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -233,8 +239,14 @@
     background: linear-gradient(180deg, rgba(9, 58, 49, .95), rgba(6, 36, 31, .98)); border: 1px solid var(--gold); color: var(--cream);
   }
   .buy-top { font-size: 11px; font-weight: 800; letter-spacing: .12em; }
-  .buy-x { font-family: var(--font-title); font-weight: 700; font-size: 16px; color: var(--gold-hi); }
+  .buy-x { font-family: var(--font-title); font-weight: 700; font-size: 13px; color: var(--gold-hi); }
   .buy:hover:not(:disabled) { border-color: var(--gold-hi); }
+  .buy.chance { border-color: #37b6ff; box-shadow: 0 0 0 1px #37b6ff inset; }
+  .buy.chance .buy-x { color: #9fdcff; }
+  .spin.chance { box-shadow: 0 0 0 3px #37b6ff, inset 0 0 0 3px rgba(255, 246, 214, .55), inset 0 -6px 12px rgba(80, 52, 10, .45), 0 6px 18px rgba(0, 0, 0, .45); }
+  .chance-tag { color: #8fd3ff; }
+  .sub { font-size: 11px; font-weight: 700; color: #9fdcff; white-space: nowrap; }
+  .icon:disabled { opacity: .4; }
   .buy:disabled { opacity: .4; cursor: default; }
 
   /* portrait / narrow: values on one row, controls centred below */

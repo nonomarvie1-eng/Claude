@@ -1,3 +1,4 @@
+import { RULES } from '../engine/rules';
 import { describe, expect, it, vi } from 'vitest';
 import { DemoRgs, memoryStorage, DEMO_START_BALANCE } from './demoRgs';
 import { StakeRgs } from './stakeRgs';
@@ -14,7 +15,7 @@ describe('DemoRgs (play money)', () => {
     expect(a.balance.currency).toBe('DEMO');
     for (let i = 0; i < 200; i++) {
       const before = (await rgs.balance()).amount;
-      const { balance, round } = await rgs.play(1_000_000, 'BASE');
+      const { balance, round } = await rgs.play(1_000_000, 'base');
       expect(balance.amount).toBe(before - 1_000_000);
       expect(round.payout).toBe((1_000_000 * round.payoutMultiplier) / 100);
       const end = await rgs.endRound();
@@ -24,19 +25,19 @@ describe('DemoRgs (play money)', () => {
 
   it('refuses invalid bets, insufficient funds and concurrent rounds', async () => {
     const rgs = new DemoRgs(memoryStorage());
-    await expect(rgs.play(123, 'BASE')).rejects.toMatchObject({ code: 'ERR_VAL' });
+    await expect(rgs.play(123, 'base')).rejects.toMatchObject({ code: 'ERR_VAL' });
     await expect(rgs.play(1_000_000, 'TURBO')).rejects.toMatchObject({ code: 'ERR_VAL' });
-    await rgs.play(1_000_000, 'BASE');
-    await expect(rgs.play(1_000_000, 'BASE')).rejects.toMatchObject({ code: 'ERR_VAL' });
+    await rgs.play(1_000_000, 'base');
+    await expect(rgs.play(1_000_000, 'base')).rejects.toMatchObject({ code: 'ERR_VAL' });
     await rgs.endRound();
     const poor = new DemoRgs({ get: () => JSON.stringify({ balance: 100_000, active: null, nextId: 1 }), set: () => {} });
-    await expect(poor.play(1_000_000, 'BASE')).rejects.toMatchObject({ code: 'ERR_IPB' });
+    await expect(poor.play(1_000_000, 'base')).rejects.toMatchObject({ code: 'ERR_IPB' });
   });
 
   it('persists an unfinished round and resumes it after reload', async () => {
     const store = memoryStorage();
     const a = new DemoRgs(store);
-    const { round } = await a.play(2_000_000, 'BASE');
+    const { round } = await a.play(2_000_000, 'base');
     const b = new DemoRgs(store); // "page reload"
     const auth = await b.authenticate();
     expect(auth.round?.betID).toBe(round.betID);
@@ -53,25 +54,67 @@ describe('DemoRgs (play money)', () => {
     expect((await rgs.authenticate()).balance.amount).toBe(DEMO_START_BALANCE);
   });
 
-  it('bonus buy debits bet x cost and plays a bought Tie-Break', async () => {
+  it.each([
+    ['buy_tiebreak', 'tiebreak', 3, 1],
+    ['buy_super', 'super', 4, 2],
+  ] as const)('%s debits bet x cost and always gives exactly its bonus level', async (mode, level, k, start) => {
+    const cost = RULES.modes[mode].cost;
+    for (let i = 0; i < 25; i++) {
+      const rgs = new DemoRgs(memoryStorage());
+      const { balance, round } = await rgs.play(1_000_000, mode);
+      expect(balance.amount).toBe(DEMO_START_BALANCE - Math.round(cost * 1_000_000));
+      expect(round.cost).toBe(cost);
+      const reveal = round.state[0] as { board: string[][] };
+      expect(reveal.board.flat().filter((x) => x === 'S').length).toBe(k);
+      const trig = round.state.find((e) => e.type === 'freeSpinTrigger') as { bought?: boolean; level: string; startMultiplier: number; totalFs: number };
+      expect(trig.bought).toBe(true);
+      expect(trig.level).toBe(level);
+      expect(trig.startMultiplier).toBe(start);
+      expect(trig.totalFs).toBe(RULES.fsAward[String(k)]);
+      const end = await rgs.endRound();
+      expect(end.balance.amount).toBe(DEMO_START_BALANCE - Math.round(cost * 1_000_000) + round.payout);
+    }
+    const poor = new DemoRgs({ get: () => JSON.stringify({ balance: Math.round((cost - 1) * 1_000_000), active: null, nextId: 1 }), set: () => {} });
+    await expect(poor.play(1_000_000, mode)).rejects.toMatchObject({ code: 'ERR_IPB' });
+  });
+
+  it('a second play while a bought round is active is refused (no double debit)', async () => {
     const rgs = new DemoRgs(memoryStorage());
-    const { balance, round } = await rgs.play(1_000_000, 'BONUS');
-    expect(balance.amount).toBe(DEMO_START_BALANCE - 100 * 1_000_000);
-    expect(round.cost).toBe(100);
-    const trig = round.state.find((e) => e.type === 'freeSpinTrigger') as { bought?: boolean; totalFs: number };
-    expect(trig.bought).toBe(true);
-    expect([9, 12]).toContain(trig.totalFs);
-    const end = await rgs.endRound();
-    expect(end.balance.amount).toBe(DEMO_START_BALANCE - 100 * 1_000_000 + round.payout);
-    const poor = new DemoRgs({ get: () => JSON.stringify({ balance: 80 * 1_000_000, active: null, nextId: 1 }), set: () => {} });
-    await expect(poor.play(1_000_000, 'BONUS')).rejects.toMatchObject({ code: 'ERR_IPB' });
+    await rgs.play(1_000_000, 'buy_tiebreak');
+    await expect(rgs.play(1_000_000, 'buy_tiebreak')).rejects.toMatchObject({ code: 'ERR_VAL' });
+    expect((await rgs.balance()).amount).toBe(DEMO_START_BALANCE - Math.round(RULES.modes.buy_tiebreak.cost * 1_000_000));
+  });
+
+  it('bonus_chance debits 1.4x and uses the bonus-chance reels; unknown modes are refused', async () => {
+    const rgs = new DemoRgs(memoryStorage());
+    const { balance, round } = await rgs.play(1_000_000, 'bonus_chance');
+    expect(balance.amount).toBe(DEMO_START_BALANCE - Math.round(RULES.modes.bonus_chance.cost * 1_000_000));
+    const rv = round.state[0] as { stops: number[]; board: string[][] };
+    const strips = RULES.reelStrips.bonusChance;
+    rv.board.forEach((col, r) => col.forEach((sym, row) => expect(sym).toBe(strips[r][(rv.stops[r] + row) % strips[r].length])));
+    await rgs.endRound();
+    await expect(rgs.play(1_000_000, 'BONUS')).rejects.toMatchObject({ code: 'ERR_VAL' });
+  });
+
+  it('bonus_chance really triggers more bonuses (statistical, same engine as the maths)', () => {
+    const count = (mode: 'base' | 'bonus_chance', n: number) => {
+      let b = 0;
+      for (let i = 0; i < n; i++) if (playRound(cryptoDrawer, i, undefined, mode).triggered) b++;
+      return b / n;
+    };
+    const n = 40_000;
+    const pb = count('base', n);
+    const pc = count('bonus_chance', n);
+    // exact values: 1/175 and 1/74 -> means 229 vs 538 bonuses; 6 sigma apart at this n
+    expect(pc).toBeGreaterThan(pb * 1.6);
+    expect(Math.abs(pc - 1 / RULES.modes.bonus_chance.bonusOneIn!)).toBeLessThan(6 * Math.sqrt(pc / n));
   });
 
   it('forced bonus scenario triggers free spins (demo QA only)', async () => {
     const rgs = new DemoRgs(memoryStorage());
     for (const f of ['bonus3', 'bonus4', 'bonus5'] as const) {
       rgs.forceNext = f;
-      const { round } = await rgs.play(1_000_000, 'BASE');
+      const { round } = await rgs.play(1_000_000, 'base');
       const trig = round.state.find((e) => e.type === 'freeSpinTrigger');
       expect(trig).toBeTruthy();
       expect(round.forced).toBe(f);
@@ -95,14 +138,14 @@ describe('StakeRgs client (mocked network, no real credentials)', () => {
       expect(body.sessionID).toBe('test-session');
       if (url.endsWith('/wallet/authenticate')) return [200, { balance: { amount: 5, currency: 'USD' }, config: { betLevels: [] }, round: null }];
       if (url.endsWith('/wallet/play')) {
-        expect(body).toMatchObject({ amount: 1_000_000, mode: 'BASE' });
-        return [200, { balance: { amount: 4, currency: 'USD' }, round: { betID: 1, amount: 1_000_000, payout: 0, payoutMultiplier: book.payoutMultiplier, active: true, mode: 'BASE', state: book.events } }];
+        expect(body).toMatchObject({ amount: 1_000_000, mode: 'base' });
+        return [200, { balance: { amount: 4, currency: 'USD' }, round: { betID: 1, amount: 1_000_000, payout: 0, payoutMultiplier: book.payoutMultiplier, active: true, mode: 'base', state: book.events } }];
       }
       return [200, { balance: { amount: 4, currency: 'USD' } }];
     });
     const rgs = new StakeRgs('rgs.example.invalid', 'test-session', f);
     await rgs.authenticate();
-    const p = await rgs.play(1_000_000, 'BASE');
+    const p = await rgs.play(1_000_000, 'base');
     expect(p.round.state).toEqual(book.events);
     await rgs.endRound();
     expect(calls).toEqual([
@@ -114,7 +157,7 @@ describe('StakeRgs client (mocked network, no real credentials)', () => {
 
   it('maps RGS error codes and network failures', async () => {
     const rgs = new StakeRgs('https://x.invalid', 's', mk(() => [400, { code: 'ERR_IPB', message: 'no funds' }]));
-    await expect(rgs.play(1, 'BASE')).rejects.toMatchObject({ code: 'ERR_IPB' });
+    await expect(rgs.play(1, 'base')).rejects.toMatchObject({ code: 'ERR_IPB' });
     const down = new StakeRgs('https://x.invalid', 's', (async () => {
       throw new TypeError('network down');
     }) as unknown as typeof fetch);

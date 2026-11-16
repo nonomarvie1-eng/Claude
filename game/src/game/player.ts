@@ -1,18 +1,18 @@
 // BookPlayer: turns an already-determined book into a presentation.
 // It never computes or alters an outcome: every board, win, multiplier and
 // total shown comes verbatim from the book returned by the RGS.
-import type { Board, BookEvent, GameType, Position, WinLine } from '../engine/types';
+import type { Board, BonusLevel, BookEvent, GameType, ModeName, Position, WinLine } from '../engine/types';
 import { winAmount } from './format';
 
 export type WinTier = 'none' | 'ldw' | 'small' | 'big' | 'mega' | 'epic';
 
 export interface View {
-  setMode(mode: GameType): void;
-  spinTo(board: Board, stops: number[], gameType: GameType, anticipation: number[], quick: boolean): Promise<void>;
+  setMode(mode: GameType, level?: BonusLevel | null): void;
+  spinTo(board: Board, stops: number[], gameType: GameType, anticipation: number[], quick: boolean, betMode?: ModeName): Promise<void>;
   showWins(wins: WinLine[], multiplier: number, tier: WinTier): Promise<void>;
   clearWins(): void;
   scatterCelebrate(positions: Position[]): Promise<void>;
-  bonusIntro(spins: number): Promise<void>;
+  bonusIntro(spins: number, level: BonusLevel, startMultiplier: number, bought: boolean): Promise<void>;
   wind(positions: Position[], collected: number, multiplier: number, previous: number): Promise<void>;
   retrigger(added: number, total: number): Promise<void>;
   bonusOutro(amount: number): Promise<void>;
@@ -26,6 +26,7 @@ export interface Hud {
   setFreeSpins(current: number, total: number): void;
   setMultiplier(m: number): void;
   setInBonus(on: boolean): void;
+  setBonusLevel?(level: BonusLevel | null): void;
 }
 
 /** Win tier relative to the bet.  Wins that do not exceed the bet are
@@ -44,6 +45,7 @@ export interface PlayOptions {
   bet: number;
   cost?: number; // bet-mode cost multiplier: celebrations are relative to the amount actually debited
   quick?: boolean; // resume/replay of an interrupted round: shorter presentation
+  mode?: ModeName; // bet mode of the round (selects the reel set used to animate the base spin)
 }
 
 export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: PlayOptions): Promise<{ total: number }> {
@@ -63,7 +65,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         if (e.gameType === 'freegame' && !inBonus) {
           inBonus = true;
         }
-        await view.spinTo(e.board, e.stops, e.gameType, e.anticipation, !!opts.quick);
+        await view.spinTo(e.board, e.stops, e.gameType, e.anticipation, !!opts.quick, opts.mode ?? 'base');
         break;
       }
       case 'winInfo': {
@@ -82,10 +84,14 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         break;
       }
       case 'freeSpinTrigger': {
-        view.setMode('freegame');
+        const level = e.level ?? 'tiebreak';
+        const start = e.startMultiplier ?? 1;
+        hud.setBonusLevel?.(level);
         hud.setInBonus(true);
         hud.setFreeSpins(0, e.totalFs);
-        await view.bonusIntro(e.totalFs);
+        hud.setMultiplier(start);
+        view.setMode('freegame', level);
+        await view.bonusIntro(e.totalFs, level, start, !!e.bought);
         break;
       }
       case 'updateFreeSpin':
@@ -109,6 +115,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         await view.bonusOutro(amt);
         view.setMode('basegame');
         hud.setInBonus(false);
+        hud.setBonusLevel?.(null);
         break;
       }
       case 'finalWin': {

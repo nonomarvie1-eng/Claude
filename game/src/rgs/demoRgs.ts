@@ -3,7 +3,8 @@
 // * Outcomes come from the same rules as the production math (TS port with
 //   proven parity), drawn with the browser CSPRNG.
 // * Nothing here talks to a network or an operator.
-import { drawBaseStopsWithScatters, drawBuyScatterCount, playRound } from '../engine/engine';
+import { drawBaseStopsWithScatters, playRound } from '../engine/engine';
+import { MODE_NAMES, type ModeName } from '../engine/types';
 import { RULES } from '../engine/rules';
 import { cryptoDrawer, cryptoInt } from '../engine/rng';
 import { MONEY_SCALE, RgsError, type AuthResult, type Balance, type RgsClient, type RgsConfig, type Round } from './types';
@@ -106,17 +107,20 @@ export class DemoRgs implements RgsClient {
   async play(amount: number, mode: string): Promise<{ balance: Balance; round: Round }> {
     this.maybeFail('play');
     if (this.s.active) throw new RgsError('ERR_VAL', 'a round is already active');
-    if (mode !== 'BASE' && mode !== 'BONUS') throw new RgsError('ERR_VAL', 'unknown mode');
+    if (!MODE_NAMES.includes(mode as ModeName)) throw new RgsError('ERR_VAL', 'unknown mode');
+    const m = mode as ModeName;
     if (!this.config.betLevels.includes(amount)) throw new RgsError('ERR_VAL', 'invalid bet');
-    const bought = mode === 'BONUS';
-    if (bought && this.config.jurisdiction.disabledBuyBonus) throw new RgsError('ERR_VAL', 'bonus buy disabled');
-    const cost = bought ? RULES.buyBonus.cost : 1;
-    const debit = amount * cost; // Stake RGS: debit = base bet x mode cost multiplier
+    const info = RULES.modes[m];
+    if (info.kind === 'buy' && this.config.jurisdiction.disabledBuyBonus) throw new RgsError('ERR_VAL', 'bonus buy disabled');
+    if (m === 'bonus_chance' && this.config.jurisdiction.disabledBonusChance) throw new RgsError('ERR_VAL', 'bonus chance disabled');
+    const cost = info.cost;
+    const debit = Math.round(amount * cost); // Stake RGS: debit = base bet x mode cost multiplier
     if (debit > this.s.balance) throw new RgsError('ERR_IPB', 'insufficient balance');
-    const forced = bought ? null : this.forceNext;
+    const forced = m === 'base' ? this.forceNext : null;
     this.forceNext = null;
-    const k = bought ? drawBuyScatterCount(cryptoInt) : forced ? +forced.slice(-1) : 0;
-    const out = playRound(cryptoDrawer, this.s.nextId, k ? drawBaseStopsWithScatters(k, cryptoInt) : undefined, bought);
+    // buys: exact conditional law of the normal reels given exactly 3 / 4 scatters
+    const k = info.kind === 'buy' ? (info.scatters as number) : forced ? +forced.slice(-1) : 0;
+    const out = playRound(cryptoDrawer, this.s.nextId, k ? drawBaseStopsWithScatters(k, cryptoInt) : undefined, m);
     const pm = out.book.payoutMultiplier;
     const round: Round = {
       betID: this.s.nextId,
@@ -132,6 +136,7 @@ export class DemoRgs implements RgsClient {
     };
     this.s.nextId += 1;
     this.s.balance -= debit;
+    round.debit = debit;
     this.s.active = round;
     this.save();
     return { balance: this.bal(), round };

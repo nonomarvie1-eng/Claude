@@ -3,7 +3,7 @@
 // by engine.test.ts against shared/parity-fixtures.json.
 import { RULES, WINCAP } from './rules';
 import type { StopDrawer } from './rng';
-import type { Board, Book, BookEvent, Position, SymbolName, WinLine } from './types';
+import type { Board, BonusLevel, Book, BookEvent, ModeName, Position, SymbolName, WinLine } from './types';
 
 const R = RULES.reels;
 const ROWS = RULES.rows;
@@ -14,6 +14,9 @@ const PAYING = RULES.symbols.filter((s) => s !== W && s !== S);
 type Strips = SymbolName[][];
 const BASE: Strips = RULES.reelStrips.base;
 const FREE: Strips = RULES.reelStrips.free;
+const BONUS_CHANCE: Strips = RULES.reelStrips.bonusChance;
+/** Reel set of the base spin of each mode (buys use the normal reels). */
+export const baseStripsOf = (mode: ModeName): Strips => (mode === 'bonus_chance' ? BONUS_CHANCE : BASE);
 const lengths = (s: Strips) => s.map((x) => x.length);
 
 // pays in t-units (tenths of bet), like the Python engine; events are x10
@@ -109,8 +112,16 @@ export interface RoundOutcome {
   triggered: boolean;
 }
 
-/** Plays one complete round (base spin + whole bonus) and returns its book. */
-export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], bought = false): RoundOutcome {
+export function bonusLevel(nScatters: number): BonusLevel | null {
+  if (nScatters < 3) return null;
+  return nScatters === 3 ? 'tiebreak' : 'super';
+}
+
+/** Plays one complete round (base spin + whole bonus) and returns its book.
+ *  mode buy_tiebreak / buy_super: forcedBaseStops must show exactly 3 / 4 scatters. */
+export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], mode: ModeName = 'base'): RoundOutcome {
+  const BASE = baseStripsOf(mode);
+  const buyK = RULES.modes[mode]?.kind === 'buy' ? RULES.modes[mode].scatters : null;
   const events: BookEvent[] = [];
   const allStops: number[][] = [];
   const emit = (e: Record<string, unknown>) => {
@@ -136,12 +147,14 @@ export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], 
   let freeT = 0;
   let fsSpins = 0;
   let collected = 0;
-  let mult = 1;
+  if (buyK !== null && nSc !== buyK) throw new Error('bought round must show exactly the bought scatter count');
+  const level = triggered ? bonusLevel(nSc) : null;
+  const start = level ? RULES.bonusLevels[level].start_index : 0;
+  let mult = LADDER[start];
   if (triggered) {
-    if (bought && !(String(nSc) in RULES.buyBonus.scatterWeights)) throw new Error('bought round must show a buy scatter count');
     let remaining = FS_AWARD[nSc];
     let awarded = remaining;
-    emit({ type: 'freeSpinTrigger', totalFs: remaining, positions: scPos, ...(bought ? { bought: true } : {}) });
+    emit({ type: 'freeSpinTrigger', totalFs: remaining, positions: scPos, level, startMultiplier: mult, ...(buyK !== null ? { bought: true } : {}) });
     while (remaining > 0) {
       remaining -= 1;
       fsSpins += 1;
@@ -154,7 +167,7 @@ export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], 
       const wPos = positionsOf(board, W);
       if (wPos.length) {
         collected += wPos.length;
-        const newMult = LADDER[Math.min(collected, LADDER.length - 1)];
+        const newMult = LADDER[Math.min(start + collected, LADDER.length - 1)];
         emit({ type: 'rallyUp', added: wPos.length, collected, multiplier: newMult, previousMultiplier: mult, positions: wPos });
         mult = newMult;
       }
@@ -229,16 +242,4 @@ export function drawBaseStopsWithScatters(k: number, rand: (n: number) => number
   });
 }
 
-/** Trophy count of a bought spin, drawn with the published weights. */
-export function drawBuyScatterCount(rand: (n: number) => number): number {
-  const entries = Object.entries(RULES.buyBonus.scatterWeights).map(([k, w]) => [+k, w] as const);
-  const total = entries.reduce((a, [, w]) => a + w, 0);
-  let u = rand(total);
-  for (const [k, w] of entries) {
-    if (u < w) return k;
-    u -= w;
-  }
-  return entries[entries.length - 1][0];
-}
-
-export const STRIPS = { base: BASE, free: FREE };
+export const STRIPS = { base: BASE, free: FREE, bonusChance: BONUS_CHANCE };

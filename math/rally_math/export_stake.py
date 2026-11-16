@@ -79,37 +79,13 @@ def conditional_base_stops(strips, k, rng, n):
     return out, float(probs.sum())
 
 
-def bonus_pilot(rng, base_stops, base_cnt, free_cnt, free_len, award_override=None):
-    """Vectorised play of bonus rounds whose base stops are given; records free stops."""
-    n = base_stops.shape[0]
-    scpay = np.zeros(C.NUM_REELS + 1, dtype=np.int64)
-    for kk, v in C.SCATTER_PAY.items():
-        scpay[kk] = v
-    award = np.zeros(C.NUM_REELS + 1, dtype=np.int64)
-    for kk, v in C.FS_AWARD.items():
-        award[kk] = v
-    ladder = np.array(C.RALLY_LADDER, dtype=np.int64)
-    top = len(C.RALLY_LADDER) - 1
-    lw, _w, sc = ways_win_vec(base_cnt, base_stops)
-    total = lw + scpay[sc]
-    remaining = award[sc] if award_override is None else np.full(n, award_override, dtype=np.int64)
-    collected = np.zeros(n, dtype=np.int64)
-    active = remaining > 0
-    log: list[tuple[np.ndarray, np.ndarray]] = []
-    while active.any():
-        a = np.nonzero(active)[0]
-        remaining[a] -= 1
-        st = np.stack([rng.integers(0, L, len(a)) for L in free_len], axis=1)
-        log.append((a, st))
-        flw, fw, fsc = ways_win_vec(free_cnt, st)
-        collected[a] += fw
-        total[a] += flw * ladder[np.minimum(collected[a], top)] + scpay[fsc]
-        hit = total[a] >= C.WINCAP_T
-        add = np.where(fsc >= 3, np.minimum(C.FS_RETRIGGER, C.FS_MAX_REMAINING - remaining[a]), 0)
-        add = np.where(hit, 0, np.maximum(add, 0))
-        remaining[a] += add
-        active[a] = (remaining[a] > 0) & ~hit
-    return np.minimum(total, C.WINCAP_T), log
+def bonus_pilot(rng, base_stops, base_cnt, free_cnt, free_len):
+    """Vectorised play of complete rounds whose base stops are given; records free stops."""
+    from .simulate import play_vec
+
+    log: list = []
+    r = play_vec(rng, base_stops, base_cnt, free_cnt, free_len, log)
+    return r["total"], log
 
 
 def stops_of(i, base_stops, log):
@@ -145,22 +121,15 @@ def _tilt(x: np.ndarray, w0: np.ndarray, target: float):
     return w, (lo + hi) / 2, kl
 
 
-def export(out_dir, n_base, plan, pilot_n, seed, exact_path):
-    ex = json.load(open(exact_path, encoding="utf-8"))
-    base, free = C.base_reels(), C.free_reels()
-    bc, fc = count_tables(base.strips), count_tables(free.strips)
-    rng = np.random.Generator(np.random.PCG64(seed))
-    ks = [k for k in sorted(C.FS_AWARD) if ex["p_scatter"].get(str(k), 0) > 0]
-    p_k = {k: ex["p_scatter"][str(k)] for k in ks}
-    p0 = 1.0 - sum(p_k.values())
-    EB = ex["rtp_base"] * 10
-    cond = {k: ex["cond_base_mean_t"][str(k)] for k in ks}
-    os.makedirs(out_dir, exist_ok=True)
-    books_path = os.path.join(out_dir, "books_base.jsonl.zst")
-    lut_path = os.path.join(out_dir, "lookUpTable_base_0.csv")
+def _write_mode(out_dir, mode, strata_specs, base, free, bc, fc, rng, pilot_n, cost):
+    """strata_specs: list of (name, probability, target_mean_t, kind, k, plan)
+    kind 'nobonus' draws plain base spins without a trigger; kind 'k' draws
+    base stops with exactly k scatters (exact conditional law) and plays the
+    round; plan = books per payout band."""
+    books_path = os.path.join(out_dir, f"books_{mode}.jsonl.zst")
+    lut_path = os.path.join(out_dir, f"lookUpTable_{mode}_0.csv")
     cctx = zstd.ZstdCompressor(level=19, threads=-1)
-    payouts, weights = [], []
-    rep_strata = []
+    payouts, weights, rep = [], [], []
     book_id = 1
     with open(books_path, "wb") as fbin, cctx.stream_writer(fbin) as wtr:
         def write(res):
@@ -170,40 +139,36 @@ def export(out_dir, n_base, plan, pilot_n, seed, exact_path):
             book_id += 1
             return res.total_t
 
-        # ---- stratum 0: no bonus
-        xs = []
-        while len(xs) < n_base:
-            s = [int(rng.integers(0, L)) for L in base.lengths]
-            if len(positions_of(window(base.strips, s), C.SCATTER)) >= 3:
+        for name, prob, target, kind, k, plan in strata_specs:
+            if kind == "nobonus":
+                xs = []
+                while len(xs) < plan:
+                    st = [int(rng.integers(0, L)) for L in base.lengths]
+                    if len(positions_of(window(base.strips, st), C.SCATTER)) >= 3:
+                        continue
+                    xs.append(write(play_round(None, base, free, True, forced_base_stops=st, mode=mode)))
+                xs = np.array(xs)
+                w, lam, kl = _tilt(xs, np.ones(len(xs)), target)
+                payouts += (xs * 10).tolist()
+                weights += [max(1, int(round(v))) for v in w * prob * WEIGHT_TOTAL]
+                rep.append({"name": name, "probability": prob, "books": len(xs), "target_mean_x": target / 10,
+                            "sample_mean_x": float(xs.mean() / 10), "kl": kl, "max_payout_x": float(xs.max() / 10)})
                 continue
-            xs.append(write(play_round(None, base, free, True, forced_base_stops=s)))
-        xs = np.array(xs)
-        target0 = (EB - sum(p_k[k] * cond[k] for k in ks)) / p0
-        w, lam, kl = _tilt(xs, np.ones(len(xs)), target0)
-        payouts += (xs * 10).tolist()
-        weights += [max(1, int(round(v))) for v in w * p0 * WEIGHT_TOTAL]
-        rep_strata.append({"name": "no_bonus", "probability": p0, "books": len(xs), "target_mean_x": target0 / 10,
-                           "sample_mean_x": float(xs.mean() / 10), "kl": kl, "max_payout_x": float(xs.max() / 10), "bands": None})
-
-        # ---- bonus strata
-        for k in ks:
-            target = cond[k] + ex["bonus_by_trigger"][str(k)]["E"]
-            bs, pk_check = conditional_base_stops(base.strips, k, rng, pilot_n)
-            assert abs(pk_check - p_k[k]) < 1e-12
+            bs, pk = conditional_base_stops(base.strips, k, rng, pilot_n)
             tot, log = bonus_pilot(rng, bs, bc, fc, free.lengths)
             band_of = np.digitize(tot / 10, BANDS_X) - 1
             xs_all, w0_all, band_rep = [], [], []
             for b in range(len(BANDS_X) - 1):
                 members = np.nonzero(band_of == b)[0]
                 p_band = len(members) / pilot_n
-                want = plan[k][b]
+                want = plan[b]
                 if len(members) == 0 or want == 0:
                     band_rep.append({"band_x": BANDS_X[b:b + 2], "pilot_count": int(len(members)), "books": 0})
                     continue
                 pick = members if len(members) <= want else rng.choice(members, size=want, replace=False)
                 for i in pick:
                     seq = stops_of(int(i), bs, log)
-                    res = play_round(list_drawer(seq[1:]), base, free, True, forced_base_stops=seq[0])
+                    res = play_round(list_drawer(seq[1:]), base, free, True, forced_base_stops=seq[0], mode=mode)
                     assert res.total_t == int(tot[i]), "fast path and reference engine disagree"
                     xs_all.append(write(res))
                     w0_all.append(p_band / len(pick))
@@ -211,86 +176,63 @@ def export(out_dir, n_base, plan, pilot_n, seed, exact_path):
             xs = np.array(xs_all)
             w, lam, kl = _tilt(xs, np.array(w0_all), target)
             payouts += (xs * 10).tolist()
-            weights += [max(1, int(round(v))) for v in w * p_k[k] * WEIGHT_TOTAL]
-            rep_strata.append({"name": f"bonus_{k}_trophies", "probability": p_k[k], "books": len(xs), "target_mean_x": target / 10,
-                               "sample_mean_x": float((xs * np.array(w0_all)).sum() / np.sum(w0_all) / 10), "kl": kl,
-                               "max_payout_x": float(xs.max() / 10), "pilot_rounds": pilot_n, "bands": band_rep})
-
-    with open(lut_path, "w", encoding="utf-8", newline="\n") as f:
-        for i, (wt, po) in enumerate(zip(weights, payouts), start=1):
-            f.write(f"{i},{wt},{int(po)}\n")
-    bonus_summary = export_buy_mode(out_dir, ex, base, free, bc, fc, rng, pilot_n, BUY_PLAN)
-    with open(os.path.join(out_dir, "index.json"), "w", encoding="utf-8") as f:
-        json.dump({"modes": [
-            {"name": "base", "cost": 1.0, "events": "books_base.jsonl.zst", "weights": "lookUpTable_base_0.csv"},
-            {"name": "bonus", "cost": float(C.BUY_COST), "events": "books_bonus.jsonl.zst", "weights": "lookUpTable_bonus_0.csv"},
-        ]}, f, indent=4)
-    W = np.array(weights, dtype=np.float64)
-    P = np.array(payouts, dtype=np.float64) / 100
-    rtp = float((W * P).sum() / W.sum())
-    summary = {
-        "mode": "base", "books": len(payouts), "lut_rtp": rtp, "exact_model_rtp_uncapped": ex["rtp"],
-        "lut_minus_exact": rtp - ex["rtp"], "lut_std_dev": float(math.sqrt((W * P * P).sum() / W.sum() - rtp ** 2)),
-        "lut_hit_rate": float(W[P > 0].sum() / W.sum()), "lut_max_payout_x": float(P.max()),
-        "weight_sum": int(sum(weights)), "strata": rep_strata, "sha256_books": _sha(books_path), "sha256_lut": _sha(lut_path),
-        "seed": seed, "math_version": C.MATH_VERSION, "bonus": bonus_summary,
-    }
-    json.dump(summary, open(os.path.join(out_dir, "export_summary.json"), "w"), indent=2)
-    return summary
-
-
-def export_buy_mode(out_dir, ex, base, free, bc, fc, rng, pilot_n, plan_row):
-    """Bet mode 'bonus' (cost BUY_COST): the bought spin shows k Trophies with
-    published probabilities BUY_SCATTER_WEIGHTS/total (exact conditional base
-    board), then the Tie-Break follows the normal rules."""
-    tot_w = sum(C.BUY_SCATTER_WEIGHTS.values())
-    books_path = os.path.join(out_dir, "books_bonus.jsonl.zst")
-    lut_path = os.path.join(out_dir, "lookUpTable_bonus_0.csv")
-    cctx = zstd.ZstdCompressor(level=19, threads=-1)
-    payouts, weights, strata = [], [], []
-    book_id = 1
-    with open(books_path, "wb") as fbin, cctx.stream_writer(fbin) as wtr:
-        for k, wk in C.BUY_SCATTER_WEIGHTS.items():
-            qk = wk / tot_w
-            target = ex["buy"]["E_x_by_scatters"][str(k)] * 10
-            bs, _ = conditional_base_stops(base.strips, k, rng, pilot_n)
-            tot, log = bonus_pilot(rng, bs, bc, fc, free.lengths)
-            band_of = np.digitize(tot / 10, BANDS_X) - 1
-            xs, w0, band_rep = [], [], []
-            for b in range(len(BANDS_X) - 1):
-                members = np.nonzero(band_of == b)[0]
-                p_band = len(members) / pilot_n
-                want = plan_row[b]
-                if len(members) == 0 or want == 0:
-                    band_rep.append({"band_x": BANDS_X[b:b + 2], "pilot_count": int(len(members)), "books": 0})
-                    continue
-                pick = members if len(members) <= want else rng.choice(members, size=want, replace=False)
-                for i in pick:
-                    seq = stops_of(int(i), bs, log)
-                    res = play_round(list_drawer(seq[1:]), base, free, True, forced_base_stops=seq[0], bought=True)
-                    assert res.total_t == int(tot[i]), "fast path and reference engine disagree (buy mode)"
-                    book = make_book(book_id, res)
-                    wtr.write((json.dumps(book, separators=(",", ":")) + "\n").encode())
-                    book_id += 1
-                    xs.append(res.total_t)
-                    w0.append(p_band / len(pick))
-                band_rep.append({"band_x": BANDS_X[b:b + 2], "pilot_count": int(len(members)), "p_band": p_band, "books": int(len(pick))})
-            xs = np.array(xs)
-            w, lam, kl = _tilt(xs, np.array(w0), target)
-            payouts += (xs * 10).tolist()
-            weights += [max(1, int(round(v))) for v in w * qk * WEIGHT_TOTAL]
-            strata.append({"name": f"buy_{k}_trophies", "probability": qk, "books": len(xs), "target_mean_x": target / 10,
-                           "kl": kl, "max_payout_x": float(xs.max() / 10), "bands": band_rep})
+            weights += [max(1, int(round(v))) for v in w * prob * WEIGHT_TOTAL]
+            rep.append({"name": name, "probability": prob, "books": len(xs), "target_mean_x": target / 10,
+                        "sample_mean_x": float((xs * np.array(w0_all)).sum() / np.sum(w0_all) / 10), "kl": kl,
+                        "max_payout_x": float(xs.max() / 10), "pilot_rounds": pilot_n, "bands": band_rep})
     with open(lut_path, "w", encoding="utf-8", newline="\n") as f:
         for i, (wt, po) in enumerate(zip(weights, payouts), start=1):
             f.write(f"{i},{wt},{int(po)}\n")
     W = np.array(weights, dtype=np.float64)
     P = np.array(payouts, dtype=np.float64) / 100
     mean = float((W * P).sum() / W.sum())
-    return {"mode": "bonus", "cost": C.BUY_COST, "books": len(payouts), "lut_mean_x": mean, "lut_rtp": mean / C.BUY_COST,
-            "exact_rtp": ex["buy"]["rtp"], "lut_minus_exact": mean / C.BUY_COST - ex["buy"]["rtp"],
-            "lut_max_payout_x": float(P.max()), "lut_std_dev_x": float(math.sqrt((W * P * P).sum() / W.sum() - mean ** 2)),
-            "pilot_rounds_per_stratum": pilot_n, "strata": strata, "sha256_books": _sha(books_path), "sha256_lut": _sha(lut_path)}
+    return {
+        "mode": mode, "cost": cost, "books": len(payouts), "lut_mean_x": mean, "lut_rtp": mean / cost,
+        "lut_std_dev_x": float(math.sqrt((W * P * P).sum() / W.sum() - mean ** 2)),
+        "lut_hit_rate": float(W[P > 0].sum() / W.sum()), "lut_max_payout_x": float(P.max()),
+        "weight_sum": int(sum(weights)), "strata": rep, "events": os.path.basename(books_path), "weights": os.path.basename(lut_path),
+        "sha256_books": _sha(books_path), "sha256_lut": _sha(lut_path),
+    }
+
+
+def export(out_dir, n_base, plan, pilot_n, seed, exact_path, modes=None):
+    ex = json.load(open(exact_path, encoding="utf-8"))
+    free = C.free_reels()
+    fc = count_tables(free.strips)
+    rng = np.random.Generator(np.random.PCG64(seed))
+    os.makedirs(out_dir, exist_ok=True)
+    costs = C.mode_costs()
+    modes = modes or list(costs)
+    out = {}
+    for mode in modes:
+        em = ex["modes"][mode]
+        if mode in C.BUY_SCATTERS:
+            base = C.base_reels()
+            k = C.BUY_SCATTERS[mode]
+            specs = [(f"buy_{k}_scatters", 1.0, em["mean_x"] * 10, "k", k, BUY_PLAN)]
+        else:
+            base = C.bonus_chance_reels() if mode == "bonus_chance" else C.base_reels()
+            ks = [k for k in sorted(C.FS_AWARD) if em["p_scatter"].get(str(k), 0) > 0]
+            p_k = {k: em["p_scatter"][str(k)] for k in ks}
+            capc = (ex.get("cap_correction") or {}).get(mode) or {}
+            tgt = {k: em["cond_base_mean_t"][str(k)] + ex["bonus_by_trigger"][str(k)]["E"]
+                   - 10 * capc.get(str(k), {}).get("overshoot_x", 0.0) for k in ks}
+            p0 = 1.0 - sum(p_k.values())
+            target0 = (em["mean_x"] * 10 - sum(p_k[k] * tgt[k] for k in ks)) / p0
+            specs = [("no_bonus", p0, target0, "nobonus", None, n_base)]
+            specs += [(f"bonus_{k}_scatters_{C.bonus_level(k)}", p_k[k], tgt[k], "k", k, plan[k]) for k in ks]
+        bc = count_tables(base.strips)
+        s = _write_mode(out_dir, mode, specs, base, free, bc, fc, rng, pilot_n, costs[mode])
+        s["exact_rtp"] = em["rtp"]
+        s["lut_minus_exact"] = s["lut_rtp"] - em["rtp"]
+        out[mode] = s
+        print(mode, {k: v for k, v in s.items() if k not in ("strata",)})
+    with open(os.path.join(out_dir, "index.json"), "w", encoding="utf-8") as f:
+        json.dump({"modes": [{"name": m, "cost": float(costs[m]), "events": out[m]["events"], "weights": out[m]["weights"]}
+                             for m in modes]}, f, indent=4)
+    summary = {"math_version": C.MATH_VERSION, "seed": seed, "modes": out}
+    json.dump(summary, open(os.path.join(out_dir, "export_summary.json"), "w"), indent=2)
+    return summary
 
 
 def _sha(p):
@@ -301,7 +243,7 @@ def _sha(p):
     return h.hexdigest()
 
 
-DEFAULT_PLAN = {3: [8000, 300, 120, 40], 4: [2500, 200, 100, 40], 5: [800, 120, 60, 40], 6: [300, 80, 60, 40]}
+DEFAULT_PLAN = {3: [6000, 300, 120, 40], 4: [2500, 200, 100, 40], 5: [800, 120, 60, 40], 6: [300, 80, 60, 40]}
 BUY_PLAN = [6000, 500, 200, 60]
 
 
@@ -314,13 +256,10 @@ def main():
     ap.add_argument("--n-base", type=int, default=100_000)
     ap.add_argument("--pilot", type=int, default=1_000_000)
     ap.add_argument("--seed", type=int, default=777)
+    ap.add_argument("--modes", default=None)
     ap.add_argument("--exact", default=os.path.join(root, "reports", "exact.json"))
     a = ap.parse_args()
-    s = export(a.out, a.n_base, DEFAULT_PLAN, a.pilot, a.seed, a.exact)
-    print(json.dumps({k: v for k, v in s.items() if k not in ("strata", "bonus")}, indent=2))
-    print("bonus mode:", {k: v for k, v in s["bonus"].items() if k != "bands"})
-    for st in s["strata"]:
-        print(st["name"], st["books"], round(st["target_mean_x"], 3), round(st["sample_mean_x"], 3), f"kl={st['kl']:.2e}", st["max_payout_x"], st["bands"])
+    export(a.out, a.n_base, DEFAULT_PLAN, a.pilot, a.seed, a.exact, a.modes.split(",") if a.modes else None)
 
 
 if __name__ == "__main__":

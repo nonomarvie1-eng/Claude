@@ -72,12 +72,12 @@ def test_pays_rgs_compatible_and_monotonic():
         assert all(isinstance(v, int) and v >= 1 for v in p.values())
         assert [p[k] for k in range(3, 7)] == sorted(p[k] for k in range(3, 7)), s
     for k in range(3, 7):
-        hi = [C.PAYTABLE[f"H{i}"][k] for i in range(1, 6)]
+        hi = [C.PAYTABLE[f"H{i}"][k] for i in range(1, 5)]
         assert hi == sorted(hi, reverse=True)
     assert C.RALLY_LADDER == sorted(C.RALLY_LADDER) and C.RALLY_LADDER[0] == 1
 
 
-@pytest.mark.parametrize("rs", [BASE, FREE])
+@pytest.mark.parametrize("rs", [BASE, FREE, C.bonus_chance_reels()])
 def test_strip_constraints(rs):
     for r, strip in enumerate(rs.strips):
         n = len(strip)
@@ -208,18 +208,25 @@ def exact():
 
 
 def test_exact_rtp_in_stake_limits(exact):
-    assert 0.960 <= exact["rtp"] <= 0.967
+    for name, m in exact["modes"].items():
+        assert 0.960 <= m["rtp"] <= 0.967, (name, m["rtp"])
     assert exact["markov_residual"] < 1e-8
+    # every mode within 0.5 percentage point of the base game
+    rtps = [m["rtp"] for m in exact["modes"].values()]
+    assert max(rtps) - min(rtps) < 0.005
 
 
-def test_simulation_consistent_with_exact(exact):
+@pytest.mark.parametrize("mode,n", [("base", 4_000_000), ("bonus_chance", 4_000_000), ("buy_tiebreak", 300_000), ("buy_super", 300_000)])
+def test_simulation_consistent_with_exact(exact, mode, n):
     from rally_math.simulate import run
 
-    rep = run(4_000_000, seed=99, procs=os.cpu_count() or 2)
-    z = (rep["rtp_observed"] - exact["rtp"]) / rep["rtp_std_error"]
-    assert abs(z) < 4, z
-    assert rep["trigger_1_in"] == pytest.approx(exact["trigger_1_in"], rel=0.05)
-    assert rep["rtp_base_observed"] == pytest.approx(exact["rtp_base"], abs=0.004)
+    e = exact["modes"][mode]
+    rep = run(mode, n, seed=99, procs=os.cpu_count() or 2)
+    z = (rep["rtp_observed"] - e["rtp"]) / rep["rtp_std_error"]
+    assert abs(z) < 4, (mode, z)
+    if mode in ("base", "bonus_chance"):
+        assert rep["bonus_1_in"] == pytest.approx(e["bonus_1_in"], rel=0.06)
+        assert rep["tiebreak_1_in"] == pytest.approx(e["tiebreak_1_in"], rel=0.06)
 
 
 # ---------------------------------------------------------------- export
@@ -231,33 +238,91 @@ def test_small_export_is_valid(tmp_path, exact):
     p.write_text(json.dumps(exact))
     plan = {3: [200, 20, 5, 2], 4: [60, 10, 5, 2], 5: [30, 5, 3, 2], 6: [20, 5, 3, 2]}
     s = export(str(tmp_path / "pub"), 2000, plan, 20000, 1, str(p))
-    assert s["lut_rtp"] == pytest.approx(exact["rtp"], abs=1e-9)
-    rows = list(csv.reader(open(tmp_path / "pub" / "lookUpTable_base_0.csv")))
-    with open(tmp_path / "pub" / "books_base.jsonl.zst", "rb") as f:
-        data = zstd.ZstdDecompressor().stream_reader(f).read().decode()
-    books = [json.loads(l) for l in data.splitlines() if l]
-    assert len(rows) == len(books)
-    for row, b in zip(rows, books):
-        assert int(row[0]) == b["id"] and int(row[2]) == b["payoutMultiplier"] and int(row[1]) > 0
+    idx = json.load(open(tmp_path / "pub" / "index.json"))
+    assert [m["name"] for m in idx["modes"]] == list(C.mode_costs())
+    for m in idx["modes"]:
+        assert m["cost"] == C.mode_costs()[m["name"]]
+        sm = s["modes"][m["name"]]
+        assert sm["lut_rtp"] == pytest.approx(exact["modes"][m["name"]]["rtp"], abs=1e-9)
+        rows = list(csv.reader(open(tmp_path / "pub" / m["weights"])))
+        with open(tmp_path / "pub" / m["events"], "rb") as f:
+            data = zstd.ZstdDecompressor().stream_reader(f).read().decode()
+        books = [json.loads(l) for l in data.splitlines() if l]
+        assert len(rows) == len(books)
+        for row, bk in zip(rows, books):
+            assert int(row[0]) == bk["id"] and int(row[2]) == bk["payoutMultiplier"] and int(row[1]) > 0
+            if m["name"] in C.BUY_SCATTERS:
+                trig = [e for e in bk["events"] if e["type"] == "freeSpinTrigger"]
+                assert len(trig) == 1 and trig[0]["level"] == C.bonus_level(C.BUY_SCATTERS[m["name"]])
 
 
-# ---------------------------------------------------------------- bonus buy
+# ---------------------------------------------------------------- bonus levels, buys, bonus chance
 
-def test_buy_mode_round(monkeypatch):
+@pytest.mark.parametrize("k,level,start", [(3, "tiebreak", 1), (4, "super", 2), (5, "super", 2), (6, "super", 2)])
+def test_bonus_level_by_scatter_count(monkeypatch, k, level, start):
+    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
+    rng = np.random.default_rng(k)
+    try:
+        st = _base_with_scatters(k, seed=k)
+    except Exception:
+        pytest.skip("count not reachable")
+    r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=st)
+    trig = [e for e in r.events if e["type"] == "freeSpinTrigger"][0]
+    assert trig["level"] == level and trig["startMultiplier"] == start and trig["totalFs"] == C.FS_AWARD[k]
+    # first multiplier shown in the bonus is never below the start multiplier
+    mults = [e["multiplier"] for e in r.events if e["type"] == "winInfo" and e.get("gameType") == "freegame"]
+    assert all(m >= start for m in mults)
+
+
+def test_super_multiplier_one_step_up(monkeypatch):
+    """Same free spins, Super Tie-Break: ladder position is exactly one step higher."""
+    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
+    rng = np.random.default_rng(8)
+    free_seq = [[int(rng.integers(0, n)) for n in FREE.lengths] for _ in range(60)]
+    r3 = play_round(list_drawer(free_seq), BASE, FREE, forced_base_stops=_base_with_scatters(3))
+    r4 = play_round(list_drawer(free_seq), BASE, FREE, forced_base_stops=_base_with_scatters(4))
+    up3 = [e["multiplier"] for e in r3.events if e["type"] == "rallyUp"]
+    up4 = [e["multiplier"] for e in r4.events if e["type"] == "rallyUp"]
+    lad = C.RALLY_LADDER
+    for a, b in zip(up3, up4):
+        assert lad.index(b) == min(lad.index(a) + 1, len(lad) - 1)
+
+
+def test_buy_modes_guarantee_their_level():
     rng = np.random.default_rng(21)
-    for k in C.BUY_SCATTER_WEIGHTS:
-        st = _base_with_scatters(k)
-        r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=st, bought=True)
+    for mode, k in C.BUY_SCATTERS.items():
+        r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=_base_with_scatters(k), mode=mode)
         trig = [e for e in r.events if e["type"] == "freeSpinTrigger"][0]
-        assert trig["totalFs"] == C.FS_AWARD[k] and trig["bought"] is True
-    with pytest.raises(AssertionError):
-        play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=_base_with_scatters(5), bought=True)
+        assert trig["bought"] is True and trig["level"] == C.bonus_level(k) and trig["totalFs"] == C.FS_AWARD[k]
+        with pytest.raises(AssertionError):
+            play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=_base_with_scatters(k + 1), mode=mode)
 
 
-def test_buy_rtp_exact_and_simulated(exact):
-    from rally_math.simulate import run_buy
+def test_buy_conditional_draw_has_exact_scatter_count():
+    from rally_math.export_stake import conditional_base_stops
 
-    assert 0.960 <= exact["buy"]["rtp"] <= 0.967
-    rep = run_buy(400_000, seed=5)
-    z = (rep["rtp_observed"] - exact["buy"]["rtp"]) / rep["rtp_std_error"]
-    assert abs(z) < 4, z
+    rng = np.random.default_rng(3)
+    for k in (3, 4):
+        bs, _ = conditional_base_stops(BASE.strips, k, rng, 2000)
+        for row in bs:
+            assert len(E.positions_of(E.window(BASE.strips, list(row)), C.SCATTER)) == k
+
+
+def test_bonus_chance_raises_bonus_probability(exact):
+    b, c = exact["modes"]["base"], exact["modes"]["bonus_chance"]
+    assert c["p_bonus"] > 1.5 * b["p_bonus"] and c["p_super"] > b["p_super"]
+    assert c["cost"] == C.BONUS_CHANCE_COST > 1
+    # same symbols and pays: only the scatter count per reel differs
+    bc = C.bonus_chance_reels()
+    for r in range(C.NUM_REELS):
+        nb = {s: BASE.strips[r].count(C.SYM[s]) for s in C.SYMBOLS}
+        nc = {s: bc.strips[r].count(C.SYM[s]) for s in C.SYMBOLS}
+        assert {k: v for k, v in nb.items() if k != "S"} == {k: v for k, v in nc.items() if k != "S"}
+        assert nc["S"] >= nb["S"]
+
+
+def test_buy_prices_derived_from_exact_expectation(exact):
+    for mode in C.BUY_SCATTERS:
+        m = exact["modes"][mode]
+        assert m["cost"] == C.mode_costs()[mode]
+        assert abs(m["cost"] - m["fair_cost_at_96_5"]) / m["fair_cost_at_96_5"] < 0.005

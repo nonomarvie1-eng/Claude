@@ -1,5 +1,5 @@
 import { detectLang, STRINGS, type Lang } from '../i18n/strings';
-import type { BookEvent } from '../engine/types';
+import type { BookEvent, ModeName } from '../engine/types';
 import type { Jurisdiction } from '../rgs/types';
 
 export interface HistoryEntry {
@@ -7,6 +7,7 @@ export interface HistoryEntry {
   time: number;
   bet: number;
   cost?: number;
+  mode?: ModeName;
   win: number;
   payoutMultiplier: number;
   bonus: boolean;
@@ -58,8 +59,11 @@ class GameState {
   fsCurrent = $state(0);
   fsTotal = $state(0);
   multiplier = $state(1);
+  bonusLevel = $state<'tiebreak' | 'super' | null>(null);
+  /** spin mode chosen by the player: 'base' or 'bonus_chance' (never changed automatically) */
+  spinMode = $state<'base' | 'bonus_chance'>('base');
   insets = $state({ top: 0, bottom: 0, left: 0, right: 0 });
-  modal = $state<null | 'paytable' | 'settings' | 'history' | 'buy' | 'auto'>(null);
+  modal = $state<null | 'paytable' | 'settings' | 'history' | 'buy' | 'auto' | 'modes'>(null);
   autoplay = $state<{ remaining: number } | null>(null);
   notice = $state<string | null>(null);
   error = $state<{ message: string; retryable: boolean; fatal: boolean } | null>(null);

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { game } from '../game/state.svelte';
   import logo from '../assets/img/logo.webp?url';
-  import ace from '../assets/img/sym_H5.webp?url';
+  import ace from '../assets/img/sym_H1.webp?url';
   import ball from '../assets/img/ui_golden_ball.webp?url';
   let { onstart }: { onstart: () => void } = $props();
   const t = $derived(game.t);

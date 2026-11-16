@@ -1,10 +1,16 @@
-"""Monte-Carlo verification (vectorised, rounds i.i.d.).
+"""Monte-Carlo verification of every bet mode (vectorised, rounds i.i.d.).
 
 Each worker owns an independent PCG64 stream spawned from one SeedSequence.
 Base spins are evaluated in large numpy batches; all bonuses of a batch are
 then played in lock-step (one free spin per iteration for every active
 bonus).  The rules are those of engine.py; test_math.py checks that this fast
 path and the reference engine give identical results on the same stops.
+
+Modes:
+  base          BASE reels, cost 1
+  bonus_chance  BASE_BC reels, cost BONUS_CHANCE_COST
+  buy_tiebreak  bought spin = BASE board with exactly 3 scatters (exact conditional law)
+  buy_super     bought spin = BASE board with exactly 4 scatters
 """
 
 from __future__ import annotations
@@ -22,36 +28,28 @@ from .engine import count_tables, ways_win_vec
 MULT_BUCKETS = [0, 0.0001, 0.5, 1, 2, 5, 10, 20, 50, 100, 250, 500, 1000, 2500, 5000, 1e12]
 
 
-def _scpay_arr():
+def _arr(d):
     a = np.zeros(C.NUM_REELS + 1, dtype=np.int64)
-    for k, v in C.SCATTER_PAY.items():
+    for k, v in d.items():
         a[k] = v
     return a
 
 
-def simulate_batch(rng: np.random.Generator, n: int, base_cnt, free_cnt, base_len, free_len, forced_base=None):
-    """Returns dict of per-round arrays for n rounds."""
-    scpay = _scpay_arr()
+def play_vec(rng: np.random.Generator, stops: np.ndarray, base_cnt, free_cnt, free_len, log: list | None = None) -> dict:
+    """Plays complete rounds whose base stops are given.  If `log` is a list,
+    the free-spin stops of every iteration are appended to it as (indices, stops)."""
+    n = stops.shape[0]
+    scpay, award = _arr(C.SCATTER_PAY), _arr(C.FS_AWARD)
     ladder = np.array(C.RALLY_LADDER, dtype=np.int64)
     top = len(C.RALLY_LADDER) - 1
-    if forced_base is None:
-        stops = np.stack([rng.integers(0, L, n) for L in base_len], axis=1)
-    else:
-        stops = forced_base
     lw, _w, sc = ways_win_vec(base_cnt, stops)
     base_t = lw + scpay[sc]
-    trig = sc >= 3
-    total = base_t.copy()
-    fs_spins = np.zeros(n, dtype=np.int64)
-    retr = np.zeros(n, dtype=np.int64)
-    final_mult = np.ones(n, dtype=np.int64)
     capped = base_t >= C.WINCAP_T
-    idx = np.nonzero(trig & ~capped)[0]
-    award = np.zeros(C.NUM_REELS + 1, dtype=np.int64)
-    for k, v in C.FS_AWARD.items():
-        award[k] = v
+    trig = (sc >= 3) & ~capped
+    idx = np.nonzero(trig)[0]
+    start = np.where(sc[idx] == 3, C.BONUS_LEVELS["tiebreak"]["start_index"], C.BONUS_LEVELS["super"]["start_index"])
     remaining = award[sc[idx]]
-    collected = np.zeros(len(idx), dtype=np.int64)
+    pos = start.copy()  # ladder position = start + wilds collected
     free_t = np.zeros(len(idx), dtype=np.int64)
     run_total = base_t[idx].copy()
     active = np.ones(len(idx), dtype=bool)
@@ -63,10 +61,11 @@ def simulate_batch(rng: np.random.Generator, n: int, base_cnt, free_cnt, base_le
         remaining[a] -= 1
         nspin[a] += 1
         st = np.stack([rng.integers(0, L, len(a)) for L in free_len], axis=1)
+        if log is not None:
+            log.append((idx[a], st))
         flw, fw, fsc = ways_win_vec(free_cnt, st)
-        collected[a] += fw
-        mult = ladder[np.minimum(collected[a], top)]
-        spin = flw * mult + scpay[fsc]
+        pos[a] += fw
+        spin = flw * ladder[np.minimum(pos[a], top)] + scpay[fsc]
         free_t[a] += spin
         run_total[a] += spin
         hit_cap = run_total[a] >= C.WINCAP_T
@@ -74,144 +73,158 @@ def simulate_batch(rng: np.random.Generator, n: int, base_cnt, free_cnt, base_le
         add = np.where(fsc >= 3, np.minimum(C.FS_RETRIGGER, C.FS_MAX_REMAINING - remaining[a]), 0)
         add = np.where(hit_cap, 0, np.maximum(add, 0))
         remaining[a] += add
-        nretr[a] += (add > 0)
+        nretr[a] += add > 0
         active[a] = (remaining[a] > 0) & ~hit_cap
-    total[idx] = np.minimum(run_total, C.WINCAP_T)
-    fs_spins[idx] = nspin
-    retr[idx] = nretr
-    final_mult[idx] = ladder[np.minimum(collected, top)]
+    total = base_t.copy()
+    total[idx] = run_total
+    total = np.minimum(total, C.WINCAP_T)
+    full = lambda v, fill=0: (lambda z: (z.__setitem__(idx, v), z)[1])(np.full(n, fill, dtype=np.int64))  # noqa: E731
+    capped = capped.copy()
     capped[idx] |= cap_hit
-    free_full = np.zeros(n, dtype=np.int64)
-    free_full[idx] = free_t
-    return {"total": np.minimum(total, C.WINCAP_T), "base": base_t, "free": free_full, "trig": trig,
-            "fs_spins": fs_spins, "retr": retr, "final_mult": final_mult, "capped": capped}
+    return {"total": total, "base": base_t, "free": full(free_t), "sc": sc, "trig": trig,
+            "fs_spins": full(nspin), "retr": full(nretr), "final_mult": full(ladder[np.minimum(pos, top)], 1), "capped": capped}
+
+
+def mode_reels(mode: str):
+    base = C.bonus_chance_reels() if mode == "bonus_chance" else C.base_reels()
+    return base, C.free_reels()
+
+
+def draw_stops(rng, mode, base, n):
+    if mode in C.BUY_SCATTERS:
+        from .export_stake import conditional_base_stops
+
+        return conditional_base_stops(base.strips, C.BUY_SCATTERS[mode], rng, n)[0]
+    return np.stack([rng.integers(0, L, n) for L in base.lengths], axis=1)
 
 
 def _worker(args):
-    n, ss, batch = args
+    mode, n, ss, batch = args
     rng = np.random.Generator(np.random.PCG64(ss))
-    base, free = C.base_reels(), C.free_reels()
+    base, free = mode_reels(mode)
     bc, fc = count_tables(base.strips), count_tables(free.strips)
-    acc = {"n": 0, "sum": 0, "sum2": 0.0, "hits": 0, "trig": 0, "fs": 0, "retr": 0, "capped": 0, "base": 0, "free": 0,
-           "maxmult": 0, "max_t": 0, "hist": np.zeros(len(MULT_BUCKETS) - 1, dtype=np.int64), "batch": []}
+    nl = len(C.RALLY_LADDER)
+    acc = {"n": 0, "sum": 0, "sum2": 0.0, "hits": 0, "sc3": 0, "sc4p": 0, "tb": 0, "stb": 0, "fs": 0, "retr": 0, "capped": 0,
+           "base": 0, "free_tb": 0, "free_stb": 0, "max_t": 0, "hist": np.zeros(len(MULT_BUCKETS) - 1, dtype=np.int64),
+           "mult_tb": np.zeros(nl, dtype=np.int64), "mult_stb": np.zeros(nl, dtype=np.int64), "batch": []}
     done = 0
     while done < n:
         m = min(batch, n - done)
-        r = simulate_batch(rng, m, bc, fc, base.lengths, free.lengths)
+        r = play_vec(rng, draw_stops(rng, mode, base, m), bc, fc, free.lengths)
         t = r["total"]
+        tb = r["trig"] & (r["sc"] == 3)
+        stb = r["trig"] & (r["sc"] >= 4)
         acc["n"] += m
         acc["sum"] += int(t.sum())
         acc["sum2"] += float((t.astype(np.float64) ** 2).sum())
         acc["hits"] += int((t > 0).sum())
-        acc["trig"] += int(r["trig"].sum())
+        acc["sc3"] += int((r["sc"] == 3).sum())
+        acc["sc4p"] += int((r["sc"] >= 4).sum())
+        acc["tb"] += int(tb.sum())
+        acc["stb"] += int(stb.sum())
         acc["fs"] += int(r["fs_spins"].sum())
         acc["retr"] += int(r["retr"].sum())
         acc["capped"] += int(r["capped"].sum())
         acc["base"] += int(r["base"].sum())
-        acc["free"] += int(r["free"].sum())
-        acc["maxmult"] += int(((r["final_mult"] == C.RALLY_LADDER[-1]) & r["trig"]).sum())
+        acc["free_tb"] += int(r["free"][tb].sum())
+        acc["free_stb"] += int(r["free"][stb].sum())
         acc["max_t"] = max(acc["max_t"], int(t.max()))
         acc["hist"] += np.histogram(t / 10.0, bins=MULT_BUCKETS)[0]
+        lad = {v: i for i, v in enumerate(C.RALLY_LADDER)}
+        for mv in r["final_mult"][tb]:
+            acc["mult_tb"][lad[int(mv)]] += 1
+        for mv in r["final_mult"][stb]:
+            acc["mult_stb"][lad[int(mv)]] += 1
         if m % 10_000 == 0:
             acc["batch"] += [float(x) for x in t.reshape(-1, 10_000).sum(axis=1) / 1e5]
         done += m
-    acc["hist"] = acc["hist"].tolist()
+    for k in ("hist", "mult_tb", "mult_stb"):
+        acc[k] = acc[k].tolist()
     return acc
 
 
-def run(n_rounds: int, seed: int, procs: int, batch: int = 200_000) -> dict:
+def run(mode: str, n_rounds: int, seed: int, procs: int, batch: int = 200_000) -> dict:
     t0 = time.time()
+    cost = C.mode_costs()[mode]
     chunks = procs * 4
     per = max(10_000, (n_rounds // chunks) // 10_000 * 10_000)
     seqs = np.random.SeedSequence(seed).spawn(chunks)
     ctx = mp.get_context("fork")
     with ctx.Pool(procs) as pool:
-        parts = pool.map(_worker, [(per, s, batch) for s in seqs])
-    N = sum(p["n"] for p in parts)
-    S = sum(p["sum"] for p in parts)
-    S2 = sum(p["sum2"] for p in parts)
-    mean = S / N / 10
-    sd = (S2 / N / 100 - mean ** 2) ** 0.5
+        parts = pool.map(_worker, [(mode, per, s, batch) for s in seqs])
+    g = lambda k: sum(p[k] for p in parts)  # noqa: E731
+    N = g("n")
+    mean = g("sum") / N / 10  # in base-bet units
+    sd = (g("sum2") / N / 100 - mean ** 2) ** 0.5
     se = sd / N ** 0.5
-    trig = sum(p["trig"] for p in parts)
+    trig = g("tb") + g("stb")
+    one_in = lambda k: (N / g(k)) if g(k) else None  # noqa: E731
+    mult_tb = np.sum([p["mult_tb"] for p in parts], axis=0)
+    mult_stb = np.sum([p["mult_stb"] for p in parts], axis=0)
     return {
+        "mode": mode,
+        "cost": cost,
         "rounds": N,
         "seed": seed,
         "rng": "numpy PCG64, SeedSequence.spawn per worker",
-        "rtp_observed": mean,
-        "rtp_std_error": se,
-        "rtp_ci95": [mean - 1.96 * se, mean + 1.96 * se],
-        "std_dev": sd,
-        "hit_frequency": sum(p["hits"] for p in parts) / N,
-        "p_trigger": trig / N,
-        "trigger_1_in": N / trig if trig else None,
-        "rtp_base_observed": sum(p["base"] for p in parts) / N / 10,
-        "rtp_free_observed": sum(p["free"] for p in parts) / N / 10,
-        "mean_fs_spins": sum(p["fs"] for p in parts) / trig if trig else None,
-        "mean_retriggers": sum(p["retr"] for p in parts) / trig if trig else None,
-        "p_bonus_ends_at_max_multiplier": sum(p["maxmult"] for p in parts) / trig if trig else None,
-        "capped_rounds": sum(p["capped"] for p in parts),
+        "mean_win_x": mean,
+        "rtp_observed": mean / cost,
+        "rtp_std_error": se / cost,
+        "rtp_ci95": [(mean - 1.96 * se) / cost, (mean + 1.96 * se) / cost],
+        "std_dev_x": sd,
+        "std_dev_per_cost": sd / cost,
+        "hit_frequency": g("hits") / N,
+        "p_3_scatters": g("sc3") / N,
+        "p_4plus_scatters": g("sc4p") / N,
+        "p_bonus": trig / N,
+        "bonus_1_in": N / trig if trig else None,
+        "tiebreak_1_in": one_in("tb"),
+        "super_1_in": one_in("stb"),
+        "rtp_base_observed": g("base") / N / 10 / cost,
+        "rtp_tiebreak_observed": g("free_tb") / N / 10 / cost,
+        "rtp_super_observed": g("free_stb") / N / 10 / cost,
+        "mean_fs_spins": g("fs") / trig if trig else None,
+        "mean_retriggers": g("retr") / trig if trig else None,
+        "final_multiplier_ladder": C.RALLY_LADDER,
+        "final_multiplier_tiebreak": (mult_tb / max(1, mult_tb.sum())).tolist(),
+        "final_multiplier_super": (mult_stb / max(1, mult_stb.sum())).tolist(),
+        "bonus_counts": {"tiebreak": int(mult_tb.sum()), "super": int(mult_stb.sum())},
+        "capped_rounds": g("capped"),
         "max_win_observed_x": max(p["max_t"] for p in parts) / 10,
         "distribution_buckets_x": MULT_BUCKETS[:-1],
         "distribution_counts": np.sum([p["hist"] for p in parts], axis=0).tolist(),
-        "batch_rtps_10k": [x for p in parts for x in p["batch"]],
+        "batch_means_10k_x": [x for p in parts for x in p["batch"]][:2000],
         "elapsed_s": time.time() - t0,
     }
 
 
-def run_buy(n_rounds: int, seed: int) -> dict:
-    """Monte-Carlo of the bonus-buy mode (independent check of exact buy RTP)."""
-    from .export_stake import bonus_pilot, conditional_base_stops
-
-    rng = np.random.Generator(np.random.PCG64(seed))
-    base, free = C.base_reels(), C.free_reels()
-    bc, fc = count_tables(base.strips), count_tables(free.strips)
-    tot_sum = 0.0
-    tot_sq = 0.0
-    done = 0
-    mx = 0
-    ks = list(C.BUY_SCATTER_WEIGHTS)
-    q = np.array([C.BUY_SCATTER_WEIGHTS[k] for k in ks], dtype=float)
-    q /= q.sum()
-    while done < n_rounds:
-        m = min(500_000, n_rounds - done)
-        counts = rng.multinomial(m, q)
-        parts = []
-        for k, c in zip(ks, counts):
-            if c:
-                bs, _ = conditional_base_stops(base.strips, k, rng, int(c))
-                parts.append(bonus_pilot(rng, bs, bc, fc, free.lengths)[0])
-        tot = np.concatenate(parts)
-        x = tot.astype(np.float64) / 10
-        tot_sum += x.sum()
-        tot_sq += (x * x).sum()
-        mx = max(mx, float(x.max()))
-        done += m
-    mean = tot_sum / n_rounds
-    sd = (tot_sq / n_rounds - mean ** 2) ** 0.5
-    return {"rounds": n_rounds, "cost": C.BUY_COST, "mean_x": mean, "rtp_observed": mean / C.BUY_COST,
-            "rtp_std_error": sd / n_rounds ** 0.5 / C.BUY_COST, "std_dev_x": sd, "max_win_observed_x": mx}
+DEFAULT_ROUNDS = {"base": 20_000_000, "bonus_chance": 20_000_000, "buy_tiebreak": 2_000_000, "buy_super": 2_000_000}
 
 
 def main() -> None:
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("-n", type=int, default=50_000_000)
-    ap.add_argument("--seed", type=int, default=20261115)
+    ap.add_argument("--modes", default="base,bonus_chance,buy_tiebreak,buy_super")
+    ap.add_argument("--scale", type=float, default=1.0, help="multiply the default round counts")
+    ap.add_argument("--seed", type=int, default=20261116)
     ap.add_argument("--procs", type=int, default=os.cpu_count() or 4)
     ap.add_argument("--out", default=os.path.join(os.path.dirname(C.HERE), "reports", "montecarlo.json"))
-    ap.add_argument("--buy", type=int, default=2_000_000, help="bonus-buy rounds to simulate")
     a = ap.parse_args()
-    rep = run(a.n, a.seed, a.procs)
-    rep["buy"] = run_buy(a.buy, a.seed + 1)
-    print("buy:", rep["buy"])
+    out = {}
+    if os.path.exists(a.out):
+        try:
+            out = json.load(open(a.out, encoding="utf-8")).get("modes", {})
+        except Exception:
+            out = {}
+    for i, mode in enumerate(a.modes.split(",")):
+        rep = run(mode, int(DEFAULT_ROUNDS[mode] * a.scale), a.seed + 1000 * i, a.procs)
+        out[mode] = rep
+        print(mode, {k: rep[k] for k in ("rounds", "rtp_observed", "rtp_ci95", "std_dev_x", "hit_frequency", "bonus_1_in",
+                                         "tiebreak_1_in", "super_1_in", "max_win_observed_x", "elapsed_s")})
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
-        json.dump(rep, f, indent=2)
-    for k in ["rounds", "rtp_observed", "rtp_ci95", "std_dev", "hit_frequency", "trigger_1_in", "rtp_base_observed",
-              "rtp_free_observed", "mean_fs_spins", "p_bonus_ends_at_max_multiplier", "capped_rounds", "max_win_observed_x", "elapsed_s"]:
-        print(f"{k:>30}: {rep[k]}")
+        json.dump({"modes": out}, f, indent=2)
 
 
 if __name__ == "__main__":

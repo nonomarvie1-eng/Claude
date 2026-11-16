@@ -7,10 +7,22 @@
             "weights": "lookUpTable_base_0.csv"
         },
         {
-            "name": "bonus",
-            "cost": 100.0,
-            "events": "books_bonus.jsonl.zst",
-            "weights": "lookUpTable_bonus_0.csv"
+            "name": "bonus_chance",
+            "cost": 1.4,
+            "events": "books_bonus_chance.jsonl.zst",
+            "weights": "lookUpTable_bonus_chance_0.csv"
+        },
+        {
+            "name": "buy_tiebreak",
+            "cost": 49.4,
+            "events": "books_buy_tiebreak.jsonl.zst",
+            "weights": "lookUpTable_buy_tiebreak_0.csv"
+        },
+        {
+            "name": "buy_super",
+            "cost": 105.0,
+            "events": "books_buy_super.jsonl.zst",
+            "weights": "lookUpTable_buy_super_0.csv"
         }
     ]
 }

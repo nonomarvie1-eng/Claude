@@ -19,6 +19,7 @@ export interface Jurisdiction {
   disabledSpacebar?: boolean;
   disabledAutoplay?: boolean;   // name to confirm with Stake (assumption)
   disabledBuyBonus?: boolean;   // name to confirm with Stake (assumption)
+  disabledBonusChance?: boolean; // assumption: operator/jurisdiction switch for the bonus_chance mode
   displayRTP?: boolean;
   minimumRoundDuration?: number; // ms
   [k: string]: unknown;
@@ -44,7 +45,8 @@ export interface Round {
    *  (field name to be confirmed on the Stake sandbox: `state` or `events`). */
   state: Book['events'];
   bookId?: number;
-  cost?: number; // bet-mode cost multiplier (1 = base, 75 = bonus buy)
+  cost?: number; // bet-mode cost multiplier from index.json (1 = base)
+  debit?: number; // amount actually debited = amount x cost (money units)
   forced?: string; // demo-only: forced scenario label
 }
 

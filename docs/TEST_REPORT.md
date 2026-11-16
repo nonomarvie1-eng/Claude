@@ -1,18 +1,18 @@
 # Rapport des tests exécutés
 
-Date : 16 novembre 2026 (refonte premium v4) · environnement : conteneur Linux, Node 22.23, Python 3.13, Chromium (Playwright 1.63, rendu WebGL logiciel SwiftShader).
+Date : 16 novembre 2026 (v5 : 11 symboles, deux bonus, quatre modes) · environnement : conteneur Linux, Node 22.23, Python 3.13, Chromium (Playwright 1.63, rendu WebGL logiciel SwiftShader).
 
 ## Synthèse
 
 | Suite | Commande | Résultat |
 |---|---|---|
-| Mathématiques (pytest) | `cd math && .venv/bin/python -m pytest -q` | **18 / 18 réussis** (maths inchangées par la refonte) |
+| Mathématiques (pytest) | `cd math && .venv/bin/python -m pytest -q` | **29 / 29 réussis** (maths 3.0.0) |
 | Typage Svelte/TypeScript | `cd game && npm run check` | **0 erreur, 0 avertissement** |
-| Tests unitaires du jeu (vitest) | `cd game && npm test` | **20 / 20 réussis** |
+| Tests unitaires du jeu (vitest) | `cd game && npm test` | **24 / 24 réussis** |
 | Build de production | `npm run build` | **réussi** |
-| Tests navigateur bout en bout | `npm run e2e` | **149 / 149 vérifications réussies** (`game/e2e/report.json`) |
-| Simulation Monte-Carlo | `python -m rally_math.simulate -n 200000000` | RTP 96,468 % ± 0,108 % (IC 95 %) contre 96,487 % exact, z = −0,36 : **cohérent** |
-| Outil officiel engineio/math-sdk | `stake/tools/verify_with_official_sdk.py` | **format conforme, 0 problème de soumission, 6/6 contrôles de risque** |
+| Tests navigateur bout en bout | `npm run e2e` | **161 / 161 vérifications réussies** (`game/e2e/report.json`) |
+| Simulation Monte-Carlo (4 modes) | `python -m rally_math.simulate` | Normal 96,43 % [95,88 ; 96,98], Bonus Chance 96,74 % [96,18 ; 97,29], Achat TB 96,73 % [96,37 ; 97,09], Achat STB 96,47 % [96,19 ; 96,76] — toutes compatibles avec les valeurs exactes (96,52 / 96,51 / 96,52 / 96,41 %) |
+| Outil officiel engineio/math-sdk | `stake/tools/verify_with_official_sdk.py` | **4 modes : format conforme, 0 problème de soumission, 6/6 contrôles de risque chacun** |
 
 ## Détail par exigence
 
@@ -34,6 +34,25 @@ Date : 16 novembre 2026 (refonte premium v4) · environnement : conteneur Linux,
 | Gains ≤ mise non célébrés | Paliers de gain : `ldw` pour un gain ≤ mise, sans célébration |
 
 Captures d'écran : `game/e2e/screenshots/` (chargement, jeu, gains, bonus, table des gains, réglages, historique, rejeu, erreur).
+
+
+## Tests ajoutés en v5
+
+| Exigence | Tests |
+|---|---|
+| 3 scatters → Tie-Break ×1 ; 4, 5, 6 → Super ×2 | pytest `test_bonus_level_by_scatter_count` (4 cas) ; e2e achat |
+| Super = un cran plus haut sur la même séquence | pytest `test_super_multiplier_one_step_up` |
+| Achat Tie-Break → uniquement Tie-Break ; Achat Super → uniquement Super | pytest `test_buy_modes_guarantee_their_level`, vitest (25 achats de chaque), e2e (niveau, 3/4 scatters) |
+| Tirage conditionnel exact (exactement k scatters) | pytest `test_buy_conditional_draw_has_exact_scatter_count` (2 000 tirages) |
+| Prix = espérance exacte / 96,5 % | pytest `test_buy_prices_derived_from_exact_expectation` |
+| Prix affiché = montant débité ; solde cohérent ; pas de double achat | e2e (2 achats), vitest « second play refused » |
+| Bonus Chance : coût 1,4×, rouleaux dédiés, plus de bonus | pytest `test_bonus_chance_raises_bonus_probability`, vitest statistique (40 000 tours par mode), e2e (débit, retour au mode Normal) |
+| RTP de chaque mode dans la fenêtre, simulation cohérente | pytest `test_exact_rtp_in_stake_limits`, `test_simulation_consistent_with_exact` (4 modes) |
+| Fichiers Stake des 4 modes (ids, poids, paiements, niveau des achats) | pytest `test_small_export_is_valid`, vérificateur officiel |
+| Connexions dessinées = combinaisons du book, contiguës depuis le rouleau 1 | e2e `connections:*` |
+| Aucune case vide, symboles du pack | e2e captures + parité moteur (le symbole affiché à chaque case = fenêtre de la bande) |
+
+Limites honnêtes : les tests « Android » et « iPhone » sont des émulations Chromium (taille, densité, tactile), pas de vrais appareils.
 
 ## Tests non exécutables dans cet environnement
 

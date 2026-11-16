@@ -1,11 +1,11 @@
 """Builds docs/MATH_REPORT.md (+ charts) from the JSON outputs of exact.py,
 simulate.py, export_stake.py and the official SDK verifier.  Every number in
-the report is read from those files: nothing is typed by hand."""
+the report is read from those files or recomputed with the exact method:
+nothing is typed by hand."""
 
 from __future__ import annotations
 
 import json
-import math
 import os
 
 import matplotlib
@@ -18,6 +18,7 @@ from . import config as C  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(C.HERE))
 DOCS = os.path.join(ROOT, "docs")
 IMG = os.path.join(DOCS, "img")
+NAMES = {"base": "Normal", "bonus_chance": "Bonus Chance", "buy_tiebreak": "Buy Tie-Break", "buy_super": "Buy Super Tie-Break"}
 
 
 def load(p):
@@ -25,128 +26,206 @@ def load(p):
         return json.load(f)
 
 
-def pct(x, d=3):
-    return f"{x * 100:.{d}f} %"
+def pct(x, d=2):
+    return "—" if x is None else f"{x * 100:.{d}f} %"
+
+
+def one_in(x):
+    return "—" if not x else f"1 / {x:,.1f}".replace(",", " ")
+
+
+def num(x, d=2):
+    return "—" if x is None else f"{x:,.{d}f}".replace(",", " ")
+
+
+def bonus_chance_options(ex):
+    """Re-evaluates (exactly, uncapped) the Bonus Chance alternatives that were studied."""
+    from .exact import base_mode_stats, bonus_chain, joint_stats
+    from .reels import BASE_COUNTS, FREE_COUNTS, STACK, build_reelset
+    from .tune import to_ids
+
+    free = to_ids(build_reelset(FREE_COUNTS, 6, STACK))
+    ch = bonus_chain(*joint_stats(free))
+    rows = []
+    for s in ([2, 2, 1, 2, 2, 2], [2, 2, 2, 2, 2, 2], [2, 3, 2, 2, 2, 2], [2, 3, 2, 3, 2, 3], [3, 3, 3, 3, 3, 3]):
+        m = base_mode_stats(to_ids(build_reelset({**BASE_COUNTS, "S": s}, 43, STACK)), ch, 1.0)
+        rows.append((s, m["mean_x"], m["bonus_1_in"], m["super_1_in"]))
+    return rows
 
 
 def main() -> None:
     os.makedirs(IMG, exist_ok=True)
     ex = load(os.path.join(ROOT, "math", "reports", "exact.json"))
-    mc = load(os.path.join(ROOT, "math", "reports", "montecarlo.json"))
-    lut = load(os.path.join(ROOT, "stake", "publish_files", "export_summary.json"))
+    mc = load(os.path.join(ROOT, "math", "reports", "montecarlo.json"))["modes"]
+    lut = load(os.path.join(ROOT, "stake", "publish_files", "export_summary.json"))["modes"]
     sdk_p = os.path.join(ROOT, "stake", "official_sdk_verification.json")
     sdk = load(sdk_p) if os.path.exists(sdk_p) else None
+    modes = list(C.mode_costs())
+    E = ex["modes"]
+    base = E["base"]
 
-    plt.rcParams.update({"figure.facecolor": "white", "axes.grid": True, "grid.alpha": 0.3, "font.size": 10})
-    # 1. distribution of round wins (MC)
-    edges = mc["distribution_buckets_x"]
-    counts = mc["distribution_counts"]
-    labels = ["0"] + [f"{edges[i]:g}–{edges[i + 1]:g}" if i + 1 < len(edges) else f"≥{edges[i]:g}" for i in range(1, len(edges))]
-    fig, ax = plt.subplots(figsize=(9, 3.8))
-    ax.bar(range(len(counts)), [c / mc["rounds"] for c in counts], color="#1f6b47")
-    ax.set_yscale("log")
-    ax.set_xticks(range(len(counts)), labels[: len(counts)], rotation=40, ha="right")
-    ax.set_ylabel("probabilité (log)")
-    ax.set_xlabel("gain du tour (× mise)")
-    ax.set_title(f"Distribution des gains par tour — Monte-Carlo, {mc['rounds']:,} tours".replace(",", " "))
+    # ------------------------------------------------------------ charts
+    plt.rcParams.update({"figure.facecolor": "white", "axes.grid": True, "grid.alpha": 0.3, "font.size": 9})
+    fig, axs = plt.subplots(2, 2, figsize=(10, 6.5))
+    for ax, m in zip(axs.flat, modes):
+        r = mc[m]
+        b = r["distribution_buckets_x"]
+        c = r["distribution_counts"]
+        lab = [f"{b[i]:g}" for i in range(len(b))]
+        ax.bar(range(len(c)), [x / r["rounds"] for x in c], color="#0f4a3d")
+        ax.set_yscale("log")
+        ax.set_xticks(range(len(c)))
+        ax.set_xticklabels(lab, rotation=60, fontsize=7)
+        ax.set_title(f"{NAMES[m]} (cost {r['cost']:g}x): win / base bet", fontsize=9)
     fig.tight_layout()
-    fig.savefig(os.path.join(IMG, "win_distribution.png"), dpi=130)
+    fig.savefig(os.path.join(IMG, "win_distribution_modes.png"), dpi=110)
     plt.close(fig)
-    # 2. RTP of 10k-round batches
-    b = mc["batch_rtps_10k"]
-    fig, ax = plt.subplots(figsize=(9, 3.4))
-    ax.hist([x * 100 for x in b], bins=60, color="#c8643a")
-    ax.axvline(ex["rtp"] * 100, color="#0b2a1e", lw=2, label=f"RTP exact {ex['rtp'] * 100:.3f} %")
-    ax.set_xlabel("RTP observé sur une session de 10 000 tours (%)")
-    ax.set_ylabel("nombre de sessions")
-    ax.set_title("Dispersion du RTP sur des sessions de 10 000 tours (volatilité)")
+
+    fig, ax = plt.subplots(figsize=(8, 3.2))
+    lad = C.RALLY_LADDER
+    x = range(len(lad))
+    ax.bar([i - 0.2 for i in x], mc["buy_tiebreak"]["final_multiplier_tiebreak"], width=0.4, label="Tie-Break (starts x1)", color="#0f4a3d")
+    ax.bar([i + 0.2 for i in x], mc["buy_super"]["final_multiplier_super"], width=0.4, label="Super Tie-Break (starts x2)", color="#2f6fd6")
+    ax.set_xticks(list(x))
+    ax.set_xticklabels([f"x{v}" for v in lad])
+    ax.set_title("Final multiplier distribution (Monte-Carlo, bought bonuses)")
     ax.legend()
     fig.tight_layout()
-    fig.savefig(os.path.join(IMG, "session_rtp.png"), dpi=130)
+    fig.savefig(os.path.join(IMG, "final_multiplier.png"), dpi=110)
     plt.close(fig)
 
-    se = mc["rtp_std_error"]
-    z = (mc["rtp_observed"] - ex["rtp"]) / se
-    b3 = ex["bonus_by_trigger"]
-    bsd = (sum((x - ex["rtp"]) ** 2 for x in b) / len(b)) ** 0.5 if b else float("nan")
-    lines = []
-    w = lines.append
-    w("# Rapport mathématique — Golden Rally\n")
-    w(f"Version math : **{C.MATH_VERSION}** · généré automatiquement par `math/rally_math/report.py` à partir des sorties de calcul (aucun chiffre saisi à la main).\n")
-    w("## 1. Modèle\n")
-    w("- Grille **6 × 5**, **15 625 façons de gagner** : un symbole paie s'il apparaît (ou le Wild) sur des rouleaux adjacents depuis le rouleau 1, sur 3 à 6 rouleaux ; gain = valeur par façon × nombre de façons. Mise totale = 1.")
-    w("- Bandes de rouleaux : `math/reels/BASE.csv` (jeu de base) et `math/reels/FREE.csv` (tours gratuits). Chaque position d'arrêt est équiprobable.")
-    w(f"- Cycle complet du jeu de base : **{ex['base_cycle_boards']:,}** grilles ; cycle des tours gratuits : **{ex['free_cycle_boards']:,}** grilles.".replace(",", " "))
-    w("- Wild (Smash) sur les rouleaux 2-6, remplace tout sauf le Scatter. Scatter (Trophée) paie partout ; 3/4/5/6 → " + "/".join(str(C.FS_AWARD[k]) for k in sorted(C.FS_AWARD)) + " tours gratuits (Tie-Break).")
-    w(f"- Multiplicateur « Rally » pendant les tours gratuits : {' → '.join('×' + str(m) for m in C.RALLY_LADDER)}, indexé sur le nombre de Wilds tombés depuis le début du bonus ; appliqué aux gains en façons du tour où le Wild tombe. Relance : 3+ Scatters = +{C.FS_RETRIGGER} tours (50 restants max).")
-    w(f"- Plafond de gain : **{C.WINCAP_X:,}× la mise** par tour.\n".replace(",", " "))
-    w("### Table des gains (× mise totale, par façon gagnante)\n")
-    w("| Symbole | 3 | 4 | 5 | 6 |\n|---|---|---|---|---|")
-    for s, p in C.PAYTABLE.items():
-        w(f"| {C.SYMBOL_INFO[s]['fr']} ({s}) | {p[3] / 10:g} | {p[4] / 10:g} | {p[5] / 10:g} | {p[6] / 10:g} |")
-    w(f"| Trophée (S, n'importe où, total) | {C.SCATTER_PAY[3] / 10:g} | {C.SCATTER_PAY[4] / 10:g} | {C.SCATTER_PAY[5] / 10:g} | {C.SCATTER_PAY[6] / 10:g} |\n")
-    w("## 2. Résultats exacts (polynômes générateurs par rouleau + chaîne de Markov)\n")
-    w("Les rouleaux sont indépendants et chaque arrêt est équiprobable : l'espérance d'un gain en façons (produit de fonctions de chaque rouleau) est le produit des espérances par rouleau. Chaque rouleau fournit un polynôme en z (nombre de Wilds) et y (nombre de Trophées) ; leur produit donne exactement la loi jointe nécessaire au bonus. Méthode validée par énumération exhaustive sur des bandes réduites (test `test_polynomial_method_equals_brute_force_enumeration`).\n")
-    w("| Indicateur | Valeur |\n|---|---|")
-    w(f"| **RTP théorique total** | **{pct(ex['rtp'], 4)}** |")
-    w(f"| dont jeu de base (façons) | {pct(ex['rtp_base_ways'])} |")
-    w(f"| dont Scatters du jeu de base | {pct(ex['rtp_base_scatter'])} |")
-    w(f"| dont tours gratuits | {pct(ex['rtp_free'])} |")
-    w(f"| Fréquence du bonus | 1 sur {ex['trigger_1_in']:.1f} ({pct(ex['p_trigger'], 4)}) |")
-    w(f"| Gain moyen d'un bonus | {ex['bonus_mean_x']:.2f}× |")
-    w(f"| Résidu numérique de la chaîne de Markov | {ex['markov_residual']:.1e} |\n")
-    w("| Déclenchement | Tours | Gain moyen du bonus | Tours joués (moy.) | P(atteindre ×" + str(C.RALLY_LADDER[-1]) + ") | Multiplicateur final moyen |\n|---|---|---|---|---|---|")
-    for k in sorted(b3, key=int):
-        v = b3[k]
-        w(f"| {k} Trophées (p = {ex['p_scatter'][k]:.3e}) | {v['spins']} | {v['E_x']:.2f}× | {v['E_spins']:.2f} | {pct(v['P_reach_max_mult'], 1)} | ×{v['E_final_multiplier']:.2f} |")
-    w("\nLe calcul exact donne la moyenne (RTP) sans le plafond de 5 000× ; l'écart-type, la fréquence de gain et l'effet du plafond viennent de la simulation ci-dessous (plafond atteint environ 1 fois sur 200 millions de tours : effet sur le RTP inférieur à 10⁻⁵).\n")
-    w("## 3. Contrôle Monte-Carlo (moteur de référence, tours indépendants)\n")
-    w(f"Générateur : {mc['rng']}, graine {mc['seed']}.\n")
-    w("| Indicateur | Simulé | Exact |\n|---|---|---|")
-    w(f"| Tours simulés | {mc['rounds']:,} | — |".replace(",", " "))
-    w(f"| RTP | {pct(mc['rtp_observed'])} ± {pct(1.96 * se)} (IC 95 %) | {pct(ex['rtp'])} |")
-    w(f"| Écart normalisé z | {z:+.2f} | (|z| < 2 attendu) |")
-    w(f"| Fréquence de gain (tout gain > 0) | {pct(mc['hit_frequency'], 2)} | — |")
-    w(f"| Bonus 1 sur | {mc['trigger_1_in']:.1f} | {ex['trigger_1_in']:.1f} |")
-    w(f"| Écart-type par tour | {mc['std_dev']:.3f}× | — |")
-    w(f"| RTP base / bonus | {pct(mc['rtp_base_observed'])} / {pct(mc['rtp_free_observed'])} | {pct(ex['rtp_base'])} / {pct(ex['rtp_free'])} |")
-    w(f"| Tours gratuits joués par bonus | {mc['mean_fs_spins']:.2f} | — |")
-    w(f"| Bonus terminés au multiplicateur maximal | {pct(mc['p_bonus_ends_at_max_multiplier'], 1)} | — |")
-    w(f"| Tours plafonnés à 5 000× | {mc['capped_rounds']} | — |")
-    w(f"| Plus gros gain observé | {mc['max_win_observed_x']:.1f}× | plafond 5 000× |\n")
-    w(f"\nNote : beaucoup de « gains » sont inférieurs à la mise (typique des jeux à façons). Le jeu ne les célèbre pas (pas de son de victoire ni d'animation festive).\n")
-    w("![Distribution des gains](img/win_distribution.png)\n")
-    w(f"![RTP par session](img/session_rtp.png)\n\nSur une session de 10 000 tours, le RTP observé a un écart-type d'environ **{bsd * 100:.1f} points** : un joueur ou un opérateur peut s'écarter largement de 96,49 % à court terme. C'est la conséquence normale de la volatilité, pas une anomalie.\n")
-    w("## 4. Fichiers Stake Engine (table de correspondance publiée)\n")
-    w("- " + f"{lut['books']:,}".replace(",", " ") + " tours enregistrés (« books »), pondérés par strates aux probabilités exactes (pas de bonus ; bonus à 3, 4, 5, 6 Trophées), avec des tranches de gros gains (≥ 500×, ≥ 2 000×, ≥ 4 000×) estimées par un pilote Monte-Carlo, pour que les gains rares jusqu'au plafond existent réellement dans la table. Calibration finale par basculement exponentiel minimal dans chaque strate. Chaque book est reconstruit par le moteur de référence et vérifié.")
-    w(f"- **RTP de la table publiée : {pct(lut['lut_rtp'], 5)}** (écart au modèle exact : {lut['lut_minus_exact']:.1e}).")
-    w(f"- Écart-type : {lut['lut_std_dev']:.3f}× · fréquence de gain : {pct(lut['lut_hit_rate'], 2)} · gain maximal présent dans la table : **{lut['lut_max_payout_x']:.1f}×**.")
-    w("\n| Strate | Probabilité | Books | Moyenne visée | Moyenne échantillon | Divergence KL | Gain max |\n|---|---|---|---|---|---|---|")
-    for s in lut["strata"]:
-        w(f"| {s['name']} | {s['probability']:.4e} | {s['books']} | {s['target_mean_x']:.4f}× | {s['sample_mean_x']:.4f}× | {s['kl']:.1e} | {s['max_payout_x']:.1f}× |")
-    w(f"\nEmpreintes SHA-256 : books `{lut['sha256_books'][:16]}…`, table `{lut['sha256_lut'][:16]}…`.\n")
-    w(f"Sur Stake Engine, le serveur ne tire que des tours présents dans les books : le gain maximal réellement atteignable est donc celui de la table, **{lut['lut_max_payout_x']:.0f}×**, égal au plafond affiché.\n")
-    if "bonus" in lut and "buy" in ex:
-        bb, bm = lut["bonus"], mc.get("buy", {})
-        w("## 4 bis. Mode « achat du Tie-Break » (bet mode `bonus`, coût " + str(ex["buy"]["cost"]) + "×)\n")
-        sw = ex["buy"]["scatter_weights"]
-        w("- Règle : le tour acheté affiche " + " ou ".join(f"{k} Trophées ({v}/{ex['buy']['weights_total']})" for k, v in sw.items()) + " — grille tirée selon la loi conditionnelle exacte — puis le Tie-Break suit les règles normales (" + ", ".join(f"{k} Trophées = {C.FS_AWARD[int(k)]} tours" for k in sw) + ").")
-        w(f"- **RTP exact du mode : {pct(ex['buy']['rtp'], 4)}** (gain moyen {ex['buy']['E_x']:.3f}× la mise de base, pour un coût de {ex['buy']['cost']}×).")
-        if bm:
-            w(f"- Contrôle Monte-Carlo : {bm['rounds']:,} achats → RTP {pct(bm['rtp_observed'])} ± {pct(1.96 * bm['rtp_std_error'])} (IC 95 %), écart-type {bm['std_dev_x']:.1f}× la mise de base.".replace(",", " "))
-        w(f"- Table publiée : {bb['books']} books, RTP {pct(bb['lut_rtp'], 5)} (écart au modèle exact {bb['lut_minus_exact']:.1e}), gain maximal présent {bb['lut_max_payout_x']:.0f}×.\n")
+    # ------------------------------------------------------------ text
+    L = []
+    w = L.append
+    w("# Golden Rally — Match Point · Mathematical report (math v%s)\n" % C.MATH_VERSION)
+    w("_Generated by `python -m rally_math.report` from `math/reports/exact.json`, `math/reports/montecarlo.json`, "
+      "`stake/publish_files/export_summary.json` and `stake/official_sdk_verification.json`. Do not edit by hand._\n")
+    w("## 1. Method\n")
+    w("- **Exact part.** Reels are independent and every stop is equiprobable. Each reel contributes a generating "
+      "polynomial in (wilds, scatters); their product gives the exact law of the base spin and of every free spin. "
+      "Both bonuses are one absorbing Markov chain on (spins remaining ≤ 50, ladder position); the Super Tie-Break "
+      "simply starts one ladder step higher. Markov residual: %.1e.\n" % ex["markov_residual"])
+    w("- **Win cap (%s×).** The cap is the only term that is not closed-form. For each scatter count k the overshoot "
+      "E[(win − cap)⁺ | k] is measured by a targeted simulation of 2,000,000 triggered rounds and subtracted. "
+      "All RTPs below are **after the cap**, with its standard error shown.\n" % f"{C.WINCAP_X:,}".replace(",", " "))
+    w("- **Monte-Carlo.** Independent numpy PCG64 streams (SeedSequence.spawn), 20 M rounds for the spin modes and "
+      "~1.9 M for each buy, used to check the exact values and to measure what has no closed form (hit rate, "
+      "standard deviation, distribution, multiplier histogram).\n")
+    w("- **Stake files.** Stratified look-up tables (no bonus / 3 / 4 / 5 / 6 scatters, payout bands up to the cap), each book "
+      "replayed by the reference engine, then a minimal exponential tilt so that every stratum mean equals its exact (capped) mean.\n")
+
+    w("## 2. Summary per bet mode\n")
+    w("| | " + " | ".join(NAMES[m] for m in modes) + " |")
+    w("|---|" + "---|" * len(modes))
+    row = lambda label, f: w(f"| {label} | " + " | ".join(f(m) for m in modes) + " |")  # noqa: E731
+    row("Cost (× base bet)", lambda m: f"{E[m]['cost']:g}×")
+    row("**RTP (exact, after cap)**", lambda m: f"**{pct(E[m]['rtp'], 3)}**")
+    row("RTP without cap (exact)", lambda m: pct(E[m].get("rtp_uncapped") or E[m]["mean_uncapped_x"] / E[m]["cost"], 3))
+    row("Cap effect", lambda m: f"−{E[m]['cap_loss_x'] / E[m]['cost'] * 100:.3f} pt ± {E[m]['cap_loss_se_x'] / E[m]['cost'] * 100:.3f}")
+    row("RTP simulated (95 % CI)", lambda m: f"{pct(mc[m]['rtp_observed'], 2)} [{pct(mc[m]['rtp_ci95'][0], 2)}; {pct(mc[m]['rtp_ci95'][1], 2)}]")
+    row("Simulated rounds", lambda m: f"{mc[m]['rounds']:,}".replace(",", " "))
+    row("RTP of the published table", lambda m: pct(lut[m]["lut_rtp"], 3))
+    row("Mean win (× base bet)", lambda m: num(E[m]["mean_x"], 3))
+    row("Hit frequency", lambda m: pct(mc[m]["hit_frequency"], 1))
+    row("Std dev (× base bet)", lambda m: num(mc[m]["std_dev_x"], 1))
+    row("Std dev / cost", lambda m: num(mc[m]["std_dev_per_cost"], 2))
+    row("P(exactly 3 scatters)", lambda m: pct(E[m]["p_scatter"]["3"], 3) if "p_scatter" in E[m] else "100 % (bought)" if C.BUY_SCATTERS.get(m) == 3 else "0")
+    row("P(4+ scatters)", lambda m: pct(sum(E[m]["p_scatter"][k] for k in ("4", "5", "6")), 4) if "p_scatter" in E[m] else "100 % (bought)" if C.BUY_SCATTERS.get(m) == 4 else "0")
+    row("Tie-Break frequency", lambda m: one_in(E[m].get("tiebreak_1_in")) if "p_scatter" in E[m] else ("every round" if m == "buy_tiebreak" else "never"))
+    row("Super Tie-Break frequency", lambda m: one_in(E[m].get("super_1_in")) if "p_scatter" in E[m] else ("every round" if m == "buy_super" else "never"))
+    row("Any bonus", lambda m: one_in(E[m].get("bonus_1_in")) if "p_scatter" in E[m] else "every round")
+    row("Simulated bonus frequency", lambda m: one_in(mc[m]["bonus_1_in"]))
+    row("Max win reached (sim.)", lambda m: f"{mc[m]['max_win_observed_x']:,.0f}×".replace(",", " "))
+    w("")
+    w("RTP shares of the Normal mode: ways %s, scatter pays %s, Tie-Break %s, Super Tie-Break %s (before cap). "
+      "Bonus Chance: ways %s, scatter %s, Tie-Break %s, Super %s.\n" % (
+          pct(base["rtp_base_ways"]), pct(base["rtp_base_scatter"]), pct(base["rtp_tiebreak"]), pct(base["rtp_super"]),
+          pct(E["bonus_chance"]["rtp_base_ways"]), pct(E["bonus_chance"]["rtp_base_scatter"]),
+          pct(E["bonus_chance"]["rtp_tiebreak"]), pct(E["bonus_chance"]["rtp_super"])))
+    w("![win distribution](img/win_distribution_modes.png)\n")
+
+    w("## 3. Bonuses\n")
+    w("| Scatters on the trigger spin | Bonus | Free spins | Start multiplier | E[bonus win] (uncapped) | E[spins played] | E[retriggers] | E[final multiplier] | P(reach ×20) | Cap overshoot (sim.) |")
+    w("|---|---|---|---|---|---|---|---|---|---|")
+    for k, v in ex["bonus_by_trigger"].items():
+        cc = ex["cap_correction"]["base"][k]
+        w(f"| {k} | {'SUPER TIE-BREAK' if v['level'] == 'super' else 'TIE-BREAK'} | {v['spins']} | ×{v['start_multiplier']} | {v['E_x']:.2f}× | "
+          f"{v['E_spins']:.2f} | {v['E_retriggers']:.3f} | ×{v['E_final_multiplier']:.2f} | {pct(v['P_reach_max_mult'], 1)} | "
+          f"{cc['overshoot_x']:.3f}× ± {cc['se_x']:.3f} |")
+    w("")
+    w("A scatter can show at most once per reel (strip constraint, tested), so 3, 4, 5 and 6 are the only trigger counts. "
+      "4, 5 and 6 scatters all give the Super Tie-Break; 5 and 6 add spins (15 / 20) and bigger scatter pays. "
+      "During either bonus, 3+ scatters add %d spins (at most %d remaining). The Super Tie-Break has better starting "
+      "conditions (12 spins and ×2 instead of 9 spins and ×1); it does **not** guarantee a bigger win in every round.\n"
+      % (C.FS_RETRIGGER, C.FS_MAX_REMAINING))
+    w("Final multiplier distribution (simulated over the bought bonuses):\n")
+    w("| Multiplier | " + " | ".join(f"×{v}" for v in C.RALLY_LADDER) + " |")
+    w("|---|" + "---|" * len(C.RALLY_LADDER))
+    w("| Tie-Break | " + " | ".join(pct(p, 1) for p in mc["buy_tiebreak"]["final_multiplier_tiebreak"]) + " |")
+    w("| Super Tie-Break | " + " | ".join(pct(p, 1) for p in mc["buy_super"]["final_multiplier_super"]) + " |")
+    w("\n![final multiplier](img/final_multiplier.png)\n")
+
+    w("## 4. Bonus buy prices\n")
+    w("The price is not chosen in advance: it is the capped expectation of the bought round divided by the target "
+      "RTP (96.5 %), rounded to 0.1× so that the RTP stays inside the 96.0–96.7 % window. A whole number was not possible "
+      "for the Tie-Break (one step of 1× moves the RTP by ~2 %, more than the window).\n")
+    w("| | Trigger spin E[win] | Bonus E[win] (uncapped) | Cap effect | E[round] | Fair price at 96.5 % | **Price** | RTP |")
+    w("|---|---|---|---|---|---|---|---|")
+    for m in C.BUY_SCATTERS:
+        v = E[m]
+        w(f"| {NAMES[m]} ({v['scatters']} scatters, {v['spins']} spins, ×{v['start_multiplier']}) | {v['E_trigger_spin_x']:.3f}× | {v['E_bonus_x']:.3f}× | "
+          f"−{v['cap_loss_x']:.3f}× | {v['mean_x']:.3f}× | {v['fair_cost_at_96_5']:.2f}× | **{v['cost']:g}×** | {pct(v['rtp'], 3)} |")
+    w("")
+    w("Each buy guarantees its bonus level (the bought spin always shows exactly 3, respectively 4, scatters, drawn with the exact "
+      "conditional law of the normal reels), never an amount.\n")
+
+    w("## 5. Bonus Chance\n")
+    w("Same symbols, same pay table, same bonuses: only the number of scatters on the base reels differs. Probabilities never depend "
+      "on the balance, the history or previous results. Options studied (exact, before cap, cost that would give 96.5 %):\n")
+    w("| Scatters per reel (reels 1–6) | E[win] | Fair cost | Any bonus | Super Tie-Break |")
+    w("|---|---|---|---|---|")
+    w(f"| Normal reels | {base['mean_x']:.4f}× | 1× | {one_in(base['bonus_1_in'])} | {one_in(base['super_1_in'])} |")
+    for s, mean, b1, s1 in bonus_chance_options(ex):
+        w(f"| {s} | {mean:.4f}× | {mean / 0.965:.3f}× | {one_in(b1)} | {one_in(s1)} |")
+    bc = E["bonus_chance"]
+    w(f"\n**Chosen:** 2 scatters per reel, cost **{bc['cost']:g}×**: bonus {one_in(bc['bonus_1_in'])} instead of {one_in(base['bonus_1_in'])} "
+      f"(×{base['bonus_1_in'] / bc['bonus_1_in']:.2f}), Super Tie-Break {one_in(bc['super_1_in'])} instead of {one_in(base['super_1_in'])} "
+      f"(×{base['super_1_in'] / bc['super_1_in']:.2f}); RTP {pct(bc['rtp'], 3)} vs {pct(base['rtp'], 3)} in Normal mode "
+      f"(difference {(bc['rtp'] - base['rtp']) * 100:+.3f} pt). No bonus is ever guaranteed.\n")
+
+    w("## 6. Rules data\n")
+    w("Pay per way (× total bet); a win = pay × number of ways (product of matching symbols per reel), from reel 1, 3 to 6 reels. "
+      "6 reels × 5 rows = 5⁶ = 15 625 ways (verified by enumeration in the tests).\n")
+    w("| Symbol | Id | 3 | 4 | 5 | 6 |")
+    w("|---|---|---|---|---|---|")
+    for s in C.PAYING:
+        p = C.PAYTABLE[s]
+        w(f"| {C.SYMBOL_INFO[s]['fr']} | {s} | " + " | ".join(f"{p[k] / 10:g}" for k in range(3, 7)) + " |")
+    w(f"| Scatter Stade (anywhere, not multiplied) | S | " + " | ".join(f"{C.SCATTER_PAY[k] / 10:g}" for k in range(3, 7)) + " |")
+    w("\nThe Wild (W) substitutes for every symbol except the Scatter; it is absent from reel 1. Multiplier ladder: "
+      + " → ".join(f"×{v}" for v in C.RALLY_LADDER) + ".\n")
+    from .reels import BASE_COUNTS, BC_COUNTS, FREE_COUNTS, STACK
+
+    w("Symbols per reel (reels 1–6). Paying symbols are stacked in blocks of 1/2/3 with probabilities %s.\n" % (STACK,))
+    w("| Symbol | Normal | Bonus Chance | Bonus (both levels) |")
+    w("|---|---|---|---|")
+    for s in C.SYMBOLS:
+        w(f"| {s} | {BASE_COUNTS[s]} | {BC_COUNTS[s]} | {FREE_COUNTS[s]} |")
+
+    w("\n## 7. Stake Engine files and official verification\n")
+    w("| Mode | Cost | Books | Table RTP | Table std dev (×) | Max payout |")
+    w("|---|---|---|---|---|---|")
+    for m in modes:
+        s = lut[m]
+        w(f"| `{m}` | {s['cost']:g} | {s['books']:,} | {pct(s['lut_rtp'], 4)} | {s['lut_std_dev_x']:.1f} | {s['lut_max_payout_x']:,.0f}× |".replace(",", " "))
     if sdk:
-        w("## 5. Vérification par l'outil officiel (engineio/math-sdk)\n")
-        m = sdk["modes"]["base"]
-        w(f"- Commit du SDK : `{sdk['sdk_commit']}`")
-        w(f"- Format de la table et des books : conforme ; paiements books = table : conforme.")
-        w(f"- Problèmes bloquant la soumission : **{len(sdk['submission_issues'])}** · contrôles de risque en échec : **{sum(len(v) for v in sdk['risk_failures'].values())}**.")
-        w(f"- RTP mesuré par l'outil : {m['rtp'] * 100:.2f} % (limites de soumission du SDK : 96,0 %–96,7 %) · écart-type : {m['std']:.2f}.")
-        w("\nCette vérification automatique n'est **pas** une approbation : l'approbation relève de Stake Engine et, selon les marchés, d'un laboratoire de certification.\n")
-    w("## 6. Indépendance des tours\n")
-    w("Le résultat d'un tour est une fonction pure des positions d'arrêt tirées pour ce tour. Aucun paramètre ne dépend du solde, de l'historique, des gains précédents ou du comportement du joueur. Les tests `test_determinism_and_replay` et `test_independence_of_rounds_order` le vérifient ; sur Stake Engine, chaque tour est un tirage indépendant dans la table publiée.")
+        w(f"\nOfficial `engineio/math-sdk` verifier (commit `{sdk['sdk_commit'][:7]}`): submission issues: "
+          f"**{len(sdk['submission_issues'])}**; risk failures: " + ", ".join(f"{k}: {sum(len(v) for v in d.values())}" for k, d in sdk["risk_failures"].items()) + ".\n")
+    w("Limits checked by that tool (`utils/rgs_verification.py`): RTP 96.0–96.7 % per mode, one 1× base mode, cost ≤ 50 000×, "
+      "max win ≤ 1 000 000×, base standard deviation ≥ 0.6. The Stake Engine approval guidelines web page could not be read "
+      "from this environment (network), so mode-specific editorial rules (for example about bonus-chance style modes) remain to be confirmed.\n")
     with open(os.path.join(DOCS, "MATH_REPORT.md"), "w", encoding="utf-8") as f:
-        f.write("\n".join(lines) + "\n")
+        f.write("\n".join(L) + "\n")
     print("wrote docs/MATH_REPORT.md")
 
 

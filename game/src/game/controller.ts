@@ -6,6 +6,7 @@ import type { RallyScene } from '../render/scene';
 import { playBook, type Hud } from './player';
 import { game } from './state.svelte';
 import { RULES } from '../engine/rules';
+import type { ModeName } from '../engine/types';
 
 export interface AutoplayConfig {
   count: number;
@@ -36,6 +37,7 @@ export class Controller {
       game.inBonus = on;
       this.syncPanel();
     },
+    setBonusLevel: (level) => (game.bonusLevel = level),
   };
 
   private syncPanel() {
@@ -70,19 +72,24 @@ export class Controller {
     return game.phase === 'idle' && !game.modal && !game.error;
   }
 
-  async buyBonus() {
+  /** Direct buy of a bonus level (explicit mode; never random between levels). */
+  async buyBonus(mode: 'buy_tiebreak' | 'buy_super') {
     if (game.jurisdiction.disabledBuyBonus) return;
-    await this.spin(null, 'BONUS');
+    await this.spin(null, mode);
   }
 
-  async spin(force: ForcedScenario = null, mode: 'BASE' | 'BONUS' = 'BASE') {
-    if (!this.canSpin()) return;
-    const cost = mode === 'BONUS' ? RULES.buyBonus.cost : 1;
-    if (game.bet * cost > game.balance) {
+  private inFlight = false;
+
+  /** One round in `mode` (default: the spin mode selected by the player). */
+  async spin(force: ForcedScenario = null, mode: ModeName = game.spinMode) {
+    if (!this.canSpin() || this.inFlight) return; // no accidental double debit
+    const cost = RULES.modes[mode].cost;
+    if (Math.round(game.bet * cost) > game.balance) {
       game.notice = game.t.insufficient;
       setTimeout(() => (game.notice = null), 2500);
       return;
     }
+    this.inFlight = true;
     const started = performance.now();
     game.phase = 'spinning';
     game.win = 0;
@@ -92,9 +99,11 @@ export class Controller {
         (this.rgs as DemoRgs).forceNext = force;
         game.banner = game.t.forcedBanner;
       }
-      if (mode === 'BONUS') game.banner = game.t.buyBanner;
+      if (mode === 'buy_tiebreak') game.banner = game.t.buyBannerTb;
+      if (mode === 'buy_super') game.banner = game.t.buyBannerStb;
       const { balance, round } = await this.rgs.play(game.bet, mode);
       round.cost = round.cost ?? cost;
+      round.mode = round.mode ?? mode;
       game.balance = balance.amount;
       validateRound(round);
       this.lastRound = round;
@@ -112,12 +121,13 @@ export class Controller {
       const left = minMs - (performance.now() - started);
       if (left > 0) await new Promise((r) => setTimeout(r, left));
       if (game.phase === 'spinning') game.phase = 'idle';
+      this.inFlight = false;
     }
   }
 
   private async present(round: Round, quick: boolean) {
     this.scene.bet = round.amount;
-    await playBook(round.state, this.scene, this.hud, { bet: round.amount, cost: round.cost ?? 1, quick });
+    await playBook(round.state, this.scene, this.hud, { bet: round.amount, cost: round.cost ?? 1, quick, mode: (round.mode as ModeName) ?? 'base' });
   }
 
   private record(round: Round) {
@@ -126,6 +136,7 @@ export class Controller {
       time: Date.now(),
       bet: round.amount,
       cost: round.cost ?? 1,
+      mode: (round.mode as ModeName) ?? 'base',
       win: round.payout,
       payoutMultiplier: round.payoutMultiplier,
       bonus: round.state.some((e) => e.type === 'freeSpinTrigger'),
@@ -145,7 +156,7 @@ export class Controller {
     game.autoplay = { remaining: cfg.count };
     try {
       while (game.autoplay && game.autoplay.remaining > 0 && !this.stopRequested) {
-        if (game.bet > game.balance) break;
+        if (Math.round(game.bet * RULES.modes[game.spinMode].cost) > game.balance) break;
         game.autoplay = { remaining: game.autoplay.remaining - 1 };
         await this.spin();
         if (game.phase !== 'idle') break; // error or interruption
@@ -166,6 +177,11 @@ export class Controller {
     if (game.autoplay) game.autoplay = { remaining: 0 };
   }
 
+  /** Replays the last finished round (wins shown again, no effect on balance). */
+  async replayLast() {
+    if (game.history.length) await this.replay(0);
+  }
+
   /** Faithful replay of a past round from its stored book.  Purely visual. */
   async replay(entryIndex: number) {
     const e = game.history[entryIndex];
@@ -176,7 +192,7 @@ export class Controller {
     const savedWin = game.win;
     try {
       this.scene.bet = e.bet;
-      await playBook(e.events, this.scene, this.hud, { bet: e.bet, cost: e.cost ?? 1 });
+      await playBook(e.events, this.scene, this.hud, { bet: e.bet, cost: e.cost ?? 1, mode: e.mode ?? 'base' });
     } finally {
       game.banner = null;
       game.win = savedWin;
