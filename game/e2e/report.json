@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-16T00:39:15.641Z",
+  "date": "2026-11-16T01:43:35.061Z",
   "failures": 0,
   "results": [
     {
@@ -8,9 +8,39 @@
       "detail": "1920 <= 1920"
     },
     {
+      "name": "desktop-1920x1080: no vertical scroll",
+      "ok": true,
+      "detail": "1080 <= 1080"
+    },
+    {
       "name": "desktop-1920x1080: spin button fully visible",
       "ok": true,
       "detail": ""
+    },
+    {
+      "name": "desktop-1920x1080: reels fully on screen",
+      "ok": true,
+      "detail": "505,174 910x766"
+    },
+    {
+      "name": "desktop-1920x1080: no control overlaps the reels",
+      "ok": true,
+      "detail": "11 controls checked"
+    },
+    {
+      "name": "desktop-1920x1080: touch targets >= 38px",
+      "ok": true,
+      "detail": "1 smaller (demo badge allowed)"
+    },
+    {
+      "name": "desktop-1920x1080: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "desktop-1920x1080: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "151.6px per reel"
     },
     {
       "name": "desktop-1920x1080: demo badge visible",
@@ -20,22 +50,22 @@
     {
       "name": "desktop-1920x1080 spin 1: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,60 vs 0,60 (×0.6)"
+      "detail": "2,60 vs 2,60 (×2.6)"
     },
     {
       "name": "desktop-1920x1080 spin 1: balance = before - bet + payout",
       "ok": true,
-      "detail": "999,60"
+      "detail": "1 001,60"
     },
     {
       "name": "desktop-1920x1080 spin 2: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,80 vs 0,80 (×0.8)"
+      "detail": "0,50 vs 0,50 (×0.5)"
     },
     {
       "name": "desktop-1920x1080 spin 2: balance = before - bet + payout",
       "ok": true,
-      "detail": "999,40"
+      "detail": "1 001,10"
     },
     {
       "name": "desktop-1920x1080 spin 3: displayed win equals RGS payout",
@@ -45,7 +75,7 @@
     {
       "name": "desktop-1920x1080 spin 3: balance = before - bet + payout",
       "ok": true,
-      "detail": "998,40"
+      "detail": "1 000,10"
     },
     {
       "name": "desktop-1920x1080: no console errors",
@@ -58,9 +88,39 @@
       "detail": "1366 <= 1366"
     },
     {
+      "name": "laptop-1366x768: no vertical scroll",
+      "ok": true,
+      "detail": "768 <= 768"
+    },
+    {
       "name": "laptop-1366x768: spin button fully visible",
       "ok": true,
       "detail": ""
+    },
+    {
+      "name": "laptop-1366x768: reels fully on screen",
+      "ok": true,
+      "detail": "386,138 594x500"
+    },
+    {
+      "name": "laptop-1366x768: no control overlaps the reels",
+      "ok": true,
+      "detail": "11 controls checked"
+    },
+    {
+      "name": "laptop-1366x768: touch targets >= 38px",
+      "ok": true,
+      "detail": "1 smaller (demo badge allowed)"
+    },
+    {
+      "name": "laptop-1366x768: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "laptop-1366x768: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "98.9px per reel"
     },
     {
       "name": "laptop-1366x768: demo badge visible",
@@ -70,22 +130,22 @@
     {
       "name": "laptop-1366x768 spin 1: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,00 vs 0,00 (×0)"
+      "detail": "0,10 vs 0,10 (×0.1)"
     },
     {
       "name": "laptop-1366x768 spin 1: balance = before - bet + payout",
       "ok": true,
-      "detail": "999,00"
+      "detail": "999,10"
     },
     {
       "name": "laptop-1366x768 spin 2: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,20 vs 0,20 (×0.2)"
+      "detail": "0,00 vs 0,00 (×0)"
     },
     {
       "name": "laptop-1366x768 spin 2: balance = before - bet + payout",
       "ok": true,
-      "detail": "998,20"
+      "detail": "998,10"
     },
     {
       "name": "laptop-1366x768 spin 3: displayed win equals RGS payout",
@@ -95,10 +155,90 @@
     {
       "name": "laptop-1366x768 spin 3: balance = before - bet + payout",
       "ok": true,
-      "detail": "997,20"
+      "detail": "997,10"
     },
     {
       "name": "laptop-1366x768: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-se-portrait: no horizontal overflow",
+      "ok": true,
+      "detail": "320 <= 320"
+    },
+    {
+      "name": "iphone-se-portrait: no vertical scroll",
+      "ok": true,
+      "detail": "568 <= 568"
+    },
+    {
+      "name": "iphone-se-portrait: spin button fully visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-se-portrait: reels fully on screen",
+      "ok": true,
+      "detail": "8,157 304x256"
+    },
+    {
+      "name": "iphone-se-portrait: no control overlaps the reels",
+      "ok": true,
+      "detail": "10 controls checked"
+    },
+    {
+      "name": "iphone-se-portrait: touch targets >= 38px",
+      "ok": true,
+      "detail": "1 smaller (demo badge allowed)"
+    },
+    {
+      "name": "iphone-se-portrait: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-se-portrait: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "50.7px per reel"
+    },
+    {
+      "name": "iphone-se-portrait: demo badge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-se-portrait spin 1: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,00 vs 0,00 (×0)"
+    },
+    {
+      "name": "iphone-se-portrait spin 1: balance = before - bet + payout",
+      "ok": true,
+      "detail": "999,00"
+    },
+    {
+      "name": "iphone-se-portrait spin 2: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "1,00 vs 1,00 (×1)"
+    },
+    {
+      "name": "iphone-se-portrait spin 2: balance = before - bet + payout",
+      "ok": true,
+      "detail": "999,00"
+    },
+    {
+      "name": "iphone-se-portrait spin 3: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,40 vs 0,40 (×0.4)"
+    },
+    {
+      "name": "iphone-se-portrait spin 3: balance = before - bet + payout",
+      "ok": true,
+      "detail": "998,40"
+    },
+    {
+      "name": "iphone-se-portrait: no console errors",
       "ok": true,
       "detail": ""
     },
@@ -108,9 +248,39 @@
       "detail": "390 <= 390"
     },
     {
+      "name": "iphone-13-portrait: no vertical scroll",
+      "ok": true,
+      "detail": "664 <= 664"
+    },
+    {
       "name": "iphone-13-portrait: spin button fully visible",
       "ok": true,
       "detail": ""
+    },
+    {
+      "name": "iphone-13-portrait: reels fully on screen",
+      "ok": true,
+      "detail": "8,192 374x315"
+    },
+    {
+      "name": "iphone-13-portrait: no control overlaps the reels",
+      "ok": true,
+      "detail": "10 controls checked"
+    },
+    {
+      "name": "iphone-13-portrait: touch targets >= 38px",
+      "ok": true,
+      "detail": "1 smaller (demo badge allowed)"
+    },
+    {
+      "name": "iphone-13-portrait: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-13-portrait: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "62.3px per reel"
     },
     {
       "name": "iphone-13-portrait: demo badge visible",
@@ -130,25 +300,185 @@
     {
       "name": "iphone-13-portrait spin 2: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,00 vs 0,00 (×0)"
+      "detail": "0,20 vs 0,20 (×0.2)"
     },
     {
       "name": "iphone-13-portrait spin 2: balance = before - bet + payout",
       "ok": true,
-      "detail": "998,20"
+      "detail": "998,40"
     },
     {
       "name": "iphone-13-portrait spin 3: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,10 vs 0,10 (×0.1)"
+      "detail": "0,00 vs 0,00 (×0)"
     },
     {
       "name": "iphone-13-portrait spin 3: balance = before - bet + payout",
       "ok": true,
-      "detail": "997,30"
+      "detail": "997,40"
     },
     {
       "name": "iphone-13-portrait: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: no horizontal overflow",
+      "ok": true,
+      "detail": "430 <= 430"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: no vertical scroll",
+      "ok": true,
+      "detail": "740 <= 740"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: spin button fully visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: reels fully on screen",
+      "ok": true,
+      "detail": "8,227 414x349"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: no control overlaps the reels",
+      "ok": true,
+      "detail": "10 controls checked"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: touch targets >= 38px",
+      "ok": true,
+      "detail": "1 smaller (demo badge allowed)"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "69.0px per reel"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: demo badge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-14-pro-max-portrait spin 1: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,40 vs 0,40 (×0.4)"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait spin 1: balance = before - bet + payout",
+      "ok": true,
+      "detail": "999,40"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait spin 2: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,10 vs 0,10 (×0.1)"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait spin 2: balance = before - bet + payout",
+      "ok": true,
+      "detail": "998,50"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait spin 3: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,40 vs 0,40 (×0.4)"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait spin 3: balance = before - bet + payout",
+      "ok": true,
+      "detail": "997,90"
+    },
+    {
+      "name": "iphone-14-pro-max-portrait: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-13-landscape: no horizontal overflow",
+      "ok": true,
+      "detail": "750 <= 750"
+    },
+    {
+      "name": "iphone-13-landscape: no vertical scroll",
+      "ok": true,
+      "detail": "342 <= 342"
+    },
+    {
+      "name": "iphone-13-landscape: spin button fully visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-13-landscape: reels fully on screen",
+      "ok": true,
+      "detail": "154,49 328x277"
+    },
+    {
+      "name": "iphone-13-landscape: no control overlaps the reels",
+      "ok": true,
+      "detail": "10 controls checked"
+    },
+    {
+      "name": "iphone-13-landscape: touch targets >= 38px",
+      "ok": true,
+      "detail": "0 smaller (demo badge allowed)"
+    },
+    {
+      "name": "iphone-13-landscape: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-13-landscape: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "54.7px per reel"
+    },
+    {
+      "name": "iphone-13-landscape: demo badge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "iphone-13-landscape spin 1: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,00 vs 0,00 (×0)"
+    },
+    {
+      "name": "iphone-13-landscape spin 1: balance = before - bet + payout",
+      "ok": true,
+      "detail": "999,00"
+    },
+    {
+      "name": "iphone-13-landscape spin 2: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,00 vs 0,00 (×0)"
+    },
+    {
+      "name": "iphone-13-landscape spin 2: balance = before - bet + payout",
+      "ok": true,
+      "detail": "998,00"
+    },
+    {
+      "name": "iphone-13-landscape spin 3: displayed win equals RGS payout",
+      "ok": true,
+      "detail": "0,40 vs 0,40 (×0.4)"
+    },
+    {
+      "name": "iphone-13-landscape spin 3: balance = before - bet + payout",
+      "ok": true,
+      "detail": "997,40"
+    },
+    {
+      "name": "iphone-13-landscape: no console errors",
       "ok": true,
       "detail": ""
     },
@@ -158,9 +488,39 @@
       "detail": "863 <= 863"
     },
     {
+      "name": "pixel-7-landscape: no vertical scroll",
+      "ok": true,
+      "detail": "360 <= 360"
+    },
+    {
       "name": "pixel-7-landscape: spin button fully visible",
       "ok": true,
       "detail": ""
+    },
+    {
+      "name": "pixel-7-landscape: reels fully on screen",
+      "ok": true,
+      "detail": "200,49 349x294"
+    },
+    {
+      "name": "pixel-7-landscape: no control overlaps the reels",
+      "ok": true,
+      "detail": "10 controls checked"
+    },
+    {
+      "name": "pixel-7-landscape: touch targets >= 38px",
+      "ok": true,
+      "detail": "0 smaller (demo badge allowed)"
+    },
+    {
+      "name": "pixel-7-landscape: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pixel-7-landscape: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "58.2px per reel"
     },
     {
       "name": "pixel-7-landscape: demo badge visible",
@@ -180,22 +540,22 @@
     {
       "name": "pixel-7-landscape spin 2: displayed win equals RGS payout",
       "ok": true,
-      "detail": "1,10 vs 1,10 (×1.1)"
+      "detail": "0,00 vs 0,00 (×0)"
     },
     {
       "name": "pixel-7-landscape spin 2: balance = before - bet + payout",
       "ok": true,
-      "detail": "999,10"
+      "detail": "998,00"
     },
     {
       "name": "pixel-7-landscape spin 3: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,00 vs 0,00 (×0)"
+      "detail": "0,40 vs 0,40 (×0.4)"
     },
     {
       "name": "pixel-7-landscape spin 3: balance = before - bet + payout",
       "ok": true,
-      "detail": "998,10"
+      "detail": "997,40"
     },
     {
       "name": "pixel-7-landscape: no console errors",
@@ -208,9 +568,39 @@
       "detail": "810 <= 810"
     },
     {
+      "name": "ipad-portrait: no vertical scroll",
+      "ok": true,
+      "detail": "1080 <= 1080"
+    },
+    {
       "name": "ipad-portrait: spin button fully visible",
       "ok": true,
       "detail": ""
+    },
+    {
+      "name": "ipad-portrait: reels fully on screen",
+      "ok": true,
+      "detail": "12,248 786x662"
+    },
+    {
+      "name": "ipad-portrait: no control overlaps the reels",
+      "ok": true,
+      "detail": "11 controls checked"
+    },
+    {
+      "name": "ipad-portrait: touch targets >= 38px",
+      "ok": true,
+      "detail": "1 smaller (demo badge allowed)"
+    },
+    {
+      "name": "ipad-portrait: no clipped HUD text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ipad-portrait: symbol cell legible (>= 44px)",
+      "ok": true,
+      "detail": "131.0px per reel"
     },
     {
       "name": "ipad-portrait: demo badge visible",
@@ -220,32 +610,32 @@
     {
       "name": "ipad-portrait spin 1: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,10 vs 0,10 (×0.1)"
+      "detail": "0,40 vs 0,40 (×0.4)"
     },
     {
       "name": "ipad-portrait spin 1: balance = before - bet + payout",
       "ok": true,
-      "detail": "999,10"
+      "detail": "999,40"
     },
     {
       "name": "ipad-portrait spin 2: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,10 vs 0,10 (×0.1)"
+      "detail": "1,60 vs 1,60 (×1.6)"
     },
     {
       "name": "ipad-portrait spin 2: balance = before - bet + payout",
       "ok": true,
-      "detail": "998,20"
+      "detail": "1 000,00"
     },
     {
       "name": "ipad-portrait spin 3: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,00 vs 0,00 (×0)"
+      "detail": "0,80 vs 0,80 (×0.8)"
     },
     {
       "name": "ipad-portrait spin 3: balance = before - bet + payout",
       "ok": true,
-      "detail": "997,20"
+      "detail": "999,80"
     },
     {
       "name": "ipad-portrait: no console errors",
@@ -265,7 +655,7 @@
     {
       "name": "bonus: displayed total win equals payout",
       "ok": true,
-      "detail": "24,10 vs 24,10"
+      "detail": "86,40 vs 86,40"
     },
     {
       "name": "replay does not change the balance",
@@ -285,7 +675,7 @@
     {
       "name": "bonus buy: balance = before - 100 x bet + payout",
       "ok": true,
-      "detail": "974,60"
+      "detail": "1 180,90"
     },
     {
       "name": "bonus buy: displayed win equals payout",
@@ -330,7 +720,7 @@
     {
       "name": "interrupted round is resumed and settled exactly once",
       "ok": true,
-      "detail": "999,00 vs 999,00"
+      "detail": "999,80 vs 999,80"
     },
     {
       "name": "no active round left after resume",
@@ -340,17 +730,17 @@
     {
       "name": "reduced-motion: displayed win equals RGS payout",
       "ok": true,
-      "detail": "0,00 vs 0,00 (×0)"
+      "detail": "2,80 vs 2,80 (×2.8)"
     },
     {
       "name": "reduced-motion: balance = before - bet + payout",
       "ok": true,
-      "detail": "999,00"
+      "detail": "1 001,80"
     },
     {
       "name": "reduced motion: round presentation is short",
       "ok": true,
-      "detail": "1915 ms"
+      "detail": "4815 ms"
     },
     {
       "name": "reduced motion: no console errors",
