@@ -14,7 +14,7 @@
   const t = $derived(game.t);
   const M = RULES.modes;
   const lv = RULES.bonusLevels;
-  let confirm = $state<null | 'buy_tiebreak' | 'buy_super'>(null);
+  let confirm = $state<null | 'buy_rally' | 'buy_final'>(null);
   const price = (m: ModeName) => Math.round(game.bet * M[m].cost);
   const fmtMoney = (v: number) => money(v, game.currency, game.prefs.lang);
   const rtp = (m: ModeName) => (M[m].rtp ? (M[m].rtp! * 100).toFixed(2) : '—');
@@ -39,11 +39,11 @@
 {#if confirm}
   {@const m = confirm}
   <div class="confirm" data-testid="buy-confirm-step">
-    <img src={emblem} alt="" class:super={m === 'buy_super'} />
-    <h3 class:super={m === 'buy_super'}>{m === 'buy_super' ? t.modeBuyStb : t.modeBuyTb}</h3>
+    <img src={emblem} alt="" class:super={m === 'buy_final'} />
+    <h3 class:super={m === 'buy_final'}>{m === 'buy_final' ? t.modeBuyStb : t.modeBuyTb}</h3>
     <p class="big" data-testid="buy-price">{fmtMoney(price(m))}</p>
-    <p>{fmt(t.confirmText, { mode: m === 'buy_super' ? t.modeBuyStb : t.modeBuyTb, amount: fmtMoney(price(m)), x: M[m].cost, bet: fmtMoney(game.bet) })}</p>
-    <p class="small">{fmt(m === 'buy_super' ? t.modeBuyStbDesc : t.modeBuyTbDesc, { n: M[m].spins ?? '', m: lv[M[m].level ?? 'tiebreak'].startMultiplier })}</p>
+    <p>{fmt(t.confirmText, { mode: m === 'buy_final' ? t.modeBuyStb : t.modeBuyTb, amount: fmtMoney(price(m)), x: M[m].cost, bet: fmtMoney(game.bet) })}</p>
+    <p class="small">{fmt(m === 'buy_final' ? t.modeBuyStbDesc : t.modeBuyTbDesc, { n: M[m].spins ?? '' })}</p>
     {#if showRtp}<p class="small">{fmt(t.buyRtp, { rtp: rtp(m) })}</p>{/if}
     {#if price(m) > game.balance}<p class="warn">{t.insufficient}</p>{/if}
     <div class="actions">
@@ -68,7 +68,7 @@
     {#if chance}
       <article class="card chance" class:on={game.spinMode === 'bonus_chance'}>
         <header><img src={scatter} alt="" /><h3>{t.modeChance}</h3><span class="x">×{M.bonus_chance.cost}</span></header>
-        <p class="desc">{fmt(t.modeChanceDesc, { x: M.bonus_chance.cost, b: oneIn(M.bonus_chance.bonusOneIn), b0: oneIn(M.base.bonusOneIn), s: oneIn(M.bonus_chance.superOneIn), s0: oneIn(M.base.superOneIn) })}</p>
+        <p class="desc">{fmt(t.modeChanceDesc, { x: M.bonus_chance.cost, b: oneIn(M.bonus_chance.bonusOneIn), b0: oneIn(M.base.bonusOneIn), s: oneIn(M.bonus_chance.finalOneIn), s0: oneIn(M.base.finalOneIn) })}</p>
         <dl>
           <dt>{t.modeSpinCost}</dt><dd>{fmtMoney(price('bonus_chance'))}</dd>
           {#if showRtp}<dt>RTP</dt><dd>{rtp('bonus_chance')} %</dd>{/if}
@@ -79,22 +79,22 @@
 
     {#if buys}
       <article class="card buy">
-        <header><img src={emblem} alt="" /><h3>{t.modeBuyTb}</h3><span class="x">×{M.buy_tiebreak.cost}</span></header>
-        <p class="desc">{fmt(t.modeBuyTbDesc, { n: M.buy_tiebreak.spins ?? '', m: lv.tiebreak.startMultiplier })}</p>
+        <header><img src={emblem} alt="" /><h3>{t.modeBuyTb}</h3><span class="x">×{M.buy_rally.cost}</span></header>
+        <p class="desc">{fmt(t.modeBuyTbDesc, { n: M.buy_rally.spins ?? '' })}</p>
         <dl>
-          <dt>{t.colCost}</dt><dd>{fmtMoney(price('buy_tiebreak'))}</dd>
-          {#if showRtp}<dt>RTP</dt><dd>{rtp('buy_tiebreak')} %</dd>{/if}
+          <dt>{t.colCost}</dt><dd>{fmtMoney(price('buy_rally'))}</dd>
+          {#if showRtp}<dt>RTP</dt><dd>{rtp('buy_rally')} %</dd>{/if}
         </dl>
-        <button class="sel buy-btn" onclick={() => (confirm = 'buy_tiebreak')} disabled={price('buy_tiebreak') > game.balance} data-testid="buy-tb">{t.modeBuy}</button>
+        <button class="sel buy-btn" onclick={() => (confirm = 'buy_rally')} disabled={price('buy_rally') > game.balance} data-testid="buy-tb">{t.modeBuy}</button>
       </article>
       <article class="card buy super">
-        <header><img src={emblem} alt="" /><h3>{t.modeBuyStb}</h3><span class="x">×{M.buy_super.cost}</span></header>
-        <p class="desc">{fmt(t.modeBuyStbDesc, { n: M.buy_super.spins ?? '', m: lv.super.startMultiplier })}</p>
+        <header><img src={emblem} alt="" /><h3>{t.modeBuyStb}</h3><span class="x">×{M.buy_final.cost}</span></header>
+        <p class="desc">{fmt(t.modeBuyStbDesc, { n: M.buy_final.spins ?? '' })}</p>
         <dl>
-          <dt>{t.colCost}</dt><dd>{fmtMoney(price('buy_super'))}</dd>
-          {#if showRtp}<dt>RTP</dt><dd>{rtp('buy_super')} %</dd>{/if}
+          <dt>{t.colCost}</dt><dd>{fmtMoney(price('buy_final'))}</dd>
+          {#if showRtp}<dt>RTP</dt><dd>{rtp('buy_final')} %</dd>{/if}
         </dl>
-        <button class="sel buy-btn" onclick={() => (confirm = 'buy_super')} disabled={price('buy_super') > game.balance} data-testid="buy-stb">{t.modeBuy}</button>
+        <button class="sel buy-btn" onclick={() => (confirm = 'buy_final')} disabled={price('buy_final') > game.balance} data-testid="buy-stb">{t.modeBuy}</button>
       </article>
     {/if}
   </div>

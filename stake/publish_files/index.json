@@ -13,16 +13,16 @@
             "weights": "lookUpTable_bonus_chance_0.csv"
         },
         {
-            "name": "buy_tiebreak",
-            "cost": 49.4,
-            "events": "books_buy_tiebreak.jsonl.zst",
-            "weights": "lookUpTable_buy_tiebreak_0.csv"
+            "name": "buy_rally",
+            "cost": 48.8,
+            "events": "books_buy_rally.jsonl.zst",
+            "weights": "lookUpTable_buy_rally_0.csv"
         },
         {
-            "name": "buy_super",
-            "cost": 105.0,
-            "events": "books_buy_super.jsonl.zst",
-            "weights": "lookUpTable_buy_super_0.csv"
+            "name": "buy_final",
+            "cost": 106.8,
+            "events": "books_buy_final.jsonl.zst",
+            "weights": "lookUpTable_buy_final_0.csv"
         }
     ]
 }

@@ -1,4 +1,8 @@
-# Golden Rally — Match Point · Conception du jeu (v5)
+# Golden Rally — The Final Set · Conception du jeu (v6)
+
+## v6 : THE FINAL SET
+
+Les bonus sont désormais des matchs joués sur la grille (Court Control, Power Shots, marques, Grand Slam, Hawk-Eye, Championship Point) : voir [FINAL_SET_DESIGN.md](FINAL_SET_DESIGN.md) et [GAME_MODES.md](GAME_MODES.md). Les sections ci-dessous sont l'historique.
 
 ## v5 : 11 symboles colorés, deux bonus, quatre modes
 

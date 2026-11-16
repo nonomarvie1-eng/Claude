@@ -55,9 +55,9 @@ describe('DemoRgs (play money)', () => {
   });
 
   it.each([
-    ['buy_tiebreak', 'tiebreak', 3, 1],
-    ['buy_super', 'super', 4, 2],
-  ] as const)('%s debits bet x cost and always gives exactly its bonus level', async (mode, level, k, start) => {
+    ['buy_rally', 'rally', 3],
+    ['buy_final', 'final', 4],
+  ] as const)('%s debits bet x cost and always gives exactly its bonus', async (mode, level, k) => {
     const cost = RULES.modes[mode].cost;
     for (let i = 0; i < 25; i++) {
       const rgs = new DemoRgs(memoryStorage());
@@ -66,11 +66,13 @@ describe('DemoRgs (play money)', () => {
       expect(round.cost).toBe(cost);
       const reveal = round.state[0] as { board: string[][] };
       expect(reveal.board.flat().filter((x) => x === 'S').length).toBe(k);
-      const trig = round.state.find((e) => e.type === 'freeSpinTrigger') as { bought?: boolean; level: string; startMultiplier: number; totalFs: number };
+      const trig = round.state.find((e) => e.type === 'bonusStart') as { bought?: boolean; bonus: string; exchanges: number };
       expect(trig.bought).toBe(true);
-      expect(trig.level).toBe(level);
-      expect(trig.startMultiplier).toBe(start);
-      expect(trig.totalFs).toBe(RULES.fsAward[String(k)]);
+      expect(trig.bonus).toBe(level);
+      expect(trig.exchanges).toBe(RULES.fsAward[String(k)]);
+      // the bonus really plays its own mechanics: Hawk-Eye / championship point only in the Grand Final
+      const hasCp = round.state.some((e) => e.type === 'exchangeStart' && (e as { championshipPoint: boolean }).championshipPoint);
+      expect(hasCp).toBe(level === 'final');
       const end = await rgs.endRound();
       expect(end.balance.amount).toBe(DEMO_START_BALANCE - Math.round(cost * 1_000_000) + round.payout);
     }
@@ -80,9 +82,9 @@ describe('DemoRgs (play money)', () => {
 
   it('a second play while a bought round is active is refused (no double debit)', async () => {
     const rgs = new DemoRgs(memoryStorage());
-    await rgs.play(1_000_000, 'buy_tiebreak');
-    await expect(rgs.play(1_000_000, 'buy_tiebreak')).rejects.toMatchObject({ code: 'ERR_VAL' });
-    expect((await rgs.balance()).amount).toBe(DEMO_START_BALANCE - Math.round(RULES.modes.buy_tiebreak.cost * 1_000_000));
+    await rgs.play(1_000_000, 'buy_rally');
+    await expect(rgs.play(1_000_000, 'buy_rally')).rejects.toMatchObject({ code: 'ERR_VAL' });
+    expect((await rgs.balance()).amount).toBe(DEMO_START_BALANCE - Math.round(RULES.modes.buy_rally.cost * 1_000_000));
   });
 
   it('bonus_chance debits 1.4x and uses the bonus-chance reels; unknown modes are refused', async () => {
@@ -115,7 +117,7 @@ describe('DemoRgs (play money)', () => {
     for (const f of ['bonus3', 'bonus4', 'bonus5'] as const) {
       rgs.forceNext = f;
       const { round } = await rgs.play(1_000_000, 'base');
-      const trig = round.state.find((e) => e.type === 'freeSpinTrigger');
+      const trig = round.state.find((e) => e.type === 'bonusStart');
       expect(trig).toBeTruthy();
       expect(round.forced).toBe(f);
       await rgs.endRound();

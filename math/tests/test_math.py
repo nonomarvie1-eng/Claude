@@ -74,7 +74,7 @@ def test_pays_rgs_compatible_and_monotonic():
     for k in range(3, 7):
         hi = [C.PAYTABLE[f"H{i}"][k] for i in range(1, 5)]
         assert hi == sorted(hi, reverse=True)
-    assert C.RALLY_LADDER == sorted(C.RALLY_LADDER) and C.RALLY_LADDER[0] == 1
+    assert all(v >= 0 for v in C.FINAL_SET["COURT_VALUE"].values())
 
 
 @pytest.mark.parametrize("rs", [BASE, FREE, C.bonus_chance_reels()])
@@ -107,6 +107,7 @@ def test_book_consistency():
         fin = [e for e in b["events"] if e["type"] == "finalWin"]
         assert len(fin) == 1 and fin[0]["amount"] == b["payoutMultiplier"]
         s = sum(e["totalWin"] for e in b["events"] if e["type"] == "winInfo")
+        s += sum(e["win"] for e in b["events"] if e["type"] == "shot")
         assert min(s, C.WINCAP_T * 10) == b["payoutMultiplier"]
         for e in b["events"]:
             if e["type"] == "winInfo":
@@ -134,33 +135,6 @@ def _free_stops(pred, seed=4):
         s = [int(rng.integers(0, n)) for n in FREE.lengths]
         if pred(E.window(FREE.strips, s)):
             return s
-
-
-def test_rally_multiplier_applies_on_same_spin(monkeypatch):
-    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
-    st = _free_stops(lambda b: len(E.positions_of(b, C.WILD)) == 1 and E.evaluate_ways(b) and not E.positions_of(b, C.SCATTER))
-    b = E.window(FREE.strips, st)
-    lw = sum(w.base_pay for w in E.evaluate_ways(b))
-    n = C.FS_AWARD[3]
-    r = play_round(list_drawer([st] * n), BASE, FREE, forced_base_stops=_base_with_scatters(3))
-    top = len(C.RALLY_LADDER) - 1
-    assert r.free_t == sum(lw * C.RALLY_LADDER[min(i, top)] for i in range(1, n + 1))
-    assert r.final_multiplier == C.RALLY_LADDER[min(n, top)]
-
-
-def test_retrigger_and_max_remaining(monkeypatch):
-    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
-    sc = _free_stops(lambda b: len(E.positions_of(b, C.SCATTER)) >= 3)
-    no = _free_stops(lambda b: len(E.positions_of(b, C.SCATTER)) == 0)
-    rem, adds = C.FS_AWARD[3], []
-    for _ in range(12):
-        rem -= 1
-        a = min(C.FS_RETRIGGER, C.FS_MAX_REMAINING - rem)
-        rem += max(a, 0)
-        adds.append(a)
-    r = play_round(list_drawer([sc] * 12 + [no] * rem), BASE, FREE, forced_base_stops=_base_with_scatters(3))
-    assert r.fs_spins == 12 + rem
-    assert [e["added"] for e in r.events if e["type"] == "freeSpinRetrigger"] == [a for a in adds if a > 0]
 
 
 def test_wincap(monkeypatch):
@@ -210,13 +184,14 @@ def exact():
 def test_exact_rtp_in_stake_limits(exact):
     for name, m in exact["modes"].items():
         assert 0.960 <= m["rtp"] <= 0.967, (name, m["rtp"])
-    assert exact["markov_residual"] < 1e-8
+    for k, v in exact["bonus_by_trigger"].items():
+        assert v["se_x"] < 0.06, (k, v["se_x"])  # bonus values measured precisely enough
     # every mode within 0.5 percentage point of the base game
     rtps = [m["rtp"] for m in exact["modes"].values()]
     assert max(rtps) - min(rtps) < 0.005
 
 
-@pytest.mark.parametrize("mode,n", [("base", 4_000_000), ("bonus_chance", 4_000_000), ("buy_tiebreak", 300_000), ("buy_super", 300_000)])
+@pytest.mark.parametrize("mode,n", [("base", 4_000_000), ("bonus_chance", 4_000_000), ("buy_rally", 300_000), ("buy_final", 300_000)])
 def test_simulation_consistent_with_exact(exact, mode, n):
     from rally_math.simulate import run
 
@@ -226,7 +201,7 @@ def test_simulation_consistent_with_exact(exact, mode, n):
     assert abs(z) < 4, (mode, z)
     if mode in ("base", "bonus_chance"):
         assert rep["bonus_1_in"] == pytest.approx(e["bonus_1_in"], rel=0.06)
-        assert rep["tiebreak_1_in"] == pytest.approx(e["tiebreak_1_in"], rel=0.06)
+        assert rep["tiebreak_1_in"] == pytest.approx(e["rally_1_in"], rel=0.06)
 
 
 # ---------------------------------------------------------------- export
@@ -252,48 +227,18 @@ def test_small_export_is_valid(tmp_path, exact):
         for row, bk in zip(rows, books):
             assert int(row[0]) == bk["id"] and int(row[2]) == bk["payoutMultiplier"] and int(row[1]) > 0
             if m["name"] in C.BUY_SCATTERS:
-                trig = [e for e in bk["events"] if e["type"] == "freeSpinTrigger"]
-                assert len(trig) == 1 and trig[0]["level"] == C.bonus_level(C.BUY_SCATTERS[m["name"]])
+                trig = [e for e in bk["events"] if e["type"] == "bonusStart"]
+                assert len(trig) == 1 and trig[0]["bonus"] == C.bonus_level(C.BUY_SCATTERS[m["name"]])
 
 
 # ---------------------------------------------------------------- bonus levels, buys, bonus chance
-
-@pytest.mark.parametrize("k,level,start", [(3, "tiebreak", 1), (4, "super", 2), (5, "super", 2), (6, "super", 2)])
-def test_bonus_level_by_scatter_count(monkeypatch, k, level, start):
-    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
-    rng = np.random.default_rng(k)
-    try:
-        st = _base_with_scatters(k, seed=k)
-    except Exception:
-        pytest.skip("count not reachable")
-    r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=st)
-    trig = [e for e in r.events if e["type"] == "freeSpinTrigger"][0]
-    assert trig["level"] == level and trig["startMultiplier"] == start and trig["totalFs"] == C.FS_AWARD[k]
-    # first multiplier shown in the bonus is never below the start multiplier
-    mults = [e["multiplier"] for e in r.events if e["type"] == "winInfo" and e.get("gameType") == "freegame"]
-    assert all(m >= start for m in mults)
-
-
-def test_super_multiplier_one_step_up(monkeypatch):
-    """Same free spins, Super Tie-Break: ladder position is exactly one step higher."""
-    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
-    rng = np.random.default_rng(8)
-    free_seq = [[int(rng.integers(0, n)) for n in FREE.lengths] for _ in range(60)]
-    r3 = play_round(list_drawer(free_seq), BASE, FREE, forced_base_stops=_base_with_scatters(3))
-    r4 = play_round(list_drawer(free_seq), BASE, FREE, forced_base_stops=_base_with_scatters(4))
-    up3 = [e["multiplier"] for e in r3.events if e["type"] == "rallyUp"]
-    up4 = [e["multiplier"] for e in r4.events if e["type"] == "rallyUp"]
-    lad = C.RALLY_LADDER
-    for a, b in zip(up3, up4):
-        assert lad.index(b) == min(lad.index(a) + 1, len(lad) - 1)
-
 
 def test_buy_modes_guarantee_their_level():
     rng = np.random.default_rng(21)
     for mode, k in C.BUY_SCATTERS.items():
         r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=_base_with_scatters(k), mode=mode)
-        trig = [e for e in r.events if e["type"] == "freeSpinTrigger"][0]
-        assert trig["bought"] is True and trig["level"] == C.bonus_level(k) and trig["totalFs"] == C.FS_AWARD[k]
+        trig = [e for e in r.events if e["type"] == "bonusStart"][0]
+        assert trig["bought"] is True and trig["bonus"] == C.bonus_level(k) and trig["exchanges"] == C.FS_AWARD[k]
         with pytest.raises(AssertionError):
             play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=_base_with_scatters(k + 1), mode=mode)
 
@@ -310,7 +255,7 @@ def test_buy_conditional_draw_has_exact_scatter_count():
 
 def test_bonus_chance_raises_bonus_probability(exact):
     b, c = exact["modes"]["base"], exact["modes"]["bonus_chance"]
-    assert c["p_bonus"] > 1.5 * b["p_bonus"] and c["p_super"] > b["p_super"]
+    assert c["p_bonus"] > 1.5 * b["p_bonus"] and c["p_final"] > b["p_final"]
     assert c["cost"] == C.BONUS_CHANCE_COST > 1
     # same symbols and pays: only the scatter count per reel differs
     bc = C.bonus_chance_reels()
@@ -326,3 +271,219 @@ def test_buy_prices_derived_from_exact_expectation(exact):
         m = exact["modes"][mode]
         assert m["cost"] == C.mode_costs()[mode]
         assert abs(m["cost"] - m["fair_cost_at_96_5"]) / m["fair_cost_at_96_5"] < 0.005
+
+
+# ---------------------------------------------------------------- THE FINAL SET (Court Control, Power Shots, Hawk-Eye)
+
+from rally_math import bonus as B  # noqa: E402
+
+FS = C.FINAL_SET
+
+
+def test_court_geometry():
+    cells = [c for z in range(6) for c in B.zone_cells(z)]
+    assert sorted(cells) == [(r, row) for r in range(6) for row in range(5)]  # 6 zones partition the 30 cells
+    assert [len(B.zone_cells(z)) for z in range(6)] == [6, 6, 6, 4, 4, 4]
+    assert B.neighbours(1) == [0, 2, 4] and B.neighbours(3) == [4, 0]
+    for path in B.PASS_PATHS:  # diagonal: crosses the court, both depths, three different columns
+        assert len({z % 3 for z in path}) == 3 and {z // 3 for z in path} == {0, 1}
+
+
+def test_shot_tables():
+    for k in ("RALLY_TABLE", "FINAL_TABLE", "CP_TABLE"):
+        assert sum(FS[k].values()) == FS["SHOT_ROLL"]
+    assert FS["CP_TABLE"]["RALLY"] == 0  # championship point = power shots only
+    power = lambda t: FS["SHOT_ROLL"] - FS[t]["RALLY"]  # noqa: E731
+    assert power("FINAL_TABLE") > power("RALLY_TABLE")
+
+
+def _free_zero():
+    stops = [0] * C.NUM_REELS
+    board = E.window(FREE.strips, stops)
+    vals, scs = B.court_values(board)
+    return stops, vals, scs
+
+
+def _aux(shot, **kw):
+    a = [0] * len(B.AUX_LEN)
+    a[0] = kw.pop("roll")
+    names = [n for n, _ in B.AUX]
+    for k, v in kw.items():
+        a[names.index(k)] = v
+    return a
+
+
+def _roll(table, shot):
+    acc = 0
+    for sname in B.SHOTS:
+        if sname == shot:
+            return acc
+        acc += FS[table][sname]
+
+
+def _play(level, exchanges_aux, monkeypatch, exchanges=None):
+    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
+    stops, vals, scs = _free_zero()
+    k = 3 if level == "rally" else 4
+    seq = []
+    for aux in exchanges_aux:
+        seq += [stops, aux]
+    # pad with plain RALLY shots on a zone without scatter until the round ends
+    z0 = next(z for z in range(6) if scs[z] == 0)
+    pad = _aux("RALLY", roll=_roll("RALLY_TABLE" if level == "rally" else "FINAL_TABLE", "RALLY"), zone6=z0, line=999)
+    seq += [stops, pad] * 60
+    cp_pad = _aux("ACE", roll=_roll("CP_TABLE", "ACE"), deep3=0, line=999)
+    r = play_round(list_drawer(seq), BASE, FREE, forced_base_stops=_base_with_scatters(k))
+    return r, vals, scs, cp_pad
+
+
+def test_each_shot_hits_the_rule_zones(monkeypatch):
+    stops, vals, scs = _free_zero()
+    rt = "RALLY_TABLE"
+    cases = [
+        ("RALLY", dict(zone6=4), [4]),
+        ("ACE", dict(deep3=2), [2]),
+        ("SMASH", dict(zone6=1), [1, 0, 2, 4]),
+        ("PASSING", dict(path4=3), [5, 4, 0]),
+        ("DROP", dict(short3=1), [4]),
+        ("GOLDEN", dict(gr_n=1, gr1=0, gr2=5, gr3=5, gr4=2, gr5=3), [0, 5, 5, 2, 3]),
+    ]
+    for shot, kw, zones in cases:
+        aux = _aux(shot, roll=_roll(rt, shot), line=999, **kw)
+        r, *_ = _play("rally", [aux], monkeypatch)
+        ev = [e for e in r.events if e["type"] == "shot"][0]
+        assert ev["shot"] == shot and ev["path"] == zones, (shot, ev["path"])
+        expect = sum(vals[z] for z in zones) * 10
+        expect += (FS["ACE_PRIZE"] * 10 if shot == "ACE" else 0)
+        assert ev["win"] == expect + (FS["SLAM_PRIZE"] * 10 if ev["grandSlam"] else 0), shot
+        assert [h["value"] for h in ev["hits"]] == [vals[z] * 10 for z in zones]
+        assert [h["cells"] for h in ev["hits"]] == [[{"reel": a, "row": b} for a, b in B.zone_cells(z)] for z in zones]
+
+
+def test_marks_prize_and_expiry(monkeypatch):
+    rt = "RALLY_TABLE"
+    ace = _aux("ACE", roll=_roll(rt, "ACE"), deep3=1, line=999)          # marks DC for ACE_MARK exchanges
+    stops, vals, scs = _free_zero()
+    other = next(z for z in (0, 2, 3, 5) if scs[z] == 0)
+    miss = _aux("RALLY", roll=_roll(rt, "RALLY"), zone6=other, line=999)
+    hit = _aux("RALLY", roll=_roll(rt, "RALLY"), zone6=1, line=999)
+    # mark still alive after ACE_MARK - 1 misses -> the hit pays MARK_PRIZE
+    r, *_ = _play("rally", [ace] + [miss] * (FS["ACE_MARK"] - 1) + [hit], monkeypatch)
+    shots = [e for e in r.events if e["type"] == "shot"]
+    assert shots[FS["ACE_MARK"]]["hits"][0]["markPrize"] == FS["MARK_PRIZE"] * 10
+    # after ACE_MARK misses the mark has expired -> no prize, and a markExpire event was emitted
+    r, *_ = _play("rally", [ace] + [miss] * FS["ACE_MARK"] + [hit], monkeypatch)
+    shots = [e for e in r.events if e["type"] == "shot"]
+    assert shots[FS["ACE_MARK"] + 1]["hits"][0]["markPrize"] == 0
+    assert any(e["type"] == "markExpire" and 1 in e["zones"] for e in r.events)
+
+
+def test_drop_shot_doubles_scatter_extensions(monkeypatch):
+    stops, vals, scs = _free_zero()
+    rt = "RALLY_TABLE"
+    for z in (3, 4, 5):
+        aux = _aux("DROP", roll=_roll(rt, "DROP"), short3=z - 3, line=999)
+        r, *_ = _play("rally", [aux], monkeypatch)
+        ev = [e for e in r.events if e["type"] == "shot"][0]
+        assert ev["hits"][0]["extraExchanges"] == 2 * scs[z]
+        assert ev["marksSet"] == [{"zone": z, "duration": FS["DROP_MARK"]}]
+
+
+def test_hawk_eye_in_and_out(monkeypatch):
+    ft = "FINAL_TABLE"
+    stops, vals, scs = _free_zero()
+    base_ex = C.FS_AWARD[4]
+    aux_in = _aux("RALLY", roll=_roll(ft, "RALLY"), zone6=0, line=0, call=0)
+    r, *_ = _play("final", [aux_in], monkeypatch)
+    ev = [e for e in r.events if e["type"] == "shot"][0]
+    he = [e for e in r.events if e["type"] == "hawkEye"][0]
+    assert he["call"] == "in" and ev["win"] == (vals[0] + FS["HAWK_PRIZE"]) * 10 and ev["marksSet"][0]["zone"] == 0
+    aux_out = _aux("RALLY", roll=_roll(ft, "RALLY"), zone6=0, line=0, call=999)
+    r, *_ = _play("final", [aux_out], monkeypatch)
+    ev = [e for e in r.events if e["type"] == "shot"][0]
+    he = [e for e in r.events if e["type"] == "hawkEye"][0]
+    assert he["call"] == "out" and ev["win"] == 0 and ev["hits"] == [] and he["replay"] is True
+    assert r.fs_spins == base_ex + 1  # the point is replayed
+    # never in the Rally Challenge
+    r, *_ = _play("rally", [_aux("RALLY", roll=_roll("RALLY_TABLE", "RALLY"), zone6=0, line=0, call=0)], monkeypatch)
+    assert not [e for e in r.events if e["type"] == "hawkEye"]
+
+
+def test_grand_slam_pays_and_clears(monkeypatch):
+    rt = "RALLY_TABLE"
+    gold = _aux("GOLDEN", roll=_roll(rt, "GOLDEN"), gr_n=FS["GR_MAX"] - FS["GR_MIN"], line=999,
+                **{f"gr{i + 1}": i % 6 for i in range(FS["GR_MAX"])})
+    r, *_ = _play("rally", [gold], monkeypatch)
+    ev = [e for e in r.events if e["type"] == "shot"][0]
+    assert ev["grandSlam"] is True and any(e["type"] == "grandSlam" for e in r.events)
+    end = [e for e in r.events if e["type"] == "exchangeEnd"][0]
+    assert end["marks"] == [0] * 6
+
+
+def test_championship_point_uses_power_table(monkeypatch):
+    monkeypatch.setattr(C, "WINCAP_T", 10 ** 12)
+    rng = np.random.default_rng(12)
+    for _ in range(30):
+        r = play_round(numpy_drawer(rng), BASE, FREE, forced_base_stops=_base_with_scatters(4))
+        starts = [e for e in r.events if e["type"] == "exchangeStart"]
+        shots = [e for e in r.events if e["type"] == "shot"]
+        for s0, sh in zip(starts, shots):
+            assert s0["championshipPoint"] == (s0["remaining"] == 0)
+            if s0["championshipPoint"]:
+                assert sh["shot"] != "RALLY"
+        assert starts[-1]["championshipPoint"]  # the last exchange is always a championship point
+
+
+def test_vectorised_bonus_equals_reference_engine():
+    from rally_math.export_stake import conditional_base_stops, stops_of
+    from rally_math.simulate import play_vec
+
+    rng = np.random.Generator(np.random.PCG64(77))
+    bc, fc = E.count_tables(BASE.strips), E.count_tables(FREE.strips)
+    for k in (3, 4, 5):
+        bs, _ = conditional_base_stops(BASE.strips, k, rng, 400)
+        log = []
+        r = play_vec(rng, bs, bc, fc, FREE.lengths, log, free=FREE)
+        for i in range(400):
+            seq = stops_of(i, bs, log)
+            res = play_round(list_drawer(seq[1:]), BASE, FREE, True, forced_base_stops=seq[0])
+            assert res.total_t == int(r["total"][i])
+            assert res.bonus_stats["slam"] == int(r["bonus_stats"]["slam"][np.searchsorted(r["bonus_idx"], i)])
+
+
+def test_seeded_rounds_are_reproducible():
+    a = play_round(numpy_drawer(np.random.default_rng(2024)), BASE, FREE, forced_base_stops=_base_with_scatters(4))
+    b = play_round(numpy_drawer(np.random.default_rng(2024)), BASE, FREE, forced_base_stops=_base_with_scatters(4))
+    assert a.events == b.events
+    c = play_round(list_drawer(a.stops[1:]), BASE, FREE, forced_base_stops=a.stops[0])
+    assert c.events == a.events  # exact replay from the recorded draws
+
+
+def test_event_frequencies_match_tables():
+    from rally_math.bonus import play_bonus_vec
+
+    rng = np.random.Generator(np.random.PCG64(5))
+    n = 200_000
+    r = play_bonus_vec(rng, np.zeros(n, dtype=np.int64), np.full(n, C.FS_AWARD[3]), np.zeros(n, dtype=np.int64), FREE)
+    ex = r["played"].sum()
+    for sname in B.SHOTS:
+        p = FS["RALLY_TABLE"][sname] / FS["SHOT_ROLL"]
+        assert abs(r[sname].sum() / ex - p) < 5 * (p * (1 - p) / ex) ** 0.5, sname
+    assert r["hawk"].sum() == 0
+    r = play_bonus_vec(rng, np.ones(n, dtype=np.int64), np.full(n, C.FS_AWARD[4]), np.zeros(n, dtype=np.int64), FREE)
+    ex, cp = r["played"].sum(), r["cp"].sum()
+    for sname in B.SHOTS:
+        p = ((ex - cp) * FS["FINAL_TABLE"][sname] + cp * FS["CP_TABLE"][sname]) / ex / FS["SHOT_ROLL"]
+        assert abs(r[sname].sum() / ex - p) < 5 * (p * (1 - p) / ex) ** 0.5, sname
+    eligible = r["RALLY"].sum() + r["ACE"].sum() + r["DROP"].sum()
+    q = FS["P_LINE"] / 1000
+    assert abs(r["hawk"].sum() / eligible - q) < 5 * (q * (1 - q) / eligible) ** 0.5
+    qi = FS["P_IN"] / 1000
+    h = r["hawk"].sum()
+    assert abs(r["hawk_in"].sum() / h - qi) < 5 * (qi * (1 - qi) / h) ** 0.5
+
+
+def test_grand_final_more_favourable(exact):
+    bt = exact["bonus_by_trigger"]
+    assert bt["4"]["E_x"] > 1.8 * bt["3"]["E_x"]
+    assert bt["4"]["exchanges"] > bt["3"]["exchanges"]

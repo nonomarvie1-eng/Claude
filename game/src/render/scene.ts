@@ -5,7 +5,8 @@ import { Application, BlurFilter, Container, FillGradient, Graphics, Sprite, Tex
 import { audio } from '../audio/audio';
 import { STRIPS } from '../engine/engine';
 import { RULES } from '../engine/rules';
-import type { Board, BonusLevel, GameType, ModeName, Position, SymbolName, WinLine } from '../engine/types';
+import type { Board, BonusLevel, BookEvent, GameType, ModeName, Position, SymbolName, WinLine } from '../engine/types';
+import { Match } from './match';
 import type { View, WinTier } from '../game/player';
 import { money } from '../game/format';
 import type { Strings } from '../i18n/strings';
@@ -19,12 +20,12 @@ const pngs = (import.meta.env.VITE_NO_PNG_FALLBACK === '1'
   ? {}
   : import.meta.glob('../assets/img-png/*.png', { eager: false, query: '?url', import: 'default' })) as Record<string, () => Promise<string>>;
 
-const CELL = 170;
+export const CELL = 170;
 const NR = RULES.reels;
 const NROWS = RULES.rows;
-const FRAME_M = 30;
-const FRAME_W = NR * CELL + 2 * FRAME_M;
-const FRAME_H = NROWS * CELL + 2 * FRAME_M;
+export const FRAME_M = 30;
+export const FRAME_W = NR * CELL + 2 * FRAME_M;
+export const FRAME_H = NROWS * CELL + 2 * FRAME_M;
 const SYM_SIZE = 164;
 const PLATE_H = 64; // win plate, centred on the frame's bottom edge (board units)
 
@@ -148,11 +149,11 @@ export class RallyScene implements View {
   insets: Insets = { top: 0, bottom: 0 };
   layoutInfo: SceneLayout | null = null;
 
-  private bg = new Container();
+  bg = new Container();
   private sky = new Sprite();
-  private crowd = new Sprite();
+  crowd = new Sprite();
   private fore = new Sprite();
-  private flags = new Sprite();
+  flags = new Sprite();
   private cheerAmp = 0;
   private flashLayer = new Container();
   private flashes: { s: Sprite; life: number }[] = [];
@@ -160,23 +161,23 @@ export class RallyScene implements View {
   private layerBase = { crowdY: 0 };
   private time = 0;
   private bonusMix = 0; // 0 = night match, 1 = Tie-Break ambience
-  private world = new Container();
+  world = new Container();
   private dustLayer = new Container();
   // header: logo (base game) / Tie-Break panel (free spins)
-  private header = new Container();
+  header = new Container();
   private logo = new Sprite();
   private logoShine = new Graphics();
   private logoMask = new Sprite();
   private nextShine = 4;
-  private tb = new Container();
+  tb = new Container();
   private tbRound!: Text;
   private tbMult!: Text;
   private tbTotal!: Text;
   private tbMultCell = new Container();
   private headerBox = { x: 0, y: 0, w: 0, h: 0 };
-  private bonusInfo = { cur: 0, total: 0, mult: 1, win: 0 };
+  bonusInfo = { cur: 0, total: 0, mult: 1, win: 0 };
   // board
-  private board = new Container();
+  board = new Container();
   private frameLight = new Graphics();
   private frame = new Sprite();
   private reelLayer = new Container();
@@ -191,16 +192,16 @@ export class RallyScene implements View {
   private plateBg = new Graphics();
   private winText!: Text;
   // Ace, the ball-boy dog (mascot) — appears only at key moments
-  private aceLayer = new Container();
-  private ace = new Container();
+  aceLayer = new Container();
+  ace = new Container();
   private aceBubble = new Container();
   private aceBusy = false;
-  private fx = new Container();
-  private overlay = new Container();
+  fx = new Container();
+  overlay = new Container();
   private particles: Particle[] = [];
   private dust: Particle[] = [];
   private mode: GameType = 'basegame';
-  private portrait = false;
+  portrait = false;
   onOverlayTap: (() => void) | null = null;
   onLayout: ((l: SceneLayout) => void) | null = null;
 
@@ -217,7 +218,7 @@ export class RallyScene implements View {
     });
     host.appendChild(this.app.canvas);
     this.app.canvas.setAttribute('aria-hidden', 'true');
-    this.tw = new Tweener(this.app.ticker, () => (this.prefs.turbo ? 1.8 : 1));
+    this.tw = new Tweener(this.app.ticker, () => (this.prefs.turbo ? 1.8 : 1) * (this.match?.skip ? 5 : 1));
 
     this.bg.addChild(this.sky, this.crowd, this.flashLayer, this.fore, this.flags);
     this.flags.blendMode = 'add';
@@ -258,6 +259,8 @@ export class RallyScene implements View {
     this.winLayer.y = FRAME_M;
     this.winLayer.addChild(this.glowLayer, this.lineGfx, this.badgeLayer);
     this.board.addChild(this.winLayer);
+    this.match = new Match(this);
+    this.board.addChild(this.match.court);
     // win plate: sits on the bottom edge of the frame, never over the symbols
     this.winText = new Text({ text: '', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 40, fill: '#F2E5C3', letterSpacing: 2, align: 'center' } });
     this.winText.anchor.set(0.5);
@@ -269,6 +272,11 @@ export class RallyScene implements View {
     this.world.addChild(this.header, this.board, this.tb, this.fx);
     this.app.stage.addChild(this.overlay, this.aceLayer);
     this.overlay.eventMode = 'static';
+    this.app.stage.eventMode = 'static';
+    this.app.stage.hitArea = this.app.screen;
+    this.app.stage.on('pointertap', () => {
+      if (this.mode === 'freegame') this.match.skip = true; // fast-forward only: the result is fixed
+    });
     this.overlay.on('pointertap', () => this.onOverlayTap?.());
     this.buildAce();
 
@@ -302,7 +310,7 @@ export class RallyScene implements View {
     });
   }
 
-  private goldText(text: string, size: number) {
+  goldText(text: string, size: number) {
     const t = new Text({
       text,
       style: {
@@ -316,12 +324,12 @@ export class RallyScene implements View {
     return t;
   }
 
-  private fit(t: Text, maxW = 640) {
+  fit(t: Text, maxW = 640) {
     if (t.width > maxW) t.scale.set(maxW / t.width);
     return t;
   }
 
-  private plainText(text: string, size: number, color = '#F2E5C3', weight: '500' | '700' | '800' = '500') {
+  plainText(text: string, size: number, color = '#F2E5C3', weight: '500' | '700' | '800' = '500') {
     const t = new Text({ text, style: { fontFamily: 'Inter', fontWeight: weight, fontSize: size, fill: color, align: 'center', wordWrap: true, wordWrapWidth: 640, lineHeight: size * 1.4, letterSpacing: size > 24 ? 1 : 0.5 } });
     t.anchor.set(0.5);
     return t;
@@ -344,7 +352,7 @@ export class RallyScene implements View {
     this.tb.removeChildren().forEach((c) => c.destroy({ children: true }));
     const [W, H] = variant === 'tall' ? [300, 560] : variant === 'wide' ? [1000, 200] : [640, 196];
     const bg = new Graphics();
-    const sup = this.level === 'super';
+    const sup = this.level === 'rally';
     bg.roundRect(-W / 2, -H / 2, W, H, 24).fill({ color: sup ? 0x0b1f4a : C.night, alpha: 0.92 }).stroke({ color: sup ? 0x37b6ff : C.gold, width: sup ? 4 : 3 });
     bg.roundRect(-W / 2 + 9, -H / 2 + 9, W - 18, H - 18, 17).stroke({ color: C.cream, width: 1, alpha: 0.22 });
     this.tb.addChild(bg);
@@ -367,7 +375,7 @@ export class RallyScene implements View {
       const kicker = new Text({ text: 'GOLDEN RALLY', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 22, fill: '#D5A64B', letterSpacing: 6 } });
       kicker.anchor.set(0.5);
       kicker.y = -H / 2 + 40;
-      const title = this.goldText(this.level === 'super' ? this.t.stbTitle : this.t.tbTitle, this.level === 'super' ? 34 : 46);
+      const title = this.goldText(this.level === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', 30);
       title.y = -H / 2 + 86;
       if (title.width > W - 36) title.scale.set((W - 36) / title.width);
       this.tb.addChild(kicker, title);
@@ -375,9 +383,9 @@ export class RallyScene implements View {
       const step = 128;
       for (let i = 1; i < 3; i++) bg.moveTo(-W / 2 + 34, y0 + i * step - 22).lineTo(W / 2 - 34, y0 + i * step - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       bg.moveTo(-W / 2 + 34, y0 - 22).lineTo(W / 2 - 34, y0 - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
-      cells = [mk(this.t.tbRound, 0, y0, W - 40), mk(this.t.tbMult, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
+      cells = [mk(this.t.tbRound, 0, y0, W - 40), mk(this.t.tbPoints, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
     } else {
-      const title = this.goldText(`GOLDEN RALLY · ${this.level === 'super' ? this.t.stbTitle : this.t.tbTitle}`, variant === 'wide' ? 40 : 34);
+      const title = this.goldText(this.level === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', variant === 'wide' ? 40 : 34);
       title.y = -H / 2 + 38;
       if (title.width > W - 150) title.scale.set((W - 150) / title.width);
       this.tb.addChild(title);
@@ -392,7 +400,7 @@ export class RallyScene implements View {
       const y = -H / 2 + 92;
       for (const x of [-W / 6, W / 6]) bg.moveTo(x, y - 14).lineTo(x, H / 2 - 18).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       const cw = W / 3 - 24;
-      cells = [mk(this.t.tbRound, -W / 3, y, cw), mk(this.t.tbMult, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
+      cells = [mk(this.t.tbRound, -W / 3, y, cw), mk(this.t.tbPoints, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
     }
     this.tbRound = cells[0].v;
     this.tbMult = cells[1].v;
@@ -408,7 +416,7 @@ export class RallyScene implements View {
     if (!this.tbRound) return;
     const i = this.bonusInfo;
     this.tbRound.text = `${i.cur} / ${i.total}`;
-    this.tbMult.text = `×${i.mult}`;
+    this.tbMult.text = String(i.mult);
     this.tbTotal.text = money(i.win, this.currency, this.lang);
     for (const v of [this.tbRound, this.tbMult, this.tbTotal]) {
       v.scale.set(1);
@@ -422,7 +430,7 @@ export class RallyScene implements View {
     const prevMult = this.bonusInfo.mult;
     this.bonusInfo = { cur, total, mult, win };
     if (this.tbRound) this.refreshPanel();
-    if (mult !== prevMult && mult > 1 && !this.prefs.reducedMotion && this.tw) {
+    if (mult !== prevMult && mult > 0 && !this.prefs.reducedMotion && this.tw) {
       void this.tw.tween(420, (u) => this.tbMult.scale.set(1 + 0.35 * Math.sin(u * Math.PI)));
     }
   }
@@ -681,7 +689,7 @@ export class RallyScene implements View {
     const g = this.frameLight.clear();
     for (let i = 0; i < 4; i++) {
       const o = 8 + i * 10;
-      const sup = this.level === 'super';
+      const sup = this.level === 'rally';
       g.roundRect(-o, -o, FRAME_W + 2 * o, FRAME_H + 2 * o, 24 + o).stroke({
         color: i === 0 ? (sup ? 0xfff3c8 : C.gold) : sup ? 0x37b6ff : C.tennis,
         width: i === 0 ? 4 : 8,
@@ -699,8 +707,8 @@ export class RallyScene implements View {
     const target = this.mode === 'freegame' ? 1 : 0;
     this.bonusMix += clamp(target - this.bonusMix, -dt * 1.2, dt * 1.2);
     const k = this.bonusMix;
-    const sup = this.level === 'super';
-    // Tie-Break: warmer emerald/gold night; Super Tie-Break: electric blue + white gold
+    const sup = this.level === 'rally';
+    // Rally Challenge: warmer emerald/gold night; Super Tie-Break: electric blue + white gold
     this.sky.tint = lerpColor(0xffffff, sup ? 0x5f8cff : 0xc9d8b8, k);
     this.crowd.tint = lerpColor(0xffffff, sup ? 0x5878d8 : 0xb7c79a, k);
     this.fore.tint = lerpColor(0xffffff, sup ? 0x8fb8f0 : 0xd8e8c0, k);
@@ -793,7 +801,7 @@ export class RallyScene implements View {
     }
   }
 
-  private burst(x: number, y: number, n: number, texName = 'sparkle', parent: Container = this.fx, opts: { speed?: number; g?: number; life?: number; scale?: number } = {}) {
+  burst(x: number, y: number, n: number, texName = 'sparkle', parent: Container = this.fx, opts: { speed?: number; g?: number; life?: number; scale?: number } = {}) {
     if (this.prefs.reducedMotion) n = Math.ceil(n / 4);
     for (let i = 0; i < n; i++) {
       const s = new Sprite(this.tex[texName]);
@@ -809,13 +817,13 @@ export class RallyScene implements View {
   }
 
   /** centre of a visible cell in screen coordinates */
-  private cellWorld(reel: number, row: number) {
+  cellWorld(reel: number, row: number) {
     const sc = this.board.scale.x;
     return { x: this.board.x + (FRAME_M + reel * CELL + CELL / 2) * sc, y: this.board.y + (FRAME_M + row * CELL + CELL / 2) * sc };
   }
 
   /** short floating text (presentation only) */
-  private callout(text: string, x: number, y: number, size: number) {
+  callout(text: string, x: number, y: number, size: number) {
     const t = this.goldText(text, size);
     t.position.set(x, y);
     this.fx.addChild(t);
@@ -844,8 +852,9 @@ export class RallyScene implements View {
   }
 
   // ---------------------------------------------------------------- View API
-  /** Bonus level being played ('super' = Super Tie-Break look). */
-  level: BonusLevel = 'tiebreak';
+  /** Bonus being played ('rally' = electric-blue look, 'final' = gold Grand Final). */
+  level: BonusLevel = 'rally';
+  match!: Match;
 
   setMode(mode: GameType, level: BonusLevel | null = null) {
     if (mode === 'freegame' && level && level !== this.level) {
@@ -873,7 +882,7 @@ export class RallyScene implements View {
       this.logo.alpha = 1;
       this.logo.visible = !(toBonus && this.panelInHeader);
     });
-    if (!toBonus) this.setBonusInfo(0, 0, 1, 0);
+    if (!toBonus) this.setBonusInfo(0, 0, 0, 0);
     audio.setMusic(toBonus ? 'music_free' : 'music_base');
   }
 
@@ -1006,7 +1015,7 @@ export class RallyScene implements View {
     void this.tw.tween(ms, (u) => s.scale.set(base * (1 + (k - 1) * Math.sin(u * Math.PI))));
   }
 
-  private setPlate(text: string) {
+  setPlate(text: string) {
     this.winText.text = text;
     this.plate.visible = !!text;
     if (!text) return;
@@ -1171,7 +1180,7 @@ export class RallyScene implements View {
   }
 
   // ---------------------------------------------------------------- overlays
-  private makeOverlay(): Container & { relayout?: () => void } {
+  makeOverlay(): Container & { relayout?: () => void } {
     const c = new Container() as Container & { relayout?: () => void };
     const veil = new Graphics();
     c.addChild(veil);
@@ -1196,7 +1205,7 @@ export class RallyScene implements View {
   }
 
   /** resolves on tap or after `ms` */
-  private waitTapOr(ms: number): Promise<void> {
+  waitTapOr(ms: number): Promise<void> {
     return new Promise((resolve) => {
       let done = false;
       const finish = () => {
@@ -1210,7 +1219,7 @@ export class RallyScene implements View {
     });
   }
 
-  private async fadeOverlay(c: Container, inMs: number, outMs: number, hold: () => Promise<void>) {
+  async fadeOverlay(c: Container, inMs: number, outMs: number, hold: () => Promise<void>) {
     c.alpha = 0;
     const inner = c.children[1] as Container;
     const s0 = inner.scale.x;
@@ -1224,7 +1233,7 @@ export class RallyScene implements View {
     c.destroy({ children: true });
   }
 
-  private superText(text: string, size: number) {
+  superText(text: string, size: number) {
     const t = new Text({
       text,
       style: {
@@ -1239,124 +1248,41 @@ export class RallyScene implements View {
     return t;
   }
 
-  /** Ace's Super Tie-Break entrance: jump, full turn and a burst of balls (visual only). */
-  private async aceSuper() {
-    if (this.prefs.reducedMotion) return this.aceSay(this.t.aceSuper, 900);
-    const w = this.app.screen.width, h = this.app.screen.height;
-    const size = clamp(Math.min(w, h) * 0.26, 110, 240);
-    const a = this.ace;
-    a.visible = true;
-    a.alpha = 1;
-    a.scale.set(size / 240);
-    this.aceBubble.visible = false;
-    const y0 = h - this.insets.bottom + size, yTop = this.insets.top + (h - this.insets.top - this.insets.bottom) * 0.42;
-    audio.play('pop', { volume: 0.5 });
-    await this.tw.tween(700, (u) => {
-      a.position.set(w / 2, y0 + (yTop - y0) * ease.outBack(u, 0.8));
-      a.rotation = Math.PI * 2 * ease.inOutCubic(u);
-    });
-    a.rotation = 0;
-    for (let i = 0; i < 3; i++) this.burst(w / 2, yTop, 1, 'ui_golden_ball', this.aceLayer, { speed: 420, life: 1.1, scale: 0.12 });
-    this.burst(w / 2, yTop, 30, 'sparkle', this.aceLayer, { speed: 360, life: 1, scale: 0.5 });
-    await this.tw.wait(500);
-    await this.tw.tween(380, (u) => a.position.set(w / 2, yTop + (y0 - yTop) * ease.inCubic(u)));
-    a.visible = false;
-  }
-
-  async bonusIntro(spins: number, level: BonusLevel = 'tiebreak', startMultiplier = 1, _bought = false) {
-    const sup = level === 'super';
-    this.cheer(sup ? 1.5 : 1.2);
+  // ---------------------------------------------------------------- THE FINAL SET (delegated to the match director)
+  async bonusIntro(e: Extract<BookEvent, { type: 'bonusStart' }>) {
+    this.cheer(1.2);
     audio.play('bonus_trigger', { volume: 0.9 });
-    // Ace brings the ball (Tie-Break) or makes his Super entrance (transition only)
-    if (!sup) await this.aceSay(this.t.aceBonus, 200, true);
-    audio.play('tiebreak', { volume: 0.8, rate: sup ? 1.12 : 1 });
-    const c = this.makeOverlay();
-    const inner = c.children[1] as Container;
-    if (sup) {
-      const halo = new Sprite(this.tex.glow);
-      halo.anchor.set(0.5);
-      halo.blendMode = 'add';
-      halo.tint = 0x37b6ff;
-      halo.width = halo.height = 760;
-      halo.alpha = 0.55;
-      halo.y = -190;
-      inner.addChild(halo);
-    }
-    const emblem = new Sprite(this.tex.ui_tiebreak);
-    emblem.anchor.set(0.5);
-    emblem.width = emblem.height = sup ? 300 : 360;
-    emblem.y = sup ? -150 : -200;
-    inner.addChild(emblem);
-    if (sup) {
-      const t = this.superText(this.t.stbTitle, 76);
-      t.y = -330;
-      this.fit(t, 680);
-      inner.addChild(t);
-    }
-    const num = sup ? this.superText(String(spins), 130) : this.goldText(String(spins), 150);
-    num.y = 60;
-    const lbl = this.plainText(this.t.freeSpins.toUpperCase(), 34, sup ? '#8FD3FF' : '#D5A64B', '800');
-    lbl.y = 150;
-    const sub = this.plainText(sup ? fmtS(this.t.bonusIntroSubSuper, { m: startMultiplier }) : this.t.bonusIntroSub, 24);
-    sub.y = 240;
-    const tap = this.plainText(this.t.tapToContinue, 20, '#D4E948', '700');
-    tap.y = 350;
-    inner.addChild(num, lbl, sub, tap);
-    c.relayout?.();
-    await this.fadeOverlay(c, 380, 300, async () => {
-      this.burst(this.app.screen.width / 2, this.app.screen.height / 2, sup ? 44 : 28, 'sparkle', this.overlay, { speed: 380, life: 1.1, scale: 0.5 });
-      // Super: Ace's entrance plays over the introduction screen, never over the reels
-      if (sup) void this.aceSuper();
-      await this.waitTapOr(3800);
-    });
+    await this.match.intro(e);
+  }
+  exchangeStart(e: Extract<BookEvent, { type: 'exchangeStart' }>) {
+    return this.match.exchangeStart(e);
+  }
+  showCourt(v: number[]) {
+    return this.match.showCourt(v);
+  }
+  async hawkEye(e: Extract<BookEvent, { type: 'hawkEye' }>) {
+    this.match.hawkEye(e);
+  }
+  shot(e: Extract<BookEvent, { type: 'shot' }>) {
+    return this.match.shot(e);
+  }
+  grandSlam(e: Extract<BookEvent, { type: 'grandSlam' }>) {
+    return this.match.grandSlam(e);
+  }
+  marksExpire(e: Extract<BookEvent, { type: 'markExpire' }>) {
+    return this.match.marksExpire(e);
+  }
+  extraExchange(e: Extract<BookEvent, { type: 'extraExchange' }>) {
+    return this.match.extraExchange(e);
+  }
+  exchangeEnd(e: Extract<BookEvent, { type: 'exchangeEnd' }>) {
+    return this.match.exchangeEnd(e);
+  }
+  bonusOutro(e: Extract<BookEvent, { type: 'bonusEnd' }>, amount: number, bonusWin: number) {
+    return this.match.outro(e, amount, bonusWin);
   }
 
-  async wind(positions: Position[], _collected: number, multiplier: number, previous: number) {
-    // energy flies from each wild to the multiplier on the Tie-Break panel
-    const target = this.tbMultCell.getGlobalPosition();
-    const flights = positions.map(async (p, i) => {
-      const s = this.reels[p.reel].cell(p.row);
-      this.pulse(s, 1.14, 500);
-      const from = this.cellWorld(p.reel, p.row);
-      const orb = new Sprite(this.tex.ui_golden_ball);
-      orb.anchor.set(0.5);
-      orb.width = orb.height = clamp(CELL * this.board.scale.x * 0.5, 28, 80);
-      this.fx.addChild(orb);
-      orb.position.set(from.x, from.y);
-      await this.tw.wait(i * 110);
-      const ctrl = { x: (from.x + target.x) / 2 + 60, y: Math.min(from.y, target.y) - 120 };
-      await this.tw.tween(this.prefs.reducedMotion ? 150 : 520, (u) => {
-        const x = (1 - u) ** 2 * from.x + 2 * (1 - u) * u * ctrl.x + u * u * target.x;
-        const y = (1 - u) ** 2 * from.y + 2 * (1 - u) * u * ctrl.y + u * u * target.y;
-        orb.position.set(x, y);
-        orb.rotation += 0.3;
-      }, ease.inOutCubic);
-      orb.destroy();
-    });
-    audio.play('racket', { volume: 0.7 });
-    await Promise.all(flights);
-    if (multiplier !== previous) {
-      const bc = { x: this.board.x + (FRAME_W * this.board.scale.x) / 2, y: this.board.y + (FRAME_H * this.board.scale.y) / 2 };
-      this.callout(fmtS(this.t.rallyCall, { m: multiplier }), bc.x, bc.y, clamp(110 * this.board.scale.x, 28, 72));
-      audio.play('mult_up', { volume: 0.8 });
-      this.burst(target.x, target.y, 18, 'sparkle', this.fx, { speed: 200, life: 0.7, scale: 0.4 });
-    }
-  }
-
-  async retrigger(added: number, _total: number) {
-    audio.play('bonus_trigger', { volume: 0.6 });
-    const c = this.makeOverlay();
-    const inner = c.children[1] as Container;
-    const t1 = this.goldText(`+${added}`, 160);
-    t1.y = -40;
-    const t2 = this.fit(this.plainText(this.t.retrigger, 40, '#F2E5C3', '800'));
-    t2.y = 100;
-    inner.addChild(t1, t2);
-    c.relayout?.();
-    await this.fadeOverlay(c, 300, 260, () => this.waitTapOr(1500));
-  }
-
-  private async countUp(text: Text, amount: number, ms: number, skip: { now: boolean }) {
+  async countUp(text: Text, amount: number, ms: number, skip: { now: boolean }) {
     let lastTick = 0;
     await this.tw.tween(ms, (u) => {
       const v = skip.now ? amount : Math.round(amount * u);
@@ -1367,41 +1293,6 @@ export class RallyScene implements View {
       }
     }, ease.outCubic);
     text.text = money(amount, this.currency, this.lang);
-  }
-
-  /** Final Tie-Break recap: spins played, final multiplier, total win (all from the book). */
-  async bonusOutro(amount: number) {
-    audio.play('bonus_end', { volume: 0.8 });
-    const info = this.bonusInfo;
-    const c = this.makeOverlay();
-    const inner = c.children[1] as Container;
-    const card = new Graphics()
-      .roundRect(-340, -300, 680, 600, 30).fill({ color: this.level === 'super' ? 0x0b1f4a : C.emerald, alpha: 0.96 }).stroke({ color: this.level === 'super' ? 0x37b6ff : C.gold, width: 3 })
-      .roundRect(-326, -286, 652, 572, 22).stroke({ color: C.cream, width: 1, alpha: 0.25 });
-    const kicker = new Text({ text: 'GOLDEN RALLY', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 26, fill: '#D5A64B', letterSpacing: 8 } });
-    kicker.anchor.set(0.5);
-    kicker.y = -240;
-    const title = this.level === 'super' ? this.fit(this.superText(this.t.bonusEndSuper, 44), 600) : this.fit(this.goldText(this.t.bonusEnd, 46), 600);
-    title.y = -180;
-    const l1 = this.plainText(fmtS(this.t.recapSpins, { n: info.cur || info.total }), 30);
-    l1.y = -90;
-    const l2 = this.plainText(fmtS(this.t.recapMult, { m: info.mult }), 30);
-    l2.y = -40;
-    const sub = this.plainText(this.t.totalWin.toUpperCase(), 28, '#D5A64B', '800');
-    sub.y = 40;
-    const amt = this.goldText(money(0, this.currency, this.lang), 96);
-    amt.y = 130;
-    const tap = this.plainText(this.t.tapToContinue, 20, '#D4E948', '700');
-    tap.y = 240;
-    inner.addChild(card, kicker, title, l1, l2, sub, amt, tap);
-    c.relayout?.();
-    const skip = { now: false };
-    void this.aceSay(this.t.aceEnd, 1800);
-    await this.fadeOverlay(c, 350, 300, async () => {
-      this.onOverlayTap = () => (skip.now = true);
-      await this.countUp(amt, amount, 1600, skip);
-      await this.waitTapOr(2600);
-    });
   }
 
   async bigWin(amount: number, tier: WinTier) {

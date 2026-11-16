@@ -1,5 +1,26 @@
 # Changelog
 
+## v6 — THE FINAL SET — game 3.0.0 / math 4.0.0 (2026-11-16)
+
+### Mathématiques
+- Bonus entièrement remplacés : plus de tours gratuits ni de multiplicateur. **Court Control** (6 zones), **Power Shots** (Rally, ACE, Smash, Passing Shot, Amortie, Golden Rally), marques de terrain avec durée, **Grand Slam**, **Hawk-Eye** IN/OUT et **Championship Point** (Grand Final).
+- 3 scatters → RALLY CHALLENGE (8 échanges) ; 4+ → THE GRAND FINAL (12/14/16 échanges).
+- Moteur scalaire (événements) + vectorisé (simulation) consommant les mêmes tirages ; parité testée ; port TypeScript identique.
+- Modes : `buy_rally` 48,8×, `buy_final` 106,8× (renommés), Bonus Chance 1,4× ; RTP 96,46–96,56 %.
+- Méthode : jeu de base exact, bonus mesurés par simulation ciblée (8 M / 6 M / 2 M), erreur standard publiée. Un premier échantillon de 2 M avait donné une valeur basse : détecté en recoupant avec les simulations complètes (écart d'environ 3 σ) ; précision augmentée et prix corrigé de 48,7× à 48,8×.
+- Correction d'un bug du simulateur (variable écrasée) qui faussait le RTP affiché par la simulation (pas les fichiers Stake).
+- Export Stake 4 modes ; vérificateur officiel : 0 problème.
+
+### Jeu
+- Directeur de match (`render/match.ts`) : court et zones sur la grille, valeur de chaque zone, marques avec compteur, balle avec hauteur, ombre et traînée, trajectoire propre à chaque coup, caméra (zoom, suivi, tremblement), sous-titres de retransmission.
+- Hawk-Eye : son coupé, image désaturée, reconstruction au ras du sol, ralenti, verdict du moteur ; Championship Point ; Grand Slam.
+- Intros : Rally Challenge (bleu électrique) et Grand Final (vue aérienne, projecteurs, public, tableau). Récapitulatif, et cérémonies uniquement au-dessus des seuils publiés (75× / 200×).
+- Tap = avance rapide (le résultat ne change pas) ; mouvements réduits sans caméra.
+- Page d'informations : table des coups avec probabilités, valeurs « court », règles des marques, Hawk-Eye, Championship Point, cérémonies.
+
+### Tests
+- pytest 34/34, vitest 25/25, svelte-check 0 erreur, e2e 165/165.
+
 ## v5 — game 2.0.0 / math 3.0.0 (2026-11-16)
 
 ### Mathématiques (refonte complète, recalculée)

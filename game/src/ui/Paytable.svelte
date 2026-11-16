@@ -17,9 +17,12 @@
   const M = RULES.modes;
   const oneIn = (x: number | null) => (x ? Math.round(x).toLocaleString(game.prefs.lang) : '—');
   const rtp = (m: ModeName) => (M[m].rtp ? (M[m].rtp! * 100).toFixed(2) : '—');
-  const modeName = (m: ModeName) => ({ base: t.modeNormal, bonus_chance: t.modeChance, buy_tiebreak: t.modeBuyTb, buy_super: t.modeBuyStb })[m];
-  const modes: ModeName[] = ['base', 'bonus_chance', 'buy_tiebreak', 'buy_super'];
-  const triggers = Object.entries(RULES.fsAward).map(([k, n]) => ({ k: +k, n, level: +k === 3 ? 'tiebreak' : 'super' }) as const);
+  const modeName = (m: ModeName) => ({ base: t.modeNormal, bonus_chance: t.modeChance, buy_rally: t.modeBuyTb, buy_final: t.modeBuyStb })[m];
+  const modes: ModeName[] = ['base', 'bonus_chance', 'buy_rally', 'buy_final'];
+  const triggers = Object.entries(RULES.fsAward).map(([k, n]) => ({ k: +k, n, level: +k === 3 ? 'rally' : 'final' }) as const);
+  const FS = RULES.finalSet;
+  const shots = ['RALLY', 'ACE', 'SMASH', 'PASSING', 'DROP', 'GOLDEN'] as const;
+  const pct = (w: number) => `${((w / FS.SHOT_ROLL) * 100).toLocaleString(game.prefs.lang, { maximumFractionDigits: 1 })} %`;
 </script>
 
 <p class="note">{t.paysInCredits} : <strong>{money(game.bet, game.currency, game.prefs.lang)}</strong></p>
@@ -67,20 +70,42 @@
   </div>
 </section>
 
-<section>
-  <h3>TIE-BREAK · SUPER TIE-BREAK</h3>
-  <p>{t.rulesFs}</p>
+<section data-testid="final-set-rules">
+  <h3>THE FINAL SET</h3>
+  <p>{t.fsRulesIntro}</p>
+  <div class="court" aria-hidden="true">
+    {#each ['DL', 'DC', 'DR', 'SL', 'SC', 'SR'] as z, i}<div class="z" class:short={i >= 3}>{t.zoneNames[i]}</div>{/each}
+    <div class="net">{t.netLabel}</div>
+  </div>
   <table class="modes">
-    <thead><tr><th>SCATTERS</th><th>Bonus</th><th>{t.freeSpins}</th><th>×</th></tr></thead>
+    <thead><tr><th>SCATTERS</th><th>Bonus</th><th>{t.exchangesLabel}</th></tr></thead>
     <tbody>
       {#each triggers as tr}
-        <tr class:sup={tr.level === 'super'}><td>{tr.k}</td><td>{tr.level === 'super' ? t.stbTitle : t.tbTitle}</td><td>{tr.n}</td><td>×{RULES.bonusLevels[tr.level].startMultiplier}</td></tr>
+        <tr class:sup={tr.level === 'final'}><td>{tr.k}</td><td>{tr.level === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE'}</td><td>{tr.n}</td></tr>
       {/each}
     </tbody>
   </table>
-  <div class="ladder">
-    {#each RULES.rallyLadder as m, i}<span class:top={i === RULES.rallyLadder.length - 1}>×{m}</span>{/each}
+  <h3>{t.shotsTitle}</h3>
+  <table class="modes" data-testid="shot-table">
+    <thead><tr><th>{t.colShot}</th><th>Rally Challenge</th><th>Grand Final</th><th>Championship Point</th></tr></thead>
+    <tbody>
+      {#each shots as sh}
+        <tr><td><strong>{t.shotNames[sh]}</strong><br /><small>{t.shotDesc[sh]}</small></td>
+          <td>{pct(FS.RALLY_TABLE[sh])}</td><td>{pct(FS.FINAL_TABLE[sh])}</td><td>{pct(FS.CP_TABLE[sh])}</td></tr>
+      {/each}
+    </tbody>
+  </table>
+  <h3>{t.courtValuesTitle}</h3>
+  <div class="values">
+    {#each RULES.symbols as s}
+      <span><img src={img(s)} alt={s} />{pay(FS.COURT_VALUE[s] * 10)}</span>
+    {/each}
   </div>
+  <p>{fmt(t.fsRulesMarks, { ace: pay(FS.ACE_PRIZE * 10), mark: pay(FS.MARK_PRIZE * 10), am: FS.ACE_MARK, dm: FS.DROP_MARK, gm: FS.GOLDEN_MARK, gmin: FS.GR_MIN, gmax: FS.GR_MAX })}</p>
+  <p>{fmt(t.fsRulesSlam, { slam: pay(FS.SLAM_PRIZE * 10) })}</p>
+  <p>{fmt(t.fsRulesHawk, { line: (FS.P_LINE / 10).toFixed(0), inp: (FS.P_IN / 10).toFixed(0), hawk: pay(FS.HAWK_PRIZE * 10), hm: FS.HAWK_MARK })}</p>
+  <p>{fmt(t.fsRulesCp, { max: FS.MAX_REMAINING })}</p>
+  <p>{fmt(t.fsRulesCeremony, { a: RULES.ceremonyX.trophy, b: RULES.ceremonyX.grand })}</p>
 </section>
 
 <section class="rules">
@@ -96,10 +121,10 @@
     </tbody>
   </table>
   {#if !game.jurisdiction.disabledBuyBonus}
-    <p>{fmt(t.buyRule, { xtb: M.buy_tiebreak.cost, rtb: rtp('buy_tiebreak'), xstb: M.buy_super.cost, rstb: rtp('buy_super') })}</p>
+    <p>{fmt(t.buyRule, { xtb: M.buy_rally.cost, rtb: rtp('buy_rally'), xstb: M.buy_final.cost, rstb: rtp('buy_final') })}</p>
   {/if}
   {#if !game.jurisdiction.disabledBonusChance}
-    <p>{fmt(t.chanceRule, { x: M.bonus_chance.cost, b: oneIn(M.bonus_chance.bonusOneIn), b0: oneIn(M.base.bonusOneIn), s: oneIn(M.bonus_chance.superOneIn), s0: oneIn(M.base.superOneIn), rtp: rtp('bonus_chance') })}</p>
+    <p>{fmt(t.chanceRule, { x: M.bonus_chance.cost, b: oneIn(M.bonus_chance.bonusOneIn), b0: oneIn(M.base.bonusOneIn), s: oneIn(M.bonus_chance.finalOneIn), s0: oneIn(M.base.finalOneIn), rtp: rtp('bonus_chance') })}</p>
   {/if}
   <h3>{t.rules}</h3>
   <p>{t.rulesOutcome}</p>
@@ -145,6 +170,14 @@
   .col i { width: 22px; height: 22px; border-radius: 6px; background: rgba(242,229,195,.05); border: 1px solid var(--line-soft); }
   .col i.on { background: var(--tennis); border-color: var(--tennis); }
   .ex { margin-left: 10px; font-weight: 700; color: var(--tennis); }
+  .court { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; max-width: 360px; margin: 8px 0; background: #0f4a3d; padding: 4px; border-radius: 8px; border: 1px solid var(--line); }
+  .court .z { height: 54px; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--cream); border: 1px solid rgba(242,229,195,.5); border-radius: 4px; text-align: center; }
+  .court .z.short { height: 38px; }
+  .court .net { grid-column: 1 / -1; text-align: center; font-size: 10px; letter-spacing: .2em; color: var(--night); background: var(--cream); border-radius: 3px; }
+  .values { display: flex; flex-wrap: wrap; gap: 8px; }
+  .values span { display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 13px; padding: 2px 8px 2px 2px; border: 1px solid var(--line-soft); border-radius: 999px; }
+  .values img { width: 30px; height: 30px; }
+  small { color: var(--muted); }
   .demo { color: var(--cream); }
   .ver { color: var(--muted); font-size: 12px; }
 </style>

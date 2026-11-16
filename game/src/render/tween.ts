@@ -13,16 +13,16 @@ export class Tweener {
   constructor(private ticker: Ticker, public speed = () => 1) {}
 
   tween(ms: number, fn: (u: number) => void, easing: (u: number) => number = ease.linear): Promise<void> {
-    const dur = ms / this.speed();
-    if (dur <= 0) {
+    if (ms / this.speed() <= 0) {
       fn(1);
       return Promise.resolve();
     }
     return new Promise((resolve) => {
       let t = 0;
+      // speed is sampled every frame: "skip" / turbo also accelerate running animations
       const tick = (tk: Ticker) => {
-        t += tk.deltaMS;
-        const u = Math.min(1, t / dur);
+        t += tk.deltaMS * this.speed();
+        const u = Math.min(1, t / ms);
         fn(easing(u));
         if (u >= 1) {
           this.ticker.remove(tick);

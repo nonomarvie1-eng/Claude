@@ -148,7 +148,7 @@ try {
   await page.screenshot({ path: path.join(SHOTS, 'feature-bonus-spin.png') });
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 240000 });
   const r = await page.evaluate(() => window.__rally.lastRound);
-  check('forced bonus round contains free spins', r.state.some((e) => e.type === 'freeSpinTrigger'));
+  check('forced bonus round contains free spins', r.state.some((e) => e.type === 'bonusStart'));
   check('bonus: displayed total win equals payout', (await text(page, 'win')) === norm(fmt(r.payout)), `${await text(page, 'win')} vs ${fmt(r.payout)}`);
   await page.screenshot({ path: path.join(SHOTS, 'feature-bonus-end.png') });
 
@@ -171,7 +171,7 @@ try {
       await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 120000 });
       const r = await page.evaluate(() => window.__rally.lastRound);
       const wi = r.state.filter((e) => e.type === 'winInfo' && e.gameType === 'basegame');
-      if (wi.length && !r.state.some((e) => e.type === 'freeSpinTrigger')) found = wi[wi.length - 1];
+      if (wi.length && !r.state.some((e) => e.type === 'bonusStart')) found = wi[wi.length - 1];
     }
     check('connections: found a winning base spin', !!found);
     if (found) {
@@ -208,7 +208,7 @@ try {
   }
 
   // two explicit buys: each guarantees its level; exact debit; confirmation shows the amount
-  for (const [btn, level, k] of [['buy-tb', 'tiebreak', 3], ['buy-stb', 'super', 4]]) {
+  for (const [btn, level, k] of [['buy-tb', 'rally', 3], ['buy-stb', 'final', 4]]) {
     const before = await page.evaluate(() => JSON.parse(localStorage.getItem('golden-rally-demo-v1')).balance);
     await page.click('[data-testid=btn-buy]');
     await page.click(`[data-testid=${btn}]`);
@@ -217,16 +217,20 @@ try {
     await page.screenshot({ path: path.join(SHOTS, `feature-${btn}-confirm.png`) });
     await page.click('[data-testid=buy-confirm]');
     await page.waitForSelector('[data-testid=fs-counter]', { timeout: 30000 });
-    await page.waitForTimeout(level === 'super' ? 2500 : 1500);
+    await page.waitForTimeout(level === 'final' ? 2500 : 1500);
     await page.screenshot({ path: path.join(SHOTS, `feature-${btn}-bonus.png`) });
     await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 400000 });
     const rb = await page.evaluate(() => window.__rally.lastRound);
-    const trig = rb.state.find((e) => e.type === 'freeSpinTrigger');
+    const trig = rb.state.find((e) => e.type === 'bonusStart');
     const nsc = rb.state[0].board.flat().filter((x) => x === 'S').length;
-    check(`${btn}: bought round gives exactly the ${level} level`, trig && trig.bought === true && trig.level === level && nsc === k, `${trig && trig.level} ${nsc}`);
+    check(`${btn}: bought round gives exactly the ${level} level`, trig && trig.bought === true && trig.bonus === level && nsc === k, `${trig && trig.bonus} ${nsc}`);
     check(`${btn}: confirmation showed the exact debited amount`, shownPrice === norm(fmt(Math.round(rb.cost * rb.amount))), `${shownPrice} vs ${fmt(Math.round(rb.cost * rb.amount))}`);
     check(`${btn}: balance = before - cost x bet + payout`, (await text(page, 'balance')) === norm(fmt(before - Math.round(rb.cost * rb.amount) + rb.payout)), await text(page, 'balance'));
     check(`${btn}: displayed win equals payout`, (await text(page, 'win')) === norm(fmt(rb.payout)));
+    const shots = rb.state.filter((e) => e.type === 'shot');
+    const bonusEnd = rb.state.find((e) => e.type === 'bonusEnd');
+    check(`${btn}: bonus total = sum of the shots played`, shots.reduce((a, e) => a + e.win, 0) === bonusEnd.bonusWin, `${shots.length} shots`);
+    check(`${btn}: ${level} mechanics present`, level === 'final' ? rb.state.some((e) => e.type === 'exchangeStart' && e.championshipPoint) : !rb.state.some((e) => e.type === 'hawkEye'));
   }
 
   // autoplay: 10 spins with loss limit, then a stopped run

@@ -1,17 +1,17 @@
 # Rapport des tests exécutés
 
-Date : 16 novembre 2026 (v5 : 11 symboles, deux bonus, quatre modes) · environnement : conteneur Linux, Node 22.23, Python 3.13, Chromium (Playwright 1.63, rendu WebGL logiciel SwiftShader).
+Date : 16 novembre 2026 (v6 : THE FINAL SET) · environnement : conteneur Linux, Node 22.23, Python 3.13, Chromium (Playwright 1.63, rendu WebGL logiciel SwiftShader).
 
 ## Synthèse
 
 | Suite | Commande | Résultat |
 |---|---|---|
-| Mathématiques (pytest) | `cd math && .venv/bin/python -m pytest -q` | **29 / 29 réussis** (maths 3.0.0) |
+| Mathématiques (pytest) | `cd math && .venv/bin/python -m pytest -q` | **34 / 34 réussis** (maths 4.0.0) |
 | Typage Svelte/TypeScript | `cd game && npm run check` | **0 erreur, 0 avertissement** |
-| Tests unitaires du jeu (vitest) | `cd game && npm test` | **24 / 24 réussis** |
+| Tests unitaires du jeu (vitest) | `cd game && npm test` | **25 / 25 réussis** |
 | Build de production | `npm run build` | **réussi** |
-| Tests navigateur bout en bout | `npm run e2e` | **161 / 161 vérifications réussies** (`game/e2e/report.json`) |
-| Simulation Monte-Carlo (4 modes) | `python -m rally_math.simulate` | Normal 96,43 % [95,88 ; 96,98], Bonus Chance 96,74 % [96,18 ; 97,29], Achat TB 96,73 % [96,37 ; 97,09], Achat STB 96,47 % [96,19 ; 96,76] — toutes compatibles avec les valeurs exactes (96,52 / 96,51 / 96,52 / 96,41 %) |
+| Tests navigateur bout en bout | `npm run e2e` | **165 / 165 vérifications réussies** (`game/e2e/report.json`) |
+| Simulation Monte-Carlo (4 modes) | `python -m rally_math.simulate` | Normal 96,72 % [96,37 ; 97,08], Bonus Chance 96,76 % [96,46 ; 97,07], Achat RC 96,66 % [96,54 ; 96,78], Achat GF 96,39 % [96,31 ; 96,47] — chaque intervalle contient la valeur calculée (96,54 / 96,55 / 96,56 / 96,46 %) |
 | Outil officiel engineio/math-sdk | `stake/tools/verify_with_official_sdk.py` | **4 modes : format conforme, 0 problème de soumission, 6/6 contrôles de risque chacun** |
 
 ## Détail par exigence
@@ -53,6 +53,24 @@ Captures d'écran : `game/e2e/screenshots/` (chargement, jeu, gains, bonus, tabl
 | Aucune case vide, symboles du pack | e2e captures + parité moteur (le symbole affiché à chaque case = fenêtre de la bande) |
 
 Limites honnêtes : les tests « Android » et « iPhone » sont des émulations Chromium (taille, densité, tactile), pas de vrais appareils.
+
+
+## Tests ajoutés en v6 (THE FINAL SET)
+
+| Exigence | Tests |
+|---|---|
+| Résultats reproductibles avec une graine ; rejeu exact depuis les tirages | pytest `test_seeded_rounds_are_reproducible` ; parité Python ↔ TypeScript (vitest) |
+| Probabilités des coups, de Hawk-Eye (ligne, IN) conformes aux tables | pytest `test_event_frequencies_match_tables` (200 000 bonus par type, écart < 5 σ) |
+| Trajectoires = zones de la règle ; gain = valeur des cases | pytest `test_each_shot_hits_the_rule_zones` (6 coups), vitest `every shot hits exactly the zones…` |
+| Marques : prime, consommation, expiration | pytest `test_marks_prize_and_expiry` |
+| Amortie : Scatters ×2 ; Grand Slam : prime et remise à zéro | pytest `test_drop_shot_doubles_scatter_extensions`, `test_grand_slam_pays_and_clears` |
+| Hawk-Eye IN / OUT (point rejoué), absent du Rally Challenge | pytest `test_hawk_eye_in_and_out` |
+| Championship Point : table spéciale, dernier échange | pytest `test_championship_point_uses_power_table` |
+| Moteur vectorisé = moteur de référence | pytest `test_vectorised_bonus_equals_reference_engine` (1 200 manches) |
+| Gains affichés exacts ; cinématiques synchronisées sur les événements | vitest (400 manches : coups, Hawk-Eye et fins d'échange affichés = livre ; total = somme des coups) ; e2e achats |
+| Les deux bonus déclenchent leurs mécaniques | vitest et e2e (`rally mechanics present`, `final mechanics present`) |
+| Crédits jamais comptés deux fois | vitest (second achat refusé), e2e (solde = avant − coût + gain) |
+| Passer les cinématiques sans modifier le résultat | par construction : le tap ne fait qu’accélérer les animations (vitesse du minuteur), le gain affiché vient toujours du livre ; pas de test automatisé dédié au tap |
 
 ## Tests non exécutables dans cet environnement
 

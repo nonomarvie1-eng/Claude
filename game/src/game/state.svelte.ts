@@ -59,7 +59,9 @@ class GameState {
   fsCurrent = $state(0);
   fsTotal = $state(0);
   multiplier = $state(1);
-  bonusLevel = $state<'tiebreak' | 'super' | null>(null);
+  bonusLevel = $state<'rally' | 'final' | null>(null);
+  points = $state(0);
+  lastShot = $state<string | null>(null);
   /** spin mode chosen by the player: 'base' or 'bonus_chance' (never changed automatically) */
   spinMode = $state<'base' | 'bonus_chance'>('base');
   insets = $state({ top: 0, bottom: 0, left: 0, right: 0 });

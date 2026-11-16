@@ -2,6 +2,8 @@
 // It never computes or alters an outcome: every board, win, multiplier and
 // total shown comes verbatim from the book returned by the RGS.
 import type { Board, BonusLevel, BookEvent, GameType, ModeName, Position, WinLine } from '../engine/types';
+
+type Ev<T extends BookEvent['type']> = Extract<BookEvent, { type: T }>;
 import { winAmount } from './format';
 
 export type WinTier = 'none' | 'ldw' | 'small' | 'big' | 'mega' | 'epic';
@@ -12,10 +14,17 @@ export interface View {
   showWins(wins: WinLine[], multiplier: number, tier: WinTier): Promise<void>;
   clearWins(): void;
   scatterCelebrate(positions: Position[]): Promise<void>;
-  bonusIntro(spins: number, level: BonusLevel, startMultiplier: number, bought: boolean): Promise<void>;
-  wind(positions: Position[], collected: number, multiplier: number, previous: number): Promise<void>;
-  retrigger(added: number, total: number): Promise<void>;
-  bonusOutro(amount: number): Promise<void>;
+  // THE FINAL SET: one method per book event, all values come from the book
+  bonusIntro(e: Ev<'bonusStart'>): Promise<void>;
+  exchangeStart(e: Ev<'exchangeStart'>): Promise<void>;
+  showCourt(courtValues: number[]): Promise<void>;
+  hawkEye(e: Ev<'hawkEye'>): Promise<void>;
+  shot(e: Ev<'shot'>): Promise<void>;
+  grandSlam(e: Ev<'grandSlam'>): Promise<void>;
+  marksExpire(e: Ev<'markExpire'>): Promise<void>;
+  extraExchange(e: Ev<'extraExchange'>): Promise<void>;
+  exchangeEnd(e: Ev<'exchangeEnd'>): Promise<void>;
+  bonusOutro(e: Ev<'bonusEnd'>, amount: number, bonusWin: number): Promise<void>;
   bigWin(amount: number, tier: WinTier): Promise<void>;
   wincap(): Promise<void>;
   pause(ms: number): Promise<void>;
@@ -23,8 +32,9 @@ export interface View {
 
 export interface Hud {
   setWin(amount: number): void;
-  setFreeSpins(current: number, total: number): void;
-  setMultiplier(m: number): void;
+  setFreeSpins(current: number, total: number): void; // exchanges played / awarded
+  setMultiplier(m: number): void; // kept for compatibility (always 1 in v6)
+  setPoints?(points: number, lastShot: string | null, exchangeWin: number): void;
   setInBonus(on: boolean): void;
   setBonusLevel?(level: BonusLevel | null): void;
 }
@@ -54,6 +64,10 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
   let total = 0;
   let inBonus = false;
   let baseWin = 0;
+  let hasBonus = false;
+  let points = 0;
+  let exchange = 0;
+  let lastShot: string | null = null;
   view.clearWins();
   view.setMode('basegame');
   hud.setInBonus(false);
@@ -66,6 +80,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
           inBonus = true;
         }
         await view.spinTo(e.board, e.stops, e.gameType, e.anticipation, !!opts.quick, opts.mode ?? 'base');
+        if (e.gameType === 'freegame' && e.courtValues) await view.showCourt(e.courtValues);
         break;
       }
       case 'winInfo': {
@@ -83,26 +98,43 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         }
         break;
       }
-      case 'freeSpinTrigger': {
-        const level = e.level ?? 'tiebreak';
-        const start = e.startMultiplier ?? 1;
-        hud.setBonusLevel?.(level);
+      case 'bonusStart': {
+        hasBonus = true;
+        hud.setBonusLevel?.(e.bonus);
         hud.setInBonus(true);
-        hud.setFreeSpins(0, e.totalFs);
-        hud.setMultiplier(start);
-        view.setMode('freegame', level);
-        await view.bonusIntro(e.totalFs, level, start, !!e.bought);
+        hud.setFreeSpins(0, e.exchanges);
+        hud.setPoints?.(0, null, 0);
+        view.setMode('freegame', e.bonus);
+        await view.bonusIntro(e);
         break;
       }
-      case 'updateFreeSpin':
-        hud.setFreeSpins(e.amount, e.total);
+      case 'exchangeStart':
+        hud.setFreeSpins(e.exchange, e.total);
+        await view.exchangeStart(e);
         break;
-      case 'rallyUp':
-        await view.wind(e.positions, e.collected, e.multiplier, e.previousMultiplier);
-        hud.setMultiplier(e.multiplier);
+      case 'hawkEye':
+        await view.hawkEye(e);
         break;
-      case 'freeSpinRetrigger':
-        await view.retrigger(e.added, e.totalFs);
+      case 'shot':
+        lastShot = e.shot;
+        await view.shot(e);
+        hud.setPoints?.(points, lastShot, winAmount(bet, e.win));
+        break;
+      case 'grandSlam':
+        await view.grandSlam(e);
+        break;
+      case 'markExpire':
+        await view.marksExpire(e);
+        break;
+      case 'extraExchange':
+        hud.setFreeSpins(exchange, e.total);
+        await view.extraExchange(e);
+        break;
+      case 'exchangeEnd':
+        exchange = e.exchange;
+        points = e.points;
+        hud.setPoints?.(points, lastShot, winAmount(bet, e.win));
+        await view.exchangeEnd(e);
         break;
       case 'setTotalWin':
         hud.setWin(winAmount(bet, e.amount));
@@ -110,9 +142,8 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
       case 'wincap':
         await view.wincap();
         break;
-      case 'freeSpinEnd': {
-        const amt = winAmount(bet, e.amount);
-        await view.bonusOutro(amt);
+      case 'bonusEnd': {
+        await view.bonusOutro(e, winAmount(bet, e.amount), winAmount(bet, e.bonusWin));
         view.setMode('basegame');
         hud.setInBonus(false);
         hud.setBonusLevel?.(null);
@@ -122,7 +153,8 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         total = winAmount(bet, e.amount);
         hud.setWin(total);
         const tier = tierFor(total, debit);
-        if (!opts.quick && (tier === 'big' || tier === 'mega' || tier === 'epic')) await view.bigWin(total, tier);
+        // bonus rounds end with their own (threshold-based) ceremony: no second celebration
+        if (!opts.quick && !hasBonus && (tier === 'big' || tier === 'mega' || tier === 'epic')) await view.bigWin(total, tier);
         break;
       }
     }

@@ -3,6 +3,7 @@
 // by engine.test.ts against shared/parity-fixtures.json.
 import { RULES, WINCAP } from './rules';
 import type { StopDrawer } from './rng';
+import { playBonus } from './bonus';
 import type { Board, BonusLevel, Book, BookEvent, ModeName, Position, SymbolName, WinLine } from './types';
 
 const R = RULES.reels;
@@ -30,7 +31,6 @@ for (const [k, v] of Object.entries(RULES.scatterPay)) SC_PAY[+k] = v / 10;
 const FS_AWARD: Record<number, number> = {};
 for (const [k, v] of Object.entries(RULES.fsAward)) FS_AWARD[+k] = v;
 const WINCAP_T = WINCAP / 10;
-const LADDER = RULES.rallyLadder;
 
 const mod = (a: number, n: number) => ((a % n) + n) % n;
 
@@ -114,21 +114,30 @@ export interface RoundOutcome {
 
 export function bonusLevel(nScatters: number): BonusLevel | null {
   if (nScatters < 3) return null;
-  return nScatters === 3 ? 'tiebreak' : 'super';
+  return nScatters === 3 ? 'rally' : 'final';
 }
 
 /** Plays one complete round (base spin + whole bonus) and returns its book.
- *  mode buy_tiebreak / buy_super: forcedBaseStops must show exactly 3 / 4 scatters. */
-export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], mode: ModeName = 'base'): RoundOutcome {
+ *  mode buy_rally / buy_final: forcedBaseStops must show exactly 3 / 4 scatters. */
+export function playRound(rawDraw: StopDrawer, id = 0, forcedBaseStops?: number[], mode: ModeName = 'base'): RoundOutcome {
   const BASE = baseStripsOf(mode);
   const buyK = RULES.modes[mode]?.kind === 'buy' ? RULES.modes[mode].scatters : null;
   const events: BookEvent[] = [];
   const allStops: number[][] = [];
+  // every draw is recorded: the round can be replayed exactly from allStops
+  const draw: StopDrawer = (l) => {
+    const v = rawDraw(l);
+    allStops.push([...v]);
+    return v;
+  };
   const emit = (e: Record<string, unknown>) => {
     events.push({ index: events.length, ...e } as BookEvent);
   };
-  let stops = forcedBaseStops ? [...forcedBaseStops] : draw(lengths(BASE));
-  allStops.push([...stops]);
+  let stops: number[];
+  if (forcedBaseStops) {
+    stops = [...forcedBaseStops];
+    allStops.push([...stops]);
+  } else stops = draw(lengths(BASE));
   let board = windowOf(BASE, stops);
   let pad = padding(BASE, stops);
   emit({ type: 'reveal', gameType: 'basegame', board, stops: [...stops], paddingAbove: pad.above, paddingBelow: pad.below, anticipation: anticipation(board) });
@@ -145,59 +154,17 @@ export function playRound(draw: StopDrawer, id = 0, forcedBaseStops?: number[], 
   let total = Math.min(baseT, WINCAP_T);
   const triggered = nSc >= 3 && !capped0;
   let freeT = 0;
-  let fsSpins = 0;
-  let collected = 0;
   if (buyK !== null && nSc !== buyK) throw new Error('bought round must show exactly the bought scatter count');
   const level = triggered ? bonusLevel(nSc) : null;
-  const start = level ? RULES.bonusLevels[level].start_index : 0;
-  let mult = LADDER[start];
-  if (triggered) {
-    let remaining = FS_AWARD[nSc];
-    let awarded = remaining;
-    emit({ type: 'freeSpinTrigger', totalFs: remaining, positions: scPos, level, startMultiplier: mult, ...(buyK !== null ? { bought: true } : {}) });
-    while (remaining > 0) {
-      remaining -= 1;
-      fsSpins += 1;
-      emit({ type: 'updateFreeSpin', amount: fsSpins, total: awarded });
-      stops = draw(lengths(FREE));
-      allStops.push([...stops]);
-      board = windowOf(FREE, stops);
-      pad = padding(FREE, stops);
-      emit({ type: 'reveal', gameType: 'freegame', board, stops: [...stops], paddingAbove: pad.above, paddingBelow: pad.below, anticipation: new Array(R).fill(0) });
-      const wPos = positionsOf(board, W);
-      if (wPos.length) {
-        collected += wPos.length;
-        const newMult = LADDER[Math.min(start + collected, LADDER.length - 1)];
-        emit({ type: 'rallyUp', added: wPos.length, collected, multiplier: newMult, previousMultiplier: mult, positions: wPos });
-        mult = newMult;
-      }
-      wins = evaluateWays(board);
-      scPos = positionsOf(board, S);
-      nSc = scPos.length;
-      scPay = SC_PAY[nSc] ?? 0;
-      const spinT = sumPay(wins) * mult + scPay;
-      if (spinT > 0) {
-        freeT += spinT;
-        emit({ type: 'winInfo', gameType: 'freegame', multiplier: mult, totalWin: spinT * 10, wins: [...winList(wins, board, mult), ...scatterWin(scPos, scPay)] });
-        emit({ type: 'setWin', amount: spinT * 10, winLevel: winLevel(spinT / 10) });
-      }
-      const running = baseT + freeT;
-      emit({ type: 'setTotalWin', amount: Math.min(running, WINCAP_T) * 10 });
-      if (running >= WINCAP_T) {
-        emit({ type: 'wincap', amount: WINCAP_T * 10 });
-        break;
-      }
-      if (nSc >= 3) {
-        const add = Math.min(RULES.fsRetrigger, RULES.fsMaxRemaining - remaining);
-        if (add > 0) {
-          remaining += add;
-          awarded += add;
-          emit({ type: 'freeSpinRetrigger', totalFs: awarded, added: add, positions: scPos });
-        }
-      }
-    }
+  if (triggered && level) {
+    const exchanges = FS_AWARD[nSc];
+    emit({ type: 'bonusStart', bonus: level, exchanges, positions: scPos, ...(buyK !== null ? { bought: true } : {}) });
+    const r = playBonus(draw, FREE, level, exchanges, baseT, emit, windowOf, padding, WINCAP_T);
+    freeT = r.winT;
     total = Math.min(baseT + freeT, WINCAP_T);
-    emit({ type: 'freeSpinEnd', amount: total * 10, winLevel: winLevel(total / 10) });
+    const bx = freeT / 10;
+    const ceremony = bx >= RULES.ceremonyX.grand ? 'grand' : bx >= RULES.ceremonyX.trophy ? 'trophy' : 'none';
+    emit({ type: 'bonusEnd', bonus: level, amount: total * 10, bonusWin: freeT * 10, exchanges: r.exchanges, points: r.points, ceremony, winLevel: winLevel(total / 10) });
   }
   emit({ type: 'finalWin', amount: total * 10 });
   return { book: { id, payoutMultiplier: total * 10, events }, stops: allStops, triggered };

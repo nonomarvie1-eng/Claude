@@ -147,6 +147,7 @@ class RoundResult:
     capped: bool
     events: list[dict] | None
     stops: list[list[int]]
+    bonus_stats: dict | None = None
 
 
 def _win_list(wins: list[WaysWin], board, mult: int) -> list[dict]:
@@ -183,13 +184,23 @@ def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events
     bonus then follows the normal rules."""
     ev: list[dict] | None = [] if record_events else None
     all_stops = []
+    if draw is not None:
+        inner = draw
+
+        def draw(lengths):  # noqa: F811 - records every draw for exact replay
+            v = inner(lengths)
+            all_stops.append(list(v))
+            return v
 
     def emit(e):
         if ev is not None:
             ev.append({"index": len(ev), **e})
 
-    stops = forced_base_stops if forced_base_stops is not None else draw(base.lengths)
-    all_stops.append(list(stops))
+    if forced_base_stops is not None:
+        stops = forced_base_stops
+        all_stops.append(list(stops))
+    else:
+        stops = draw(base.lengths)
     board = window(base.strips, stops)
     if ev is not None:
         a, b = padding(base.strips, stops)
@@ -212,63 +223,26 @@ def play_round(draw: StopDrawer, base: C.ReelSet, free: C.ReelSet, record_events
     bought = mode in C.BUY_SCATTERS
     if bought:
         assert n_sc == C.BUY_SCATTERS[mode], "bought round must show exactly the bought scatter count"
-    free_t = fs_spins = retrig = collected = 0
     level = C.bonus_level(n_sc) if triggered else None
-    start = C.BONUS_LEVELS[level]["start_index"] if level else 0
-    top = len(C.RALLY_LADDER) - 1
-    mult = C.RALLY_LADDER[start]
+    free_t = 0
+    bstats: dict = {}
     if triggered:
-        remaining = C.FS_AWARD[n_sc]
-        awarded = remaining
-        emit({"type": "freeSpinTrigger", "totalFs": remaining, "positions": sc_pos, "level": level,
-              "startMultiplier": mult, **({"bought": True} if bought else {})})
-        while remaining > 0:
-            remaining -= 1
-            fs_spins += 1
-            emit({"type": "updateFreeSpin", "amount": fs_spins, "total": awarded})
-            stops = draw(free.lengths)
-            all_stops.append(list(stops))
-            board = window(free.strips, stops)
-            if ev is not None:
-                a, b = padding(free.strips, stops)
-                emit({"type": "reveal", "gameType": "freegame", "board": _names(board), "stops": list(stops),
-                      "paddingAbove": [C.SYMBOLS[s] for s in a], "paddingBelow": [C.SYMBOLS[s] for s in b],
-                      "anticipation": [0] * R})
-            w_pos = positions_of(board, C.WILD)
-            if w_pos:
-                collected += len(w_pos)
-                new_mult = C.RALLY_LADDER[min(start + collected, top)]
-                emit({"type": "rallyUp", "added": len(w_pos), "collected": collected, "multiplier": new_mult,
-                      "previousMultiplier": mult, "positions": w_pos})
-                mult = new_mult
-            wins = evaluate_ways(board)
-            sc_pos = positions_of(board, C.SCATTER)
-            n_sc = len(sc_pos)
-            sc_pay = C.SCATTER_PAY.get(n_sc, 0)
-            spin_t = sum(w.base_pay for w in wins) * mult + sc_pay
-            if spin_t > 0:
-                free_t += spin_t
-                if ev is not None:
-                    emit({"type": "winInfo", "gameType": "freegame", "multiplier": mult, "totalWin": spin_t * 10,
-                          "wins": _win_list(wins, board, mult) + _scatter_win(sc_pos, sc_pay)})
-                    emit({"type": "setWin", "amount": spin_t * 10, "winLevel": C.win_level(spin_t / 10)})
-            running = base_t + free_t
-            emit({"type": "setTotalWin", "amount": min(running, C.WINCAP_T) * 10})
-            if running >= C.WINCAP_T:
-                capped = True
-                emit({"type": "wincap", "amount": C.WINCAP_T * 10})
-                break
-            if n_sc >= 3:
-                add = min(C.FS_RETRIGGER, C.FS_MAX_REMAINING - remaining)
-                if add > 0:
-                    remaining += add
-                    awarded += add
-                    retrig += 1
-                    emit({"type": "freeSpinRetrigger", "totalFs": awarded, "added": add, "positions": sc_pos})
+        from .bonus import play_bonus
+
+        exchanges = C.FS_AWARD[n_sc]
+        emit({"type": "bonusStart", "bonus": level, "exchanges": exchanges, "positions": sc_pos,
+              **({"bought": True} if bought else {})})
+        bstats = play_bonus(draw, free, level, exchanges, base_t, emit, window, _names, padding)
+        free_t = bstats["win_t"]
+        capped = capped or bstats["capped"]
         total = min(base_t + free_t, C.WINCAP_T)
-        emit({"type": "freeSpinEnd", "amount": total * 10, "winLevel": C.win_level(total / 10)})
+        bx = free_t / 10
+        ceremony = "grand" if bx >= C.CEREMONY_X["grand"] else "trophy" if bx >= C.CEREMONY_X["trophy"] else "none"
+        emit({"type": "bonusEnd", "bonus": level, "amount": total * 10, "bonusWin": free_t * 10,
+              "exchanges": bstats["exchanges"], "points": bstats["points"], "ceremony": ceremony,
+              "winLevel": C.win_level(total / 10)})
     emit({"type": "finalWin", "amount": total * 10})
-    return RoundResult(total, base_t, free_t, triggered, level, fs_spins, retrig, mult, capped, ev, all_stops)
+    return RoundResult(total, base_t, free_t, triggered, level, bstats.get("exchanges", 0), bstats.get("extensions", 0), 0, capped, ev, all_stops, bstats)
 
 
 def make_book(book_id: int, res: RoundResult) -> dict:

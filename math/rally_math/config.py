@@ -18,8 +18,8 @@ import os
 from dataclasses import dataclass, field
 
 GAME_ID = "golden_rally"
-GAME_NAME = "Golden Rally — Match Point"
-MATH_VERSION = "3.0.0"
+GAME_NAME = "Golden Rally — The Final Set"
+MATH_VERSION = "4.0.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REELS_DIR = os.path.join(os.path.dirname(HERE), "reels")
@@ -66,45 +66,59 @@ PAYTABLE: dict[str, dict[int, int]] = {
 
 # Scatter pays, anywhere, never multiplied.
 SCATTER_PAY = {3: 20, 4: 50, 5: 200, 6: 1000}
-FS_RETRIGGER = 5            # 3+ scatters during either bonus
-FS_MAX_REMAINING = 50
 
-# Multiplier ladder shared by both bonuses: the ladder position is
-# start_index + Wilds collected since the bonus started (capped at the top).
-# Wilds landing on a spin move the ladder BEFORE that spin's wins are
-# evaluated.  The multiplier never goes down during a bonus.
-RALLY_LADDER = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20]
-
-# Two bonus levels chosen by the number of scatters on the triggering spin.
-#   exactly 3 scatters      -> TIE-BREAK        (multiplier starts at x1)
-#   4, 5 or 6 scatters      -> SUPER TIE-BREAK  (multiplier starts at x2)
-# At most one scatter can show per reel (strip constraint), so 3..6 are the
-# only possible trigger counts.  5 and 6 scatters give more spins and a
-# bigger scatter pay, the bonus itself is the Super Tie-Break.
-BONUS_LEVELS = {
-    "tiebreak": {"start_index": 0, "fr": "TIE-BREAK", "en": "TIE-BREAK"},
-    "super": {"start_index": 1, "fr": "SUPER TIE-BREAK", "en": "SUPER TIE-BREAK"},
+# THE FINAL SET (v6): the two bonuses are tennis matches played on the grid
+# (Court Control + Power Shots), not free spins with a multiplier.  Rules in
+# bonus.py; every number below is part of the published maths and is tuned and
+# verified with simulate.py / tests (see docs/MATH_REPORT.md).
+FINAL_SET = {
+    # court value of each symbol when its zone is hit (t-units = 0.1 x bet)
+    "COURT_VALUE": {"W": 100, "S": 0, "H1": 5, "H2": 4, "H3": 3, "H4": 3, "L1": 2, "L2": 1, "L3": 1, "L4": 1, "L5": 1},
+    "SHOT_ROLL": 1000,
+    "RALLY_TABLE": {"RALLY": 470, "ACE": 150, "SMASH": 120, "PASSING": 120, "DROP": 80, "GOLDEN": 60},
+    "FINAL_TABLE": {"RALLY": 340, "ACE": 160, "SMASH": 160, "PASSING": 160, "DROP": 100, "GOLDEN": 80},
+    "CP_TABLE": {"RALLY": 0, "ACE": 300, "SMASH": 250, "PASSING": 250, "DROP": 120, "GOLDEN": 80},
+    "ACE_PRIZE": 30,
+    "MARK_PRIZE": 60,
+    "HAWK_PRIZE": 80,
+    "ACE_MARK": 3,
+    "DROP_MARK": 2,
+    "HAWK_MARK": 3,
+    "P_LINE": 150,   # per mille: single-landing shot of the Grand Final lands on a line
+    "P_IN": 600,     # per mille: the Hawk-Eye call is IN
+    "MAX_REMAINING": 30,
+    "GR_MIN": 4,     # Golden Rally: number of shots, uniform in [GR_MIN, GR_MAX]
+    "GR_MAX": 8,
+    "GOLDEN_MARK": 2,
+    "SLAM_PRIZE": 1500,  # GRAND SLAM (whole court marked): 150 x bet
 }
-FS_AWARD = {3: 9, 4: 12, 5: 15, 6: 20}
+# exchanges awarded by the trigger: 3 scatters -> RALLY CHALLENGE, 4+ -> THE GRAND FINAL
+FS_AWARD = {3: 8, 4: 12, 5: 14, 6: 16}
+CEREMONY_X = {"trophy": 75, "grand": 200}  # bonus total (x bet) needed for each ceremony level
+
+BONUS_LEVELS = {
+    "rally": {"fr": "RALLY CHALLENGE", "en": "RALLY CHALLENGE"},
+    "final": {"fr": "THE GRAND FINAL", "en": "THE GRAND FINAL"},
+}
 
 
 def bonus_level(n_scatters: int) -> str | None:
+    """Exactly 3 scatters -> Rally Challenge; 4, 5 or 6 -> The Grand Final."""
     if n_scatters < 3:
         return None
-    return "tiebreak" if n_scatters == 3 else "super"
-
+    return "rally" if n_scatters == 3 else "final"
 
 # Bet modes (Stake Engine "modes").  Costs of the buy / bonus-chance modes are
 # DERIVED from the exact maths (see tune.py / reports/exact.json) and written
 # here once validated; they are not guesses.
 #   base          normal spin, BASE reels
 #   bonus_chance  same rules, BASE_BC reels (more scatters), higher cost
-#   buy_tiebreak  bought spin shows exactly 3 scatters -> Tie-Break
-#   buy_super     bought spin shows exactly 4 scatters -> Super Tie-Break
+#   buy_rally     bought spin shows exactly 3 scatters -> Rally Challenge
+#   buy_final     bought spin shows exactly 4 scatters -> The Grand Final
 BONUS_CHANCE_COST = 1.4
-BUY_TIEBREAK_COST = 49.4
-BUY_SUPER_COST = 105.0
-BUY_SCATTERS = {"buy_tiebreak": 3, "buy_super": 4}
+BUY_RALLY_COST = 48.8
+BUY_FINAL_COST = 106.8
+BUY_SCATTERS = {"buy_rally": 3, "buy_final": 4}
 
 WINCAP_X = 5000
 WINCAP_T = WINCAP_X * 10
@@ -164,4 +178,4 @@ def bonus_chance_reels() -> ReelSet:
 
 
 def mode_costs() -> dict[str, float]:
-    return {"base": 1.0, "bonus_chance": BONUS_CHANCE_COST, "buy_tiebreak": BUY_TIEBREAK_COST, "buy_super": BUY_SUPER_COST}
+    return {"base": 1.0, "bonus_chance": BONUS_CHANCE_COST, "buy_rally": BUY_RALLY_COST, "buy_final": BUY_FINAL_COST}

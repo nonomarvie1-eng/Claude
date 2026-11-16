@@ -107,7 +107,7 @@
   {#if game.inBonus}
     <div class="stat mid" data-testid="fs-counter" aria-live="polite">
       <span class="label">{t.tbRound}</span>
-      <span class="value">{game.fsCurrent} / {game.fsTotal} <span class="mult">×{game.multiplier}</span></span>
+      <span class="value">{game.fsCurrent} / {game.fsTotal} <span class="mult">{game.points} pts</span></span>
     </div>
   {:else}
     <div class="stat mid">

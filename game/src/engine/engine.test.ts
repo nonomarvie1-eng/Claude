@@ -12,7 +12,7 @@ describe('TS engine parity with the Python reference engine', () => {
   const fx = fixtures as unknown as Fixture[];
   it('has fixtures including bonus rounds', () => {
     expect(fx.length).toBeGreaterThanOrEqual(100);
-    expect(fx.filter((f) => f.book.events.some((e) => e.type === 'freeSpinTrigger')).length).toBeGreaterThan(40);
+    expect(fx.filter((f) => f.book.events.some((e) => e.type === 'bonusStart')).length).toBeGreaterThan(40);
   });
   it('reproduces every fixture book exactly (events, payouts)', () => {
     for (const f of fx) {
@@ -47,8 +47,30 @@ describe('round invariants (random rounds)', () => {
       expect(book.payoutMultiplier).toBeLessThanOrEqual(RULES.wincapX * 100);
       const fin = book.events.filter((e) => e.type === 'finalWin');
       expect(fin).toHaveLength(1);
-      const sum = book.events.reduce((a, e) => a + (e.type === 'winInfo' ? e.totalWin : 0), 0);
+      const sum = book.events.reduce((a, e) => a + (e.type === 'winInfo' ? e.totalWin : e.type === 'shot' ? e.win : 0), 0);
       expect(Math.min(sum, RULES.wincapX * 100)).toBe(book.payoutMultiplier);
+    }
+  });
+});
+
+describe('THE FINAL SET (TS port)', () => {
+  it('every shot hits exactly the zones of its rule and pays their court value', () => {
+    for (let i = 0; i < 60; i++) {
+      const { book } = playRound(cryptoDrawer, i, drawBaseStopsWithScatters(3 + (i % 2), cryptoInt));
+      let reveal: { board: string[][] } | null = null;
+      for (const e of book.events) {
+        if (e.type === 'reveal') reveal = e as unknown as { board: string[][] };
+        if (e.type === 'shot') {
+          for (const h of e.hits) {
+            // cells of the zone and their court value come from the board shown
+            const v = h.cells.reduce((a, c) => a + RULES.finalSet.COURT_VALUE[reveal!.board[c.reel][c.row]], 0);
+            expect(h.value).toBe(v * 10);
+          }
+          const paid = e.hits.reduce((a, h) => a + h.value + h.markPrize, 0) + e.prize;
+          expect(paid).toBe(e.win);
+          if (e.hawkEye === 'out') expect(e.hits).toHaveLength(0);
+        }
+      }
     }
   });
 });

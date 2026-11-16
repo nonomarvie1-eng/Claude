@@ -23,17 +23,32 @@ export interface WinLine {
   positions: Position[];
 }
 
+export type ShotType = 'RALLY' | 'ACE' | 'SMASH' | 'PASSING' | 'DROP' | 'GOLDEN';
+export interface ZoneHit {
+  zone: number;
+  zoneName: string;
+  value: number;      // court value collected (payoutMultiplier units)
+  markPrize: number;  // mark prize collected (0 if the zone was not marked)
+  scatters: number;
+  extraExchanges: number;
+  cells: Position[];
+}
+
 export type BookEvent =
-  | { index: number; type: 'reveal'; gameType: GameType; board: Board; stops: number[]; paddingAbove: SymbolName[]; paddingBelow: SymbolName[]; anticipation: number[] }
+  | { index: number; type: 'reveal'; gameType: GameType; board: Board; stops: number[]; paddingAbove: SymbolName[]; paddingBelow: SymbolName[]; anticipation: number[]; courtValues?: number[]; courtScatters?: number[] }
   | { index: number; type: 'winInfo'; gameType: GameType; multiplier: number; totalWin: number; wins: WinLine[] }
   | { index: number; type: 'setWin'; amount: number; winLevel: string }
-  | { index: number; type: 'freeSpinTrigger'; totalFs: number; positions: Position[]; level: BonusLevel; startMultiplier: number; bought?: boolean }
-  | { index: number; type: 'updateFreeSpin'; amount: number; total: number }
-  | { index: number; type: 'rallyUp'; added: number; collected: number; multiplier: number; previousMultiplier: number; positions: Position[] }
-  | { index: number; type: 'freeSpinRetrigger'; totalFs: number; added: number; positions: Position[] }
+  | { index: number; type: 'bonusStart'; bonus: BonusLevel; exchanges: number; positions: Position[]; bought?: boolean }
+  | { index: number; type: 'exchangeStart'; exchange: number; total: number; remaining: number; championshipPoint: boolean; marks: number[] }
+  | { index: number; type: 'hawkEye'; zone: number; call: 'in' | 'out'; prize: number; replay: boolean }
+  | { index: number; type: 'shot'; shot: ShotType; zones: number[]; path: number[]; hits: ZoneHit[]; prize: number; win: number; marksSet: { zone: number; duration: number }[]; grandSlam: boolean; hawkEye: 'in' | 'out' | null }
+  | { index: number; type: 'grandSlam'; prize: number }
+  | { index: number; type: 'markExpire'; zones: number[] }
+  | { index: number; type: 'extraExchange'; added: number; total: number; reason: 'replay' | 'scatter' }
+  | { index: number; type: 'exchangeEnd'; exchange: number; win: number; points: number; bonusWin: number; marks: number[] }
   | { index: number; type: 'setTotalWin'; amount: number }
   | { index: number; type: 'wincap'; amount: number }
-  | { index: number; type: 'freeSpinEnd'; amount: number; winLevel: string }
+  | { index: number; type: 'bonusEnd'; bonus: BonusLevel; amount: number; bonusWin: number; exchanges: number; points: number; ceremony: 'none' | 'trophy' | 'grand'; winLevel: string }
   | { index: number; type: 'finalWin'; amount: number };
 
 export interface Book {
@@ -42,9 +57,9 @@ export interface Book {
   events: BookEvent[];
 }
 
-export type BonusLevel = 'tiebreak' | 'super';
-export type ModeName = 'base' | 'bonus_chance' | 'buy_tiebreak' | 'buy_super';
-export const MODE_NAMES: ModeName[] = ['base', 'bonus_chance', 'buy_tiebreak', 'buy_super'];
+export type BonusLevel = 'rally' | 'final';
+export type ModeName = 'base' | 'bonus_chance' | 'buy_rally' | 'buy_final';
+export const MODE_NAMES: ModeName[] = ['base', 'bonus_chance', 'buy_rally', 'buy_final'];
 
 /** Validated statistics of one bet mode, exported by the Python maths. */
 export interface ModeInfo {
@@ -55,11 +70,34 @@ export interface ModeInfo {
   spins: number | null;
   rtp: number | null;
   bonusOneIn: number | null;
-  tiebreakOneIn: number | null;
-  superOneIn: number | null;
+  rallyOneIn: number | null;
+  finalOneIn: number | null;
+  rtpSe?: number | null;
   hitFrequency: number | null;
   stdDevX: number | null;
   meanX: number | null;
+}
+
+export type ShotTable = Record<'RALLY' | 'ACE' | 'SMASH' | 'PASSING' | 'DROP' | 'GOLDEN', number>;
+export interface FinalSetRules {
+  COURT_VALUE: Record<string, number>;
+  SHOT_ROLL: number;
+  RALLY_TABLE: ShotTable;
+  FINAL_TABLE: ShotTable;
+  CP_TABLE: ShotTable;
+  ACE_PRIZE: number;
+  MARK_PRIZE: number;
+  HAWK_PRIZE: number;
+  ACE_MARK: number;
+  DROP_MARK: number;
+  HAWK_MARK: number;
+  P_LINE: number;
+  P_IN: number;
+  MAX_REMAINING: number;
+  GR_MIN: number;
+  GR_MAX: number;
+  GOLDEN_MARK: number;
+  SLAM_PRIZE: number;
 }
 
 export interface GameConfig {
@@ -73,12 +111,11 @@ export interface GameConfig {
   paytable: Record<string, Record<string, number>>;
   scatterPay: Record<string, number>;
   fsAward: Record<string, number>;
-  fsRetrigger: number;
-  fsMaxRemaining: number;
-  rallyLadder: number[];
   wincapX: number;
   minKind: number;
-  bonusLevels: Record<BonusLevel, { start_index: number; startMultiplier: number; fr: string; en: string }>;
+  bonusLevels: Record<BonusLevel, { fr: string; en: string }>;
+  finalSet: FinalSetRules;
+  ceremonyX: { trophy: number; grand: number };
   modes: Record<ModeName, ModeInfo>;
   payModel: string;
   winLevels: { name: string; min: number }[];

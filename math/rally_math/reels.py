@@ -34,7 +34,7 @@ BASE_COUNTS: dict[str, list[int]] = {
 BC_COUNTS: dict[str, list[int]] = {**BASE_COUNTS, "S": [2, 2, 2, 2, 2, 2]}
 
 FREE_COUNTS: dict[str, list[int]] = {
-    "W": [0, 2, 3, 3, 2, 2],
+    "W": [0, 1, 1, 1, 1, 1],
     "S": [1, 1, 1, 1, 1, 1],
     **{k: [v] * NUM_REELS for k, v in _H.items()},
     **{k: [v] * NUM_REELS for k, v in _L.items()},
@@ -106,9 +106,9 @@ def write_reelset(name: str, strips: list[list[str]]) -> str:
 
 
 def main() -> None:
-    write_reelset("BASE", build_reelset(BASE_COUNTS, seed=27, stack=STACK))
+    write_reelset("BASE", build_reelset(BASE_COUNTS, seed=55, stack=STACK))
     write_reelset("FREE", build_reelset(FREE_COUNTS, seed=6, stack=STACK))
-    write_reelset("BASE_BC", build_reelset(BC_COUNTS, seed=43, stack=STACK))
+    write_reelset("BASE_BC", build_reelset(BC_COUNTS, seed=57, stack=STACK))
     print("reel strips written to", REELS_DIR)
 
 

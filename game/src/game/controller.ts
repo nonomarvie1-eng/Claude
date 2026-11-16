@@ -38,10 +38,15 @@ export class Controller {
       this.syncPanel();
     },
     setBonusLevel: (level) => (game.bonusLevel = level),
+    setPoints: (points, lastShot) => {
+      game.points = points;
+      game.lastShot = lastShot;
+      this.syncPanel();
+    },
   };
 
   private syncPanel() {
-    if (game.inBonus) this.scene.setBonusInfo(game.fsCurrent, game.fsTotal, game.multiplier, game.win);
+    if (game.inBonus) this.scene.setBonusInfo(game.fsCurrent, game.fsTotal, game.points, game.win);
   }
 
   constructor(public rgs: RgsClient, public scene: RallyScene) {}
@@ -73,7 +78,7 @@ export class Controller {
   }
 
   /** Direct buy of a bonus level (explicit mode; never random between levels). */
-  async buyBonus(mode: 'buy_tiebreak' | 'buy_super') {
+  async buyBonus(mode: 'buy_rally' | 'buy_final') {
     if (game.jurisdiction.disabledBuyBonus) return;
     await this.spin(null, mode);
   }
@@ -99,8 +104,8 @@ export class Controller {
         (this.rgs as DemoRgs).forceNext = force;
         game.banner = game.t.forcedBanner;
       }
-      if (mode === 'buy_tiebreak') game.banner = game.t.buyBannerTb;
-      if (mode === 'buy_super') game.banner = game.t.buyBannerStb;
+      if (mode === 'buy_rally') game.banner = game.t.buyBannerTb;
+      if (mode === 'buy_final') game.banner = game.t.buyBannerStb;
       const { balance, round } = await this.rgs.play(game.bet, mode);
       round.cost = round.cost ?? cost;
       round.mode = round.mode ?? mode;
@@ -139,7 +144,7 @@ export class Controller {
       mode: (round.mode as ModeName) ?? 'base',
       win: round.payout,
       payoutMultiplier: round.payoutMultiplier,
-      bonus: round.state.some((e) => e.type === 'freeSpinTrigger'),
+      bonus: round.state.some((e) => e.type === 'bonusStart'),
       forced: round.forced,
       events: round.state,
     });
@@ -162,7 +167,7 @@ export class Controller {
         if (game.phase !== 'idle') break; // error or interruption
         const r = this.lastRound;
         if (start - game.balance >= cfg.lossLimit) break;
-        if (r && cfg.stopOnBonus && r.state.some((e) => e.type === 'freeSpinTrigger')) break;
+        if (r && cfg.stopOnBonus && r.state.some((e) => e.type === 'bonusStart')) break;
         if (r && cfg.singleWinLimit !== null && r.payout >= cfg.singleWinLimit) break;
         await new Promise((res) => setTimeout(res, game.prefs.turbo ? 150 : 350));
       }

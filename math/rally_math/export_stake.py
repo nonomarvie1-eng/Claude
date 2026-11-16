@@ -89,11 +89,13 @@ def bonus_pilot(rng, base_stops, base_cnt, free_cnt, free_len):
 
 
 def stops_of(i, base_stops, log):
+    """Every draw of round i in order: base stops, then (stops, aux) per exchange."""
     seq = [list(map(int, base_stops[i]))]
-    for a, st in log:
+    for a, st, aux in log:
         j = np.searchsorted(a, i)
         if j < len(a) and a[j] == i:
             seq.append(list(map(int, st[j])))
+            seq.append(list(map(int, aux[j])))
     return seq
 
 
