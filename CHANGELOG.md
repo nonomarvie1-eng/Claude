@@ -1,5 +1,13 @@
 # Changelog
 
+## Build de test GOLDEN-SERVE-02 (2026-11-16, prototypes, crédits fictifs)
+- Deux prototypes de bonus jouables dans le vrai jeu : **A Cross-Court** (la balle transforme les cases touchées en un symbole cible) et **B Court Switch** (les cases touchées s'échangent de part et d'autre du filet), choix dans les Réglages ; Golden Smash (bande de 2 rangées) et Double Serve.
+- Moteur Python de référence + simulateur vectorisé (égalité testée tirage par tirage) + port TS (parité exacte). A : RTP 96,75 % [96,40 ; 97,11] sur 20 M tours ; B : 64,4 % aux mêmes réglages → **A recommandé**.
+- Animation signature dans PixiJS : révélation de la Balle d'or, raquette, lancer, frappe, rebonds sur les cases calculées, transformation/échange, Smash avec tremblement contrôlé, Championship Point (≥ 50×) en tableau d'affichage.
+- Stabilisation : `resetRound()` central (plus aucun bandeau, plaque, trajectoire ou effet d'un tour précédent), grille finale forcée sur celle du moteur, stockage séparé par gameplay, libellés du panneau de bonus.
+- Anciens gameplays conservés : `VITE_GAMEPLAY=rallypath` / `finalset`.
+- Tests : pytest 64/64, vitest 33 (+ 33 Rally Path, 35 Final Set), e2e 68/68 (preview et fichier publié). Détails : docs/GOLDEN_SERVE_PROTOTYPES.md.
+
 ## Prototype RALLY PATH — Championship Night (2026-11-16, expérimental, non publié dans les modes Stake)
 - Nouvelle mécanique **Rally Path** : la Balle d'or (rouleau 1, ni Wild ni Scatter) sert, les raquettes renvoient (même rangée ou ±1), 1 seul chemin par tour, le plus long, départage déterministe ; récompenses 2/8/30/100× ; 6 coups = **Championship Shot** (table documentée 150–4 000×, moyenne 455,5×).
 - Bonus prototypes : Rally Challenge 8 tours, The Grand Final 12 tours + Second Serve (une fois).

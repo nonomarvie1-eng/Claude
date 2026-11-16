@@ -1,0 +1,346 @@
+{
+ "url": "http://localhost:4190/index.html?lang=fr",
+ "failures": 0,
+ "results": [
+  {
+   "name": "390x844: build id visible",
+   "ok": true,
+   "detail": "GOLDEN-SERVE-02 · A"
+  },
+  {
+   "name": "390x844: TEST SERVE visible, old buy hidden",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-A-serve: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-A-serve: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,goldenServe,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "390-A-serve: displayed win = payout",
+   "ok": true,
+   "detail": "12,80"
+  },
+  {
+   "name": "1. the Golden Ball triggers the event",
+   "ok": true,
+   "detail": "serve from row 2, target L1"
+  },
+  {
+   "name": "2. a racket stroke is played",
+   "ok": true,
+   "detail": "strokes 1"
+  },
+  {
+   "name": "3/4. the ball bounces on every calculated cell",
+   "ok": true,
+   "detail": "hits 5 for [2,2,2,3,3,3]"
+  },
+  {
+   "name": "5. every transformation is animated",
+   "ok": true,
+   "detail": "flips 5, changes 5"
+  },
+  {
+   "name": "4/6. the grid shown is exactly the engine transformed grid",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "6. wins are paid on the transformed grid",
+   "ok": true,
+   "detail": "1 combos, 12.8x"
+  },
+  {
+   "name": "7. animation ends cleanly (round duration)",
+   "ok": true,
+   "detail": "10582 ms incl. win presentation"
+  },
+  {
+   "name": "390-A-spin: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-A-spin: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "390-A-spin: displayed win = payout",
+   "ok": true,
+   "detail": "1,80"
+  },
+  {
+   "name": "390-A-smash: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-A-smash: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,goldenServe,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "390-A-smash: displayed win = payout",
+   "ok": true,
+   "detail": "76,80"
+  },
+  {
+   "name": "smash: two-row band, smash stroke, grid = engine board",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "B: Court Switch exchanges shown, grid = engine board",
+   "ok": true,
+   "detail": "2 exchanges"
+  },
+  {
+   "name": "build id shows the selected prototype",
+   "ok": true,
+   "detail": "GOLDEN-SERVE-02 · B"
+  },
+  {
+   "name": "390-A-rally: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-A-rally: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,scatterPay,setWin,gsBonusStart,spinStart,goldenServe,winInfo,setTotalWin,gsBonusEnd,finalWin"
+  },
+  {
+   "name": "390-A-rally: displayed win = payout",
+   "ok": true,
+   "detail": "42,20"
+  },
+  {
+   "name": "rally: final grid = last board of the bonus",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "rally: rally bonus played with Golden Serves",
+   "ok": true,
+   "detail": "8 spins, 42.2 credits"
+  },
+  {
+   "name": "390-A-final: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-A-final: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,scatterPay,setWin,gsBonusStart,spinStart,goldenServe,winInfo,setTotalWin,gsBonusEnd,finalWin"
+  },
+  {
+   "name": "390-A-final: displayed win = payout",
+   "ok": true,
+   "detail": "894,60"
+  },
+  {
+   "name": "final: final grid = last board of the bonus",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "final: final bonus played with Golden Serves",
+   "ok": true,
+   "detail": "12 spins, 894.6 credits"
+  },
+  {
+   "name": "390-A-final-skipped: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-A-final-skipped: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,scatterPay,setWin,gsBonusStart,spinStart,goldenServe,winInfo,setTotalWin,gsBonusEnd,finalWin"
+  },
+  {
+   "name": "390-A-final-skipped: displayed win = payout",
+   "ok": true,
+   "detail": "894,60"
+  },
+  {
+   "name": "skipping (taps) keeps the result and the final grid",
+   "ok": true,
+   "detail": "65973 ms"
+  },
+  {
+   "name": "390-spin0: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-spin0: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,setWin,finalWin"
+  },
+  {
+   "name": "390-spin0: displayed win = payout",
+   "ok": true,
+   "detail": "0,00"
+  },
+  {
+   "name": "spin 1: balance = before - bet + payout",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-spin1: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-spin1: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,setWin,finalWin"
+  },
+  {
+   "name": "390-spin1: displayed win = payout",
+   "ok": true,
+   "detail": "0,00"
+  },
+  {
+   "name": "spin 2: balance = before - bet + payout",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-spin2: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "390-spin2: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "390-spin2: displayed win = payout",
+   "ok": true,
+   "detail": "0,40"
+  },
+  {
+   "name": "spin 3: balance = before - bet + payout",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "info page: Golden Serve rules and measured stats",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390x844: no overflow, no control over the reels, all on screen",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390x844: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: build id + TEST visible, no overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568-serve: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "320x568-serve: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,goldenServe,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "320x568-serve: displayed win = payout",
+   "ok": true,
+   "detail": "12,80"
+  },
+  {
+   "name": "320x568: grid = engine board after serve",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "iphone-se: build id + TEST visible, no overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "iphone-se-serve: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "iphone-se-serve: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,goldenServe,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "iphone-se-serve: displayed win = payout",
+   "ok": true,
+   "detail": "12,80"
+  },
+  {
+   "name": "iphone-se: grid = engine board after serve",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "iphone-se: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: build id + TEST visible, no overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900-serve: nothing from the previous round left on screen at spin start",
+   "ok": true,
+   "detail": "{\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "1440x900-serve: no older gameplay event",
+   "ok": true,
+   "detail": "reveal,goldenServe,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "1440x900-serve: displayed win = payout",
+   "ok": true,
+   "detail": "12,80"
+  },
+  {
+   "name": "1440x900: grid = engine board after serve",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: no console errors",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

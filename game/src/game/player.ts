@@ -34,6 +34,7 @@ export interface View {
   protoSpinStart?(e: Ev<'spinStart'>): void;
   secondServe?(e: Ev<'secondServe'>): Promise<void>;
   protoBonusEnd?(e: Ev<'protoBonusEnd'>, amount: number): Promise<void>;
+  goldenServe?(e: Ev<'goldenServe'>): Promise<void>;
 }
 
 export interface Hud {
@@ -184,6 +185,29 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         hud.setInBonus(false);
         hud.setBonusLevel?.(null);
         break;
+      // ---- Golden Serve prototypes
+      case 'goldenServe':
+        await view.goldenServe?.(e);
+        break;
+      case 'gsBonusStart':
+        hasBonus = true;
+        hud.setBonusLevel?.(e.bonus);
+        hud.setInBonus(true);
+        hud.setFreeSpins(0, e.spins);
+        view.setMode('freegame', e.bonus);
+        await view.protoBonusStart?.({ index: e.index, type: 'protoBonusStart', bonus: e.bonus, spins: e.spins });
+        break;
+      case 'gsBonusEnd': {
+        const amt = winAmount(bet, e.amount);
+        const t = tierFor(amt, debit);
+        // proportionate ending: Championship Point only for exceptional totals
+        if (!opts.quick && (t === 'mega' || t === 'epic')) await view.bigWin(amt, t);
+        else await view.protoBonusEnd?.({ index: e.index, type: 'protoBonusEnd', bonus: e.bonus, amount: e.amount, spins: exchange }, amt);
+        view.setMode('basegame');
+        hud.setInBonus(false);
+        hud.setBonusLevel?.(null);
+        break;
+      }
       case 'finalWin': {
         total = winAmount(bet, e.amount);
         hud.setWin(total);

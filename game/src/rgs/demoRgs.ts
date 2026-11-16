@@ -7,12 +7,13 @@ import { drawBaseStopsWithScatters, playRound } from '../engine/engine';
 import { MODE_NAMES, type ModeName } from '../engine/types';
 import { RULES } from '../engine/rules';
 import { cryptoDrawer, cryptoInt, listDrawer } from '../engine/rng';
-import { RALLY_PATH_BUILD } from '../engine/gameplay';
+import { GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD, STORE_NS } from '../engine/gameplay';
+import { GS, playGsRound, type Concept } from '../engine/goldenServe';
 import { GAME_SCENARIOS, playGameRound } from '../engine/rallyPath';
 import { MONEY_SCALE, RgsError, type AuthResult, type Balance, type RgsClient, type RgsConfig, type Round } from './types';
 
 // separate storage per gameplay: an interrupted v6 round can never be resumed in the Rally Path build
-const KEY = RALLY_PATH_BUILD ? 'golden-rally-demo-rp01' : 'golden-rally-demo-v1';
+const KEY = `golden-rally-demo-${STORE_NS}`;
 export const DEMO_START_BALANCE = 1_000 * MONEY_SCALE;
 
 export interface DemoStorage {
@@ -48,13 +49,15 @@ interface Persisted {
   nextId: number;
 }
 
-export type ForcedScenario = null | 'bonus3' | 'bonus4' | 'bonus5' | 'game_full6' | 'game_rally' | 'game_final';
+export type ForcedScenario = null | 'bonus3' | 'bonus4' | 'bonus5' | 'game_full6' | 'game_rally' | 'game_final' | 'gs_serve' | 'gs_smash' | 'gs_rally' | 'gs_final';
 
 export class DemoRgs implements RgsClient {
   readonly kind = 'demo' as const;
   private s: Persisted;
   /** demo-only: next round forced to trigger the bonus (clearly labelled in UI). */
   forceNext: ForcedScenario = null;
+  /** Golden Serve build: prototype played by the Spin button (A Cross-Court / B Court Switch). */
+  concept: Concept = 'A';
   failNext: string | null = null; // QA: simulate a server error on next call
 
   readonly config: RgsConfig = {
@@ -121,6 +124,12 @@ export class DemoRgs implements RgsClient {
     if (debit > this.s.balance) throw new RgsError('ERR_IPB', 'insufficient balance');
     const forced = m === 'base' ? this.forceNext : null;
     this.forceNext = null;
+    if (GOLDEN_SERVE_BUILD) {
+      if (m !== 'base') throw new RgsError('ERR_VAL', 'mode disabled in the Golden Serve test build');
+      const sc = forced && forced.startsWith('gs_') ? GS.scenarios[forced.slice(3)] : null;
+      const out = playGsRound(sc ? listDrawer(sc.draws) : cryptoDrawer, this.concept, this.s.nextId);
+      return this.settle(out.book, amount, mode, cost, forced, this.concept);
+    }
     if (RALLY_PATH_BUILD) {
       // test build: the Rally Path game is the only gameplay; old buys / Bonus Chance are disabled
       if (m !== 'base') throw new RgsError('ERR_VAL', 'mode disabled in the Rally Path test build');
@@ -134,7 +143,7 @@ export class DemoRgs implements RgsClient {
     return this.settle(out.book, amount, mode, cost, forced);
   }
 
-  private settle(book: { id: number; payoutMultiplier: number; events: Round['state'] }, amount: number, mode: string, cost: number, forced: ForcedScenario) {
+  private settle(book: { id: number; payoutMultiplier: number; events: Round['state'] }, amount: number, mode: string, cost: number, forced: ForcedScenario, concept?: Concept) {
     const out = { book };
     const debit = Math.round(amount * cost);
     const pm = out.book.payoutMultiplier;
@@ -149,6 +158,7 @@ export class DemoRgs implements RgsClient {
       mode,
       state: out.book.events,
       ...(forced ? { forced } : {}),
+      ...(concept ? { concept } : {}),
     };
     this.s.nextId += 1;
     this.s.balance -= debit;

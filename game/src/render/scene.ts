@@ -5,6 +5,7 @@ import { Application, BlurFilter, Container, FillGradient, Graphics, Sprite, Tex
 import { audio } from '../audio/audio';
 import { STRIPS } from '../engine/engine';
 import { PROTO } from '../engine/rallyPath';
+import { GS } from '../engine/goldenServe';
 import { RULES } from '../engine/rules';
 import type { Board, BonusLevel, BookEvent, GameType, ModeName, Position, SymbolName, WinLine } from '../engine/types';
 import { Match } from './match';
@@ -267,7 +268,7 @@ export class RallyScene implements View {
     this.board.addChild(this.reelLayer, this.antGfx);
     this.winLayer.x = FRAME_M;
     this.winLayer.y = FRAME_M;
-    this.winLayer.addChild(this.glowLayer, this.lineGfx, this.badgeLayer, this.rpGfx, this.rpLayer);
+    this.winLayer.addChild(this.glowLayer, this.lineGfx, this.badgeLayer, this.rpGfx, this.rpLayer, this.gsLayer);
     this.board.addChild(this.winLayer);
     this.match = new Match(this);
     this.board.addChild(this.match.court);
@@ -297,6 +298,7 @@ export class RallyScene implements View {
     this.buildAce();
 
     this.spawnDust();
+    this.exposeQA();
     this.app.ticker.add((tk) => this.update(tk));
     window.addEventListener('resize', () => this.layout());
     new ResizeObserver(() => this.layout()).observe(host);
@@ -399,7 +401,7 @@ export class RallyScene implements View {
       const step = 128;
       for (let i = 1; i < 3; i++) bg.moveTo(-W / 2 + 34, y0 + i * step - 22).lineTo(W / 2 - 34, y0 + i * step - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       bg.moveTo(-W / 2 + 34, y0 - 22).lineTo(W / 2 - 34, y0 - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
-      cells = [mk(this.proto ? this.t.rpSpins : this.t.tbRound, 0, y0, W - 40), mk(this.proto ? this.t.rpEvent : this.t.tbPoints, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
+      cells = [mk(this.proto || this.gsMode ? this.t.rpSpins : this.t.tbRound, 0, y0, W - 40), mk(this.proto || this.gsMode ? this.t.rpEvent : this.t.tbPoints, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
     } else {
       const title = this.goldText(this.level === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', variant === 'wide' ? 40 : 34);
       title.y = -H / 2 + 38;
@@ -416,7 +418,7 @@ export class RallyScene implements View {
       const y = -H / 2 + 92;
       for (const x of [-W / 6, W / 6]) bg.moveTo(x, y - 14).lineTo(x, H / 2 - 18).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       const cw = W / 3 - 24;
-      cells = [mk(this.proto ? this.t.rpSpins : this.t.tbRound, -W / 3, y, cw), mk(this.proto ? this.t.rpEvent : this.t.tbPoints, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
+      cells = [mk(this.proto || this.gsMode ? this.t.rpSpins : this.t.tbRound, -W / 3, y, cw), mk(this.proto || this.gsMode ? this.t.rpEvent : this.t.tbPoints, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
     }
     this.tbRound = cells[0].v;
     this.tbMult = cells[1].v;
@@ -432,7 +434,7 @@ export class RallyScene implements View {
     if (!this.tbRound) return;
     const i = this.bonusInfo;
     this.tbRound.text = `${i.cur} / ${i.total}`;
-    this.tbMult.text = this.proto ? this.protoEvent : String(i.mult);
+    this.tbMult.text = this.proto || this.gsMode ? this.protoEvent : String(i.mult);
     this.tbTotal.text = money(i.win, this.currency, this.lang);
     for (const v of [this.tbRound, this.tbMult, this.tbTotal]) {
       v.scale.set(1);
@@ -904,7 +906,7 @@ export class RallyScene implements View {
 
   /** Shows a board immediately (initial screen / resume). */
   setBoard(stops: number[], gameType: GameType) {
-    const strips = this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : STRIPS.base;
+    const strips = this.gsMode ? GS.strips[gameType === 'freegame' ? 'free' : 'base'] : this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : STRIPS.base;
     this.reels.forEach((r, i) => {
       r.strip = strips[i];
       r.pos = stops[i];
@@ -914,7 +916,7 @@ export class RallyScene implements View {
 
   async spinTo(_board: Board, stops: number[], gameType: GameType, anticipation: number[], quick: boolean, betMode: ModeName = 'base') {
     // the stops index the reel set of the round's bet mode
-    const strips = this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : betMode === 'bonus_chance' ? STRIPS.bonusChance : STRIPS.base;
+    const strips = this.gsMode ? GS.strips[gameType === 'freegame' ? 'free' : 'base'] : this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : betMode === 'bonus_chance' ? STRIPS.bonusChance : STRIPS.base;
     const rm = this.prefs.reducedMotion;
     const turbo = this.prefs.turbo;
     const baseT = quick ? 260 : rm ? 420 : turbo ? 650 : gameType === 'freegame' ? 900 : 1050;
@@ -1045,6 +1047,7 @@ export class RallyScene implements View {
     this.clearGroupGfx();
     this.setPlate('');
     this.clearRally();
+    this.clearServe();
     for (const r of this.reels) for (const s of r.sprites) {
       s.alpha = 1;
       s.rotation = 0;
@@ -1313,6 +1316,13 @@ export class RallyScene implements View {
   }
 
   async bigWin(amount: number, tier: WinTier) {
+    if (this.gsMode) {
+      // proportionate celebration: plate glow for 'big', Championship Point from 50x
+      if (tier === 'mega' || tier === 'epic') return this.championshipPoint(amount, tier);
+      this.cheer(0.8);
+      audio.play('win_2', { volume: 0.7 });
+      return;
+    }
     this.cheer(tier === 'big' ? 1 : 1.5);
     const title = tier === 'epic' ? this.t.epicWin : tier === 'mega' ? this.t.megaWin : this.t.bigWin;
     audio.play('win_3', { volume: 0.9 });
@@ -1367,6 +1377,354 @@ export class RallyScene implements View {
 
   pause(ms: number) {
     return this.tw.wait(ms);
+  }
+
+
+  // ---------------------------------------------------------------- GOLDEN SERVE (prototypes A / B)
+  // Presentation only: every trajectory, hit, transformation and exchange is
+  // read from the goldenServe event (computed by the engine before the
+  // animation).  Skipping only accelerates; the final grid is always forced to
+  // the event's board, so an interrupted animation never leaves a wrong grid.
+  private gsLayer = new Container();
+  private boardHome: { x: number; y: number } | null = null;
+  gsMode = false;
+  /** QA counters (demo build only): what the animation actually did */
+  qa = { strokes: 0, hits: 0, flips: 0, swaps: 0, smash: 0 };
+  private exposeQA() {
+    if (import.meta.env.VITE_ENABLE_RGS === '1') return;
+    const names = new Map<Texture, string>();
+    for (const [k, t] of Object.entries(this.tex)) if (k.startsWith('sym_')) names.set(t, k.slice(4));
+    (window as unknown as { __rallyScene: unknown }).__rallyScene = {
+      grid: () => this.reels.map((r) => Array.from({ length: NROWS }, (_, row) => names.get(r.cell(row).texture) ?? '?')),
+      qa: () => ({ ...this.qa }),
+      leftovers: () => ({ overlay: this.overlay.children.length, gsLayer: this.gsLayer.children.length, rpPlate: this.rpPlate.visible, fx: this.fx.children.length }),
+    };
+  }
+
+  /** Central reset at the start of every round: nothing from the previous round survives. */
+  resetRound() {
+    this.onOverlayTap = null;
+    this.match.skip = false;
+    this.rpBusy = false;
+    this.overlay.removeChildren().forEach((c) => c.destroy({ children: true }));
+    this.fx.removeChildren().forEach((c) => c.destroy({ children: true }));
+    this.particles.length = 0;
+    this.protoEvent = '—';
+    this.clearWins();
+    this.restoreBoardPos();
+  }
+
+  private restoreBoardPos() {
+    if (this.boardHome) {
+      this.board.position.set(this.boardHome.x, this.boardHome.y);
+      this.boardHome = null;
+    }
+  }
+
+  private clearServe() {
+    this.gsLayer.removeChildren().forEach((c) => c.destroy({ children: true }));
+  }
+
+  private setCell(reel: number, row: number, sym: string) {
+    const s = this.reels[reel].cell(row);
+    s.texture = this.tex['sym_' + sym];
+    s.width = s.height = SYM_SIZE;
+    s.rotation = 0;
+    s.alpha = 1;
+  }
+
+  private dimAllBut(keep: Set<string>, a: number, ms: number) {
+    const sprites: Sprite[] = [];
+    this.reels.forEach((r, i) => { for (let row = 0; row < NROWS; row++) if (!keep.has(`${i}:${row}`)) sprites.push(r.cell(row)); });
+    const a0 = sprites.map((s) => s.alpha);
+    return this.tw.tween(ms, (u) => sprites.forEach((s, k) => (s.alpha = a0[k] + (a - a0[k]) * u)));
+  }
+
+  private shake(ms: number, amp: number) {
+    if (this.prefs.reducedMotion) return Promise.resolve();
+    if (!this.boardHome) this.boardHome = { x: this.board.x, y: this.board.y };
+    const h = this.boardHome;
+    return this.tw.tween(ms, (u) => {
+      const k = amp * (1 - u);
+      this.board.position.set(h.x + Math.sin(u * 60) * k, h.y + Math.cos(u * 47) * k * 0.6);
+    }).then(() => this.restoreBoardPos());
+  }
+
+  /** (A) Golden Ball reveal ≈ 0.4 s: short spin, glow, lift, rest of the reels dimmed. */
+  private async ballReveal(o: Position) {
+    const rm = this.prefs.reducedMotion;
+    const s = this.reels[0].cell(o.row);
+    const x = o.reel * CELL + CELL / 2, y = o.row * CELL + CELL / 2;
+    const halo = new Sprite(this.tex.glow);
+    halo.anchor.set(0.5);
+    halo.blendMode = 'add';
+    halo.tint = 0xf2cf6b;
+    halo.width = halo.height = CELL * 1.5;
+    halo.position.set(x, y);
+    halo.alpha = 0;
+    this.gsLayer.addChild(halo);
+    audio.play('mult_up', { volume: 0.55, rate: 1.15 });
+    const base = SYM_SIZE / s.texture.width;
+    const y0 = s.y;
+    void this.dimAllBut(new Set([`0:${o.row}`]), 0.55, rm ? 80 : 200);
+    await this.tw.tween(rm ? 160 : 400, (u) => {
+      halo.alpha = 0.75 * Math.sin(Math.min(1, u * 1.4) * Math.PI / 2);
+      if (rm) return;
+      s.rotation = Math.sin(u * Math.PI * 2) * 0.22 * (1 - u);
+      s.y = y0 - 12 * ease.outCubic(u);
+      s.scale.set(base * (1 + 0.12 * ease.outBack(u)));
+    });
+    return { halo, y0 };
+  }
+
+  private impact(x: number, y: number, strong: boolean) {
+    const ring = new Graphics().circle(0, 0, CELL * 0.3).stroke({ color: 0xf4e9d4, width: strong ? 7 : 5 });
+    ring.position.set(x, y);
+    this.gsLayer.addChild(ring);
+    void this.tw.tween(strong ? 300 : 240, (u) => {
+      ring.scale.set(0.6 + 0.9 * u);
+      ring.alpha = 1 - u;
+    }).then(() => ring.destroy());
+  }
+
+  /** flip a cell to a new symbol (scale X 1 -> 0, swap texture, 0 -> 1) */
+  private async flip(reel: number, row: number, sym: string, ms = 160) {
+    this.qa.flips++;
+    const s = this.reels[reel].cell(row);
+    if (this.prefs.reducedMotion) return this.setCell(reel, row, sym);
+    const base = SYM_SIZE / s.texture.width;
+    await this.tw.tween(ms / 2, (u) => (s.scale.x = base * (1 - u)));
+    this.setCell(reel, row, sym);
+    const b2 = SYM_SIZE / s.texture.width;
+    s.scale.set(0, b2 * 1.12);
+    await this.tw.tween(ms / 2, (u) => s.scale.set(b2 * (1 + 0.12 * (1 - u)) * u + 0.0001, b2 * (1 + 0.12 * (1 - u))));
+    s.scale.set(b2);
+  }
+
+  /** racket sprite (racket symbol art, same family) */
+  private makeRacket(smash: boolean) {
+    const r = new Sprite(this.tex.sym_H4);
+    r.anchor.set(0.32, 0.86); // pivot near the grip
+    r.width = r.height = CELL * 2;
+    r.rotation = smash ? -2.5 : -0.35;
+    this.gsLayer.addChild(r);
+    return r;
+  }
+
+  /** (B / C) the stroke: racket in, toss, swing, contact.  Returns the ball sprite at contact point. */
+  private async stroke(o: Position, smash: boolean, again: boolean, ball: Sprite) {
+    const rm = this.prefs.reducedMotion;
+    const x = CELL / 2, y = o.row * CELL + CELL / 2;
+    const racket = this.makeRacket(smash);
+    // grip position: left of reel 1 (serve) or high above the server (smash)
+    // kept inside the frame so the stroke is visible on narrow phones
+    const gx = smash ? x - CELL * 0.05 : x - CELL * 0.36;
+    const gy = smash ? y - CELL * 0.15 : y + CELL * 0.4;
+    racket.position.set(gx - CELL * (again ? 0.4 : 1.2), gy);
+    racket.alpha = 0;
+    await this.tw.tween(rm ? 80 : again ? 140 : 280, (u) => {
+      racket.alpha = u;
+      racket.x = gx - CELL * (again ? 0.4 : 1.2) * (1 - ease.outCubic(u));
+    });
+    // toss: the ball rises to the strings
+    const tossY = smash ? y - CELL * 1.25 : y - CELL * 0.62;
+    const by0 = ball.y;
+    await this.tw.tween(rm ? 80 : smash ? 340 : 300, (u) => {
+      ball.y = by0 + (tossY - by0) * ease.outCubic(u);
+      ball.rotation += 0.12;
+      racket.rotation = (smash ? -2.5 : -0.35) - (smash ? 0.5 : 0.75) * ease.inOutCubic(u); // wind-up
+    });
+    if (smash && !rm) {
+      // very brief slow-down before the strike
+      audio.play('wind', { volume: 0.35 });
+      await this.tw.wait(140);
+    }
+    // swing: fast, accelerating, through the ball
+    const r0 = racket.rotation, r1 = smash ? -0.35 : 0.9;
+    await this.tw.tween(rm ? 60 : smash ? 120 : 110, (u) => (racket.rotation = r0 + (r1 - r0) * ease.inCubic(u)));
+    audio.play('racket', { volume: smash ? 1 : 0.85, rate: smash ? 0.85 : 1.05 });
+    this.qa.strokes++;
+    if (smash) this.qa.smash++;
+    this.impact(ball.x, ball.y, smash);
+    // follow-through and exit
+    void this.tw.tween(rm ? 80 : 260, (u) => {
+      racket.rotation = r1 + 0.5 * ease.outCubic(u);
+      racket.alpha = 1 - u;
+    }).then(() => racket.destroy());
+  }
+
+  /** ball flight along one trajectory; calls onHit(reel,row) at each bounce */
+  private async flight(ball: Sprite, path: Position[], smash: boolean, onHit: (p: Position) => void | Promise<void>, trail: Graphics) {
+    const rm = this.prefs.reducedMotion;
+    const shadow = new Graphics().ellipse(0, 0, 20, 7).fill({ color: 0x000000, alpha: 0.35 });
+    this.gsLayer.addChildAt(shadow, 0);
+    const pt = (p: Position) => ({ x: p.reel * CELL + CELL / 2, y: p.row * CELL + CELL / 2 });
+    let from = { x: ball.x, y: ball.y };
+    const hop = rm ? 60 : smash ? 85 : 135;
+    for (let k = 1; k < path.length; k++) {
+      const to = pt(path[k]);
+      const f0 = { ...from };
+      const arc = smash ? 10 : k === 1 ? 70 : 34;
+      await this.tw.tween(hop * (k === 1 ? 1.3 : 1), (u) => {
+        const e = smash ? ease.inCubic(Math.min(1, u * 1.1)) : ease.inOutCubic(u);
+        ball.x = f0.x + (to.x - f0.x) * e;
+        const ground = f0.y + (to.y - f0.y) * e;
+        ball.y = ground - (rm ? 0 : Math.sin(u * Math.PI) * arc);
+        ball.rotation += smash ? 0.4 : 0.22;
+        shadow.position.set(ball.x, ground + 26);
+        shadow.alpha = 0.5 - 0.3 * Math.sin(u * Math.PI);
+      });
+      trail.moveTo(f0.x, f0.y + (k === 1 ? 0 : 0)).lineTo(to.x, to.y).stroke({ color: 0xe7c877, width: smash ? 8 : 5, alpha: 0.55 });
+      this.impact(to.x, to.y, smash);
+      audio.play('bounce', { volume: smash ? 0.6 : 0.4, rate: 0.9 + k * 0.05 });
+      this.qa.hits++;
+      await onHit(path[k]);
+      from = to;
+    }
+    // ball leaves the court on the right
+    const fx0 = ball.x, fy0 = ball.y;
+    await this.tw.tween(rm ? 60 : 160, (u) => {
+      ball.x = fx0 + CELL * 0.9 * u;
+      ball.y = fy0 - 20 * u;
+      ball.alpha = 1 - u;
+      shadow.alpha = 0.3 * (1 - u);
+    });
+    shadow.destroy();
+  }
+
+  async goldenServe(e: Extract<BookEvent, { type: 'goldenServe' }>) {
+    this.rpBusy = true;
+    this.match.skip = false;
+    const rm = this.prefs.reducedMotion;
+    const smash = e.shot === 'smash';
+    const o = e.origin;
+    const changeAt = new Map(e.changes.map((c) => [`${c.reel}:${c.row}`, c.to]));
+    const { halo } = await this.ballReveal(o);
+    // the Golden Ball leaves its cell: a ball sprite takes over
+    const gsprite = this.reels[0].cell(o.row);
+    const ball = new Sprite(this.tex.sym_G);
+    ball.anchor.set(0.5);
+    ball.width = ball.height = 70;
+    ball.position.set(CELL / 2, o.row * CELL + CELL / 2 - (rm ? 0 : 12));
+    this.gsLayer.addChild(ball);
+    gsprite.alpha = 0.25;
+    gsprite.rotation = 0;
+    gsprite.y = o.row * CELL + CELL / 2;
+    if (smash) {
+      this.setRpPlate('GOLDEN SMASH', true);
+      void this.dimAllBut(new Set([`0:${o.row}`]), 0.4, 160);
+      this.cheer(0.6);
+      void this.aceSay(this.t.aceSmash, 1200);
+    } else this.setRpPlate(e.shot === 'double' ? 'DOUBLE SERVE' : 'GOLDEN SERVE', false);
+    this.protoEvent = smash ? 'SMASH' : e.shot === 'double' ? 'DOUBLE' : 'SERVE';
+    this.refreshPanel();
+    const trail = new Graphics();
+    this.gsLayer.addChildAt(trail, 0);
+    const hitA = async (p: Position) => {
+      const k = `${p.reel}:${p.row}`;
+      const s = this.reels[p.reel].cell(p.row);
+      s.alpha = 1;
+      if (e.concept === 'A' && changeAt.has(k)) await this.flip(p.reel, p.row, changeAt.get(k)!, smash ? 120 : 170);
+      else this.pulse(s, 1.1, 200);
+    };
+    const paths = e.paths;
+    // serve 1 (smash: both rows of the band are hit together, two balls)
+    await this.stroke(o, smash, false, ball);
+    if (smash) {
+      const ball2 = new Sprite(this.tex.sym_G);
+      ball2.anchor.set(0.5);
+      ball2.width = ball2.height = 62;
+      ball2.position.copyFrom(ball.position);
+      this.gsLayer.addChild(ball2);
+      await Promise.all([this.flight(ball, paths[0], true, hitA, trail), this.flight(ball2, paths[1], true, hitA, trail)]);
+      void this.shake(240, 9);
+      this.cheer(1);
+    } else {
+      await this.flight(ball, paths[0], false, hitA, trail);
+      if (e.shot === 'double' && paths[1]) {
+        // second serve from the same server
+        const b2 = new Sprite(this.tex.sym_G);
+        b2.anchor.set(0.5);
+        b2.width = b2.height = 70;
+        b2.position.set(CELL / 2, o.row * CELL + CELL / 2);
+        this.gsLayer.addChild(b2);
+        await this.stroke(o, false, true, b2);
+        await this.flight(b2, paths[1], false, hitA, trail);
+      }
+    }
+    // COURT SWITCH: exchanges across the net, then the server's cell takes the returned symbol
+    if (e.concept === 'B' && e.swaps) {
+      for (const sw of e.swaps) await this.swapCells(sw.a, sw.b);
+    }
+    const g0 = changeAt.get(`0:${o.row}`);
+    if (g0) await this.flip(0, o.row, g0, 160);
+    // guarantee: the grid shown is exactly the engine's transformed board
+    for (let r = 0; r < NR; r++) for (let row = 0; row < NROWS; row++) this.setCell(r, row, e.board[r][row]);
+    halo.destroy();
+    trail.alpha = 0.5;
+    await this.tw.wait(rm ? 80 : 180);
+    this.rpBusy = false;
+  }
+
+  private async swapCells(a: Position & { sym: string }, b: Position & { sym: string }) {
+    if (a.sym === b.sym) return;
+    this.qa.swaps++;
+    const sa = this.reels[a.reel].cell(a.row), sb = this.reels[b.reel].cell(b.row);
+    const ta = new Sprite(sa.texture), tb = new Sprite(sb.texture);
+    const pa = { x: a.reel * CELL + CELL / 2, y: a.row * CELL + CELL / 2 }, pb = { x: b.reel * CELL + CELL / 2, y: b.row * CELL + CELL / 2 };
+    for (const [t, p] of [[ta, pa], [tb, pb]] as const) {
+      t.anchor.set(0.5);
+      t.width = t.height = SYM_SIZE;
+      t.position.set(p.x, p.y);
+      this.gsLayer.addChild(t);
+    }
+    sa.alpha = sb.alpha = 0;
+    audio.play('pop', { volume: 0.4 });
+    await this.tw.tween(this.prefs.reducedMotion ? 120 : 420, (u) => {
+      const e = ease.inOutCubic(u);
+      ta.position.set(pa.x + (pb.x - pa.x) * e, pa.y + (pb.y - pa.y) * e - Math.sin(u * Math.PI) * CELL * 0.45);
+      tb.position.set(pb.x + (pa.x - pb.x) * e, pb.y + (pa.y - pb.y) * e + Math.sin(u * Math.PI) * CELL * 0.45);
+    });
+    this.setCell(a.reel, a.row, b.sym);
+    this.setCell(b.reel, b.row, a.sym);
+    ta.destroy();
+    tb.destroy();
+  }
+
+  /** CHAMPIONSHIP POINT: exceptional results only (≥ 50× the stake); proportionate. */
+  async championshipPoint(amount: number, tier: WinTier) {
+    const epic = tier === 'epic';
+    this.cheer(epic ? 1.5 : 1.1);
+    audio.play(epic ? 'win_3' : 'win_2', { volume: 0.9 });
+    audio.play('match_point', { volume: 0.7 });
+    const c = this.makeOverlay();
+    const inner = c.children[1] as Container;
+    const panel = new Graphics();
+    const W = 640, H = 300;
+    panel.roundRect(-W / 2, -H / 2, W, H, 22).fill({ color: 0x0b2440, alpha: 0.97 }).stroke({ color: 0xe7c877, width: 4 });
+    panel.roundRect(-W / 2 + 10, -H / 2 + 10, W - 20, H - 20, 16).stroke({ color: 0xf4e9d4, width: 1, alpha: 0.35 });
+    panel.moveTo(-W / 2 + 40, -40).lineTo(W / 2 - 40, -40).stroke({ color: 0xe7c877, width: 1.5, alpha: 0.5 });
+    const kick = this.plainText('GOLDEN RALLY · NIGHT FINAL', 20, '#D6B36A', '800');
+    kick.y = -H / 2 + 38;
+    const title = this.fit(this.goldText('CHAMPIONSHIP POINT', 46), W - 60);
+    title.y = -78;
+    const amt = this.fit(new Text({ text: money(0, this.currency, this.lang), style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 92, fill: '#FFF4D6', letterSpacing: 2 } }), W - 60);
+    amt.anchor.set(0.5);
+    amt.y = 50;
+    inner.addChild(panel, kick, title, amt);
+    c.relayout?.();
+    const skip = { now: false };
+    // subtle camera move for the biggest results only
+    const s0 = this.world.scale.x;
+    if (epic && !this.prefs.reducedMotion) void this.tw.tween(900, (u) => this.world.scale.set(s0 * (1 + 0.025 * ease.outCubic(u))));
+    if (epic) void this.aceSay(this.t.aceBig, 1500);
+    await this.fadeOverlay(c, 260, 260, async () => {
+      this.onOverlayTap = () => (skip.now = true);
+      await this.countUp(amt, amount, epic ? 2200 : 1400, skip);
+      await this.waitTapOr(epic ? 1100 : 700);
+    });
+    if (epic && !this.prefs.reducedMotion) await this.tw.tween(300, (u) => this.world.scale.set(s0 * (1 + 0.025 * (1 - u))));
+    this.world.scale.set(s0);
   }
 
   // ---------------------------------------------------------------- RALLY PATH (prototype, demo lab)
@@ -1492,7 +1850,7 @@ export class RallyScene implements View {
     const gf = e.bonus === 'final';
     const t1 = this.fit(gf ? this.goldText('THE GRAND FINAL', 86) : this.superText('RALLY CHALLENGE', 86), 680);
     t1.y = -40;
-    const t2 = this.plainText(fmtS(gf ? this.t.rpIntroGf : this.t.rpIntroRc, { n: e.spins }), 30, gf ? '#F4E9D4' : '#BFE6FF', '700');
+    const t2 = this.plainText(fmtS(this.gsMode ? (gf ? this.t.gsIntroGf : this.t.gsIntroRc) : gf ? this.t.rpIntroGf : this.t.rpIntroRc, { n: e.spins }), 30, gf ? '#F4E9D4' : '#BFE6FF', '700');
     t2.y = 60;
     inner.addChild(t1, t2);
     c.relayout?.();

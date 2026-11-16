@@ -52,11 +52,15 @@ export type BookEvent =
   | { index: number; type: 'finalWin'; amount: number }
   // ---- Rally Path PROTOTYPE (demo lab only, see docs/RALLY_PATH_PROTOTYPE.md)
   | { index: number; type: 'rallyPath'; length: number; path: Position[]; reward: number; championshipShot: boolean }
-  | { index: number; type: 'scatterPay'; count: number; amount: number }
+  | { index: number; type: 'scatterPay'; count: number; amount: number; positions?: Position[] }
   | { index: number; type: 'protoBonusStart'; bonus: BonusLevel; spins: number; positions?: Position[] }
   | { index: number; type: 'spinStart'; spin: number; total: number }
   | { index: number; type: 'secondServe'; added: number; total: number }
-  | { index: number; type: 'protoBonusEnd'; bonus: BonusLevel; amount: number; spins: number };
+  | { index: number; type: 'protoBonusEnd'; bonus: BonusLevel; amount: number; spins: number }
+  // ---- Golden Serve prototypes (A Cross-Court / B Court Switch)
+  | { index: number; type: 'goldenServe'; concept: 'A' | 'B'; shot: 'serve' | 'smash' | 'double'; origin: Position; target?: SymbolName; paths: Position[][]; changes: { reel: number; row: number; from: SymbolName; to: SymbolName }[]; swaps?: { a: Position & { sym: SymbolName }; b: Position & { sym: SymbolName } }[]; board: Board }
+  | { index: number; type: 'gsBonusStart'; bonus: BonusLevel; spins: number; positions: Position[] }
+  | { index: number; type: 'gsBonusEnd'; bonus: BonusLevel; amount: number; bonusWin: number };
 
 export interface Book {
   id: number;

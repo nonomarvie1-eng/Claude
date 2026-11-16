@@ -4,7 +4,10 @@
   import { money } from '../game/format';
   import { fmt } from '../i18n/strings';
   import type { ModeName, SymbolName } from '../engine/types';
-  import { RALLY_PATH_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { GS } from '../engine/goldenServe';
+  const GR = GS.rules;
+  const pc = (x: number) => `${(x * 100).toLocaleString(game.prefs.lang, { maximumFractionDigits: 2 })} %`;
   import { PROTO } from '../engine/rallyPath';
   const RP = PROTO.rules;
   // in the Rally Path build the racket pays the prototype ways table (t-units -> payoutMultiplier x10)
@@ -75,7 +78,20 @@
   </div>
 </section>
 
-{#if RALLY_PATH_BUILD}
+{#if GOLDEN_SERVE_BUILD}
+<section data-testid="golden-serve-rules">
+  <h3>GOLDEN SERVE</h3>
+  <div class="special"><img src={img('G')} alt="Golden Ball" style="width:72px;height:72px" /><div><p>{t.gsRule1}</p></div></div>
+  <p>{t.gsRule2}</p>
+  {#if game.concept === 'A'}<p><strong>{t.gsConceptA}</strong> — {t.gsRuleA}</p>{:else}<p><strong>{t.gsConceptB}</strong> — {t.gsRuleB}</p>{/if}
+  <p>{fmt(t.gsRule3, { s: (GR.P_SMASH.base / 10).toLocaleString(game.prefs.lang), sr: (GR.P_SMASH.rally / 10).toLocaleString(game.prefs.lang), sf: (GR.P_SMASH.final / 10).toLocaleString(game.prefs.lang), dr: (GR.P_DOUBLE.rally / 10).toLocaleString(game.prefs.lang), df: (GR.P_DOUBLE.final / 10).toLocaleString(game.prefs.lang) })}</p>
+  <p>{fmt(t.gsRule4, { a: GR.BONUS.rally.spins, b: GR.BONUS.final.spins })}</p>
+  {#if showRtp}
+    <p data-testid="gs-stats">{fmt(t.gsStats, { c: game.concept, rtp: pc(GS.stats[game.concept].game.rtp), lo: pc(GS.stats[game.concept].game.ci95[0]), hi: pc(GS.stats[game.concept].game.ci95[1]), n: (GS.stats[game.concept].n / 1e6).toLocaleString(game.prefs.lang), rc: GS.stats[game.concept].bonus_rally.mean_x.toFixed(1), gf: GS.stats[game.concept].bonus_final.mean_x.toFixed(1) })}</p>
+  {/if}
+  <p class="demo">{t.gsRuleProto}</p>
+</section>
+{:else if RALLY_PATH_BUILD}
 <section data-testid="rally-path-rules">
   <h3>RALLY PATH</h3>
   <div class="special"><img src={img('G')} alt="Golden Ball" style="width:72px;height:72px" /><div><p>{t.rpRule1}</p></div></div>
@@ -126,7 +142,7 @@
 {/if}
 
 <section class="rules">
-  {#if !RALLY_PATH_BUILD}
+  {#if FINAL_SET_BUILD}
   <h3>{t.modesTable}</h3>
   <table class="modes" data-testid="modes-table">
     <thead><tr><th>{t.colMode}</th><th>{t.colCost}</th>{#if showRtp}<th>{t.colRtp}</th>{/if}<th>{t.colBonus}</th></tr></thead>
@@ -148,14 +164,14 @@
   <h3>{t.rules}</h3>
   <p>{t.rulesOutcome}</p>
   <p>{fmt(t.maxWinRule, { x: RULES.wincapX.toLocaleString(game.prefs.lang) })}</p>
-  {#if RULES.stats && showRtp && !RALLY_PATH_BUILD}
+  {#if RULES.stats && showRtp && FINAL_SET_BUILD}
     <p data-testid="rtp">{fmt(t.rtpRule, { rtp: (RULES.stats.rtp * 100).toFixed(2) })}</p>
     {#if RULES.stats.hitFrequency}<p>{fmt(t.hitRule, { hit: (1 / RULES.stats.hitFrequency).toFixed(2), bonus: Math.round(RULES.stats.bonusOneIn) })}</p>{/if}
     {#if RULES.stats.stdDev}<p>{fmt(t.volatility, { sd: RULES.stats.stdDev.toFixed(1) })}</p>{/if}
   {/if}
   <p>{t.malfunction}</p>
   {#if game.isDemo}<p class="demo">{t.demoNotice}</p>{/if}
-  <p class="ver">{t.version} : build {BUILD_ID} · math {RALLY_PATH_BUILD ? 'rally-path proto' : RULES.mathVersion}</p>
+  <p class="ver">{t.version} : build {BUILD_ID} · math {GOLDEN_SERVE_BUILD ? 'golden-serve proto' : RALLY_PATH_BUILD ? 'rally-path proto' : RULES.mathVersion}</p>
 </section>
 
 <style>

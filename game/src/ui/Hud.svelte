@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { RALLY_PATH_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, BUILD_ID } from '../engine/gameplay';
   import { onMount } from 'svelte';
   import { game } from '../game/state.svelte';
   import { money } from '../game/format';
@@ -11,7 +11,7 @@
   const busy = $derived(game.phase !== 'idle');
   const idx = $derived(game.betLevels.indexOf(game.bet));
   const social = $derived(!!game.jurisdiction.socialCasino);
-  const canBuy = $derived(!RALLY_PATH_BUILD && (!game.jurisdiction.disabledBuyBonus || !game.jurisdiction.disabledBonusChance) && !game.inBonus);
+  const canBuy = $derived(FINAL_SET_BUILD && (!game.jurisdiction.disabledBuyBonus || !game.jurisdiction.disabledBonusChance) && !game.inBonus);
   const chance = $derived(game.spinMode === 'bonus_chance');
   const spinCost = $derived(Math.round(game.bet * RULES.modes[game.spinMode].cost));
   const canAuto = $derived(!game.jurisdiction.disabledAutoplay && !game.inBonus);
@@ -72,7 +72,7 @@
 <div class="top" bind:this={topEl}>
   <div class="tags">
     {#if game.isDemo}<span class="demo" data-testid="demo-badge">{t.demoBadge}</span>{/if}
-    <span class="build" data-testid="build-id">{BUILD_ID}</span>
+    <span class="build" data-testid="build-id">{BUILD_ID}{GOLDEN_SERVE_BUILD ? ` · ${game.concept}` : ''}</span>
   </div>
   <nav aria-label="menu">
     <button class="icon" onclick={() => open('paytable')} aria-label={t.paytable} title={t.paytable} data-testid="btn-paytable">
@@ -110,8 +110,8 @@
 
   {#if game.inBonus}
     <div class="stat mid" data-testid="fs-counter" aria-live="polite">
-      <span class="label">{RALLY_PATH_BUILD ? t.rpSpins : t.tbRound}</span>
-      <span class="value">{game.fsCurrent} / {game.fsTotal}{#if !RALLY_PATH_BUILD} <span class="mult">{game.points} pts</span>{/if}</span>
+      <span class="label">{!FINAL_SET_BUILD ? t.rpSpins : t.tbRound}</span>
+      <span class="value">{game.fsCurrent} / {game.fsTotal}{#if FINAL_SET_BUILD} <span class="mult">{game.points} pts</span>{/if}</span>
     </div>
   {:else}
     <div class="stat mid">
@@ -128,7 +128,12 @@
 
   <div class="controls">
     <div class="slot side buyslot">
-      {#if RALLY_PATH_BUILD && game.isDemo}
+      {#if GOLDEN_SERVE_BUILD && game.isDemo}
+        <!-- development test button (test build only): forced Golden Serve round -->
+        <button class="buy test6" onclick={() => ctrl?.spin('gs_serve')} disabled={busy || !!game.autoplay || game.inBonus} data-testid="test-serve" aria-label={t.testServe}>
+          <span class="buy-top">TEST</span><span class="buy-x">SERVE</span>
+        </button>
+      {:else if RALLY_PATH_BUILD && game.isDemo}
         <!-- development test button (test build only): forced 6-shot Rally Path round -->
         <button class="buy test6" onclick={() => ctrl?.spin('game_full6')} disabled={busy || !!game.autoplay || game.inBonus} data-testid="test-six" aria-label={t.testSix}>
           <span class="buy-top">TEST</span><span class="buy-x">{t.testSix.replace(/^TEST /, '')}</span>

@@ -48,6 +48,7 @@ export interface Round {
   cost?: number; // bet-mode cost multiplier from index.json (1 = base)
   debit?: number; // amount actually debited = amount x cost (money units)
   forced?: string; // demo-only: forced scenario label
+  concept?: 'A' | 'B'; // Golden Serve prototype that produced the book
 }
 
 export interface AuthResult {

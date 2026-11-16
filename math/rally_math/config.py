@@ -112,6 +112,24 @@ def bonus_level(n_scatters: int) -> str | None:
 # the prototype mode / dev scenarios: the normal game, its reels and its RTP
 # are NOT affected.  Every value below is experimental and is evaluated with
 # the exact model in rally_path.py before any adoption.
+GOLDEN_SERVE_PROTO = {
+    # experimental: concepts A (Cross-Court) and B (Court Switch), see golden_serve.py
+    "G_ON_REEL1": {"base": 1, "free": 6},
+    # prototype base reels (no Wild, stacked like v6, seed 71): ways part measured exactly
+    "BASE_COUNTS": {"W": [0] * 6, "S": [1, 2, 1, 2, 1, 2], "H1": [7] * 6, "H2": [8] * 6, "H3": [9] * 6, "H4": [10] * 6,
+                    "L1": [12] * 6, "L2": [12] * 6, "L3": [13] * 6, "L4": [13] * 6, "L5": [15] * 6},
+    "BASE_SEED": 71,
+    "TARGET_SYMS": ["H1", "H2", "H3", "H4", "L1", "L2", "L3", "L4", "L5"],
+    "TARGET_W": {
+        "base": [2, 6, 12, 30, 150, 190, 200, 205, 205],
+        "rally": [30, 60, 90, 120, 130, 140, 140, 145, 145],
+        "final": [80, 110, 130, 140, 110, 110, 110, 105, 105],
+    },
+    "P_SMASH": {"base": 5, "rally": 40, "final": 100},
+    "P_DOUBLE": {"base": 0, "rally": 60, "final": 150},
+    "BONUS": {"rally": {"spins": 8}, "final": {"spins": 12}},
+}
+
 RALLY_PATH_PROTO = {
     "RACKET": "H4",                  # return points: the racket symbol only (no Wild)
     # In the prototype the racket is "the rally symbol": its own ways pay is

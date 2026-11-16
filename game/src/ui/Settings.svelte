@@ -3,7 +3,8 @@
   import type { Controller } from '../game/controller';
   import type { DemoRgs } from '../rgs/demoRgs';
   import { PROTO, GAME_SCENARIOS, type ProtoMode } from '../engine/rallyPath';
-  import { RALLY_PATH_BUILD } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD } from '../engine/gameplay';
+  import { GS } from '../engine/goldenServe';
   import type { ForcedScenario } from '../rgs/demoRgs';
   async function forceGame(k: string) {
     game.modal = null;
@@ -52,7 +53,19 @@
 {#if game.isDemo}
   <section class="demo">
     <p>{t.demoNotice}</p>
-    {#if RALLY_PATH_BUILD}
+    {#if GOLDEN_SERVE_BUILD}
+    <h3>{t.gsConcept}</h3>
+    <div class="btns" role="radiogroup">
+      <button class:on={game.concept === 'A'} aria-pressed={game.concept === 'A'} onclick={() => (game.concept = 'A')} disabled={game.phase !== 'idle'} data-testid="concept-A">{t.gsConceptA}</button>
+      <button class:on={game.concept === 'B'} aria-pressed={game.concept === 'B'} onclick={() => (game.concept = 'B')} disabled={game.phase !== 'idle'} data-testid="concept-B">{t.gsConceptB}</button>
+    </div>
+    <h3>{t.gsTitle}</h3>
+    <div class="btns">
+      {#each Object.entries(GS.scenarios) as [k, sc] (k)}
+        <button onclick={() => forceGame(`gs_${k}`)} disabled={game.phase !== 'idle'} data-testid={`force-gs-${k}`}>{sc.label}</button>
+      {/each}
+    </div>
+    {:else if RALLY_PATH_BUILD}
     <h3>{t.testTitle}</h3>
     <div class="btns">
       {#each Object.entries(GAME_SCENARIOS) as [k, sc] (k)}
@@ -69,7 +82,7 @@
     {/if}
     <button class="refill" onclick={refill} disabled={game.phase !== 'idle'}>{t.resetCredits}</button>
   </section>
-  {#if !RALLY_PATH_BUILD}
+  {#if FINAL_SET_BUILD}
   <section class="demo lab" data-testid="lab">
     <h3>{t.labTitle}</h3>
     <p>{t.labNotice}</p>
@@ -105,5 +118,6 @@
   button:disabled { opacity: .4; }
   .refill { margin-top: 12px; }
   .lab { border-color: var(--gold); }
+  button.on { border-color: #D9EF38; background: rgba(217,239,56,.16); color: #fff; }
   .lab .btns button { font-size: 13px; }
 </style>

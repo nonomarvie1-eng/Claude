@@ -7,9 +7,43 @@ import { createRgs } from './index';
 import { playRound } from '../engine/engine';
 import { cryptoDrawer } from '../engine/rng';
 
-import { RALLY_PATH_BUILD } from '../engine/gameplay';
+import { FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
 // v6 FINAL SET gameplay tests: run with `npm run test:finalset` (disabled in the Rally Path test build)
-const itOld = RALLY_PATH_BUILD ? it.skip : it;
+const itOld = FINAL_SET_BUILD ? it : it.skip;
+
+describe.runIf(GOLDEN_SERVE_BUILD)('DemoRgs — Golden Serve test build GOLDEN-SERVE-02', () => {
+  const OLD = ['bonusStart', 'hawkEye', 'shot', 'exchangeStart', 'rallyPath', 'protoBonusStart'];
+  it('old buys and Bonus Chance are refused without debit', async () => {
+    const r = new DemoRgs(memoryStorage());
+    for (const m of ['buy_rally', 'buy_final', 'bonus_chance']) await expect(r.play(1_000_000, m)).rejects.toThrow();
+    expect((await r.balance()).amount).toBe(DEMO_START_BALANCE);
+  });
+  it('TEST SERVE: a Golden Serve whose wins are paid on the transformed grid, credited once', async () => {
+    for (const concept of ['A', 'B'] as const) {
+      const r = new DemoRgs(memoryStorage());
+      r.concept = concept;
+      r.forceNext = 'gs_serve';
+      const { round } = await r.play(1_000_000, 'base');
+      const g = round.state.find((e) => e.type === 'goldenServe');
+      expect(g && g.type === 'goldenServe' && g.concept === concept).toBe(true);
+      expect(round.concept).toBe(concept);
+      const end = await r.endRound();
+      expect(end.balance.amount).toBe(DEMO_START_BALANCE - 1_000_000 + round.payout);
+    }
+  });
+  it('random rounds of both prototypes never contain older gameplay events', async () => {
+    for (const concept of ['A', 'B'] as const) {
+      const r = new DemoRgs(memoryStorage());
+      r.concept = concept;
+      for (let i = 0; i < 300; i++) {
+        const { round } = await r.play(1_000_000, 'base');
+        expect(round.state.some((e) => OLD.includes(e.type))).toBe(false);
+        await r.endRound();
+        if ((await r.balance()).amount < 2_000_000) r.reset();
+      }
+    }
+  });
+});
 
 describe.runIf(RALLY_PATH_BUILD)('DemoRgs — Rally Path test build RALLY-PATH-01', () => {
   it('old buys and Bonus Chance are refused without debit', async () => {

@@ -9,7 +9,7 @@ import { RULES } from '../engine/rules';
 import type { ModeName } from '../engine/types';
 import { PROTO, playProtoRound, type ProtoMode } from '../engine/rallyPath';
 import { cryptoDrawer, listDrawer } from '../engine/rng';
-import { RALLY_PATH_BUILD } from '../engine/gameplay';
+import { FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
 
 export interface AutoplayConfig {
   count: number;
@@ -64,6 +64,8 @@ export class Controller {
     if (!game.betLevels.includes(game.bet)) game.bet = auth.config.defaultBetLevel ?? game.betLevels[0];
     if (game.jurisdiction.disabledTurbo) game.prefs.turbo = false;
     this.scene.currency = game.currency;
+    this.scene.gsMode = GOLDEN_SERVE_BUILD;
+    this.scene.setStrings(game.t); // rebuild the bonus panel with this build's labels
     this.scene.setProto(RALLY_PATH_BUILD);
     this.scene.setBoard(new Array(RULES.reels).fill(0), 'basegame');
     if (auth.round && auth.round.active) {
@@ -83,7 +85,7 @@ export class Controller {
 
   /** Direct buy of a bonus level (explicit mode; never random between levels). */
   async buyBonus(mode: 'buy_rally' | 'buy_final') {
-    if (game.jurisdiction.disabledBuyBonus || RALLY_PATH_BUILD) return;
+    if (game.jurisdiction.disabledBuyBonus || !FINAL_SET_BUILD) return;
     await this.spin(null, mode);
   }
 
@@ -105,6 +107,9 @@ export class Controller {
     game.win = 0;
     game.banner = null;
     try {
+      // nothing from the previous round may stay on screen
+      this.scene.resetRound();
+      if (this.rgs.kind === 'demo') (this.rgs as DemoRgs).concept = game.concept;
       if (force && this.rgs.kind === 'demo') {
         (this.rgs as DemoRgs).forceNext = force;
         game.banner = game.t.forcedBanner;
@@ -177,7 +182,7 @@ export class Controller {
       mode: (round.mode as ModeName) ?? 'base',
       win: round.payout,
       payoutMultiplier: round.payoutMultiplier,
-      bonus: round.state.some((e) => e.type === 'bonusStart' || e.type === 'protoBonusStart'),
+      bonus: round.state.some((e) => e.type === 'bonusStart' || e.type === 'protoBonusStart' || e.type === 'gsBonusStart'),
       forced: round.forced,
       events: round.state,
     });
@@ -200,7 +205,7 @@ export class Controller {
         if (game.phase !== 'idle') break; // error or interruption
         const r = this.lastRound;
         if (start - game.balance >= cfg.lossLimit) break;
-        if (r && cfg.stopOnBonus && r.state.some((e) => e.type === 'bonusStart' || e.type === 'protoBonusStart')) break;
+        if (r && cfg.stopOnBonus && r.state.some((e) => e.type === 'bonusStart' || e.type === 'protoBonusStart' || e.type === 'gsBonusStart')) break;
         if (r && cfg.singleWinLimit !== null && r.payout >= cfg.singleWinLimit) break;
         await new Promise((res) => setTimeout(res, game.prefs.turbo ? 150 : 350));
       }
@@ -228,6 +233,7 @@ export class Controller {
     game.phase = 'replay';
     game.banner = game.t.replaying;
     const savedWin = game.win;
+    this.scene.resetRound();
     try {
       this.scene.bet = e.bet;
       await playBook(e.events, this.scene, this.hud, { bet: e.bet, cost: e.cost ?? 1, mode: e.mode ?? 'base' });
