@@ -3,7 +3,8 @@
   import type { Controller } from '../game/controller';
   import type { DemoRgs } from '../rgs/demoRgs';
   import { PROTO, GAME_SCENARIOS, type ProtoMode } from '../engine/rallyPath';
-  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, DUEL_BUILD } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, DUEL_BUILD, RETURN_SPINS_BUILD, DEV_TOOLS } from '../engine/gameplay';
+  import { RS } from '../engine/returnSpins';
   import { DUEL } from '../engine/duel';
   import { GS } from '../engine/goldenServe';
   import type { ForcedScenario } from '../rgs/demoRgs';
@@ -54,7 +55,17 @@
 {#if game.isDemo}
   <section class="demo">
     <p>{t.demoNotice}</p>
-    {#if DUEL_BUILD}
+    {#if RETURN_SPINS_BUILD}
+      {#if DEV_TOOLS}
+      <h3>{t.rsDevTitle}</h3>
+      <p>{t.rsDevNotice}</p>
+      <div class="btns">
+        {#each Object.entries(RS.scenarios) as [k, sc] (k)}
+          <button onclick={() => forceGame(`rs_${k}`)} disabled={game.phase !== 'idle'} data-testid={`force-rs-${k}`}>{sc.label}</button>
+        {/each}
+      </div>
+      {/if}
+    {:else if DUEL_BUILD}
     <h3>{t.duelLabTitle}</h3>
     <p>{t.duelLabNotice}</p>
     <div class="btns">

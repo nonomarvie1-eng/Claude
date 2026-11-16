@@ -7,9 +7,38 @@ import { createRgs } from './index';
 import { playRound } from '../engine/engine';
 import { cryptoDrawer } from '../engine/rng';
 
-import { DUEL_BUILD, FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
+import { DUEL_BUILD, FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD, RETURN_SPINS_BUILD } from '../engine/gameplay';
 // v6 FINAL SET gameplay tests: run with `npm run test:finalset` (disabled in the Rally Path test build)
 const itOld = FINAL_SET_BUILD ? it : it.skip;
+
+describe.runIf(RETURN_SPINS_BUILD)('DemoRgs — Return Spins test build RETURN-01', () => {
+  const OLD = ['bonusStart', 'hawkEye', 'shot', 'exchangeStart', 'rallyPath', 'protoBonusStart', 'goldenServe', 'gsBonusStart', 'duelStart', 'duelPoint'];
+  it('old buys and Bonus Chance are refused without debit', async () => {
+    const r = new DemoRgs(memoryStorage());
+    for (const m of ['buy_rally', 'buy_final', 'bonus_chance']) await expect(r.play(1_000_000, m)).rejects.toThrow();
+    expect((await r.balance()).amount).toBe(DEMO_START_BALANCE);
+  });
+  it('forced development scenario: stage wins add up to the payout, credited exactly once', async () => {
+    const r = new DemoRgs(memoryStorage());
+    r.forceNext = 'rs_win';
+    const { round } = await r.play(1_000_000, 'base');
+    const stages = round.state.filter((e) => e.type === 'stageWin') as { stageWin: number }[];
+    expect(stages.length).toBe(2);
+    expect(stages.reduce((a, e) => a + e.stageWin, 0)).toBe(round.payoutMultiplier);
+    const end = await r.endRound();
+    expect(end.balance.amount).toBe(DEMO_START_BALANCE - 1_000_000 + round.payout);
+  });
+  it('normal rounds are never forced and never contain older gameplay events', async () => {
+    const r = new DemoRgs(memoryStorage());
+    for (let i = 0; i < 400; i++) {
+      const { round } = await r.play(1_000_000, 'base');
+      expect(round.forced).toBeUndefined();
+      expect(round.state.some((e) => OLD.includes(e.type))).toBe(false);
+      await r.endRound();
+      if ((await r.balance()).amount < 2_000_000) r.reset();
+    }
+  });
+});
 
 describe.runIf(DUEL_BUILD)('DemoRgs — Championship Duel test build DUEL-01', () => {
   const OLD = ['bonusStart', 'hawkEye', 'shot', 'exchangeStart', 'rallyPath', 'protoBonusStart', 'goldenServe', 'gsBonusStart'];

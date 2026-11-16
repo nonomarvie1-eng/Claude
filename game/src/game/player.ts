@@ -35,6 +35,9 @@ export interface View {
   secondServe?(e: Ev<'secondServe'>): Promise<void>;
   protoBonusEnd?(e: Ev<'protoBonusEnd'>, amount: number): Promise<void>;
   goldenServe?(e: Ev<'goldenServe'>): Promise<void>;
+  rsServe?(e: Ev<'serve'>): Promise<void>;
+  rsRespin?(e: Ev<'respin'>): Promise<void>;
+  rsStage?(e: Ev<'stageWin'>, amount: number, total: number, hadEvent: boolean): Promise<void>;
   duelStart?(e: Ev<'duelStart'>): Promise<void>;
   duelPoint?(e: Ev<'duelPoint'>, prize: number, bonusTotal: number): Promise<void>;
   duelEnd?(e: Ev<'duelEnd'>, bonusWin: number, debit: number): Promise<void>;
@@ -83,7 +86,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
   view.setMode('basegame');
   hud.setInBonus(false);
   hud.setMultiplier(1);
-  for (const e of events) {
+  for (const [ei, e] of events.entries()) {
     switch (e.type) {
       case 'reveal': {
         view.clearWins();
@@ -188,6 +191,39 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         hud.setInBonus(false);
         hud.setBonusLevel?.(null);
         break;
+      // ---- GOLDEN SERVE — RETURN SPINS
+      case 'stageWin': {
+        const amt = winAmount(bet, e.stageWin);
+        const hadEvent = e.stage > 0 || events[ei + 1]?.type === 'serve';
+        if (e.wins.length) await view.showWins(e.wins, 1, tierFor(amt, debit));
+        hud.setWin(winAmount(bet, e.runningTotal));
+        await view.rsStage?.(e, amt, winAmount(bet, e.spinTotal), hadEvent);
+        break;
+      }
+      case 'serve':
+        await view.rsServe?.(e);
+        break;
+      case 'respin':
+        await view.rsRespin?.(e);
+        break;
+      case 'rsBonusStart':
+        hasBonus = true;
+        hud.setBonusLevel?.(e.bonus);
+        hud.setInBonus(true);
+        hud.setFreeSpins(0, e.spins);
+        view.setMode('freegame', e.bonus);
+        await view.protoBonusStart?.({ index: e.index, type: 'protoBonusStart', bonus: e.bonus, spins: e.spins });
+        break;
+      case 'rsBonusEnd': {
+        const amt = winAmount(bet, e.amount);
+        const t = tierFor(amt, debit);
+        if (!opts.quick && (t === 'mega' || t === 'epic')) await view.bigWin(amt, t);
+        else await view.protoBonusEnd?.({ index: e.index, type: 'protoBonusEnd', bonus: e.bonus, amount: e.amount, spins: exchange }, amt);
+        view.setMode('basegame');
+        hud.setInBonus(false);
+        hud.setBonusLevel?.(null);
+        break;
+      }
       // ---- CHAMPIONSHIP DUEL
       case 'duelStart':
         hasBonus = true;

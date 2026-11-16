@@ -4,7 +4,10 @@
   import { money } from '../game/format';
   import { fmt } from '../i18n/strings';
   import type { ModeName, SymbolName } from '../engine/types';
-  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, DUEL_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, DUEL_BUILD, RETURN_SPINS_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { RS } from '../engine/returnSpins';
+  const RSS = RS.stats;
+  const p2 = (x: number) => `${(x * 100).toLocaleString(game.prefs.lang, { maximumFractionDigits: 2 })} %`;
   import { DUEL } from '../engine/duel';
   const DX = DUEL.exact;
   const pct1 = (x: number) => `${(x * 100).toLocaleString(game.prefs.lang, { maximumFractionDigits: 1 })} %`;
@@ -82,7 +85,20 @@
   </div>
 </section>
 
-{#if DUEL_BUILD}
+{#if RETURN_SPINS_BUILD}
+<section data-testid="rs-rules">
+  <h3>GOLDEN SERVE — RETURN SPINS</h3>
+  <div class="special"><img src={img('G')} alt="Golden Ball" style="width:72px;height:72px" /><div><p>{t.rsRule1}</p></div></div>
+  <p>{t.rsRule2}</p>
+  <p>{t.rsRule3}</p>
+  <p>{fmt(t.rsRule4, { b: RS.rules.MAX_RETURNS.base, r: RS.rules.MAX_RETURNS.rally, f: RS.rules.MAX_RETURNS.final })}</p>
+  <p>{fmt(t.rsRule5, { a: RS.rules.BONUS.rally.spins, b: RS.rules.BONUS.final.spins })}</p>
+  {#if showRtp}
+    <p data-testid="rs-stats">{fmt(t.rsStats, { rtp: p2(RSS.game.rtp), lo: p2(RSS.game.ci95[0]), hi: p2(RSS.game.ci95[1]), n: (RSS.n / 1e6).toLocaleString(game.prefs.lang), serve: RSS.game.serve_1_in.toFixed(1), rc: RSS.bonus_rally.mean_x.toFixed(1), cn: RSS.bonus_final.mean_x.toFixed(1) })}</p>
+  {/if}
+  <p class="demo">{t.rsRuleProto}</p>
+</section>
+{:else if DUEL_BUILD}
 <section data-testid="duel-rules">
   <h3>CHAMPIONSHIP DUEL</h3>
   <p>{t.duelRule1}</p>
@@ -195,7 +211,7 @@
   {/if}
   <p>{t.malfunction}</p>
   {#if game.isDemo}<p class="demo">{t.demoNotice}</p>{/if}
-  <p class="ver">{t.version} : build {BUILD_ID} · math {DUEL_BUILD ? 'championship-duel proto' : GOLDEN_SERVE_BUILD ? 'golden-serve proto' : RALLY_PATH_BUILD ? 'rally-path proto' : RULES.mathVersion}</p>
+  <p class="ver">{t.version} : build {BUILD_ID} · math {RETURN_SPINS_BUILD ? 'return-spins proto' : DUEL_BUILD ? 'championship-duel proto' : GOLDEN_SERVE_BUILD ? 'golden-serve proto' : RALLY_PATH_BUILD ? 'rally-path proto' : RULES.mathVersion}</p>
 </section>
 
 <style>

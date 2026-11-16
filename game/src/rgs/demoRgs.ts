@@ -7,7 +7,8 @@ import { drawBaseStopsWithScatters, playRound } from '../engine/engine';
 import { MODE_NAMES, type ModeName } from '../engine/types';
 import { RULES } from '../engine/rules';
 import { cryptoDrawer, cryptoInt, listDrawer } from '../engine/rng';
-import { DUEL_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD, STORE_NS } from '../engine/gameplay';
+import { DEV_TOOLS, DUEL_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD, RETURN_SPINS_BUILD, STORE_NS } from '../engine/gameplay';
+import { RS, playRsRound } from '../engine/returnSpins';
 import { DUEL, playDuelRound } from '../engine/duel';
 import { GS, playGsRound, type Concept } from '../engine/goldenServe';
 import { GAME_SCENARIOS, playGameRound } from '../engine/rallyPath';
@@ -50,7 +51,7 @@ interface Persisted {
   nextId: number;
 }
 
-export type ForcedScenario = null | 'bonus3' | 'bonus4' | 'bonus5' | 'game_full6' | 'game_rally' | 'game_final' | 'gs_serve' | 'gs_smash' | 'gs_rally' | 'gs_final' | 'duel_tiebreak' | 'duel_final';
+export type ForcedScenario = null | 'bonus3' | 'bonus4' | 'bonus5' | 'game_full6' | 'game_rally' | 'game_final' | 'gs_serve' | 'gs_smash' | 'gs_rally' | 'gs_final' | 'duel_tiebreak' | 'duel_final' | `rs_${string}`;
 
 export class DemoRgs implements RgsClient {
   readonly kind = 'demo' as const;
@@ -125,6 +126,13 @@ export class DemoRgs implements RgsClient {
     if (debit > this.s.balance) throw new RgsError('ERR_IPB', 'insufficient balance');
     const forced = m === 'base' ? this.forceNext : null;
     this.forceNext = null;
+    if (RETURN_SPINS_BUILD) {
+      if (m !== 'base') throw new RgsError('ERR_VAL', 'mode disabled in the Return Spins test build');
+      // forced scenarios exist only with the development tools; a normal spin is never forced
+      const sc = DEV_TOOLS && forced && forced.startsWith('rs_') ? RS.scenarios[forced.slice(3)] : null;
+      const out = playRsRound(sc ? listDrawer(sc.draws) : cryptoDrawer, this.s.nextId);
+      return this.settle(out.book, amount, mode, cost, sc ? forced : null);
+    }
     if (DUEL_BUILD) {
       if (m !== 'base') throw new RgsError('ERR_VAL', 'mode disabled in the Championship Duel test build');
       const sc = forced && forced.startsWith('duel_') ? DUEL.roundScenarios[forced.slice(5)] : null;

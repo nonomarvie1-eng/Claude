@@ -9,7 +9,7 @@ import { RULES } from '../engine/rules';
 import type { ModeName } from '../engine/types';
 import { PROTO, playProtoRound, type ProtoMode } from '../engine/rallyPath';
 import { cryptoDrawer, listDrawer } from '../engine/rng';
-import { DUEL_BUILD, FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
+import { DUEL_BUILD, FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD, RETURN_SPINS_BUILD } from '../engine/gameplay';
 import { DUEL, playLabPoints, type DuelLevel } from '../engine/duel';
 import { cryptoInt } from '../engine/rng';
 
@@ -67,6 +67,7 @@ export class Controller {
     if (game.jurisdiction.disabledTurbo) game.prefs.turbo = false;
     this.scene.currency = game.currency;
     this.scene.gsMode = GOLDEN_SERVE_BUILD;
+    this.scene.rsMode = RETURN_SPINS_BUILD;
     this.scene.setStrings(game.t); // rebuild the bonus panel with this build's labels
     this.scene.setProto(RALLY_PATH_BUILD);
     this.scene.setBoard(new Array(RULES.reels).fill(0), 'basegame');

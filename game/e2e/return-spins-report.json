@@ -1,0 +1,526 @@
+{
+ "url": "http://localhost:4190/index.html?lang=fr",
+ "failures": 0,
+ "results": [
+  {
+   "name": "390x844: build id RETURN-01 visible",
+   "ok": true,
+   "detail": "RETURN-01"
+  },
+  {
+   "name": "390x844: no buy / modes button, no test button in the player HUD",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1-plain: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "1-plain: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1-plain: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "0 serve(s), 0 respin(s)"
+  },
+  {
+   "name": "1-plain: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "1-plain: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "3 = 3x"
+  },
+  {
+   "name": "1. ordinary spin: no Golden Serve, one stop",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "2-center: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "2-center: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "2-center: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "1 serve(s), 1 respin(s)"
+  },
+  {
+   "name": "2-center: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[2,3]]"
+  },
+  {
+   "name": "2-center: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 + 0.1 = 0.1x"
+  },
+  {
+   "name": "2. Golden Serve strikes the centre zone: reels 3-4 respin",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "3-returns: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "3-returns: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "3-returns: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "3 serve(s), 3 respin(s)"
+  },
+  {
+   "name": "3-returns: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[2,3],[0,1],[2,3]]"
+  },
+  {
+   "name": "3-returns: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 + 0.9 + 0 + 0 = 0.9x"
+  },
+  {
+   "name": "3. serve + 2 Return Spins, each to a zone not struck just before",
+   "ok": true,
+   "detail": "serve:center → return:left → return:center"
+  },
+  {
+   "name": "4-nowin: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "4-nowin: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "4-nowin: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "1 serve(s), 1 respin(s)"
+  },
+  {
+   "name": "4-nowin: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[4,5]]"
+  },
+  {
+   "name": "4-nowin: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 + 0 = 0x"
+  },
+  {
+   "name": "4. event without any win",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "5-win: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "5-win: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "5-win: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "1 serve(s), 1 respin(s)"
+  },
+  {
+   "name": "5-win: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[2,3,4,5]]"
+  },
+  {
+   "name": "5-win: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "1.2 + 2.2 = 3.4x"
+  },
+  {
+   "name": "5. visible win on each stop, correctly cumulated",
+   "ok": true,
+   "detail": "stop 1: +1.2x (total 1.2x) · stop 2: +2.2x (total 3.4x)"
+  },
+  {
+   "name": "6-smash: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "6-smash: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "6-smash: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "1 serve(s), 1 respin(s)"
+  },
+  {
+   "name": "6-smash: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[0,1,2,3]]"
+  },
+  {
+   "name": "6-smash: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "21.6 + 4.8 = 26.4x"
+  },
+  {
+   "name": "6. Golden Smash strikes four reels",
+   "ok": true,
+   "detail": "left+center → reels 1,2,3,4"
+  },
+  {
+   "name": "bonus-rally: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "bonus-rally: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "bonus-rally: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "6 serve(s), 6 respin(s)"
+  },
+  {
+   "name": "bonus-rally: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[4,5],[4,5],[2,3],[4,5],[0,1],[2,3]]"
+  },
+  {
+   "name": "bonus-rally: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 + 0 + 0 + 0 + 0 + 0.6 + 0 + 0 + 0 + 0 + 0 + 0.8 + 0.4 + 0.4 + 46.1 = 50.3x"
+  },
+  {
+   "name": "rally: bonus played on the reels, with serves",
+   "ok": true,
+   "detail": "8 spins, 6 serves, 50.3"
+  },
+  {
+   "name": "bonus-final: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "bonus-final: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "bonus-final: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "6 serve(s), 6 respin(s)"
+  },
+  {
+   "name": "bonus-final: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[0,1],[4,5],[0,1,2,3],[2,3,4,5],[4,5],[4,5]]"
+  },
+  {
+   "name": "bonus-final: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 + 0 + 0 + 1.2 + 2.4 + 14.4 + 0 + 0.6 + 0.3 + 0 + 1.5 + 3.5 + 0 + 19.2 + 0 + 0 + 0 + 0.8 + 0.8 = 49.7x"
+  },
+  {
+   "name": "final: bonus played on the reels, with serves",
+   "ok": true,
+   "detail": "12 spins, 6 serves, 49.7"
+  },
+  {
+   "name": "skip-returns: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "skip-returns: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "skip-returns: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "3 serve(s), 3 respin(s)"
+  },
+  {
+   "name": "skip-returns: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[2,3],[0,1],[2,3]]"
+  },
+  {
+   "name": "skip-returns: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 + 0.9 + 0 + 0 = 0.9x"
+  },
+  {
+   "name": "skip (taps): same result, faster",
+   "ok": true,
+   "detail": "10021 ms vs 13714 ms"
+  },
+  {
+   "name": "normal-1: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "normal-1: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "normal-1: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "0 serve(s), 0 respin(s)"
+  },
+  {
+   "name": "normal-1: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "normal-1: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 = 0x"
+  },
+  {
+   "name": "normal spin 1: never forced",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "normal-2: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "normal-2: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "normal-2: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "0 serve(s), 0 respin(s)"
+  },
+  {
+   "name": "normal-2: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "normal-2: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 = 0x"
+  },
+  {
+   "name": "normal spin 2: never forced",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "normal-3: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "normal-3: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "normal-3: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "0 serve(s), 0 respin(s)"
+  },
+  {
+   "name": "normal-3: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "normal-3: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 = 0x"
+  },
+  {
+   "name": "normal spin 3: never forced",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "normal-4: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "normal-4: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "normal-4: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "0 serve(s), 0 respin(s)"
+  },
+  {
+   "name": "normal-4: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "normal-4: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "0 = 0x"
+  },
+  {
+   "name": "normal spin 4: never forced",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "info page: Return Spins rules + measured stats",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390x844: no overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390x844: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568-smash: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "320x568-smash: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568-smash: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "1 serve(s), 1 respin(s)"
+  },
+  {
+   "name": "320x568-smash: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[0,1,2,3]]"
+  },
+  {
+   "name": "320x568-smash: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "21.6 + 4.8 = 26.4x"
+  },
+  {
+   "name": "320x568: smash plays, 4 reels",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: no overflow, no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "iphone-se-smash: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "iphone-se-smash: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "iphone-se-smash: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "1 serve(s), 1 respin(s)"
+  },
+  {
+   "name": "iphone-se-smash: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[0,1,2,3]]"
+  },
+  {
+   "name": "iphone-se-smash: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "21.6 + 4.8 = 26.4x"
+  },
+  {
+   "name": "iphone-se: smash plays, 4 reels",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "iphone-se: no overflow, no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900-smash: clean start (no plate, overlay, ball or zone left)",
+   "ok": true,
+   "detail": "{\"court\":false,\"overlay\":0,\"gsLayer\":0,\"rpPlate\":false,\"fx\":0}"
+  },
+  {
+   "name": "1440x900-smash: no older gameplay event",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900-smash: every serve animated, every respin animated",
+   "ok": true,
+   "detail": "1 serve(s), 1 respin(s)"
+  },
+  {
+   "name": "1440x900-smash: exactly the struck reels moved, the others stayed still",
+   "ok": true,
+   "detail": "[[0,1,2,3]]"
+  },
+  {
+   "name": "1440x900-smash: stop wins add up to the payout; win shown = payout; balance = before - bet + payout",
+   "ok": true,
+   "detail": "21.6 + 4.8 = 26.4x"
+  },
+  {
+   "name": "1440x900: smash plays, 4 reels",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: no overflow, no console errors",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

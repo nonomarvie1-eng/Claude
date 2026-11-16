@@ -61,6 +61,12 @@ export type BookEvent =
   | { index: number; type: 'goldenServe'; concept: 'A' | 'B'; shot: 'serve' | 'smash' | 'double'; origin: Position; target?: SymbolName; paths: Position[][]; changes: { reel: number; row: number; from: SymbolName; to: SymbolName }[]; swaps?: { a: Position & { sym: SymbolName }; b: Position & { sym: SymbolName } }[]; board: Board }
   | { index: number; type: 'gsBonusStart'; bonus: BonusLevel; spins: number; positions: Position[] }
   | { index: number; type: 'gsBonusEnd'; bonus: BonusLevel; amount: number; bonusWin: number }
+  // ---- GOLDEN SERVE — RETURN SPINS
+  | { index: number; type: 'stageWin'; gameType: GameType; stage: number; stageWin: number; spinTotal: number; runningTotal: number; wins: WinLine[] }
+  | { index: number; type: 'serve'; kind: 'serve' | 'return'; smash: boolean; origin: Position; zone: string; reels: number[]; returnIndex: number; maxReturns: number }
+  | { index: number; type: 'respin'; gameType: GameType; stage: number; reels: number[]; stops: number[]; board: Board }
+  | { index: number; type: 'rsBonusStart'; bonus: BonusLevel; spins: number; positions: Position[] }
+  | { index: number; type: 'rsBonusEnd'; bonus: BonusLevel; bonusWin: number; amount: number }
   // ---- CHAMPIONSHIP DUEL
   | { index: number; type: 'duelStart'; level: 'tiebreak' | 'final'; points: number; positions: Position[]; single?: boolean }
   | { index: number; type: 'duelPoint'; point: number; goldenMatchPoint: boolean; firstServe: 'ACE' | 'FAULT' | 'IN'; secondServe: 'ACE' | 'DOUBLE_FAULT' | 'IN' | null; outcome: 'DOUBLE_FAULT' | 'ACE' | 'LOST' | 'RALLY_WON' | 'WINNER' | 'GOLDEN'; won: boolean; prize: number; bonusTotal: number; side: 'deuce' | 'ad'; target: 'T' | 'wide' | 'body'; shots: number; finish: 'cross' | 'line' | 'inside-out' }

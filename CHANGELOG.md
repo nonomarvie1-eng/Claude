@@ -1,5 +1,14 @@
 # Changelog
 
+## Build de test RETURN-01 — GOLDEN SERVE : RETURN SPINS (2026-11-16, tranche verticale, crédits fictifs)
+- Le bonus reste une slot : une Balle d'or frappe une zone (rouleaux 1-2, 3-4 ou 5-6) et seuls ces rouleaux sont relancés ; chaque arrêt est réévalué (15 625 façons) et payé, affiché séparément puis cumulé. Return Spins bornés (2 / 2 / 3), Golden Smash sur 4 rouleaux.
+- Rally Challenge (8 tours) et Championship Night (12 tours) joués sur les rouleaux.
+- Moteur Python + simulateur vectorisé + port TS (parité 163 tours) ; RTP mesuré 96,02 % [95,61 ; 96,43] (20 M tours).
+- Animations dans la grille : révélation de la balle, service, retour (coup droit), smash, contour de zone, relance partielle, plaque par arrêt.
+- Balle d'or refaite sans médaillon (asset temporaire). Outils de test réservés au développement (`VITE_DEV_TOOLS`), aucun résultat forcé en jeu normal.
+- Championship Duel et prototypes précédents archivés (`VITE_GAMEPLAY`).
+- Tests : pytest (dont 7 Return Spins), vitest 39 (+ gameplays archivés), e2e 104/104. Détails : docs/RETURN_SPINS.md.
+
 ## Build de test DUEL-01 — CHAMPIONSHIP DUEL (2026-11-16, prototype, crédits fictifs)
 - Nouvelle direction : le bonus quitte les rouleaux pour une suite de points de tennis. 3 scatters → TIE-BREAK DUEL (4 points), 4+ → THE GRAND FINAL (6 points, Golden Smash, Golden Match Point).
 - Modèle exact (convolution) : RTP 96,25 % ; Tie-Break 43,60×, Grand Final 110,14× ; contrôlé par Monte-Carlo et par énumération complète des tirages d'un point.

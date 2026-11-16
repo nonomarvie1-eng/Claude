@@ -112,6 +112,18 @@ def bonus_level(n_scatters: int) -> str | None:
 # the prototype mode / dev scenarios: the normal game, its reels and its RTP
 # are NOT affected.  Every value below is experimental and is evaluated with
 # the exact model in rally_path.py before any adoption.
+RETURN_SPINS = {
+    # experimental (see return_spins.py): Golden Balls per reel (inserted in the v6 strips)
+    "G_PER_REEL": {"base": [1, 0, 1, 0, 0, 0], "free": [2, 2, 2, 2, 2, 2]},
+    # bonus reels of the slice (stacked like v6, seed 81): richer in Wilds and premiums, no scatter
+    "FREE_COUNTS": {"S": [0] * 6, "W": [0, 7, 7, 7, 7, 7], "H1": [12] * 6, "H2": [12] * 6, "H3": [12] * 6, "H4": [12] * 6,
+                    "L1": [12] * 6, "L2": [12] * 6, "L3": [13] * 6, "L4": [13] * 6, "L5": [14] * 6},
+    "FREE_SEED": 81,
+    "P_SMASH": {"base": 15, "rally": 0, "final": 80},      # out of 1000, per strike
+    "MAX_RETURNS": {"base": 2, "rally": 2, "final": 3},
+    "BONUS": {"rally": {"spins": 8}, "final": {"spins": 12}},
+}
+
 CHAMPIONSHIP_DUEL = {
     # experimental (see championship_duel.py): probabilities out of 1000, prizes in x bet
     "LEVELS": {

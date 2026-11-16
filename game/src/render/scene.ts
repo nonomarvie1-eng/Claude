@@ -7,6 +7,7 @@ import { STRIPS } from '../engine/engine';
 import { PROTO } from '../engine/rallyPath';
 import { GS } from '../engine/goldenServe';
 import { Court } from './court';
+import { RS as RSDATA } from '../engine/returnSpins';
 import { RULES } from '../engine/rules';
 import type { Board, BonusLevel, BookEvent, GameType, ModeName, Position, SymbolName, WinLine } from '../engine/types';
 import { Match } from './match';
@@ -409,7 +410,7 @@ export class RallyScene implements View {
       const step = 128;
       for (let i = 1; i < 3; i++) bg.moveTo(-W / 2 + 34, y0 + i * step - 22).lineTo(W / 2 - 34, y0 + i * step - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       bg.moveTo(-W / 2 + 34, y0 - 22).lineTo(W / 2 - 34, y0 - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
-      cells = [mk(this.proto || this.gsMode ? this.t.rpSpins : this.t.tbRound, 0, y0, W - 40), mk(this.proto || this.gsMode ? this.t.rpEvent : this.t.tbPoints, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
+      cells = [mk(this.proto || this.gsMode || this.rsMode ? this.t.rpSpins : this.t.tbRound, 0, y0, W - 40), mk(this.proto || this.gsMode || this.rsMode ? this.t.rpEvent : this.t.tbPoints, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
     } else {
       const title = this.goldText(this.level === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', variant === 'wide' ? 40 : 34);
       title.y = -H / 2 + 38;
@@ -426,7 +427,7 @@ export class RallyScene implements View {
       const y = -H / 2 + 92;
       for (const x of [-W / 6, W / 6]) bg.moveTo(x, y - 14).lineTo(x, H / 2 - 18).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       const cw = W / 3 - 24;
-      cells = [mk(this.proto || this.gsMode ? this.t.rpSpins : this.t.tbRound, -W / 3, y, cw), mk(this.proto || this.gsMode ? this.t.rpEvent : this.t.tbPoints, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
+      cells = [mk(this.proto || this.gsMode || this.rsMode ? this.t.rpSpins : this.t.tbRound, -W / 3, y, cw), mk(this.proto || this.gsMode || this.rsMode ? this.t.rpEvent : this.t.tbPoints, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
     }
     this.tbRound = cells[0].v;
     this.tbMult = cells[1].v;
@@ -442,7 +443,7 @@ export class RallyScene implements View {
     if (!this.tbRound) return;
     const i = this.bonusInfo;
     this.tbRound.text = `${i.cur} / ${i.total}`;
-    this.tbMult.text = this.proto || this.gsMode ? this.protoEvent : String(i.mult);
+    this.tbMult.text = this.proto || this.gsMode || this.rsMode ? this.protoEvent : String(i.mult);
     this.tbTotal.text = money(i.win, this.currency, this.lang);
     for (const v of [this.tbRound, this.tbMult, this.tbTotal]) {
       v.scale.set(1);
@@ -915,7 +916,7 @@ export class RallyScene implements View {
 
   /** Shows a board immediately (initial screen / resume). */
   setBoard(stops: number[], gameType: GameType) {
-    const strips = this.gsMode ? GS.strips[gameType === 'freegame' ? 'free' : 'base'] : this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : STRIPS.base;
+    const strips = this.rsMode ? RSDATA.strips[gameType === 'freegame' ? 'free' : 'base'] : this.gsMode ? GS.strips[gameType === 'freegame' ? 'free' : 'base'] : this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : STRIPS.base;
     this.reels.forEach((r, i) => {
       r.strip = strips[i];
       r.pos = stops[i];
@@ -925,7 +926,7 @@ export class RallyScene implements View {
 
   async spinTo(_board: Board, stops: number[], gameType: GameType, anticipation: number[], quick: boolean, betMode: ModeName = 'base') {
     // the stops index the reel set of the round's bet mode
-    const strips = this.gsMode ? GS.strips[gameType === 'freegame' ? 'free' : 'base'] : this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : betMode === 'bonus_chance' ? STRIPS.bonusChance : STRIPS.base;
+    const strips = this.rsMode ? RSDATA.strips[gameType === 'freegame' ? 'free' : 'base'] : this.gsMode ? GS.strips[gameType === 'freegame' ? 'free' : 'base'] : this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : betMode === 'bonus_chance' ? STRIPS.bonusChance : STRIPS.base;
     const rm = this.prefs.reducedMotion;
     const turbo = this.prefs.turbo;
     const baseT = quick ? 260 : rm ? 420 : turbo ? 650 : gameType === 'freegame' ? 900 : 1050;
@@ -1057,6 +1058,7 @@ export class RallyScene implements View {
     this.setPlate('');
     this.clearRally();
     this.clearServe();
+    if (this.zoneGfx) this.clearZone();
     for (const r of this.reels) for (const s of r.sprites) {
       s.alpha = 1;
       s.rotation = 0;
@@ -1325,7 +1327,7 @@ export class RallyScene implements View {
   }
 
   async bigWin(amount: number, tier: WinTier) {
-    if (this.gsMode) {
+    if (this.gsMode || this.rsMode) {
       // proportionate celebration: plate glow for 'big', Championship Point from 50x
       if (tier === 'mega' || tier === 'epic') return this.championshipPoint(amount, tier);
       this.cheer(0.8);
@@ -1444,6 +1446,7 @@ export class RallyScene implements View {
       grid: () => this.reels.map((r) => Array.from({ length: NROWS }, (_, row) => names.get(r.cell(row).texture) ?? '?')),
       qa: () => ({ ...this.qa }),
       court: () => ({ ...this.court.qa, visible: this.court.root.visible }),
+      rs: () => JSON.parse(JSON.stringify(this.qaRs)),
       leftovers: () => ({ court: this.court.root.visible, overlay: this.overlay.children.length, gsLayer: this.gsLayer.children.length, rpPlate: this.rpPlate.visible, fx: this.fx.children.length }),
     };
   }
@@ -1451,6 +1454,7 @@ export class RallyScene implements View {
   /** Central reset at the start of every round: nothing from the previous round survives. */
   resetRound() {
     this.court?.reset();
+    this.clearZone?.();
     this.onOverlayTap = null;
     this.match.skip = false;
     this.rpBusy = false;
@@ -1501,7 +1505,7 @@ export class RallyScene implements View {
   /** (A) Golden Ball reveal ≈ 0.4 s: short spin, glow, lift, rest of the reels dimmed. */
   private async ballReveal(o: Position) {
     const rm = this.prefs.reducedMotion;
-    const s = this.reels[0].cell(o.row);
+    const s = this.reels[o.reel].cell(o.row);
     const x = o.reel * CELL + CELL / 2, y = o.row * CELL + CELL / 2;
     const halo = new Sprite(this.tex.glow);
     halo.anchor.set(0.5);
@@ -1514,7 +1518,7 @@ export class RallyScene implements View {
     audio.play('mult_up', { volume: 0.55, rate: 1.15 });
     const base = SYM_SIZE / s.texture.width;
     const y0 = s.y;
-    void this.dimAllBut(new Set([`0:${o.row}`]), 0.55, rm ? 80 : 200);
+    void this.dimAllBut(new Set([`${o.reel}:${o.row}`]), 0.55, rm ? 80 : 200);
     await this.tw.tween(rm ? 160 : 400, (u) => {
       halo.alpha = 0.75 * Math.sin(Math.min(1, u * 1.4) * Math.PI / 2);
       if (rm) return;
@@ -1562,7 +1566,7 @@ export class RallyScene implements View {
   /** (B / C) the stroke: racket in, toss, swing, contact.  Returns the ball sprite at contact point. */
   private async stroke(o: Position, smash: boolean, again: boolean, ball: Sprite) {
     const rm = this.prefs.reducedMotion;
-    const x = CELL / 2, y = o.row * CELL + CELL / 2;
+    const x = o.reel * CELL + CELL / 2, y = o.row * CELL + CELL / 2;
     const racket = this.makeRacket(smash);
     // grip position: left of reel 1 (serve) or high above the server (smash)
     // kept inside the frame so the stroke is visible on narrow phones
@@ -1775,6 +1779,196 @@ export class RallyScene implements View {
     this.world.scale.set(s0);
   }
 
+
+  // ---------------------------------------------------------------- GOLDEN SERVE — RETURN SPINS
+  // The reels stay the centre of the game: a Golden Ball strikes a zone of
+  // two reels (four for a Golden Smash); only those reels spin again.  Every
+  // value shown comes from the book (serve / respin / stageWin events).
+  rsMode = false;
+  private zoneGfx = new Graphics();
+  private zoneTag = new Container();
+  qaRs = { serves: 0, returns: 0, smashes: 0, respins: 0, movedReels: [] as number[][], stablePositions: true };
+
+  private zoneRect(reels: number[]) {
+    const x0 = Math.min(...reels) * CELL, x1 = (Math.max(...reels) + 1) * CELL;
+    return { x0, x1, cx: (x0 + x1) / 2 };
+  }
+
+  private showZone(reels: number[], label: string, smash: boolean) {
+    const { x0, x1, cx } = this.zoneRect(reels);
+    const g = this.zoneGfx.clear();
+    g.roundRect(x0 + 4, 4, x1 - x0 - 8, NROWS * CELL - 8, 18).stroke({ color: smash ? 0xffe39a : 0xe7c877, width: smash ? 8 : 6, alpha: 0.95 });
+    g.roundRect(x0 + 4, 4, x1 - x0 - 8, NROWS * CELL - 8, 18).fill({ color: 0xe7c877, alpha: 0.06 });
+    this.zoneTag.removeChildren().forEach((c) => c.destroy());
+    const t = new Text({ text: label, style: { fontFamily: 'Inter', fontWeight: '800', fontSize: 30, fill: '#071826', letterSpacing: 2 } });
+    t.anchor.set(0.5);
+    const bg = new Graphics().roundRect(-t.width / 2 - 18, -24, t.width + 36, 48, 24).fill({ color: smash ? 0xffe39a : 0xe7c877 });
+    this.zoneTag.addChild(bg, t);
+    this.zoneTag.position.set(cx, -6);
+    this.zoneTag.visible = true;
+    if (!this.zoneGfx.parent) this.winLayer.addChild(this.zoneGfx, this.zoneTag);
+  }
+  private clearZone() {
+    this.zoneGfx.clear();
+    this.zoneTag.visible = false;
+  }
+
+  /** a return: flat forehand from the opposite side (mirrored racket, no toss) */
+  private async returnStroke(o: Position, ball: Sprite) {
+    const rm = this.prefs.reducedMotion;
+    const x = o.reel * CELL + CELL / 2, y = o.row * CELL + CELL / 2;
+    const r = this.makeRacket(false);
+    const fromRight = o.reel < 3; // the racket comes from the side facing the court
+    const dir = fromRight ? -1 : 1;
+    r.scale.x = Math.abs(r.scale.x) * (fromRight ? -1 : 1);
+    const gx = x - dir * CELL * 0.42, gy = y + CELL * 0.35;
+    r.position.set(gx - dir * CELL * 0.8, gy);
+    r.alpha = 0;
+    r.rotation = dir * 0.9;
+    await this.tw.tween(rm ? 60 : 150, (u) => {
+      r.alpha = u;
+      r.x = gx - dir * CELL * 0.8 * (1 - ease.outCubic(u));
+    });
+    // the ball rises off the reel to hip height
+    const y0 = ball.y;
+    await this.tw.tween(rm ? 60 : 140, (u) => {
+      ball.y = y0 - CELL * 0.25 * ease.outCubic(u);
+      r.rotation = dir * (0.9 + 0.5 * u); // short take-back
+    });
+    const r0 = r.rotation, r1 = -dir * 0.7;
+    await this.tw.tween(rm ? 50 : 95, (u) => (r.rotation = r0 + (r1 - r0) * ease.inCubic(u)));
+    audio.play('racket', { volume: 0.8, rate: 1.15 });
+    this.qa.strokes++;
+    this.impact(ball.x, ball.y, false);
+    void this.tw.tween(rm ? 60 : 220, (u) => {
+      r.rotation = r1 - dir * 0.4 * u;
+      r.alpha = 1 - u;
+    }).then(() => r.destroy());
+  }
+
+  async rsServe(e: Extract<BookEvent, { type: 'serve' }>) {
+    this.rpBusy = true;
+    this.match.skip = false;
+    this.clearWins();
+    const rm = this.prefs.reducedMotion;
+    const o = e.origin;
+    this.qaRs.serves++;
+    if (e.kind === 'return') this.qaRs.returns++;
+    if (e.smash) this.qaRs.smashes++;
+    this.protoEvent = e.kind === 'return' ? fmtS(this.t.rsReturnN, { n: e.returnIndex, m: e.maxReturns }) : e.smash ? 'GOLDEN SMASH' : 'GOLDEN SERVE';
+    this.refreshPanel();
+    const { halo } = await this.ballReveal(o);
+    const gs = this.reels[o.reel].cell(o.row);
+    const ball = new Sprite(this.tex.sym_G);
+    ball.anchor.set(0.5);
+    ball.width = ball.height = 74;
+    ball.position.set(o.reel * CELL + CELL / 2, o.row * CELL + CELL / 2 - (rm ? 0 : 12));
+    this.gsLayer.addChild(ball);
+    // the Golden Ball has been played: its symbol stays on the reel, dimmed (used)
+    gs.alpha = 0.4;
+    gs.rotation = 0;
+    gs.y = o.row * CELL + CELL / 2;
+    gs.scale.set(SYM_SIZE / gs.texture.width);
+    if (e.kind === 'return' && !e.smash) await this.returnStroke(o, ball);
+    else await this.stroke(o, e.smash, e.kind === 'return', ball);
+    // flight to the struck zone (engine decision), landing in its centre
+    const { cx } = this.zoneRect(e.reels);
+    const tx = cx, ty = NROWS * CELL * 0.5;
+    const fx = ball.x, fy = ball.y;
+    const shadow = new Graphics().ellipse(0, 0, 22, 8).fill({ color: 0x000000, alpha: 0.35 });
+    this.gsLayer.addChildAt(shadow, 0);
+    const trail = new Graphics();
+    this.gsLayer.addChildAt(trail, 0);
+    let lx = fx, ly = fy;
+    const ms = rm ? 150 : e.smash ? 260 : e.kind === 'return' ? 380 : 430;
+    const apex = e.smash ? 30 : e.kind === 'return' ? CELL * 0.7 : CELL * 1.1;
+    await this.tw.tween(ms, (u) => {
+      const k = e.smash ? ease.inCubic(u) : ease.inOutCubic(u);
+      ball.x = fx + (tx - fx) * k;
+      const ground = fy + (ty - fy) * k;
+      ball.y = ground - (rm ? 0 : Math.sin(u * Math.PI) * apex);
+      ball.rotation += e.smash ? 0.45 : 0.25;
+      ball.scale.set((74 / ball.texture.width) * (1 + 0.25 * Math.sin(u * Math.PI)));
+      shadow.position.set(ball.x, ground + 30);
+      trail.moveTo(lx, ly).lineTo(ball.x, ball.y).stroke({ color: 0xe7c877, width: e.smash ? 9 : 6, alpha: 0.6 });
+      lx = ball.x;
+      ly = ball.y;
+    });
+    // impact: the struck reels react, the others stay perfectly still
+    audio.play('bounce', { volume: e.smash ? 0.9 : 0.6 });
+    this.impact(tx, ty, e.smash);
+    const zoneName = e.smash ? 'GOLDEN SMASH' : fmtS(this.t.rsZone, { z: (this.t as unknown as Record<string, string>)[`rsZone_${e.zone}`] ?? e.zone });
+    this.showZone(e.reels, zoneName, e.smash);
+    if (e.smash) {
+      this.cheer(1.1);
+      void this.shake(220, 7);
+    }
+    const sq = e.reels.map((r) => this.reels[r]);
+    await Promise.all(sq.map((reel) => (this.prefs.reducedMotion ? Promise.resolve() : this.tw.tween(160, (u) => {
+      const k = 1 - 0.07 * Math.sin(u * Math.PI);
+      for (const sp of reel.sprites) sp.scale.y = (SYM_SIZE / sp.texture.width) * k;
+    }))));
+    await this.tw.tween(rm ? 60 : 140, (u) => {
+      ball.alpha = 1 - u;
+      shadow.alpha = 0.35 * (1 - u);
+      trail.alpha = 1 - u;
+    });
+    ball.destroy();
+    shadow.destroy();
+    trail.destroy();
+    halo.destroy();
+    this.rpBusy = false;
+  }
+
+  /** only the struck reels spin again; every other reel keeps its exact position */
+  async rsRespin(e: Extract<BookEvent, { type: 'respin' }>) {
+    this.rpBusy = true;
+    const strips = RSDATA.strips[e.gameType === 'freegame' ? 'free' : 'base'];
+    const before = this.reels.map((r) => r.pos);
+    this.qaRs.respins++;
+    this.qaRs.movedReels.push([...e.reels]);
+    const rm = this.prefs.reducedMotion;
+    const turbo = this.prefs.turbo;
+    audio.play('spin_start', { volume: 0.5 });
+    await Promise.all(e.reels.map(async (r, k) => {
+      const reel = this.reels[r];
+      reel.strip = strips[r];
+      const n = strips[r].length;
+      const s0 = reel.pos;
+      const T = (rm ? 380 : turbo ? 520 : 760) + k * (rm ? 40 : 120);
+      const D0 = Math.max(4, Math.round((24 * T) / 1000 * 0.62));
+      const D = D0 + mod(Math.floor(s0) - D0 - e.stops[r], n) + (s0 - Math.floor(s0));
+      reel.blur.enabled = !rm;
+      let last = s0;
+      await this.tw.tween(T, (u) => {
+        reel.pos = s0 - D * (rm ? ease.outCubic(u) : ease.outBack(u, 0.45));
+        reel.blur.strengthY = Math.min(14, Math.abs(last - reel.pos) * 28);
+        last = reel.pos;
+        reel.render();
+      });
+      reel.pos = e.stops[r];
+      reel.blur.enabled = false;
+      reel.blur.strengthY = 0;
+      reel.render();
+      audio.play('reel_stop', { volume: 0.5, rate: 0.96 + r * 0.02 });
+      this.squash(reel);
+    }));
+    // QA: the reels that were not struck did not move at all
+    this.reels.forEach((reel, i) => {
+      if (!e.reels.includes(i) && reel.pos !== before[i]) this.qaRs.stablePositions = false;
+    });
+    this.clearZone();
+    this.rpBusy = false;
+  }
+
+  /** amount of one stop, then the cumulated total (shown apart from the combinations) */
+  async rsStage(e: Extract<BookEvent, { type: 'stageWin' }>, amount: number, total: number, hadEvent: boolean) {
+    if (!hadEvent && e.stage === 0) return; // ordinary spin: the normal win display is enough
+    const label = fmtS(this.t.rsStagePlate, { n: e.stage + 1, a: money(amount, this.currency, this.lang), t: money(total, this.currency, this.lang) });
+    this.setPlate(label);
+    await this.tw.wait(amount === 0 ? (this.prefs.turbo ? 250 : 450) : this.prefs.turbo ? 400 : 700);
+  }
+
   // ---------------------------------------------------------------- RALLY PATH (prototype, demo lab)
   // Presentation only: length, path and reward arrive in the book event,
   // computed by the engine before the animation; skipping never changes them.
@@ -1896,9 +2090,9 @@ export class RallyScene implements View {
     const c = this.makeOverlay();
     const inner = c.children[1] as Container;
     const gf = e.bonus === 'final';
-    const t1 = this.fit(gf ? this.goldText('THE GRAND FINAL', 86) : this.superText('RALLY CHALLENGE', 86), 680);
+    const t1 = this.fit(gf ? this.goldText(this.rsMode ? 'CHAMPIONSHIP NIGHT' : 'THE GRAND FINAL', 86) : this.superText('RALLY CHALLENGE', 86), 680);
     t1.y = -40;
-    const t2 = this.plainText(fmtS(this.gsMode ? (gf ? this.t.gsIntroGf : this.t.gsIntroRc) : gf ? this.t.rpIntroGf : this.t.rpIntroRc, { n: e.spins }), 30, gf ? '#F4E9D4' : '#BFE6FF', '700');
+    const t2 = this.plainText(fmtS(this.rsMode ? (gf ? this.t.rsIntroGf : this.t.rsIntroRc) : this.gsMode ? (gf ? this.t.gsIntroGf : this.t.gsIntroRc) : gf ? this.t.rpIntroGf : this.t.rpIntroRc, { n: e.spins }), 30, gf ? '#F4E9D4' : '#BFE6FF', '700');
     t2.y = 60;
     inner.addChild(t1, t2);
     c.relayout?.();
@@ -1941,7 +2135,7 @@ export class RallyScene implements View {
     audio.play('bonus_end', { volume: 0.8 });
     const c = this.makeOverlay();
     const inner = c.children[1] as Container;
-    const t1 = this.fit(this.goldText(e.bonus === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', 60), 680);
+    const t1 = this.fit(this.goldText(e.bonus === 'final' ? (this.rsMode ? 'CHAMPIONSHIP NIGHT' : 'THE GRAND FINAL') : 'RALLY CHALLENGE', 60), 680);
     t1.y = -80;
     const t2 = this.plainText(fmtS(this.t.rpOutro, { n: e.spins }), 28, '#F4E9D4', '700');
     t2.y = -10;
