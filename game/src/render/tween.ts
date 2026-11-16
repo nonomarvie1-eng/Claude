@@ -2,6 +2,7 @@ import type { Ticker } from 'pixi.js';
 
 export const ease = {
   linear: (u: number) => u,
+  inCubic: (u: number) => u * u * u,
   outCubic: (u: number) => 1 - (1 - u) ** 3,
   inOutCubic: (u: number) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2),
   outBack: (u: number, s = 1.2) => 1 + (s + 1) * (u - 1) ** 3 + s * (u - 1) ** 2,

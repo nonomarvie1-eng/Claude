@@ -2,8 +2,8 @@
 <style>.lg{font-family:'Luckiest Guy',sans-serif}.li{font-family:'Lilita One',sans-serif}</style>
 <defs>
   <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fffbe0"/><stop offset=".22" stop-color="#ffe17a"/><stop offset=".48" stop-color="#d99a1e"/>
-    <stop offset=".62" stop-color="#ffe9a0"/><stop offset=".82" stop-color="#b9780f"/><stop offset="1" stop-color="#7a4a06"/></linearGradient>
+    <stop offset="0" stop-color="#fbf0cf"/><stop offset=".25" stop-color="#e8c47a"/><stop offset=".5" stop-color="#b8862f"/>
+    <stop offset=".66" stop-color="#ecd096"/><stop offset=".85" stop-color="#a0701f"/><stop offset="1" stop-color="#6b4612"/></linearGradient>
   <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#8a560a"/><stop offset=".25" stop-color="#ffe9a0"/><stop offset=".5" stop-color="#d99a1e"/><stop offset=".75" stop-color="#fff3c4"/><stop offset="1" stop-color="#8a560a"/></linearGradient>
   <radialGradient id="goldR" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffd75e"/><stop offset=".75" stop-color="#c58512"/><stop offset="1" stop-color="#6e4205"/></radialGradient>
@@ -25,4 +25,4 @@
   <filter id="drop" x="-25%" y="-25%" width="150%" height="160%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity=".55"/></filter>
   <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
   <filter id="glowS" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
-</defs><circle cx="32" cy="32" r="18" fill="#ffe17a" opacity=".6" filter="url(#glowS)"/><path d="M32,2L36.24,27.76L62,32L36.24,36.24L32,62L27.76,36.24L2,32L27.76,27.76Z" fill="#fffbe0" /></svg>
+</defs><circle cx="32" cy="32" r="14" fill="#f3d58f" opacity=".5" filter="url(#glowS)"/><path d="M32,4L35.54,28.46L60,32L35.54,35.54L32,60L28.46,35.54L4,32L28.46,28.46Z" fill="#fff8e6" /></svg>

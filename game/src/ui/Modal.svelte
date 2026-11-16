@@ -22,14 +22,14 @@
 </div>
 
 <style>
-  .veil { position: absolute; inset: 0; z-index: 40; background: rgba(2,8,5, .7); display: grid; place-items: center; padding: 12px; }
+.veil { position: absolute; inset: 0; z-index: 40; background: rgba(4, 12, 16, .74); display: grid; place-items: center; padding: calc(12px + var(--safe-t)) 12px calc(12px + var(--safe-b)); }
   .box {
     width: min(860px, 100%); max-height: min(88vh, 100%); display: flex; flex-direction: column;
-    background: var(--glass); border: 2px solid #e8b13a; border-radius: 22px;
-    box-shadow: 0 0 0 3px #16120f, 0 20px 50px rgba(0,0,0,.6); outline: none;
+    background: var(--panel); border: 1px solid var(--gold); border-radius: 20px; box-shadow: var(--shadow); outline: none;
   }
-  header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(232,177,58,.5); }
-  h2 { margin: 0; font-family: var(--font-title); letter-spacing: .05em; font-size: 26px; color: #ffe17a; text-shadow: 0 2px 0 #16120f; }
-  .x { background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); box-shadow: var(--pop); border: var(--chunky); width: 40px; height: 40px; border-radius: 50%; font-size: 16px; }
-  .content { overflow-y: auto; padding: 16px 18px 22px; -webkit-overflow-scrolling: touch; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  h2 { margin: 0; font-family: var(--font-title); font-weight: 700; letter-spacing: .06em; font-size: clamp(18px, 4.6vw, 24px); color: var(--gold-hi); }
+  .x { flex: none; width: 44px; height: 44px; border-radius: 50%; background: rgba(242,229,195,.06); color: var(--cream); border: 1px solid var(--line); font-size: 16px; }
+  .x:hover { border-color: var(--gold); }
+  .content { overflow-y: auto; overscroll-behavior: contain; padding: 16px 18px 22px; -webkit-overflow-scrolling: touch; line-height: 1.5; }
 </style>

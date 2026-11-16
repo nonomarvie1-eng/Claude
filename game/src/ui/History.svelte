@@ -27,14 +27,14 @@
 {/if}
 
 <style>
-  .empty { color: var(--muted); }
+.empty { color: var(--muted); }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { text-align: left; color: var(--muted); font-weight: normal; font-family: var(--font-deco); letter-spacing: .1em; padding: 6px; }
-  td { padding: 8px 6px; border-top: 1px solid rgba(255,255,255,.06); vertical-align: middle; }
+  th { text-align: left; color: var(--gold); font-weight: 700; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 6px; }
+  td { padding: 8px 6px; border-top: 1px solid var(--line-soft); vertical-align: middle; font-variant-numeric: tabular-nums; }
   small { color: var(--muted); }
   .won { color: var(--gold-hi); }
-  .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); margin-right: 4px; }
-  .tag.f { border-color: #dcef4c; color: #eef6c4; }
-  button { padding: 6px 12px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); font-size: 13px; }
+  .tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--gold); color: var(--gold-hi); margin-right: 4px; }
+  .tag.f { border-color: var(--tennis); color: var(--tennis); }
+  button { min-height: 40px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(242,229,195,.06); color: var(--cream); font-size: 13px; font-weight: 600; }
   button:disabled { opacity: .4; }
 </style>

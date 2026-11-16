@@ -4,18 +4,20 @@
 
 | Ressource | Origine | Droits |
 |---|---|---|
-| Personnages, symboles, décor, tableau de score, logo, cadran (`game/src/assets/img/*`) | Générés par `game/art/build-art.mjs` (code écrit pour ce projet, style cartoon) | Propriété du studio |
-| Sons et musiques (`game/src/assets/audio/*`) | Synthétisés par `game/audio/synth.py` (code écrit pour ce projet, aucun échantillon externe) | Propriété du studio |
-| Police Luckiest Guy | `@fontsource/luckiest-guy` 5.3.0 | **Apache 2.0** : usage commercial autorisé ; conserver la notice de licence |
-| Polices Lilita One, Bangers | `@fontsource/*` 5.3.0 | **SIL Open Font License 1.1** : usage commercial et embarquement autorisés ; ne pas vendre la police seule ; conserver la licence |
-| (v1, plus utilisées dans le jeu) Cinzel, Marcellus, Poiret One | `@fontsource/*` | OFL 1.1 |
+| **Symboles des rouleaux (12), Balle d'or, emblème Tie-Break** (`game/src/assets/img/sym_*.webp`, `ui_*.webp`, PNG de secours dans `img-png/`) | **Pack de 15 illustrations fourni par le client** (ZIP « Golden Rally: Match Point », original dans `game/art/pack/`), importé par `game/art/import-pack.mjs` (recadrage + WebP uniquement, aucune retouche du dessin) | **À confirmer par le client** : le README du pack demande de « vérifier les licences et droits d'utilisation commerciale ». Aucune preuve de cession de droits n'est jointe ; à obtenir avant toute exploitation commerciale. |
+| `champion_racket` (pack) | Conservé en réserve, non utilisé (aucun ID moteur correspondant) | idem |
+| Décor stade de nuit, cadre, logo, particules (`bg_*`, `crowd_*`, `fore_*`, `flags_*`, `frame`, `logo`, `sparkle`, `glow`) | Générés par `game/art/build-art.mjs` (code écrit pour ce projet) | Propriété du studio |
+| Anciens symboles générés v3 | Sauvegardés dans `game/art/legacy-symbols-v3/` (retour arrière possible) | Propriété du studio |
+| Sons et musiques (`game/src/assets/audio/*`, dont service, rebond, raquette, ambiance stade, transition Tie-Break) | Synthétisés par `game/audio/synth.py` (code écrit pour ce projet, aucun échantillon externe) | Propriété du studio |
+| Polices Cinzel (titres) et Inter (interface) | `@fontsource/cinzel` 5.3.0, `@fontsource/inter` 5.2.5 | **SIL Open Font License 1.1** : usage commercial et embarquement autorisés ; conserver la licence |
+| Luckiest Guy (Apache 2.0), Lilita One, Bangers, Marcellus, Poiret One (OFL) : plus affichées dans le jeu, encore référencées par le pipeline `game/art/` | `@fontsource/*` | Licences conservées |
 | PixiJS 8.23.0 | npm | MIT |
 | Svelte 5.57.3, Vite 6.4.6 | npm | MIT |
 | numpy, scipy, matplotlib, zstandard | PyPI | BSD / PSF-compatible |
 | engineio/math-sdk | Utilisé **uniquement comme outil de vérification**, non intégré au dépôt | MIT |
 | engineio/web-sdk, engineio/ts-client | **Non utilisés** (aucune licence publiée) | Tous droits réservés |
 
-Aucune image, aucun son, aucune marque ni aucun personnage tiers n'est utilisé.
+En dehors du pack de symboles fourni par le client (droits à confirmer), aucune image, aucun son, aucune marque ni aucun personnage tiers n'est utilisé.
 
 ## Points de vigilance
 

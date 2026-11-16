@@ -1,32 +1,40 @@
+/* Golden Rally — Match Point · art direction tokens
+   Night blue #081B23 · Emerald #093A31 · Warm gold #D5A64B · Cream #F2E5C3 · Tennis yellow #D4E948
+   Gold is reserved for highlights (values, active states, the spin button). */
 :root {
-  --deep-0: #03130c;
-  --deep-1: #0b3326;
-  --deep-2: #14674a;
-  --deep-3: #1f6b4c;
-  --gold: #ffd75e;
-  --gold-hi: #fff6c8;
-  --gold-lo: #b9780f;
-  --copper: #ff8a1e;
-  --ink: #fbf6e9;
-  --ink-line: #16120f;
-  --accent: #e2f23c;
-  --accent-2: #ffd75e;
-  --muted: #b9d6c6;
-  --danger: #ff7a8a;
-  --font-ui: 'Lilita One', 'Trebuchet MS', sans-serif;
-  --font-title: 'Luckiest Guy', 'Impact', sans-serif;
-  --font-deco: 'Lilita One', 'Trebuchet MS', sans-serif;
-  --gold-grad: linear-gradient(180deg, #fffbe0 0%, #ffe17a 30%, #d99a1e 55%, #ffe9a0 70%, #b9780f 100%);
-  --glass: linear-gradient(180deg, rgba(20,80,58,.92), rgba(3,19,12,.96));
-  --gold-ring: 0 0 0 2px #16120f, 0 0 0 4px #e8b13a, 0 4px 10px rgba(0,0,0,.5);
-  --chunky: 2px solid #16120f;
-  --pop: 0 0 0 2px #e8b13a, 0 4px 10px rgba(0,0,0,.45);
+  --night: #081b23;
+  --night-2: #0d2a33;
+  --emerald: #093a31;
+  --emerald-2: #0f4a3d;
+  --gold: #d5a64b;
+  --gold-hi: #f2d58a;
+  --cream: #f2e5c3;
+  --tennis: #d4e948;
+  --ink: #f2e5c3;
+  --muted: rgba(242, 229, 195, 0.66);
+  --line: rgba(213, 166, 75, 0.45);
+  --line-soft: rgba(242, 229, 195, 0.14);
+  --danger: #ff8f8f;
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-title: 'Cinzel', Georgia, 'Times New Roman', serif;
+  --panel: linear-gradient(180deg, rgba(13, 42, 51, 0.94), rgba(8, 27, 35, 0.97));
+  --gold-btn: linear-gradient(180deg, #f6e2a8 0%, #d5a64b 48%, #a77a2a 100%);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --radius: 16px;
+  --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
-html, body { font-family: var(--font-ui); color: var(--ink); background: var(--deep-0); -webkit-font-smoothing: antialiased; }
+html, body {
+  margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; touch-action: manipulation;
+  font-family: var(--font-ui); color: var(--ink); background: var(--night); -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
 button { font-family: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
-.gold-text { color: #ffe17a; text-shadow: 0 2px 0 #16120f; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--tennis); outline-offset: 2px; }
+.gold-text { color: var(--gold-hi); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; } }

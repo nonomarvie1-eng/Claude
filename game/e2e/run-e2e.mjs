@@ -72,11 +72,29 @@ async function spinAndVerify(page, label) {
 
 async function layoutChecks(page, name) {
   const m = await page.evaluate(() => {
-    const b = document.querySelector('[data-testid=spin]').getBoundingClientRect();
-    return { sw: document.documentElement.scrollWidth, iw: innerWidth, ih: innerHeight, spin: { top: b.top, bottom: b.bottom, left: b.left, right: b.right } };
+    const r = (el) => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, w: b.width, h: b.height }; };
+    const q = (sel) => [...document.querySelectorAll(sel)].filter((e) => e.getClientRects().length > 0).map(r);
+    const L = window.__rallyLayout;
+    const clipped = [...document.querySelectorAll('.hud .value, .hud .label, .top .demo')].filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent);
+    return {
+      sw: document.documentElement.scrollWidth, iw: innerWidth, ih: innerHeight, sy: document.documentElement.scrollHeight,
+      spin: r(document.querySelector('[data-testid=spin]')),
+      controls: q('.hud button, .top button, .top .demo'),
+      board: L && L.board, header: L && L.header, clipped,
+    };
   });
   check(`${name}: no horizontal overflow`, m.sw <= m.iw, `${m.sw} <= ${m.iw}`);
+  check(`${name}: no vertical scroll`, m.sy <= m.ih, `${m.sy} <= ${m.ih}`);
   check(`${name}: spin button fully visible`, m.spin.top >= 0 && m.spin.bottom <= m.ih && m.spin.left >= 0 && m.spin.right <= m.iw);
+  const b = m.board;
+  check(`${name}: reels fully on screen`, b && b.x >= 0 && b.y >= 0 && b.x + b.w <= m.iw + 0.5 && b.y + b.h <= m.ih + 0.5, b && `${Math.round(b.x)},${Math.round(b.y)} ${Math.round(b.w)}x${Math.round(b.h)}`);
+  const overlap = (c) => b && !(c.right <= b.x || c.left >= b.x + b.w || c.bottom <= b.y || c.top >= b.y + b.h);
+  const hits = m.controls.filter(overlap);
+  check(`${name}: no control overlaps the reels`, hits.length === 0, hits.length ? JSON.stringify(hits[0]) : `${m.controls.length} controls checked`);
+  const small = m.controls.filter((c) => c.w < 38 || c.h < 38).length;
+  check(`${name}: touch targets >= 38px`, small <= 1, `${small} smaller (demo badge allowed)`);
+  check(`${name}: no clipped HUD text`, m.clipped.length === 0, m.clipped.join(' | '));
+  check(`${name}: symbol cell legible (>= 44px)`, b && b.w / 6 >= 44, b && `${(b.w / 6).toFixed(1)}px per reel`);
   const demo = await page.isVisible('[data-testid=demo-badge]');
   check(`${name}: demo badge visible`, demo);
 }
@@ -87,7 +105,10 @@ const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=sw
 const viewports = [
   ['desktop-1920x1080', { viewport: { width: 1920, height: 1080 } }],
   ['laptop-1366x768', { viewport: { width: 1366, height: 768 } }],
+  ['iphone-se-portrait', { ...devices['iPhone SE'] }],
   ['iphone-13-portrait', { ...devices['iPhone 13'] }],
+  ['iphone-14-pro-max-portrait', { ...devices['iPhone 14 Pro Max'] }],
+  ['iphone-13-landscape', { ...devices['iPhone 13 landscape'] }],
   ['pixel-7-landscape', { ...devices['Pixel 7 landscape'] }],
   ['ipad-portrait', { ...devices['iPad (gen 7)'] }],
 ];

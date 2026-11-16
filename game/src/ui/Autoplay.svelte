@@ -49,16 +49,16 @@
 </div>
 
 <style>
-  fieldset { border: none; padding: 0; margin: 0 0 14px; }
-  legend { font-family: var(--font-title); color: var(--gold); margin-bottom: 8px; -webkit-text-stroke: .8px var(--ink-line); }
+fieldset { border: none; padding: 0; margin: 0 0 14px; }
+  legend { font-family: var(--font-title); font-weight: 700; color: var(--gold-hi); margin-bottom: 8px; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chips button { min-width: 64px; padding: 8px 14px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); font-family: var(--font-ui); font-size: 16px; }
-  .chips button.on { background: radial-gradient(circle at 40% 25%, #fffbe0, #ffd75e 40%, #c58512); color: #3a2404; }
-  .row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .chips button { min-width: 64px; min-height: 44px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(242,229,195,.06); color: var(--cream); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chips button.on { background: var(--gold-btn); color: var(--night); border-color: transparent; font-weight: 800; }
+  .row { display: flex; align-items: center; gap: 10px; margin: 8px 0; min-height: 44px; }
   input[type='checkbox'] { width: 22px; height: 22px; accent-color: var(--gold); }
   .note { color: var(--muted); font-size: 14px; line-height: 1.5; }
-  .actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; }
-  .actions button { font-family: var(--font-title); font-size: 20px; padding: 10px 24px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); }
-  .ghost { background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); }
-  .go { background: radial-gradient(circle at 40% 25%, #fffbe0, #ffd75e 40%, #c58512); color: #3a2404; }
+  .actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+  .actions button { min-height: 48px; font-weight: 800; letter-spacing: .06em; font-size: 15px; padding: 10px 24px; border-radius: 999px; }
+  .ghost { background: transparent; color: var(--cream); border: 1px solid var(--line); }
+  .go { background: var(--gold-btn); color: var(--night); border: none; }
 </style>

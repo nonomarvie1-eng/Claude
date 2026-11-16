@@ -16,15 +16,31 @@ export interface AutoplayConfig {
 
 export class Controller {
   lastRound: Round | null = null;
+  // HUD adapter: values come verbatim from the book events; the Tie-Break
+  // panel drawn by the scene mirrors the same values.
   private hud: Hud = {
-    setWin: (a) => (game.win = a),
+    setWin: (a) => {
+      game.win = a;
+      this.syncPanel();
+    },
     setFreeSpins: (c, t) => {
       game.fsCurrent = c;
       game.fsTotal = t;
+      this.syncPanel();
     },
-    setMultiplier: (m) => (game.multiplier = m),
-    setInBonus: (on) => (game.inBonus = on),
+    setMultiplier: (m) => {
+      game.multiplier = m;
+      this.syncPanel();
+    },
+    setInBonus: (on) => {
+      game.inBonus = on;
+      this.syncPanel();
+    },
   };
+
+  private syncPanel() {
+    if (game.inBonus) this.scene.setBonusInfo(game.fsCurrent, game.fsTotal, game.multiplier, game.win);
+  }
 
   constructor(public rgs: RgsClient, public scene: RallyScene) {}
 

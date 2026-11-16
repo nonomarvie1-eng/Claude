@@ -20,13 +20,13 @@
  ],
  "symbolInfo": {
   "W": {
-   "label": "Golden Fireball",
-   "fr": "Balle d'Or",
+   "label": "Crowned Ball",
+   "fr": "Balle couronn\u00e9e",
    "role": "wild"
   },
   "S": {
-   "label": "Golden Rally Cup",
-   "fr": "Coupe Golden Rally",
+   "label": "Centre Court",
+   "fr": "Le Central",
    "role": "scatter"
   },
   "H1": {
@@ -45,12 +45,12 @@
    "role": "high"
   },
   "H4": {
-   "label": "The President",
-   "fr": "Le Pr\u00e9sident",
+   "label": "Victory Trophy",
+   "fr": "Troph\u00e9e de la victoire",
    "role": "high"
   },
   "H5": {
-   "label": "Ace, the club mascot",
+   "label": "Ace, the ball-boy dog",
    "fr": "Ace, la mascotte",
    "role": "high"
   },

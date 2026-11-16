@@ -22,8 +22,12 @@
   onMount(async () => {
     try {
       const tex = await loadTextures((p) => (game.loadProgress = p * 0.9));
-      await Promise.all([document.fonts.load('700 40px Cinzel'), document.fonts.load('40px Marcellus'), document.fonts.load('40px "Poiret One"')]).catch(() => {});
+      await Promise.all([document.fonts.load('700 40px Cinzel'), document.fonts.load('500 20px Inter'), document.fonts.load('700 20px Inter'), document.fonts.load('800 20px Inter')]).catch(() => {});
       await scene.init(host, tex, game.t);
+      // expose layout rectangles for automated layout checks (demo/QA only)
+      scene.onLayout = (l) => ((window as unknown as { __rallyLayout: unknown }).__rallyLayout = l);
+      scene.layout();
+      scene.setIntro(true);
       applyPrefs();
       ctrl = new Controller(createRgs(), scene);
       // demo-only QA handle (simulate server errors in automated tests)
@@ -45,13 +49,18 @@
     scene.prefs.reducedMotion = game.prefs.reducedMotion;
     scene.prefs.turbo = game.prefs.turbo && !game.jurisdiction.disabledTurbo;
     scene.lang = game.prefs.lang;
-    scene.t = game.t;
+    scene.setStrings(game.t);
+    document.documentElement.classList.toggle('rm', game.prefs.reducedMotion);
     audio.enabled = game.prefs.sound;
     audio.volumes = { master: game.prefs.master, music: game.prefs.music, sfx: game.prefs.sfx };
     audio.applyVolumes();
     game.savePrefs();
     document.documentElement.lang = game.prefs.lang;
   }
+
+  $effect(() => {
+    scene.setInsets({ ...game.insets });
+  });
 
   $effect(() => {
     // re-apply whenever a preference changes
@@ -63,10 +72,13 @@
     if (!ctrl) return;
     await audio.unlock();
     audio.setMusic('music_base');
+    audio.startLoop('ambience', 0.5);
+    scene.setIntro(false);
     game.phase = 'spinning';
     try {
       await ctrl.boot();
       game.phase = 'idle';
+      scene.welcome();
     } catch (e) {
       game.error = { message: game.t.networkError, retryable: true, fatal: false };
       game.phase = 'error';
@@ -136,16 +148,15 @@
   .stage { position: absolute; inset: 0; }
   .toast, .banner {
     position: absolute; left: 50%; transform: translateX(-50%); z-index: 30;
-    padding: 10px 22px; border-radius: 999px; font-size: 15px; letter-spacing: .04em;
-    background: rgba(4,17,11, .9); border: var(--chunky); box-shadow: var(--pop); box-shadow: 0 6px 24px rgba(0,0,0,.5);
+    padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600; letter-spacing: .02em;
+    background: rgba(8, 27, 35, .94); border: 1px solid var(--line); box-shadow: var(--shadow);
     max-width: calc(100vw - 32px); text-align: center;
   }
   .toast { top: 42%; }
-  .banner { top: 12px; font-size: 13px; padding: 7px 16px; color: var(--gold-hi); border-color: #dcef4c; }
-  @media (max-width: 700px) { .banner { top: 62px; } }
-  .error-veil { position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(2,8,5, .78); padding: 16px; }
-  .error-box { max-width: 440px; background: var(--deep-1); border: var(--chunky); box-shadow: var(--pop); border-radius: 14px; padding: 24px; text-align: center; }
+  .banner { top: calc(64px + var(--safe-t)); font-size: 12px; padding: 6px 14px; color: var(--cream); border-color: var(--tennis); }
+  .error-veil { position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(4, 12, 16, .82); padding: 16px; }
+  .error-box { max-width: 440px; background: var(--panel); border: 1px solid var(--gold); box-shadow: var(--shadow); border-radius: var(--radius); padding: 24px; text-align: center; }
   .error-box h2 { font-family: var(--font-title); color: var(--gold-hi); margin: 0 0 10px; font-size: 22px; }
   .error-box p { color: var(--ink); line-height: 1.5; }
-  .btn { margin-top: 10px; padding: 12px 26px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); font-size: 16px; }
+  .btn { margin-top: 10px; min-height: 44px; padding: 12px 26px; border-radius: 999px; border: none; background: var(--gold-btn); color: var(--night); font-weight: 800; font-size: 15px; letter-spacing: .06em; }
 </style>

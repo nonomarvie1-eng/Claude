@@ -47,16 +47,17 @@
 {/if}
 
 <style>
-  .rows { display: grid; gap: 4px; }
-  .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.rows { display: grid; gap: 2px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 2px; border-bottom: 1px solid var(--line-soft); min-height: 48px; }
   input[type='checkbox'] { width: 22px; height: 22px; accent-color: var(--gold); }
-  input[type='range'] { width: min(260px, 50vw); accent-color: var(--gold); }
-  select { background: var(--deep-2); color: var(--ink); border: var(--chunky); box-shadow: var(--pop); border-radius: 8px; padding: 6px 10px; font-family: inherit; }
-  .demo { margin-top: 18px; padding: 12px; border: 1px dashed #dcef4c; border-radius: 12px; }
-  .demo p { color: #eef6c4; line-height: 1.5; margin-top: 0; }
+  input[type='range'] { width: min(260px, 48vw); accent-color: var(--gold); }
+  select { background: var(--night); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-family: inherit; min-height: 40px; }
+  .demo { margin-top: 18px; padding: 12px; border: 1px dashed var(--tennis); border-radius: 12px; }
+  .demo p { color: var(--cream); line-height: 1.5; margin-top: 0; }
   h3 { font-family: var(--font-title); font-size: 15px; color: var(--gold-hi); }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; }
-  button { padding: 10px 16px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); }
+  button { min-height: 44px; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line); background: rgba(242,229,195,.06); color: var(--cream); font-weight: 600; }
+  button:hover:not(:disabled) { border-color: var(--gold); }
   button:disabled { opacity: .4; }
   .refill { margin-top: 12px; }
 </style>

@@ -5,7 +5,8 @@ const files = import.meta.glob('../assets/audio/*.{mp3,wav}', { eager: true, que
 export type SoundName =
   | 'button' | 'reel_stop' | 'spin_start' | 'spin_loop' | 'scatter_1' | 'scatter_2' | 'scatter_3' | 'wild_land'
   | 'win_0' | 'win_1' | 'win_2' | 'win_3' | 'line_tick' | 'bonus_trigger' | 'wind' | 'mult_up' | 'count_tick'
-  | 'bonus_end' | 'music_base' | 'music_free' | 'match_point';
+  | 'bonus_end' | 'music_base' | 'music_free' | 'match_point'
+  | 'serve' | 'bounce' | 'racket' | 'pop' | 'tiebreak' | 'ambience';
 
 const urlOf = (n: string) => Object.entries(files).find(([k]) => k.endsWith(`/${n}.mp3`) || k.endsWith(`/${n}.wav`))?.[1];
 

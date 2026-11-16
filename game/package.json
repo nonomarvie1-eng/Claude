@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:single": "SINGLEFILE=1 vite build --outDir dist-single",
+    "build:single": "SINGLEFILE=1 VITE_NO_PNG_FALLBACK=1 vite build --outDir dist-single",
     "preview": "vite preview --port 4173 --strictPort",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@fontsource/bangers": "5.3.0",
     "@fontsource/cinzel": "5.3.0",
+    "@fontsource/inter": "5.2.5",
     "@fontsource/lilita-one": "5.3.0",
     "@fontsource/luckiest-guy": "5.3.0",
     "@fontsource/marcellus": "5.3.0",

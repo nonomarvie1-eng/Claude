@@ -4,7 +4,7 @@
   import { fmt } from '../i18n/strings';
   import { RULES } from '../engine/rules';
   import type { Controller } from '../game/controller';
-  import trophy from '../assets/img/sym_S.webp?url';
+  import trophy from '../assets/img/ui_tiebreak.webp?url';
   let { ctrl }: { ctrl: Controller | null } = $props();
   const t = $derived(game.t);
   const cost = RULES.buyBonus.cost;
@@ -33,16 +33,16 @@
 </div>
 
 <style>
-  .buy { display: flex; gap: 16px; align-items: center; }
+.buy { display: flex; gap: 16px; align-items: center; }
   img { width: 120px; height: 120px; flex: none; }
   p { line-height: 1.5; margin: 6px 0; }
-  .price { font-family: var(--font-title); font-size: 22px; color: var(--gold); -webkit-text-stroke: 1px var(--ink-line); }
+  .price { font-family: var(--font-title); font-weight: 700; font-size: 22px; color: var(--gold-hi); }
   .small { color: var(--muted); font-size: 14px; }
-  .warn { color: #ffb4b4; }
-  .actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }
-  button { font-family: var(--font-title); font-size: 20px; padding: 10px 24px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); }
-  .ghost { background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); }
-  .go { background: radial-gradient(circle at 40% 25%, #fffbe0, #ffd75e 40%, #c58512); color: #3a2404; }
+  .warn { color: var(--danger); }
+  .actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  button { min-height: 48px; font-weight: 800; letter-spacing: .06em; font-size: 15px; padding: 10px 24px; border-radius: 999px; }
+  .ghost { background: transparent; color: var(--cream); border: 1px solid var(--line); }
+  .go { background: var(--gold-btn); color: var(--night); border: none; }
   .go:disabled { opacity: .4; }
   @media (max-width: 480px) { .buy { flex-direction: column; text-align: center; } }
 </style>

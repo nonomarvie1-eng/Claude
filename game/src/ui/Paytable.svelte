@@ -24,7 +24,7 @@
   </div>
   <div class="special">
     <img src={img('S')} alt={name('S')} />
-    <div><h3>{name('S')} — BONUS</h3><p>{fmt(t.rulesScatter, { s3: pay(RULES.scatterPay['3']), s4: pay(RULES.scatterPay['4']), s5: pay(RULES.scatterPay['5']), s6: pay(RULES.scatterPay['6']) })}</p></div>
+    <div><h3>{name('S')} — SCATTER</h3><p>{fmt(t.rulesScatter, { s3: pay(RULES.scatterPay['3']), s4: pay(RULES.scatterPay['4']), s5: pay(RULES.scatterPay['5']), s6: pay(RULES.scatterPay['6']) })}</p></div>
   </div>
 </section>
 
@@ -85,29 +85,29 @@
 </section>
 
 <style>
-  .note { color: var(--muted); margin-top: 0; }
-  h3 { font-family: var(--font-title); color: var(--gold-hi); letter-spacing: .08em; font-size: 16px; margin: 18px 0 8px; }
+.note { color: var(--muted); margin-top: 0; }
+  h3 { font-family: var(--font-title); font-weight: 700; color: var(--gold-hi); letter-spacing: .06em; font-size: 16px; margin: 18px 0 8px; }
   p { line-height: 1.55; margin: 6px 0; }
   .specials { display: grid; gap: 12px; }
-  .special { display: flex; gap: 14px; align-items: center; background: rgba(255,255,255,.03); border: 1px solid rgba(227,181,82,.25); border-radius: 12px; padding: 10px; }
+  .special { display: flex; gap: 14px; align-items: center; background: rgba(242,229,195,.04); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
   .special img { width: 96px; height: 96px; flex: none; }
   .special h3 { margin-top: 0; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
-  .sym { text-align: center; background: rgba(255,255,255,.03); border: 1px solid rgba(227,181,82,.2); border-radius: 12px; padding: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
+  .sym { text-align: center; background: rgba(242,229,195,.04); border: 1px solid var(--line-soft); border-radius: 14px; padding: 8px; }
   .sym img { width: 92px; height: 92px; }
-  .nm { font-size: 13px; color: var(--muted); }
+  .nm { font-size: 13px; color: var(--cream); font-weight: 600; }
   table { margin: 4px auto 0; border-collapse: collapse; }
-  td { padding: 2px 8px; font-size: 14px; }
+  td { padding: 2px 8px; font-size: 14px; font-variant-numeric: tabular-nums; }
   td:first-child { color: var(--muted); }
-  td:last-child { color: var(--gold-hi); font-family: var(--font-title); }
+  td:last-child { color: var(--gold-hi); font-weight: 700; }
   .ladder { display: flex; flex-wrap: wrap; gap: 6px; }
-  .ladder span { padding: 6px 12px; border-radius: 999px; border: var(--chunky); font-family: var(--font-title); }
-  .ladder .top { background: var(--gold-grad); color: #2a1c06; }
+  .ladder span { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); font-weight: 700; }
+  .ladder .top { background: var(--gold-btn); color: var(--night); border-color: transparent; }
   .ways { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .col { display: grid; gap: 4px; }
-  .col i { width: 22px; height: 22px; border-radius: 5px; background: rgba(0,0,0,.08); border: 2px solid var(--ink-line); }
-  .col i.on { background: var(--accent); }
-  .ex { margin-left: 10px; font-family: var(--font-title); color: var(--accent-2); }
-  .demo { color: #eef6c4; }
+  .col i { width: 22px; height: 22px; border-radius: 6px; background: rgba(242,229,195,.05); border: 1px solid var(--line-soft); }
+  .col i.on { background: var(--tennis); border-color: var(--tennis); }
+  .ex { margin-left: 10px; font-weight: 700; color: var(--tennis); }
+  .demo { color: var(--cream); }
   .ver { color: var(--muted); font-size: 12px; }
 </style>

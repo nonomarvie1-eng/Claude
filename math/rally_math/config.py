@@ -35,13 +35,13 @@ SCATTER = SYM["S"]
 PAYING = [s for s in SYMBOLS if s not in ("W", "S")]
 
 SYMBOL_INFO = {
-    "W": {"label": "Golden Fireball", "fr": "Balle d'Or", "role": "wild"},
-    "S": {"label": "Golden Rally Cup", "fr": "Coupe Golden Rally", "role": "scatter"},
+    "W": {"label": "Crowned Ball", "fr": "Balle couronnée", "role": "wild"},
+    "S": {"label": "Centre Court", "fr": "Le Central", "role": "scatter"},
     "H1": {"label": "The Champion", "fr": "Le Champion", "role": "high"},
     "H2": {"label": "The Star", "fr": "La Championne", "role": "high"},
     "H3": {"label": "The Umpire", "fr": "L'Arbitre", "role": "high"},
-    "H4": {"label": "The President", "fr": "Le Président", "role": "high"},
-    "H5": {"label": "Ace, the club mascot", "fr": "Ace, la mascotte", "role": "high"},
+    "H4": {"label": "Victory Trophy", "fr": "Trophée de la victoire", "role": "high"},
+    "H5": {"label": "Ace, the ball-boy dog", "fr": "Ace, la mascotte", "role": "high"},
     "L1": {"label": "Advantage", "fr": "Avantage", "role": "low"},
     "L2": {"label": "Forty", "fr": "Quarante", "role": "low"},
     "L3": {"label": "Thirty", "fr": "Trente", "role": "low"},

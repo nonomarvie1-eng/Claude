@@ -12,6 +12,7 @@ Output: public/assets/audio/*.mp3 (one-shots) and *.wav (seamless loops)
 from __future__ import annotations
 
 import os
+import sys
 import subprocess
 import wave
 
@@ -339,6 +340,65 @@ def sfx_match_point() -> np.ndarray:
     return norm(fade(reverb(buf, 0.3)[: int(3.2 * SR)], 0.002, 0.4), 0.8)
 
 
+def sfx_serve() -> np.ndarray:
+    """Serve: ball toss, racket swoosh, firm string contact."""
+    d = 0.9
+    buf = np.zeros(int(d * SR))
+    place(buf, bounce(0.1, 0.25), 0.0)
+    place(buf, swoosh(0.26, 0.8), 0.12)
+    place(buf, pock(820, 0.22, 1.0), 0.34)
+    place(buf, highpass(pock(1900, 0.06, 0.5), 1200), 0.34)
+    return norm(fade(reverb(buf, 0.18, 0.7)[: int(1.2 * SR)]), 0.75)
+
+def sfx_bounce() -> np.ndarray:
+    return norm(fade(reverb(bounce(0.2), 0.12, 0.5)[: int(0.5 * SR)]), 0.6)
+
+def sfx_racket() -> np.ndarray:
+    """Racket contact: hollow pock with a short string 'ping'."""
+    d = 0.5
+    t = t_axis(d)
+    ping = np.sin(2 * np.pi * 2350 * t) * np.exp(-t / 0.05) * 0.25
+    buf = np.zeros(int(d * SR))
+    place(buf, pock(980, 0.2, 1.0), 0.0)
+    buf += ping
+    return norm(fade(reverb(buf, 0.15, 0.5)[: int(0.7 * SR)]), 0.6)
+
+def sfx_pop() -> np.ndarray:
+    """Ace appears: two quick playful bounces and a soft rising chirp."""
+    d = 0.6
+    buf = np.zeros(int(d * SR))
+    place(buf, bounce(0.12, 0.6), 0.0)
+    place(buf, bounce(0.12, 0.45), 0.13)
+    t = t_axis(0.18)
+    chirp = np.sin(2 * np.pi * np.cumsum(700 + 900 * t / 0.18) / SR) * np.sin(np.pi * t / 0.18) * 0.35
+    place(buf, chirp, 0.24)
+    return norm(fade(reverb(buf, 0.15, 0.5)[: int(0.8 * SR)]), 0.5)
+
+def sfx_tiebreak() -> np.ndarray:
+    """Transition into the Tie-Break: deep hit, crowd hush, rising bells."""
+    d = 2.8
+    buf = np.zeros(int(d * SR))
+    place(buf, thunk(0.6), 0.0, 1.0)
+    for i, n in enumerate(["D4", "F#4", "A4", "D5", "F#5", "A5"]):
+        place(buf, bell(note(n), 1.6, 0.8), 0.25 + i * 0.12, 0.5)
+    place(buf, applause(2.0, 160), 0.5, 0.35)
+    return norm(fade(reverb(buf, 0.35, 1.1)[: int(3.4 * SR)], 0.002, 0.6), 0.8)
+
+def amb_stadium() -> np.ndarray:
+    """6 s seamless night-stadium bed: distant crowd murmur + rare far-off pocks."""
+    d = 6.0
+    tt = t_axis(d)
+    murmur = lowpass(bandpass(noise(d), 500, 0.6), 900)
+    murmur *= 0.7 + 0.3 * np.sin(2 * np.pi * tt / d) ** 2
+    buf = 0.5 * murmur
+    for at in (1.1, 1.62, 3.9, 4.45):
+        place(buf, pock(880, 0.12, 0.12), at)
+    n = int(0.25 * SR)  # crossfade the ends so the loop is seamless
+    head = buf[:n].copy()
+    buf[-n:] = buf[-n:] * np.linspace(1, 0, n) + head * np.linspace(0, 1, n)
+    return norm(buf[: len(buf) - n], 0.35)
+
+
 def saw(f: float, d: float) -> np.ndarray:
     t = t_axis(d)
     ph = (f * t) % 1.0
@@ -406,8 +466,22 @@ def music_free() -> np.ndarray:
     return compose(96, chords, arps, 1.15, "free")
 
 
+NEW_SFX = {"serve": sfx_serve, "bounce": sfx_bounce, "racket": sfx_racket, "pop": sfx_pop, "tiebreak": sfx_tiebreak}
+
+
 def main() -> None:
     os.makedirs(OUT, exist_ok=True)
+    only = set(sys.argv[1:])
+    if only:  # regenerate selected sounds only
+        for k, fn in NEW_SFX.items():
+            if k in only:
+                export(k, fn())
+        if "ambience" in only:
+            export("ambience", amb_stadium(), loop=True)
+        return
+    for k, fn in NEW_SFX.items():
+        export(k, fn())
+    export("ambience", amb_stadium(), loop=True)
     export("button", sfx_button())
     export("reel_stop", sfx_reel_stop())
     export("spin_start", sfx_spin_start())

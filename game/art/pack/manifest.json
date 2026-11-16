@@ -1,0 +1,173 @@
+{
+  "game": "Golden Rally: Match Point",
+  "pack_version": "2.0",
+  "source": "Original illustration generated for this request",
+  "assets": [
+    {
+      "asset": "love",
+      "name": "LOVE",
+      "group": "score",
+      "png": "png/love.png",
+      "webp": "webp/love.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "score_15",
+      "name": "15",
+      "group": "score",
+      "png": "png/score_15.png",
+      "webp": "webp/score_15.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "score_30",
+      "name": "30",
+      "group": "score",
+      "png": "png/score_30.png",
+      "webp": "webp/score_30.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "score_40",
+      "name": "40",
+      "group": "score",
+      "png": "png/score_40.png",
+      "webp": "webp/score_40.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "advantage",
+      "name": "AD",
+      "group": "score",
+      "png": "png/advantage.png",
+      "webp": "webp/advantage.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "golden_ball",
+      "name": "Golden Ball",
+      "group": "premium",
+      "png": "png/golden_ball.png",
+      "webp": "webp/golden_ball.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "champion_racket",
+      "name": "Champion Racket",
+      "group": "premium",
+      "png": "png/champion_racket.png",
+      "webp": "webp/champion_racket.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "victory_trophy",
+      "name": "Victory Trophy",
+      "group": "premium",
+      "png": "png/victory_trophy.png",
+      "webp": "webp/victory_trophy.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "champion_male",
+      "name": "Champion",
+      "group": "character",
+      "png": "png/champion_male.png",
+      "webp": "webp/champion_male.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "champion_female",
+      "name": "Championne",
+      "group": "character",
+      "png": "png/champion_female.png",
+      "webp": "webp/champion_female.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "ace_mascot",
+      "name": "Ace la mascotte",
+      "group": "character",
+      "png": "png/ace_mascot.png",
+      "webp": "webp/ace_mascot.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "umpire",
+      "name": "Arbitre",
+      "group": "character",
+      "png": "png/umpire.png",
+      "webp": "webp/umpire.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "wild",
+      "name": "WILD",
+      "group": "special",
+      "png": "png/wild.png",
+      "webp": "webp/wild.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "scatter",
+      "name": "SCATTER",
+      "group": "special",
+      "png": "png/scatter.png",
+      "webp": "webp/scatter.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    },
+    {
+      "asset": "tiebreak_bonus",
+      "name": "Tie-Break Bonus",
+      "group": "special",
+      "png": "png/tiebreak_bonus.png",
+      "webp": "webp/tiebreak_bonus.webp",
+      "resolution": [
+        512,
+        512
+      ]
+    }
+  ],
+  "instructions": "Visual assets only; no changes to game math, RTP, paytable or probabilities without explicit authorization."
+}

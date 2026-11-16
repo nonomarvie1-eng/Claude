@@ -1,6 +1,19 @@
-# Golden Rally — Match Point · Conception du jeu (v3)
+# Golden Rally — Match Point · Conception du jeu (v4)
 
-## Direction artistique v3 « Match Point » (fun premium)
+## Refonte premium v4 (pack de symboles client)
+
+**Règles mathématiques inchangées** : RTP 96,487 % (base) et 96,457 % (achat ×100), paytable, rouleaux, IDs de symboles, Tie-Break et achat strictement identiques (vérifiés par `pytest` et `vitest`). Seuls les visuels, l'interface, l'audio et les libellés ont changé.
+
+- **Palette** : bleu nuit `#081B23`, vert émeraude `#093A31`, or chaud `#D5A64B` (réservé aux points forts), crème `#F2E5C3`, jaune balle `#D4E948` (scatter, multiplicateur, Tie-Break). Typographies Cinzel (titres, montants) et Inter (interface).
+- **Symboles** (pack fourni, mappé sans toucher aux IDs) : W = Balle couronnée (wild), S = Le Central (scatter), H1 Champion, H2 Championne, H3 Arbitre, H4 Trophée de la victoire, H5 Ace, L1 Avantage (AD), L2 40, L3 30, L4 15, L5 LOVE (remplace « 0 » à l'affichage seulement). `golden_ball` sert aux transitions, `tiebreak_bonus` à l'annonce du bonus et à l'écran d'achat ; `champion_racket` est gardé en réserve.
+- **Écran principal** : grille 6×5 centrée entre la barre du haut et le HUD (dimensions mesurées en direct, aucun bouton sur les rouleaux), cadre or fin, séparateurs discrets, plaque de gain sous la grille (elle ne cache aucun symbole). HUD : crédits, mise et gain, puis achat bonus, −, lancer, +, auto. Plus aucun halo permanent.
+- **Écran d'accueil** : le vrai stade de nuit (projecteurs, tribunes floutées, court en perspective), logo Cinzel, balle d'or qui traverse le logo une fois, Ace qui passe la tête, bouton COMMENCER, bandeau crédits fictifs. Les animations sont coupées en mouvement réduit.
+- **Ace, mascotte** : il n'est pas affiché en permanence. Il apparaît au lancement (« Bienvenue au Night Cup ! »), apporte la balle d'or à l'entrée du Tie-Break, réagit aux gros gains (« Quel point ! ») et à la fin du bonus. Il se place à côté des rouleaux, ou dans le bandeau du logo sur téléphone, jamais sur un symbole. Il intervient toujours après que le résultat est connu et n'annonce jamais de gain.
+- **Tie-Break** : ambiance distincte (stade bleuté, projecteurs renforcés, liseré lumineux autour du cadre) et panneau « GOLDEN RALLY · TIE-BREAK » qui affiche TOUR x / y, MULTIPLICATEUR ×m et GAIN TOTAL. Ces valeurs viennent des événements du livre (`updateFreeSpin`, `rallyUp`, `setTotalWin`). Le panneau occupe une colonne latérale en paysage et un bandeau en portrait. Les symboles non gagnants restent visibles (atténués). Un récapitulatif final indique les tours joués, le multiplicateur final et le gain total.
+- **« MATCH POINT ! »** s'affiche dans le bandeau du logo, plus sur les rouleaux.
+- **Audio** (synthétisé, original) : service, rebond, contact raquette, ambiance de stade discrète, jingle de transition Tie-Break, apparition d'Ace. Tout est coupable et ne démarre qu'après le geste « COMMENCER ».
+
+## Historique : ## Direction artistique v3 « Match Point » (fun premium)
 
 **Concept** : le **Golden Rally Club** organise sa **Night Cup**, un tournoi fictif joué la nuit sous les projecteurs. C'est notre univers maison : notre club, notre trophée, nos personnages et notre mascotte.
 

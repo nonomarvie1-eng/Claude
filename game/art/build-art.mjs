@@ -20,8 +20,8 @@ const ink = (w = 5) => `stroke="${INK}" stroke-width="${w}" stroke-linejoin="rou
 const DEFS = `
 <defs>
   <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fffbe0"/><stop offset=".22" stop-color="#ffe17a"/><stop offset=".48" stop-color="#d99a1e"/>
-    <stop offset=".62" stop-color="#ffe9a0"/><stop offset=".82" stop-color="#b9780f"/><stop offset="1" stop-color="#7a4a06"/></linearGradient>
+    <stop offset="0" stop-color="#fbf0cf"/><stop offset=".25" stop-color="#e8c47a"/><stop offset=".5" stop-color="#b8862f"/>
+    <stop offset=".66" stop-color="#ecd096"/><stop offset=".85" stop-color="#a0701f"/><stop offset="1" stop-color="#6b4612"/></linearGradient>
   <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#8a560a"/><stop offset=".25" stop-color="#ffe9a0"/><stop offset=".5" stop-color="#d99a1e"/><stop offset=".75" stop-color="#fff3c4"/><stop offset="1" stop-color="#8a560a"/></linearGradient>
   <radialGradient id="goldR" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffd75e"/><stop offset=".75" stop-color="#c58512"/><stop offset="1" stop-color="#6e4205"/></radialGradient>
@@ -368,121 +368,118 @@ function token(label, gem, metal, size) {
 // ------------------------------------------------------------------ night stadium (animated layers)
 const LAYERS = {};
 function background(w, h, key) {
-  const horizon = Math.round(h * (w > h ? 0.52 : 0.42));
+  const horizon = Math.round(h * (w > h ? 0.5 : 0.4));
   const rnd = mulberry(9);
-  // sky + stadium structure + light towers
   let stars = '';
-  for (let i = 0; i < 70; i++) stars += `<circle cx="${f(rnd() * w)}" cy="${f(rnd() * horizon * .45)}" r="${f(.6 + rnd() * 1.6)}" fill="#fff" opacity="${f(.25 + rnd() * .6)}"/>`;
-  const tower = (x) => `<rect x="${x - 6}" y="${horizon * .2}" width="12" height="${horizon * .6}" fill="#0a1424" ${ink(3)}/>
-    <rect x="${x - 54}" y="${horizon * .12}" width="108" height="46" rx="6" fill="#16253d" ${ink(4)}/>
-    ${Array.from({ length: 8 }, (_, i) => `<circle cx="${x - 42 + (i % 4) * 28}" cy="${f(horizon * .12 + 12 + Math.floor(i / 4) * 22)}" r="9" fill="#fffbe0"/>`).join('')}
-    <circle cx="${x}" cy="${f(horizon * .12 + 23)}" r="90" fill="#fff6c8" opacity=".35" filter="url(#glow)"/>`;
+  for (let i = 0; i < 60; i++) stars += `<circle cx="${f(rnd() * w)}" cy="${f(rnd() * horizon * .4)}" r="${f(.5 + rnd() * 1.3)}" fill="#F2E5C3" opacity="${f(.2 + rnd() * .5)}"/>`;
+  const lamp = (x) => `<rect x="${x - 4}" y="${f(horizon * .18)}" width="8" height="${f(horizon * .6)}" fill="#05121a"/>
+    <rect x="${x - 46}" y="${f(horizon * .1)}" width="92" height="36" rx="5" fill="#0d2430" stroke="#05121a" stroke-width="3"/>
+    ${Array.from({ length: 8 }, (_, i) => `<circle cx="${x - 34 + (i % 4) * 22.6}" cy="${f(horizon * .1 + 10 + Math.floor(i / 4) * 16)}" r="6.5" fill="#fff7e2"/>`).join('')}
+    <circle cx="${x}" cy="${f(horizon * .1 + 18)}" r="70" fill="#ffefc8" opacity=".28" filter="url(#glow)"/>`;
   const sky = svg(w, h, `
-    <linearGradient id="nsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#040b1c"/><stop offset=".55" stop-color="#0d2a4a"/><stop offset="1" stop-color="#1d5a5a"/></linearGradient>
-    <linearGradient id="stand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1c30"/><stop offset="1" stop-color="#0a2a22"/></linearGradient>
+    <linearGradient id="nsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#040e14"/><stop offset=".55" stop-color="#081B23"/><stop offset="1" stop-color="#0c2e33"/></linearGradient>
+    <linearGradient id="stand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1e27"/><stop offset="1" stop-color="#082a26"/></linearGradient>
     <rect width="${w}" height="${h}" fill="url(#nsky)"/>
     ${stars}
-    <path d="M0,${horizon - 230} Q${w / 2},${horizon - 300} ${w},${horizon - 230} L${w},${horizon - 200} Q${w / 2},${horizon - 268} 0,${horizon - 200}Z" fill="#0a1424" ${ink(3)}/>
-    ${tower(w * .12)}${tower(w * .88)}
-    <path d="M-10,${horizon - 200} Q${w / 2},${horizon - 262} ${w + 10},${horizon - 200} L${w + 10},${horizon + 10} L-10,${horizon + 10}Z" fill="url(#stand)" ${ink(4)}/>
-    ${Array.from({ length: 6 }, (_, i) => `<path d="M-10,${horizon - 170 + i * 30} Q${w / 2},${horizon - 222 + i * 28} ${w + 10},${horizon - 170 + i * 30}" fill="none" stroke="#1d3a55" stroke-width="2" opacity=".7"/>`).join('')}
-    <rect x="0" y="${horizon}" width="${w}" height="${h - horizon}" fill="#0b3a26"/>`);
-  // crowd: lit silhouettes
+    <path d="M0,${horizon - 230} Q${w / 2},${horizon - 296} ${w},${horizon - 230} L${w},${horizon - 204} Q${w / 2},${horizon - 266} 0,${horizon - 204}Z" fill="#05121a"/>
+    ${lamp(w * .1)}${lamp(w * .9)}
+    <path d="M-10,${horizon - 204} Q${w / 2},${horizon - 262} ${w + 10},${horizon - 204} L${w + 10},${horizon + 10} L-10,${horizon + 10}Z" fill="url(#stand)"/>
+    ${Array.from({ length: 6 }, (_, i) => `<path d="M-10,${horizon - 172 + i * 30} Q${w / 2},${horizon - 222 + i * 28} ${w + 10},${horizon - 172 + i * 30}" fill="none" stroke="#123542" stroke-width="2" opacity=".6"/>`).join('')}
+    <rect x="0" y="${horizon}" width="${w}" height="${h - horizon}" fill="#062a22"/>`);
+  // crowd: softly blurred silhouettes, muted colours
   let crowd = '';
-  const cols = ['#e8343f', '#ffd23f', '#2fd06a', '#3d8bff', '#fbf6e9', '#ff9f1c'];
+  const cols = ['#5b6f7a', '#8a7a5a', '#4d6b5e', '#6f5f6a', '#9a8f78', '#3f5866'];
   for (let row = 0; row < 6; row++) {
-    for (let i = 0; i < w / 26 + 1; i++) {
-      const x = i * 26 + (row % 2) * 13 + rnd() * 5;
-      const y = horizon - 30 - row * 28 - Math.sin((x / w) * Math.PI) * (row * 8);
-      const shirt = cols[Math.floor(rnd() * cols.length)];
-      const arms = rnd() < .12 ? `<path d="M${f(x - 9)},${f(y + 10)} l-6,-18 M${f(x + 9)},${f(y + 10)} l6,-18" stroke="#1b2633" stroke-width="4" stroke-linecap="round"/>` : '';
-      crowd += `${arms}<rect x="${f(x - 9)}" y="${f(y + 4)}" width="18" height="24" rx="7" fill="${shirt}" opacity=".55"/><circle cx="${f(x)}" cy="${f(y)}" r="7.5" fill="#2a2f3a"/><circle cx="${f(x - 2)}" cy="${f(y - 2)}" r="3" fill="#fff" opacity=".18"/>`;
+    for (let i = 0; i < w / 24 + 1; i++) {
+      const x = i * 24 + (row % 2) * 12 + rnd() * 5;
+      const y = horizon - 28 - row * 27 - Math.sin((x / w) * Math.PI) * (row * 8);
+      crowd += `<rect x="${f(x - 8)}" y="${f(y + 4)}" width="16" height="22" rx="6" fill="${cols[Math.floor(rnd() * cols.length)]}" opacity=".7"/><circle cx="${f(x)}" cy="${f(y)}" r="7" fill="#1d2a30"/>`;
     }
   }
-  const cy0 = horizon - 250, ch = 280;
-  const crowdSvg = svg(w, ch, `<g transform="translate(0 ${-cy0})">${crowd}</g>`);
-  // fore: LED board + court
-  const fy0 = horizon - 18;
-  const cx = w / 2, top = horizon + 34, bot = h + 60, tw = w * .6, bw = w * 1.8;
+  const cy0 = horizon - 240, ch = 270;
+  const crowdSvg = svg(w, ch, `<filter id="cblur"><feGaussianBlur stdDeviation="1.6"/></filter><g transform="translate(0 ${-cy0})" filter="url(#cblur)">${crowd}</g>`);
+  // fore: LED board + emerald court in perspective
+  const fy0 = horizon - 16;
+  const cx = w / 2, top = horizon + 30, bot = h + 60, tw = w * .6, bw = w * 1.8;
   const at = (u, v) => [f(cx + (u * (tw + (bw - tw) * v)) / 2), f(top + (bot - top) * v)];
-  const L = (a, b, sw = 8) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#fbf6e9" stroke-width="${sw}" opacity=".95"/>`;
-  let court = `<path d="M${at(-1.2, 0)} L${at(1.2, 0)} L${at(1.2, 1)} L${at(-1.2, 1)}Z" fill="#14674a"/>`;
-  court += `<path d="M${at(-1, 0)} L${at(1, 0)} L${at(1, 1)} L${at(-1, 1)}Z" fill="#1a7f5a"/>`;
+  const L = (a, b, sw = 7) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#F2E5C3" stroke-width="${sw}" opacity=".85"/>`;
+  let court = `<path d="M${at(-1.2, 0)} L${at(1.2, 0)} L${at(1.2, 1)} L${at(-1.2, 1)}Z" fill="#073328"/>`;
+  court += `<path d="M${at(-1, 0)} L${at(1, 0)} L${at(1, 1)} L${at(-1, 1)}Z" fill="#093A31"/>`;
   for (const u of [-1, -.78, .78, 1]) court += L(at(u, 0), at(u, 1));
   for (const v of [0, .45]) court += L(at(-1, v), at(1, v));
   court += L(at(0, .45), at(0, 1));
   let led = '';
-  const nTxt = Math.ceil(w / 520) + 1;
-  for (let i = 0; i < nTxt; i++) led += `<text x="${i * 520 + 30}" y="${horizon + 22}" class="lg" font-size="22" fill="#ffe17a" letter-spacing="3">GOLDEN RALLY CLUB · NIGHT CUP ·</text>`;
+  for (let i = 0; i < Math.ceil(w / 560) + 1; i++) led += `<text x="${i * 560 + 30}" y="${horizon + 20}" style="font-family:'Cinzel',serif;font-weight:700" font-size="19" fill="#D5A64B" opacity=".8" letter-spacing="5">GOLDEN RALLY · NIGHT CUP ·</text>`;
   const fore = svg(w, h - fy0, `<g transform="translate(0 ${-fy0})">
-    <radialGradient id="courtGlow" cx=".5" cy=".2" r=".7"><stop offset="0" stop-color="#fff6c8" stop-opacity=".25"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
-    <rect x="-10" y="${horizon - 16}" width="${w + 20}" height="50" fill="#06120c" ${ink(4)}/>
+    <radialGradient id="courtGlow" cx=".5" cy=".15" r=".7"><stop offset="0" stop-color="#fff2d6" stop-opacity=".18"/><stop offset="1" stop-color="#fff2d6" stop-opacity="0"/></radialGradient>
+    <rect x="-10" y="${horizon - 14}" width="${w + 20}" height="44" fill="#041016"/>
+    <line x1="0" y1="${horizon - 14}" x2="${w}" y2="${horizon - 14}" stroke="#D5A64B" stroke-width="1.5" opacity=".5"/>
     ${led}
-    <rect x="0" y="${horizon + 34}" width="${w}" height="${h}" fill="#0b3a26"/>
+    <rect x="0" y="${horizon + 30}" width="${w}" height="${h}" fill="#062a22"/>
     ${court}
-    <rect x="0" y="${horizon + 34}" width="${w}" height="${h}" fill="url(#courtGlow)"/>
-</g>`);
-  // beams: additive light cones from the towers
-  const beam = (x, ang) => `<g transform="rotate(${ang} ${x} ${horizon * .14})"><path d="M${x - 40},${horizon * .14} L${x + 40},${horizon * .14} L${x + 340},${h} L${x - 340},${h}Z" fill="url(#beamG)"/></g>`;
-  const beams = svg(w, h, `<linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c8" stop-opacity=".38"/><stop offset=".6" stop-color="#fff6c8" stop-opacity=".08"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></linearGradient>
-    ${beam(w * .12, -28)}${beam(w * .88, 28)}`);
-  LAYERS[key] = { width: w, height: h, crowdY: cy0, foreY: fy0, flagsY: 0, crowdH: ch };
+    <rect x="0" y="${horizon + 30}" width="${w}" height="${h}" fill="url(#courtGlow)"/></g>`);
+  const beam = (x, ang) => `<g transform="rotate(${ang} ${x} ${horizon * .12})"><path d="M${x - 34},${horizon * .12} L${x + 34},${horizon * .12} L${x + 300},${h} L${x - 300},${h}Z" fill="url(#beamG)"/></g>`;
+  const beams = svg(w, h, `<linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2d6" stop-opacity=".24"/><stop offset=".6" stop-color="#fff2d6" stop-opacity=".05"/><stop offset="1" stop-color="#fff2d6" stop-opacity="0"/></linearGradient>
+    ${beam(w * .1, -26)}${beam(w * .9, 26)}`);
+  LAYERS[key] = { width: w, height: h, crowdY: cy0, foreY: fy0, flagsY: 0, crowdH: ch, horizon };
   return { sky, crowd: crowdSvg, fore, flags: beams };
 }
 
 // ------------------------------------------------------------------ frame: polished gold, dark glass field
 export const CELL = 170;
 function frame() {
-  const iw = 6 * CELL, ih = 5 * CELL, m = 46;
+  const iw = 6 * CELL, ih = 5 * CELL, m = 30;
   const w = iw + 2 * m, h = ih + 2 * m;
-  let cols = '';
-  for (let r = 1; r < 6; r++) cols += `<line x1="${m + r * CELL}" y1="${m + 18}" x2="${m + r * CELL}" y2="${m + ih - 18}" stroke="url(#goldV)" stroke-width="2" opacity=".55"/>`;
-  const orn = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})">${ball(0, 0, 20, 4, 'url(#goldR)', '#fff6c8')}</g>`;
+  let seps = '';
+  for (let r = 1; r < 6; r++) seps += `<line x1="${m + r * CELL}" y1="${m + 22}" x2="${m + r * CELL}" y2="${m + ih - 22}" stroke="url(#sepG)" stroke-width="1.5"/>`;
+  const corner = (x, y, sx, sy) => `<g transform="translate(${x} ${y}) scale(${sx} ${sy})">
+      <path d="M0,34 L0,6 Q0,0 6,0 L34,0" fill="none" stroke="#F2E5C3" stroke-width="1.5" opacity=".7"/>
+      <path d="M10,26 L10,12 Q10,10 12,10 L26,10" fill="none" stroke="#D5A64B" stroke-width="2"/>
+      <circle cx="10" cy="10" r="3.5" fill="#D4E948" stroke="#3a2a10" stroke-width="1"/></g>`;
   return svg(w, h, `
-    <linearGradient id="goldV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe17a" stop-opacity="0"/><stop offset=".5" stop-color="#ffe17a"/><stop offset="1" stop-color="#ffe17a" stop-opacity="0"/></linearGradient>
-    <radialGradient id="glass" cx=".5" cy="0" r="1.1"><stop offset="0" stop-color="#1f6b4c"/><stop offset=".5" stop-color="#0b3326"/><stop offset="1" stop-color="#03130c"/></radialGradient>
-    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/></linearGradient>
-    <g filter="url(#drop)"><rect x="4" y="4" width="${w - 8}" height="${h - 8}" rx="44" fill="url(#gold)" ${ink(7)}/></g>
-    <rect x="14" y="14" width="${w - 28}" height="${h - 28}" rx="36" fill="none" stroke="#7a4a06" stroke-width="3"/>
-    <rect x="20" y="20" width="${w - 40}" height="${h - 40}" rx="32" fill="none" stroke="#fff6c8" stroke-width="2" opacity=".7"/>
-    <rect x="${m - 8}" y="${m - 8}" width="${iw + 16}" height="${ih + 16}" rx="26" fill="#3a2404" ${ink(4)}/>
-    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="20" fill="url(#glass)"/>
-    ${cols}
-    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="20" fill="url(#sheen)"/>
-    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="20" fill="none" ${ink(4)}/>
-    ${orn(30, 30, 1)}${orn(w - 30, 30, 1)}${orn(30, h - 30, 1)}${orn(w - 30, h - 30, 1)}`);
+    <linearGradient id="sepG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D5A64B" stop-opacity="0"/><stop offset=".5" stop-color="#D5A64B" stop-opacity=".55"/><stop offset="1" stop-color="#D5A64B" stop-opacity="0"/></linearGradient>
+    <radialGradient id="glass" cx=".5" cy="0" r="1.1"><stop offset="0" stop-color="#0f4a3d"/><stop offset=".55" stop-color="#093A31"/><stop offset="1" stop-color="#041a17"/></radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".08"/><stop offset=".2" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <filter id="fshadow" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".6"/></filter>
+    <rect x="6" y="6" width="${w - 12}" height="${h - 12}" rx="26" fill="url(#gold)" filter="url(#fshadow)"/>
+    <rect x="6" y="6" width="${w - 12}" height="${h - 12}" rx="26" fill="none" stroke="#3a2a10" stroke-width="2.5"/>
+    <rect x="12" y="12" width="${w - 24}" height="${h - 24}" rx="21" fill="none" stroke="#fbf0cf" stroke-width="1.2" opacity=".75"/>
+    <rect x="${m - 6}" y="${m - 6}" width="${iw + 12}" height="${ih + 12}" rx="17" fill="#2a1d0b"/>
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="13" fill="url(#glass)"/>
+    ${seps}
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="13" fill="url(#sheen)"/>
+    <rect x="${m}" y="${m}" width="${iw}" height="${ih}" rx="13" fill="none" stroke="#000" stroke-width="2" opacity=".6"/>
+    ${corner(m + 6, m + 6, 1, 1)}${corner(m + iw - 6, m + 6, -1, 1)}${corner(m + 6, m + ih - 6, 1, -1)}${corner(m + iw - 6, m + ih - 6, -1, -1)}`);
 }
 
 // ------------------------------------------------------------------ logo
 function logo() {
-  const w = 1000, h = 400;
-  let trail = '';
-  for (let i = 0; i < 5; i++) trail += `<path d="M${730 + i * 4},${250 + i * 9} C${780},${236 + i * 6} ${830},${226 + i * 6} ${880},${214 + i * 5}" fill="none" stroke="${['#fff6c8', '#ffe17a', '#ffb21e', '#ff8a1e', '#e8381e'][i]}" stroke-width="${10 - i * 1.5}" stroke-linecap="round" opacity="${1 - i * .15}"/>`;
-  const cupIcon = `<g transform="translate(500 54) scale(.55)">
-      <path d="M-44,-20 C-80,-22 -82,24 -38,32 M44,-20 C80,-22 82,24 38,32" fill="none" stroke="${INK}" stroke-width="14" stroke-linecap="round"/>
-      <path d="M-44,-20 C-80,-22 -82,24 -38,32 M44,-20 C80,-22 82,24 38,32" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round"/>
-      <path d="M-52,-30 H52 C52,30 30,52 0,56 C-30,52 -52,30 -52,-30Z" fill="url(#gold)" ${ink(6)}/>
-      <rect x="-12" y="54" width="24" height="20" fill="url(#goldH)" ${ink(5)}/><path d="M-36,74 H36 L44,96 H-44Z" fill="url(#gold)" ${ink(6)}/>
-      <path d="M-34,-20 C-34,14 -24,32 -10,40" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".8"/></g>`;
-  const word = (t, x, y, size, fill, ls) => `
-      <text x="${x + 6}" y="${y + 12}" text-anchor="middle" class="lg" font-size="${size}" fill="${INK}" stroke="${INK}" stroke-width="30" stroke-linejoin="round" letter-spacing="${ls}">${t}</text>
-      <text x="${x}" y="${y}" text-anchor="middle" class="lg" font-size="${size}" fill="${fill}" stroke="#5a3606" stroke-width="18" stroke-linejoin="round" paint-order="stroke" letter-spacing="${ls}">${t}</text>
-      <text x="${x}" y="${y}" text-anchor="middle" class="lg" font-size="${size}" fill="${fill}" stroke="${INK}" stroke-width="8" stroke-linejoin="round" paint-order="stroke" letter-spacing="${ls}">${t}</text>
-      <text x="${x}" y="${y - 4}" text-anchor="middle" class="lg" font-size="${size}" fill="none" stroke="#fff" stroke-width="2.5" opacity=".75" letter-spacing="${ls}">${t}</text>`;
+  const w = 1000, h = 330;
+  let laurel = '';
+  for (const side of [-1, 1]) for (let i = 0; i < 5; i++) {
+    const a = Math.PI / 2 + side * (1.15 + i * .22);
+    const [x, y] = pol(500, 66, 54, a);
+    laurel += `<ellipse cx="${x}" cy="${y}" rx="11" ry="4.5" fill="url(#gold)" stroke="#3a2a10" stroke-width="1" transform="rotate(${f((a * 180) / Math.PI + (side > 0 ? -70 : 70))} ${x} ${y})"/>`;
+  }
+  const emblem = `<g>
+      ${laurel}
+      <g transform="translate(500 58)">
+        <g transform="rotate(-38)"><ellipse cx="0" cy="-20" rx="13" ry="18" fill="none" stroke="url(#gold)" stroke-width="4.5"/><rect x="-2.5" y="-2" width="5" height="30" rx="2" fill="url(#gold)"/></g>
+        <g transform="rotate(38)"><ellipse cx="0" cy="-20" rx="13" ry="18" fill="none" stroke="url(#gold)" stroke-width="4.5"/><rect x="-2.5" y="-2" width="5" height="30" rx="2" fill="url(#gold)"/></g>
+        ${ball(0, 18, 11, 2.5)}
+      </g></g>`;
+  const word = (t, y, size, ls) => `
+      <text x="503" y="${y + 6}" text-anchor="middle" style="font-family:'Cinzel',serif;font-weight:700" font-size="${size}" fill="#000" opacity=".55" letter-spacing="${ls}">${t}</text>
+      <text x="500" y="${y}" text-anchor="middle" style="font-family:'Cinzel',serif;font-weight:700" font-size="${size}" fill="url(#lgGold)" stroke="#3a2a10" stroke-width="3" paint-order="stroke" letter-spacing="${ls}">${t}</text>
+      <text x="500" y="${y - 2}" text-anchor="middle" style="font-family:'Cinzel',serif;font-weight:700" font-size="${size}" fill="none" stroke="#fffaf0" stroke-width="1" opacity=".6" letter-spacing="${ls}">${t}</text>`;
   return svg(w, h, `
-    <linearGradient id="lgGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffe17a"/><stop offset=".5" stop-color="#e8a82a"/><stop offset=".52" stop-color="#ffd75e"/><stop offset="1" stop-color="#b9780f"/></linearGradient>
-    <linearGradient id="lgBall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbffc9"/><stop offset=".5" stop-color="#e2f23c"/><stop offset="1" stop-color="#9ab51a"/></linearGradient>
-    <ellipse cx="500" cy="200" rx="460" ry="150" fill="#ffd23f" opacity=".22" filter="url(#glow)"/>
-    <g transform="rotate(-3 500 200)">
-      ${cupIcon}
-      ${word('GOLDEN', 500, 200, 132, 'url(#lgGold)', 6)}
-      ${word('RALLY', 480, 318, 128, 'url(#lgBall)', 12)}
-      ${trail}
-      <g filter="url(#drop)">${ball(912, 206, 44, 8, 'url(#goldR)', '#fff6c8')}</g>
-      ${sparkle(206, 112, 22)}${sparkle(812, 300, 16)}
-      <g filter="url(#drop)"><path d="M300,334 L700,334 L684,356 L700,378 L300,378 L316,356Z" fill="url(#green)" ${ink(5)}/></g>
-      <text x="500" y="368" text-anchor="middle" class="lg" font-size="30" fill="url(#gold)" stroke="${INK}" stroke-width="1.5" letter-spacing="8">MATCH POINT</text>
-    </g>`);
+    <linearGradient id="lgGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf4d8"/><stop offset=".4" stop-color="#e8c47a"/><stop offset=".55" stop-color="#b8862f"/><stop offset=".7" stop-color="#f0d69c"/><stop offset="1" stop-color="#9a6a1c"/></linearGradient>
+    ${emblem}
+    ${word('GOLDEN RALLY', 210, 112, 6)}
+    <line x1="250" y1="262" x2="372" y2="262" stroke="#D5A64B" stroke-width="2"/>
+    <line x1="628" y1="262" x2="750" y2="262" stroke="#D5A64B" stroke-width="2"/>
+    <circle cx="380" cy="262" r="4" fill="#D4E948"/><circle cx="620" cy="262" r="4" fill="#D4E948"/>
+    <text x="500" y="274" text-anchor="middle" style="font-family:'Cinzel',serif;font-weight:700" font-size="34" fill="#F2E5C3" letter-spacing="12">MATCH POINT</text>`);
 }
 
 // ------------------------------------------------------------------ rally gauge
@@ -542,30 +539,13 @@ function layerAssets(key, w, h) {
 }
 
 const assets = {
-  sym_W: wild(),
-  sym_S: cup(),
-  sym_H1: champion(),
-  sym_H2: star(),
-  sym_H3: umpire(),
-  sym_H4: president(),
-  sym_H5: ace(),
-  sym_L1: token('AD', '#e8343f', 'gold', 104),
-  sym_L2: token('40', '#2fd06a', 'gold', 118),
-  sym_L3: token('30', '#3d8bff', 'silver', 118),
-  sym_L4: token('15', '#ff9f1c', 'silver', 118),
-  sym_L5: token('0', '#b44dff', 'bronze', 132),
+  // reel symbols now come from the 15-symbol pack (art/import-pack.mjs)
   ...layerAssets('landscape', 1920, 1080),
   ...layerAssets('portrait', 1080, 1920),
   frame: frame(),
   logo: logo(),
-  dial: rallyDial(),
-  dial_hand: dialHand(),
-  deco_1: svg(320, 320, ball(160, 160, 150, 10)),
-  deco_2: decoRacket(),
-  deco_3: svg(160, 160, ball(80, 80, 72, 8, 'url(#goldR)', '#fff6c8')),
-  sparkle: svg(64, 64, `<circle cx="32" cy="32" r="18" fill="#ffe17a" opacity=".6" filter="url(#glowS)"/>${burst(32, 32, 6, 30, 4, '#fffbe0')}`),
-  glow: svg(64, 64, `<radialGradient id="g"><stop offset="0" stop-color="#fff9c0" stop-opacity=".9"/><stop offset=".5" stop-color="#ffd23f" stop-opacity=".35"/><stop offset="1" stop-color="#ffd23f" stop-opacity="0"/></radialGradient><circle cx="32" cy="32" r="32" fill="url(#g)"/>`),
-  coin: svg(96, 96, ball(48, 48, 40, 5, 'url(#goldR)', '#fff6c8')),
+  sparkle: svg(64, 64, `<circle cx="32" cy="32" r="14" fill="#f3d58f" opacity=".5" filter="url(#glowS)"/>${burst(32, 32, 5, 28, 4, '#fff8e6')}`),
+  glow: svg(64, 64, `<radialGradient id="g"><stop offset="0" stop-color="#fff4d6" stop-opacity=".85"/><stop offset=".5" stop-color="#D5A64B" stop-opacity=".3"/><stop offset="1" stop-color="#D5A64B" stop-opacity="0"/></radialGradient><circle cx="32" cy="32" r="32" fill="url(#g)"/>`),
 };
 
 fs.rmSync(OUT, { recursive: true, force: true });

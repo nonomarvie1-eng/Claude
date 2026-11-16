@@ -58,6 +58,7 @@ class GameState {
   fsCurrent = $state(0);
   fsTotal = $state(0);
   multiplier = $state(1);
+  insets = $state({ top: 0, bottom: 0, left: 0, right: 0 });
   modal = $state<null | 'paytable' | 'settings' | 'history' | 'buy' | 'auto'>(null);
   autoplay = $state<{ remaining: number } | null>(null);
   notice = $state<string | null>(null);
