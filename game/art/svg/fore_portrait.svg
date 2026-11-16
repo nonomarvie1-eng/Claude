@@ -32,4 +32,4 @@
     <rect x="0" y="840" width="1080" height="1920" fill="#0b3a26"/>
     <path d="M151.2,840 L928.8,840 L1706.4,1980 L-626.4,1980Z" fill="#14674a"/><path d="M216,840 L864,840 L1512,1980 L-432,1980Z" fill="#1a7f5a"/><line x1="216" y1="840" x2="-432" y2="1980" stroke="#fbf6e9" stroke-width="8" opacity=".95"/><line x1="287.28" y1="840" x2="-218.16" y2="1980" stroke="#fbf6e9" stroke-width="8" opacity=".95"/><line x1="792.72" y1="840" x2="1298.16" y2="1980" stroke="#fbf6e9" stroke-width="8" opacity=".95"/><line x1="864" y1="840" x2="1512" y2="1980" stroke="#fbf6e9" stroke-width="8" opacity=".95"/><line x1="216" y1="840" x2="864" y2="840" stroke="#fbf6e9" stroke-width="8" opacity=".95"/><line x1="-75.6" y1="1353" x2="1155.6" y2="1353" stroke="#fbf6e9" stroke-width="8" opacity=".95"/><line x1="540" y1="1353" x2="540" y2="1980" stroke="#fbf6e9" stroke-width="8" opacity=".95"/>
     <rect x="0" y="840" width="1080" height="1920" fill="url(#courtGlow)"/>
-    <rect x="0" y="840" width="1080" height="1920" fill="url(#grain)"/></g></svg>
+</g></svg>

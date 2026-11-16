@@ -54,6 +54,13 @@ for (const file of files) {
   });
   console.log('✓', path.relative(ROOT, out));
 }
+// convert PNG -> WebP (alpha kept) to keep the shareable single-file build small
+import { execFileSync } from 'node:child_process';
+for (const f of fs.readdirSync(OUT).filter((x) => x.endsWith('.png'))) {
+  const src = path.join(OUT, f);
+  const dst = src.replace(/\.png$/, '.webp');
+  execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', src, '-c:v', 'libwebp', '-quality', '86', '-compression_level', '6', dst]);
+}
 // contact sheet for review
 const syms = ['W', 'S', 'H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'L5'];
 await page.setViewportSize({ width: 1580, height: 540 });
@@ -61,4 +68,5 @@ await page.setContent(`<html><body style="margin:0;background:#2b6b45;display:fl
 ${syms.map((s) => `<img src="data:image/png;base64,${fs.readFileSync(path.join(OUT, `sym_${s}.png`)).toString('base64')}" style="width:250px;height:250px;background:#1f5e3a;border:1px solid #0b2a1e">`).join('')}
 </body></html>`);
 await page.screenshot({ path: path.join(HERE, 'contact-sheet.png') });
+for (const f of fs.readdirSync(OUT).filter((x) => x.endsWith('.png'))) fs.rmSync(path.join(OUT, f));
 await browser.close();

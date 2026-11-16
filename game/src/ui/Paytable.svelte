@@ -5,8 +5,8 @@
   import { fmt } from '../i18n/strings';
   import type { SymbolName } from '../engine/types';
 
-  const urls = import.meta.glob('../assets/img/sym_*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
-  const img = (s: string) => Object.entries(urls).find(([k]) => k.endsWith(`sym_${s}.png`))?.[1];
+  const urls = import.meta.glob('../assets/img/sym_*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+  const img = (s: string) => Object.entries(urls).find(([k]) => k.endsWith(`sym_${s}.webp`))?.[1];
   const t = $derived(game.t);
   const pay = (pm: number) => money(Math.round((game.bet * pm) / 100), game.currency, game.prefs.lang);
   const order: SymbolName[] = ['H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'L5'];

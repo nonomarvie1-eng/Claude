@@ -421,7 +421,7 @@ function background(w, h, key) {
     <rect x="0" y="${horizon + 34}" width="${w}" height="${h}" fill="#0b3a26"/>
     ${court}
     <rect x="0" y="${horizon + 34}" width="${w}" height="${h}" fill="url(#courtGlow)"/>
-    <rect x="0" y="${horizon + 34}" width="${w}" height="${h}" fill="url(#grain)"/></g>`);
+</g>`);
   // beams: additive light cones from the towers
   const beam = (x, ang) => `<g transform="rotate(${ang} ${x} ${horizon * .14})"><path d="M${x - 40},${horizon * .14} L${x + 40},${horizon * .14} L${x + 340},${h} L${x - 340},${h}Z" fill="url(#beamG)"/></g>`;
   const beams = svg(w, h, `<linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c8" stop-opacity=".38"/><stop offset=".6" stop-color="#fff6c8" stop-opacity=".08"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></linearGradient>

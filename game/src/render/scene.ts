@@ -11,7 +11,7 @@ import { ease, Tweener } from './tween';
 import LAYERS from '../assets/layers.json';
 import { fmt as fmtS } from '../i18n/strings';
 
-const imgs = import.meta.glob('../assets/img/*.{png,jpg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const imgs = import.meta.glob('../assets/img/*.{webp,jpg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 const CELL = 170;
 const NR = RULES.reels;
@@ -34,7 +34,7 @@ export async function loadTextures(onProgress: (p: number) => void): Promise<Rec
   let done = 0;
   await Promise.all(
     entries.map(async ([k, url]) => {
-      const name = k.split('/').pop()!.replace(/\.(png|jpg)$/, '');
+      const name = k.split('/').pop()!.replace(/\.(webp|jpg)$/, '');
       const img = new Image();
       img.decoding = 'async';
       img.src = url;

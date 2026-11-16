@@ -4,7 +4,7 @@
   import { fmt } from '../i18n/strings';
   import { RULES } from '../engine/rules';
   import type { Controller } from '../game/controller';
-  import trophy from '../assets/img/sym_S.png?url';
+  import trophy from '../assets/img/sym_S.webp?url';
   let { ctrl }: { ctrl: Controller | null } = $props();
   const t = $derived(game.t);
   const cost = RULES.buyBonus.cost;
