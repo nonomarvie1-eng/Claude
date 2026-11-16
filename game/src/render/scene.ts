@@ -6,6 +6,7 @@ import { audio } from '../audio/audio';
 import { STRIPS } from '../engine/engine';
 import { PROTO } from '../engine/rallyPath';
 import { GS } from '../engine/goldenServe';
+import { Court } from './court';
 import { RULES } from '../engine/rules';
 import type { Board, BonusLevel, BookEvent, GameType, ModeName, Position, SymbolName, WinLine } from '../engine/types';
 import { Match } from './match';
@@ -229,7 +230,11 @@ export class RallyScene implements View {
     });
     host.appendChild(this.app.canvas);
     this.app.canvas.setAttribute('aria-hidden', 'true');
-    this.tw = new Tweener(this.app.ticker, () => (this.prefs.turbo ? 1.8 : 1) * (this.match?.skip ? 5 : 1));
+    // QA only (demo builds): __rallyTimeScale slows the presentation down for frame-by-frame captures
+    const qaScale = () => (import.meta.env.VITE_ENABLE_RGS === '1' ? 1 : ((window as unknown as { __rallyTimeScale?: number }).__rallyTimeScale ?? 1));
+    this.tw = new Tweener(this.app.ticker, () => (this.prefs.turbo ? 1.8 : 1) * (this.match?.skip ? 5 : 1) * qaScale());
+    // presentation clock (QA): time the animations actually advanced, independent of the frame rate
+    this.app.ticker.add((tk) => (this.animClock += tk.deltaMS));
 
     this.bg.addChild(this.sky, this.crowd, this.flashLayer, this.fore, this.flags);
     this.flags.blendMode = 'add';
@@ -292,10 +297,13 @@ export class RallyScene implements View {
     this.app.stage.eventMode = 'static';
     this.app.stage.hitArea = this.app.screen;
     this.app.stage.on('pointertap', () => {
-      if (this.mode === 'freegame' || this.rpBusy) this.match.skip = true; // fast-forward only: the result is fixed
+      if (this.mode === 'freegame' || this.rpBusy || this.court?.root.visible) this.match.skip = true; // fast-forward only: the result is fixed
     });
     this.overlay.on('pointertap', () => this.onOverlayTap?.());
     this.buildAce();
+    this.court = new Court(this);
+    this.court.init();
+    this.app.stage.addChildAt(this.court.root, this.app.stage.getChildIndex(this.overlay));
 
     this.spawnDust();
     this.exposeQA();
@@ -620,6 +628,7 @@ export class RallyScene implements View {
 
   // ---------------------------------------------------------------- layout
   layout() {
+    if (this.court?.root.visible) this.court.layout();
     const w = this.app.screen.width;
     const h = this.app.screen.height;
     this.portrait = h > w * 1.05;
@@ -1379,6 +1388,42 @@ export class RallyScene implements View {
     return this.tw.wait(ms);
   }
 
+  // ---------------------------------------------------------------- CHAMPIONSHIP DUEL (court view)
+  court!: Court;
+  private duelTotal = 0;
+  private duelSingle = false;
+  async duelStart(e: Extract<BookEvent, { type: 'duelStart' }>) {
+    this.duelTotal = e.points;
+    this.duelSingle = !!e.single;
+    if (!e.single) {
+      audio.play('bonus_trigger', { volume: 0.85 });
+      const c = this.makeOverlay();
+      const inner = c.children[1] as Container;
+      const gf = e.level === 'final';
+      const t1 = this.fit(gf ? this.goldText('THE GRAND FINAL', 80) : this.superText('TIE-BREAK DUEL', 80), 680);
+      t1.y = -40;
+      const t2 = this.plainText(fmtS(gf ? this.t.duelIntroGf : this.t.duelIntroTb, { n: e.points }), 30, gf ? '#F4E9D4' : '#BFE6FF', '700');
+      t2.y = 60;
+      inner.addChild(t1, t2);
+      c.relayout?.();
+      await this.fadeOverlay(c, 220, 220, () => this.waitTapOr(this.prefs.reducedMotion ? 500 : 1000));
+    }
+    await this.court.enter(e.level, e.points);
+  }
+  async duelPoint(e: Extract<BookEvent, { type: 'duelPoint' }>, prize: number, bonusTotal: number) {
+    this.match.skip = false;
+    this.rpBusy = true;
+    await this.court.playPoint(e, this.duelTotal, prize, bonusTotal, this.duelSingle);
+    this.court.setBoard(e.point, this.duelTotal, bonusTotal, this.duelSingle);
+    this.rpBusy = false;
+  }
+  async duelEnd(e: Extract<BookEvent, { type: 'duelEnd' }>, bonusWin: number, debit: number) {
+    if (!this.duelSingle) await this.court.summary(bonusWin, debit);
+    else await this.tw.wait(250);
+    await this.court.leave();
+    void e;
+  }
+
 
   // ---------------------------------------------------------------- GOLDEN SERVE (prototypes A / B)
   // Presentation only: every trajectory, hit, transformation and exchange is
@@ -1388,6 +1433,7 @@ export class RallyScene implements View {
   private gsLayer = new Container();
   private boardHome: { x: number; y: number } | null = null;
   gsMode = false;
+  animClock = 0;
   /** QA counters (demo build only): what the animation actually did */
   qa = { strokes: 0, hits: 0, flips: 0, swaps: 0, smash: 0 };
   private exposeQA() {
@@ -1397,12 +1443,14 @@ export class RallyScene implements View {
     (window as unknown as { __rallyScene: unknown }).__rallyScene = {
       grid: () => this.reels.map((r) => Array.from({ length: NROWS }, (_, row) => names.get(r.cell(row).texture) ?? '?')),
       qa: () => ({ ...this.qa }),
-      leftovers: () => ({ overlay: this.overlay.children.length, gsLayer: this.gsLayer.children.length, rpPlate: this.rpPlate.visible, fx: this.fx.children.length }),
+      court: () => ({ ...this.court.qa, visible: this.court.root.visible }),
+      leftovers: () => ({ court: this.court.root.visible, overlay: this.overlay.children.length, gsLayer: this.gsLayer.children.length, rpPlate: this.rpPlate.visible, fx: this.fx.children.length }),
     };
   }
 
   /** Central reset at the start of every round: nothing from the previous round survives. */
   resetRound() {
+    this.court?.reset();
     this.onOverlayTap = null;
     this.match.skip = false;
     this.rpBusy = false;

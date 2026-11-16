@@ -3,7 +3,8 @@
   import type { Controller } from '../game/controller';
   import type { DemoRgs } from '../rgs/demoRgs';
   import { PROTO, GAME_SCENARIOS, type ProtoMode } from '../engine/rallyPath';
-  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, DUEL_BUILD } from '../engine/gameplay';
+  import { DUEL } from '../engine/duel';
   import { GS } from '../engine/goldenServe';
   import type { ForcedScenario } from '../rgs/demoRgs';
   async function forceGame(k: string) {
@@ -53,7 +54,24 @@
 {#if game.isDemo}
   <section class="demo">
     <p>{t.demoNotice}</p>
-    {#if GOLDEN_SERVE_BUILD}
+    {#if DUEL_BUILD}
+    <h3>{t.duelLabTitle}</h3>
+    <p>{t.duelLabNotice}</p>
+    <div class="btns">
+      <button onclick={() => ctrl?.labPoints(['double_fault', 'ace', 'winner'])} disabled={game.phase !== 'idle'} data-testid="duel-demo3">{t.duelDemo3}</button>
+      {#each Object.entries(DUEL.pointScenarios) as [k, sc] (k)}
+        <button onclick={() => ctrl?.labPoints([k])} disabled={game.phase !== 'idle'} data-testid={`duel-pt-${k}`}>{sc.label}</button>
+      {/each}
+      <button onclick={() => ctrl?.labPoints(null, 'tiebreak')} disabled={game.phase !== 'idle'} data-testid="duel-random-tb">Point aléatoire · Tie-Break</button>
+      <button onclick={() => ctrl?.labPoints(null, 'final')} disabled={game.phase !== 'idle'} data-testid="duel-random-gf">Point aléatoire · Grand Final</button>
+    </div>
+    <h3>{t.duelRounds}</h3>
+    <div class="btns">
+      {#each Object.entries(DUEL.roundScenarios) as [k, sc] (k)}
+        <button onclick={() => forceGame(`duel_${k}`)} disabled={game.phase !== 'idle'} data-testid={`force-duel-${k}`}>{sc.label}</button>
+      {/each}
+    </div>
+    {:else if GOLDEN_SERVE_BUILD}
     <h3>{t.gsConcept}</h3>
     <div class="btns" role="radiogroup">
       <button class:on={game.concept === 'A'} aria-pressed={game.concept === 'A'} onclick={() => (game.concept = 'A')} disabled={game.phase !== 'idle'} data-testid="concept-A">{t.gsConceptA}</button>

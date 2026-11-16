@@ -1,0 +1,181 @@
+{
+ "url": "http://localhost:4190/index.html?lang=fr",
+ "failures": 0,
+ "results": [
+  {
+   "name": "390x844: build id DUEL-01 visible",
+   "ok": true,
+   "detail": "DUEL-01"
+  },
+  {
+   "name": "390x844: TEST POINT visible, old buy hidden",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-demo3: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-demo3: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "demo: double fault, ace, winner (engine outcomes)",
+   "ok": true,
+   "detail": "DOUBLE_FAULT 0x · ACE 20x · WINNER 12x"
+  },
+  {
+   "name": "demo: the two serves of the double fault are drawn",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "demo: point prizes follow the documented scenarios",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "demo: one court animation per point",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-demo3-timing: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-demo3-timing: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "action time: double fault < 1.5 s, ace <= 1.2 s, winner rally <= 2 s",
+   "ok": true,
+   "detail": "DOUBLE_FAULT: action 1383 ms + result 750 ms (wall 2131 ms @ 22 fps) · ACE: action 983 ms + result 1067 ms (wall 2046 ms @ 20 fps) · WINNER: action 1700 ms + result 983 ms (wall 2688 ms @ 20 fps)"
+  },
+  {
+   "name": "390-double_fault: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-double_fault: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "double_fault: outcome DOUBLE_FAULT, prize 0x, caption shown",
+   "ok": true,
+   "detail": "DOUBLE FAUTE · 2280 ms"
+  },
+  {
+   "name": "390-ace: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-ace: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ace: outcome ACE, prize 20x, caption shown",
+   "ok": true,
+   "detail": "ACE · 1970 ms"
+  },
+  {
+   "name": "390-winner: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-winner: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "winner: outcome WINNER, prize 12x, caption shown",
+   "ok": true,
+   "detail": "COUP GAGNANT · 2727 ms"
+  },
+  {
+   "name": "390-rally_lost: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-rally_lost: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "rally_lost: outcome LOST, prize 0x, caption shown",
+   "ok": true,
+   "detail": "POINT PERDU · 3803 ms"
+  },
+  {
+   "name": "390-second_ace: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-second_ace: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "second_ace: outcome ACE, prize 15x, caption shown",
+   "ok": true,
+   "detail": "ACE · 2583 ms"
+  },
+  {
+   "name": "390-golden_smash: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-golden_smash: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "golden_smash: outcome GOLDEN, prize 150x, caption shown",
+   "ok": true,
+   "detail": "GOLDEN SMASH · 3942 ms"
+  },
+  {
+   "name": "390-golden_match_point: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-golden_match_point: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "golden_match_point: outcome RALLY_WON, prize 100x, caption shown",
+   "ok": true,
+   "detail": "POINT GAGNÉ · 4702 ms"
+  },
+  {
+   "name": "390-demo3-skipped: balance unchanged (test point not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-demo3-skipped: court closed, reels back",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "skip (taps): same outcomes, faster",
+   "ok": true,
+   "detail": "2985 ms vs 8763 ms"
+  }
+ ]
+}

@@ -112,6 +112,41 @@ def bonus_level(n_scatters: int) -> str | None:
 # the prototype mode / dev scenarios: the normal game, its reels and its RTP
 # are NOT affected.  Every value below is experimental and is evaluated with
 # the exact model in rally_path.py before any adoption.
+CHAMPIONSHIP_DUEL = {
+    # experimental (see championship_duel.py): probabilities out of 1000, prizes in x bet
+    "LEVELS": {
+        "tiebreak": {
+            "POINTS": 4,
+            "RALLY_SHOTS": [2, 4],
+            "SERVE1": {"ACE": 90, "FAULT": 350, "IN": 560},
+            "SERVE2": {"ACE": 30, "DOUBLE_FAULT": 200, "IN": 770},
+            "RALLY": {"LOST": 380, "RALLY_WON": 370, "WINNER": 220, "GOLDEN": 30},
+            "PRIZES": {
+                "ACE": [[15, 350], [20, 300], [30, 200], [50, 100], [100, 50]],
+                "RALLY_WON": [[2, 400], [3, 350], [5, 250]],
+                "WINNER": [[12, 350], [15, 300], [22, 200], [35, 100], [60, 50]],
+                "GOLDEN": [[70, 500], [125, 300], [250, 150], [600, 40], [1200, 10]],
+            },
+        },
+        "final": {
+            "POINTS": 6,
+            "RALLY_SHOTS": [3, 5],
+            "P_GMP": 25,
+            "SERVE1": {"ACE": 100, "FAULT": 330, "IN": 570},
+            "SERVE2": {"ACE": 30, "DOUBLE_FAULT": 180, "IN": 790},
+            "RALLY": {"LOST": 350, "RALLY_WON": 360, "WINNER": 250, "GOLDEN": 40},
+            "PRIZES": {
+                "ACE": [[15, 350], [20, 300], [30, 200], [50, 100], [80, 50]],
+                "RALLY_WON": [[3, 400], [4, 350], [6, 250]],
+                "WINNER": [[12, 350], [18, 300], [25, 200], [40, 100], [75, 50]],
+                "GOLDEN": [[80, 450], [150, 300], [300, 170], [600, 60], [1500, 15], [3000, 5]],
+            },
+        },
+    },
+    # GOLDEN MATCH POINT (Grand Final): prize of a WON golden match point; no minimum guaranteed
+    "GMP_TABLE": [[50, 400], [100, 300], [250, 180], [500, 80], [1000, 30], [2500, 8], [5000, 2]],
+}
+
 GOLDEN_SERVE_PROTO = {
     # experimental: concepts A (Cross-Court) and B (Court Switch), see golden_serve.py
     "G_ON_REEL1": {"base": 1, "free": 6},

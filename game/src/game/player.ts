@@ -35,6 +35,9 @@ export interface View {
   secondServe?(e: Ev<'secondServe'>): Promise<void>;
   protoBonusEnd?(e: Ev<'protoBonusEnd'>, amount: number): Promise<void>;
   goldenServe?(e: Ev<'goldenServe'>): Promise<void>;
+  duelStart?(e: Ev<'duelStart'>): Promise<void>;
+  duelPoint?(e: Ev<'duelPoint'>, prize: number, bonusTotal: number): Promise<void>;
+  duelEnd?(e: Ev<'duelEnd'>, bonusWin: number, debit: number): Promise<void>;
 }
 
 export interface Hud {
@@ -184,6 +187,22 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         view.setMode('basegame');
         hud.setInBonus(false);
         hud.setBonusLevel?.(null);
+        break;
+      // ---- CHAMPIONSHIP DUEL
+      case 'duelStart':
+        hasBonus = true;
+        hud.setInBonus(true);
+        hud.setFreeSpins(0, e.points);
+        await view.duelStart?.(e);
+        break;
+      case 'duelPoint':
+        hud.setFreeSpins(e.point, e.point);
+        await view.duelPoint?.(e, winAmount(bet, e.prize), winAmount(bet, e.bonusTotal));
+        hud.setWin(winAmount(bet, e.bonusTotal));
+        break;
+      case 'duelEnd':
+        await view.duelEnd?.(e, winAmount(bet, e.bonusWin), debit);
+        hud.setInBonus(false);
         break;
       // ---- Golden Serve prototypes
       case 'goldenServe':

@@ -9,7 +9,9 @@ import { RULES } from '../engine/rules';
 import type { ModeName } from '../engine/types';
 import { PROTO, playProtoRound, type ProtoMode } from '../engine/rallyPath';
 import { cryptoDrawer, listDrawer } from '../engine/rng';
-import { FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
+import { DUEL_BUILD, FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
+import { DUEL, playLabPoints, type DuelLevel } from '../engine/duel';
+import { cryptoInt } from '../engine/rng';
 
 export interface AutoplayConfig {
   count: number;
@@ -162,6 +164,37 @@ export class Controller {
     } finally {
       game.banner = null;
       game.win = savedWin;
+      if (game.phase === 'spinning') game.phase = 'idle';
+      this.inFlight = false;
+    }
+  }
+
+  /** CHAMPIONSHIP DUEL lab (demo only): points played on the court from
+   *  recorded scenarios (or random draws), never debited nor credited. */
+  async labPoints(keys: string[] | null, level: DuelLevel = 'tiebreak') {
+    game.modal = null; // launched from the Settings dialog
+    if (this.rgs.kind !== 'demo' || !this.canSpin() || this.inFlight) return;
+    this.inFlight = true;
+    game.modal = null;
+    game.phase = 'spinning';
+    game.banner = game.t.duelLabBanner;
+    const savedWin = game.win;
+    try {
+      this.scene.resetRound();
+      const list = keys
+        ? keys.map((k) => ({ level: DUEL.pointScenarios[k].level, draws: DUEL.pointScenarios[k].draws }))
+        : [{ level, draws: Array.from({ length: 6 }, () => cryptoInt(1000)) }];
+      const events = playLabPoints(list);
+      (window as unknown as { __duelLab: unknown }).__duelLab = { keys, events };
+      this.scene.bet = game.bet;
+      await playBook(events, this.scene, this.hud, { bet: game.bet, cost: 1, quick: false });
+    } catch (e) {
+      this.fail(e);
+    } finally {
+      this.scene.court.reset();
+      game.banner = null;
+      game.win = savedWin;
+      game.inBonus = false;
       if (game.phase === 'spinning') game.phase = 'idle';
       this.inFlight = false;
     }

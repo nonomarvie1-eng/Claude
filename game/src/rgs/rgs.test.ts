@@ -7,9 +7,38 @@ import { createRgs } from './index';
 import { playRound } from '../engine/engine';
 import { cryptoDrawer } from '../engine/rng';
 
-import { FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
+import { DUEL_BUILD, FINAL_SET_BUILD, GOLDEN_SERVE_BUILD, RALLY_PATH_BUILD } from '../engine/gameplay';
 // v6 FINAL SET gameplay tests: run with `npm run test:finalset` (disabled in the Rally Path test build)
 const itOld = FINAL_SET_BUILD ? it : it.skip;
+
+describe.runIf(DUEL_BUILD)('DemoRgs — Championship Duel test build DUEL-01', () => {
+  const OLD = ['bonusStart', 'hawkEye', 'shot', 'exchangeStart', 'rallyPath', 'protoBonusStart', 'goldenServe', 'gsBonusStart'];
+  it('old buys and Bonus Chance are refused without debit', async () => {
+    const r = new DemoRgs(memoryStorage());
+    for (const m of ['buy_rally', 'buy_final', 'bonus_chance']) await expect(r.play(1_000_000, m)).rejects.toThrow();
+    expect((await r.balance()).amount).toBe(DEMO_START_BALANCE);
+  });
+  it('forced 3 / 4 scatter rounds play the duel and are credited exactly once', async () => {
+    for (const [k, lvl] of [['duel_tiebreak', 'tiebreak'], ['duel_final', 'final']] as const) {
+      const r = new DemoRgs(memoryStorage());
+      r.forceNext = k;
+      const { round } = await r.play(1_000_000, 'base');
+      const st = round.state.find((e) => e.type === 'duelStart');
+      expect(st && st.type === 'duelStart' && st.level === lvl).toBe(true);
+      const end = await r.endRound();
+      expect(end.balance.amount).toBe(DEMO_START_BALANCE - 1_000_000 + round.payout);
+    }
+  });
+  it('random rounds never contain older gameplay events', async () => {
+    const r = new DemoRgs(memoryStorage());
+    for (let i = 0; i < 400; i++) {
+      const { round } = await r.play(1_000_000, 'base');
+      expect(round.state.some((e) => OLD.includes(e.type))).toBe(false);
+      await r.endRound();
+      if ((await r.balance()).amount < 2_000_000) r.reset();
+    }
+  });
+});
 
 describe.runIf(GOLDEN_SERVE_BUILD)('DemoRgs — Golden Serve test build GOLDEN-SERVE-02', () => {
   const OLD = ['bonusStart', 'hawkEye', 'shot', 'exchangeStart', 'rallyPath', 'protoBonusStart'];

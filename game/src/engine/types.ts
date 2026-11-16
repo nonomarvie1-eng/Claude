@@ -60,7 +60,11 @@ export type BookEvent =
   // ---- Golden Serve prototypes (A Cross-Court / B Court Switch)
   | { index: number; type: 'goldenServe'; concept: 'A' | 'B'; shot: 'serve' | 'smash' | 'double'; origin: Position; target?: SymbolName; paths: Position[][]; changes: { reel: number; row: number; from: SymbolName; to: SymbolName }[]; swaps?: { a: Position & { sym: SymbolName }; b: Position & { sym: SymbolName } }[]; board: Board }
   | { index: number; type: 'gsBonusStart'; bonus: BonusLevel; spins: number; positions: Position[] }
-  | { index: number; type: 'gsBonusEnd'; bonus: BonusLevel; amount: number; bonusWin: number };
+  | { index: number; type: 'gsBonusEnd'; bonus: BonusLevel; amount: number; bonusWin: number }
+  // ---- CHAMPIONSHIP DUEL
+  | { index: number; type: 'duelStart'; level: 'tiebreak' | 'final'; points: number; positions: Position[]; single?: boolean }
+  | { index: number; type: 'duelPoint'; point: number; goldenMatchPoint: boolean; firstServe: 'ACE' | 'FAULT' | 'IN'; secondServe: 'ACE' | 'DOUBLE_FAULT' | 'IN' | null; outcome: 'DOUBLE_FAULT' | 'ACE' | 'LOST' | 'RALLY_WON' | 'WINNER' | 'GOLDEN'; won: boolean; prize: number; bonusTotal: number; side: 'deuce' | 'ad'; target: 'T' | 'wide' | 'body'; shots: number; finish: 'cross' | 'line' | 'inside-out' }
+  | { index: number; type: 'duelEnd'; level: 'tiebreak' | 'final'; bonusWin: number; amount: number };
 
 export interface Book {
   id: number;

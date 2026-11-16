@@ -10,6 +10,11 @@ export const ease = {
 };
 
 export class Tweener {
+  // time left over by a tween that ended between two frames; a tween started
+  // in the same frame (chained `await`) starts with it, so sequences do not
+  // lose up to one frame per step on slow devices.
+  private carry = 0;
+  private carryAt = -1;
   constructor(private ticker: Ticker, public speed = () => 1) {}
 
   tween(ms: number, fn: (u: number) => void, easing: (u: number) => number = ease.linear): Promise<void> {
@@ -18,7 +23,7 @@ export class Tweener {
       return Promise.resolve();
     }
     return new Promise((resolve) => {
-      let t = 0;
+      let t = this.carryAt === this.ticker.lastTime ? this.carry : 0;
       // speed is sampled every frame: "skip" / turbo also accelerate running animations
       const tick = (tk: Ticker) => {
         t += tk.deltaMS * this.speed();
@@ -26,6 +31,8 @@ export class Tweener {
         fn(easing(u));
         if (u >= 1) {
           this.ticker.remove(tick);
+          this.carry = Math.min(t - ms, 100);
+          this.carryAt = this.ticker.lastTime;
           resolve();
         }
       };

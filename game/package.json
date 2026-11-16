@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:finalset": "VITE_GAMEPLAY=finalset vitest run",
     "test:rallypath": "VITE_GAMEPLAY=rallypath vitest run",
+    "test:goldenserve": "VITE_GAMEPLAY=goldenserve vitest run",
     "build:finalset": "VITE_GAMEPLAY=finalset vite build --outDir dist-finalset",
     "assets": "node art/build-art.mjs && node art/rasterize.mjs",
     "audio": "../math/.venv/bin/python audio/synth.py",

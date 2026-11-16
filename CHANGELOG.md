@@ -1,5 +1,14 @@
 # Changelog
 
+## Build de test DUEL-01 — CHAMPIONSHIP DUEL (2026-11-16, prototype, crédits fictifs)
+- Nouvelle direction : le bonus quitte les rouleaux pour une suite de points de tennis. 3 scatters → TIE-BREAK DUEL (4 points), 4+ → THE GRAND FINAL (6 points, Golden Smash, Golden Match Point).
+- Modèle exact (convolution) : RTP 96,25 % ; Tie-Break 43,60×, Grand Final 110,14× ; contrôlé par Monte-Carlo et par énumération complète des tirages d'un point.
+- Moteur Python + port TS (parité sur 368 fixtures) ; vue court 2,5D (PixiJS) : service, faute, double faute, ace, échange, coup gagnant, Golden Smash, Golden Match Point ; tableau d'affichage.
+- Démo reproductible « double faute · ace · coup gagnant » (bouton TEST POINT, non crédité) et 7 scénarios d'un point, 2 tours complets forcés.
+- Archivage : Rally Path, Cross-Court, Court Switch et Final Set conservés derrière `VITE_GAMEPLAY`, inaccessibles dans ce build ; branche locale `archive/bonus-prototypes-gs02`.
+- Tweener : report du temps excédentaire entre interpolations enchaînées (pas de perte d'une image par étape).
+- Tests : pytest 74/74, vitest 36 (+36/36/38 gameplays archivés), e2e 35/35 (preview et fichier publié). Détails : docs/CHAMPIONSHIP_DUEL.md.
+
 ## Build de test GOLDEN-SERVE-02 (2026-11-16, prototypes, crédits fictifs)
 - Deux prototypes de bonus jouables dans le vrai jeu : **A Cross-Court** (la balle transforme les cases touchées en un symbole cible) et **B Court Switch** (les cases touchées s'échangent de part et d'autre du filet), choix dans les Réglages ; Golden Smash (bande de 2 rangées) et Double Serve.
 - Moteur Python de référence + simulateur vectorisé (égalité testée tirage par tirage) + port TS (parité exacte). A : RTP 96,75 % [96,40 ; 97,11] sur 20 M tours ; B : 64,4 % aux mêmes réglages → **A recommandé**.

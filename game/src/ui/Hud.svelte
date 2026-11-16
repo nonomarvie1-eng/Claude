@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, DUEL_BUILD, BUILD_ID } from '../engine/gameplay';
   import { onMount } from 'svelte';
   import { game } from '../game/state.svelte';
   import { money } from '../game/format';
@@ -110,8 +110,8 @@
 
   {#if game.inBonus}
     <div class="stat mid" data-testid="fs-counter" aria-live="polite">
-      <span class="label">{!FINAL_SET_BUILD ? t.rpSpins : t.tbRound}</span>
-      <span class="value">{game.fsCurrent} / {game.fsTotal}{#if FINAL_SET_BUILD} <span class="mult">{game.points} pts</span>{/if}</span>
+      <span class="label">{DUEL_BUILD ? t.duelPoints : !FINAL_SET_BUILD ? t.rpSpins : t.tbRound}</span>
+      <span class="value">{game.fsCurrent}{#if !DUEL_BUILD} / {game.fsTotal}{/if}{#if FINAL_SET_BUILD} <span class="mult">{game.points} pts</span>{/if}</span>
     </div>
   {:else}
     <div class="stat mid">
@@ -128,7 +128,12 @@
 
   <div class="controls">
     <div class="slot side buyslot">
-      {#if GOLDEN_SERVE_BUILD && game.isDemo}
+      {#if DUEL_BUILD && game.isDemo}
+        <!-- development test (test build only): demo sequence fault / ace / winner, never credited -->
+        <button class="buy test6" onclick={() => ctrl?.labPoints(['double_fault', 'ace', 'winner'])} disabled={busy || !!game.autoplay || game.inBonus} data-testid="test-point" aria-label={t.duelDemo3}>
+          <span class="buy-top">TEST</span><span class="buy-x">{t.testPoint}</span>
+        </button>
+      {:else if GOLDEN_SERVE_BUILD && game.isDemo}
         <!-- development test button (test build only): forced Golden Serve round -->
         <button class="buy test6" onclick={() => ctrl?.spin('gs_serve')} disabled={busy || !!game.autoplay || game.inBonus} data-testid="test-serve" aria-label={t.testServe}>
           <span class="buy-top">TEST</span><span class="buy-x">SERVE</span>

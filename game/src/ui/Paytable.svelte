@@ -4,7 +4,11 @@
   import { money } from '../game/format';
   import { fmt } from '../i18n/strings';
   import type { ModeName, SymbolName } from '../engine/types';
-  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { RALLY_PATH_BUILD, GOLDEN_SERVE_BUILD, FINAL_SET_BUILD, DUEL_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { DUEL } from '../engine/duel';
+  const DX = DUEL.exact;
+  const pct1 = (x: number) => `${(x * 100).toLocaleString(game.prefs.lang, { maximumFractionDigits: 1 })} %`;
+  const outNames: Record<string, string> = { DOUBLE_FAULT: 'Double faute', ACE: 'Ace', LOST: 'Échange perdu', RALLY_WON: 'Point gagné (erreur adverse)', WINNER: 'Coup gagnant', GOLDEN: 'Golden Winner / Golden Smash' };
   import { GS } from '../engine/goldenServe';
   const GR = GS.rules;
   const pc = (x: number) => `${(x * 100).toLocaleString(game.prefs.lang, { maximumFractionDigits: 2 })} %`;
@@ -78,7 +82,27 @@
   </div>
 </section>
 
-{#if GOLDEN_SERVE_BUILD}
+{#if DUEL_BUILD}
+<section data-testid="duel-rules">
+  <h3>CHAMPIONSHIP DUEL</h3>
+  <p>{t.duelRule1}</p>
+  <p>{t.duelRule2}</p>
+  <table class="modes" data-testid="duel-table">
+    <thead><tr><th>{t.duelColEvent}</th><th>Tie-Break Duel</th><th>Grand Final</th></tr></thead>
+    <tbody>
+      {#each Object.keys(outNames) as o}
+        <tr><td>{outNames[o]}</td><td>{pct1(DX.tiebreak.point.p_outcome[o])}</td><td>{pct1(DX.final.point.p_outcome[o])}</td></tr>
+      {/each}
+      <tr><td>Golden Match Point (par point)</td><td>—</td><td>{pct1(DX.final.point.p_gmp)}</td></tr>
+    </tbody>
+  </table>
+  <p>{t.duelRule3}</p>
+  {#if showRtp}
+    <p data-testid="duel-stats">{fmt(t.duelStats, { rtp: (DX.rtp.total * 100).toFixed(2), tb: DX.tiebreak.bonus.mean_x.toFixed(1), gf: DX.final.bonus.mean_x.toFixed(1), tbm: DX.tiebreak.bonus.quantiles_x['0.5'], gfm: DX.final.bonus.quantiles_x['0.5'], max: DX.final.bonus.max_x })}</p>
+  {/if}
+  <p class="demo">{t.duelRuleProto}</p>
+</section>
+{:else if GOLDEN_SERVE_BUILD}
 <section data-testid="golden-serve-rules">
   <h3>GOLDEN SERVE</h3>
   <div class="special"><img src={img('G')} alt="Golden Ball" style="width:72px;height:72px" /><div><p>{t.gsRule1}</p></div></div>
@@ -171,7 +195,7 @@
   {/if}
   <p>{t.malfunction}</p>
   {#if game.isDemo}<p class="demo">{t.demoNotice}</p>{/if}
-  <p class="ver">{t.version} : build {BUILD_ID} · math {GOLDEN_SERVE_BUILD ? 'golden-serve proto' : RALLY_PATH_BUILD ? 'rally-path proto' : RULES.mathVersion}</p>
+  <p class="ver">{t.version} : build {BUILD_ID} · math {DUEL_BUILD ? 'championship-duel proto' : GOLDEN_SERVE_BUILD ? 'golden-serve proto' : RALLY_PATH_BUILD ? 'rally-path proto' : RULES.mathVersion}</p>
 </section>
 
 <style>
