@@ -4,6 +4,11 @@
   import { money } from '../game/format';
   import { fmt } from '../i18n/strings';
   import type { ModeName, SymbolName } from '../engine/types';
+  import { RALLY_PATH_BUILD, BUILD_ID } from '../engine/gameplay';
+  import { PROTO } from '../engine/rallyPath';
+  const RP = PROTO.rules;
+  // in the Rally Path build the racket pays the prototype ways table (t-units -> payoutMultiplier x10)
+  const payOf = (s: SymbolName, k: string) => (RALLY_PATH_BUILD && s === RP.racket ? RP.racketWaysPay[k] * 10 : RULES.paytable[s][k]);
 
   // Every value on this page comes from RULES (exported by the validated maths).
   const urls = import.meta.glob('../assets/img/sym_*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
@@ -47,7 +52,7 @@
         <img src={img(s)} alt={name(s)} />
         <div class="nm">{name(s)}</div>
         <table><tbody>
-          {#each ['6', '5', '4', '3'] as k}<tr><td>{k}×</td><td>{pay(RULES.paytable[s][k])}</td></tr>{/each}
+          {#each ['6', '5', '4', '3'] as k}<tr><td>{k}×</td><td>{pay(payOf(s, k))}</td></tr>{/each}
         </tbody></table>
       </div>
     {/each}
@@ -70,6 +75,17 @@
   </div>
 </section>
 
+{#if RALLY_PATH_BUILD}
+<section data-testid="rally-path-rules">
+  <h3>RALLY PATH</h3>
+  <div class="special"><img src={img('G')} alt="Golden Ball" style="width:72px;height:72px" /><div><p>{t.rpRule1}</p></div></div>
+  <p>{t.rpRule2}</p>
+  <p>{fmt(t.rpRule3, { r2: pay(RP.reward['2'] * 10), r3: pay(RP.reward['3'] * 10), r4: pay(RP.reward['4'] * 10), r5: pay(RP.reward['5'] * 10) })}</p>
+  <p>{fmt(t.rpRule4, { list: RP.csTable.map(([v, w]) => `${pay(v * 10)} (${(w / RP.csRoll * 100).toFixed(0)} %)`).join(' · ') })}</p>
+  <p>{fmt(t.rpRule5, { a: RP.bonus.rally.spins, b: RP.bonus.final.spins })}</p>
+  <p class="demo">{t.rpRuleProto}</p>
+</section>
+{:else}
 <section data-testid="final-set-rules">
   <h3>THE FINAL SET</h3>
   <p>{t.fsRulesIntro}</p>
@@ -107,8 +123,10 @@
   <p>{fmt(t.fsRulesCp, { max: FS.MAX_REMAINING })}</p>
   <p>{fmt(t.fsRulesCeremony, { a: RULES.ceremonyX.trophy, b: RULES.ceremonyX.grand })}</p>
 </section>
+{/if}
 
 <section class="rules">
+  {#if !RALLY_PATH_BUILD}
   <h3>{t.modesTable}</h3>
   <table class="modes" data-testid="modes-table">
     <thead><tr><th>{t.colMode}</th><th>{t.colCost}</th>{#if showRtp}<th>{t.colRtp}</th>{/if}<th>{t.colBonus}</th></tr></thead>
@@ -126,17 +144,18 @@
   {#if !game.jurisdiction.disabledBonusChance}
     <p>{fmt(t.chanceRule, { x: M.bonus_chance.cost, b: oneIn(M.bonus_chance.bonusOneIn), b0: oneIn(M.base.bonusOneIn), s: oneIn(M.bonus_chance.finalOneIn), s0: oneIn(M.base.finalOneIn), rtp: rtp('bonus_chance') })}</p>
   {/if}
+  {/if}
   <h3>{t.rules}</h3>
   <p>{t.rulesOutcome}</p>
   <p>{fmt(t.maxWinRule, { x: RULES.wincapX.toLocaleString(game.prefs.lang) })}</p>
-  {#if RULES.stats && showRtp}
+  {#if RULES.stats && showRtp && !RALLY_PATH_BUILD}
     <p data-testid="rtp">{fmt(t.rtpRule, { rtp: (RULES.stats.rtp * 100).toFixed(2) })}</p>
     {#if RULES.stats.hitFrequency}<p>{fmt(t.hitRule, { hit: (1 / RULES.stats.hitFrequency).toFixed(2), bonus: Math.round(RULES.stats.bonusOneIn) })}</p>{/if}
     {#if RULES.stats.stdDev}<p>{fmt(t.volatility, { sd: RULES.stats.stdDev.toFixed(1) })}</p>{/if}
   {/if}
   <p>{t.malfunction}</p>
   {#if game.isDemo}<p class="demo">{t.demoNotice}</p>{/if}
-  <p class="ver">{t.version} : game 2.0.0 · math {RULES.mathVersion}</p>
+  <p class="ver">{t.version} : build {BUILD_ID} · math {RALLY_PATH_BUILD ? 'rally-path proto' : RULES.mathVersion}</p>
 </section>
 
 <style>

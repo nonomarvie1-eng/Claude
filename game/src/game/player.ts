@@ -71,6 +71,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
   let inBonus = false;
   let baseWin = 0;
   let hasBonus = false;
+  let hadCs = false;
   let points = 0;
   let exchange = 0;
   let lastShot: string | null = null;
@@ -157,6 +158,7 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
       }
       // ---- Rally Path prototype
       case 'rallyPath':
+        if (e.championshipShot) hadCs = true;
         await view.rallyPath?.(e);
         break;
       case 'protoBonusStart':
@@ -187,7 +189,8 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         hud.setWin(total);
         const tier = tierFor(total, debit);
         // bonus rounds end with their own (threshold-based) ceremony: no second celebration
-        if (!opts.quick && !hasBonus && (tier === 'big' || tier === 'mega' || tier === 'epic')) await view.bigWin(total, tier);
+        // a Championship Shot already had its own moment: no second celebration
+        if (!opts.quick && !hasBonus && !hadCs && (tier === 'big' || tier === 'mega' || tier === 'epic')) await view.bigWin(total, tier);
         break;
       }
     }

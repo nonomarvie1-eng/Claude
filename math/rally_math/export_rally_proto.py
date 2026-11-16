@@ -58,6 +58,24 @@ SCENARIOS = [
 ]
 
 
+GAME_SCENARIOS = [
+    ("game_full6", "Test : Rally Path complet 6 coups → Championship Shot", lambda r: r["length"] == 6 and r["bonus"] is None),
+    ("game_rally", "Test : 3 scatters → Rally Challenge", lambda r: r["bonus"] == "rally" and 15 <= r["total_t"] / 10 <= 80),
+    ("game_final", "Test : 4 scatters → The Grand Final", lambda r: r["bonus"] == "final" and any(e["type"] == "secondServe" for e in r["events"])),
+]
+
+
+def _search_game(pred, seed, tries=3_000_000):
+    rng = np.random.Generator(np.random.PCG64(seed))
+    strips = R.proto_reels("base")
+    for _ in range(tries):
+        draw, rec = _recording(rng)
+        r = R.play_game_round(draw)
+        if pred(r):
+            return rec, r
+    raise RuntimeError("game scenario not found")
+
+
 def export() -> dict:
     rep = R.exact_report()
     scen = {}
@@ -65,6 +83,10 @@ def export() -> dict:
         rec, r = _search(mode, pred, 100 + i)
         assert R.play_proto_round(list_drawer(rec), mode)["events"] == r["events"]
         scen[key] = {"mode": mode, "label": label, "draws": rec, "totalX": r["total_t"] / 10}
+    game_scen = {}
+    for i, (key, label, pred) in enumerate(GAME_SCENARIOS):
+        rec, r = _search_game(pred, 300 + i)
+        game_scen[key] = {"label": label, "draws": rec, "totalX": r["total_t"] / 10}
     # parity fixtures: random rounds of each mode with their Python events
     rng = np.random.Generator(np.random.PCG64(4242))
     fixtures = []
@@ -76,6 +98,16 @@ def export() -> dict:
     for key, s in scen.items():
         r = R.play_proto_round(list_drawer(s["draws"]), s["mode"])
         fixtures.append({"mode": s["mode"], "draws": s["draws"], "events": r["events"]})
+    game_fx = []
+    rng = np.random.Generator(np.random.PCG64(777))
+    while len(game_fx) < 40 or sum(1 for f in game_fx if f["bonus"]) < 6:
+        draw, rec = _recording(rng)
+        r = R.play_game_round(draw)
+        if len(game_fx) < 40 or r["bonus"]:
+            game_fx.append({"draws": rec, "events": r["events"], "bonus": r["bonus"]})
+    for s2 in game_scen.values():
+        r = R.play_game_round(list_drawer(s2["draws"]))
+        game_fx.append({"draws": s2["draws"], "events": r["events"], "bonus": r["bonus"]})
     P = C.RALLY_PATH_PROTO
     out = {
         "experimental": True,
@@ -94,6 +126,8 @@ def export() -> dict:
         },
         "scenarios": scen,
         "fixtures": fixtures,
+        "gameScenarios": game_scen,
+        "gameFixtures": game_fx,
     }
     path = os.path.join(ROOT, "shared", "rally-path-proto.json")
     with open(path, "w", encoding="utf-8") as f:

@@ -7,6 +7,37 @@ import { createRgs } from './index';
 import { playRound } from '../engine/engine';
 import { cryptoDrawer } from '../engine/rng';
 
+import { RALLY_PATH_BUILD } from '../engine/gameplay';
+// v6 FINAL SET gameplay tests: run with `npm run test:finalset` (disabled in the Rally Path test build)
+const itOld = RALLY_PATH_BUILD ? it.skip : it;
+
+describe.runIf(RALLY_PATH_BUILD)('DemoRgs — Rally Path test build RALLY-PATH-01', () => {
+  it('old buys and Bonus Chance are refused without debit', async () => {
+    const r = new DemoRgs(memoryStorage());
+    for (const m of ['buy_rally', 'buy_final', 'bonus_chance']) await expect(r.play(1_000_000, m)).rejects.toThrow();
+    expect((await r.balance()).amount).toBe(DEMO_START_BALANCE);
+  });
+  it('test button scenario: full 6-shot rally, Championship Shot, credited exactly once, no Final Set event', async () => {
+    const r = new DemoRgs(memoryStorage());
+    r.forceNext = 'game_full6';
+    const { round } = await r.play(1_000_000, 'base');
+    const rp = round.state.find((e) => e.type === 'rallyPath');
+    expect(rp && rp.type === 'rallyPath' && rp.length === 6 && rp.championshipShot).toBe(true);
+    expect(round.state.some((e) => ['bonusStart', 'hawkEye', 'shot', 'exchangeStart'].includes(e.type))).toBe(false);
+    const end = await r.endRound();
+    expect(end.balance.amount).toBe(DEMO_START_BALANCE - 1_000_000 + round.payout);
+  });
+  it('random rounds only produce Rally Path events', async () => {
+    const r = new DemoRgs(memoryStorage());
+    for (let i = 0; i < 300; i++) {
+      const { round } = await r.play(1_000_000, 'base');
+      expect(round.state.some((e) => ['bonusStart', 'hawkEye', 'shot', 'exchangeStart'].includes(e.type))).toBe(false);
+      await r.endRound();
+      if ((await r.balance()).amount < 2_000_000) r.reset();
+    }
+  });
+});
+
 describe('DemoRgs (play money)', () => {
   it('debits on play, credits payout on endRound', async () => {
     const rgs = new DemoRgs(memoryStorage());
@@ -54,7 +85,7 @@ describe('DemoRgs (play money)', () => {
     expect((await rgs.authenticate()).balance.amount).toBe(DEMO_START_BALANCE);
   });
 
-  it.each([
+  itOld.each([
     ['buy_rally', 'rally', 3],
     ['buy_final', 'final', 4],
   ] as const)('%s debits bet x cost and always gives exactly its bonus', async (mode, level, k) => {
@@ -80,14 +111,14 @@ describe('DemoRgs (play money)', () => {
     await expect(poor.play(1_000_000, mode)).rejects.toMatchObject({ code: 'ERR_IPB' });
   });
 
-  it('a second play while a bought round is active is refused (no double debit)', async () => {
+  itOld('a second play while a bought round is active is refused (no double debit)', async () => {
     const rgs = new DemoRgs(memoryStorage());
     await rgs.play(1_000_000, 'buy_rally');
     await expect(rgs.play(1_000_000, 'buy_rally')).rejects.toMatchObject({ code: 'ERR_VAL' });
     expect((await rgs.balance()).amount).toBe(DEMO_START_BALANCE - Math.round(RULES.modes.buy_rally.cost * 1_000_000));
   });
 
-  it('bonus_chance debits 1.4x and uses the bonus-chance reels; unknown modes are refused', async () => {
+  itOld('bonus_chance debits 1.4x and uses the bonus-chance reels; unknown modes are refused', async () => {
     const rgs = new DemoRgs(memoryStorage());
     const { balance, round } = await rgs.play(1_000_000, 'bonus_chance');
     expect(balance.amount).toBe(DEMO_START_BALANCE - Math.round(RULES.modes.bonus_chance.cost * 1_000_000));
@@ -112,7 +143,7 @@ describe('DemoRgs (play money)', () => {
     expect(Math.abs(pc - 1 / RULES.modes.bonus_chance.bonusOneIn!)).toBeLessThan(6 * Math.sqrt(pc / n));
   });
 
-  it('forced bonus scenario triggers free spins (demo QA only)', async () => {
+  itOld('forced bonus scenario triggers free spins (demo QA only)', async () => {
     const rgs = new DemoRgs(memoryStorage());
     for (const f of ['bonus3', 'bonus4', 'bonus5'] as const) {
       rgs.forceNext = f;

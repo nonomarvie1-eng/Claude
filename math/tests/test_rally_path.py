@@ -211,3 +211,30 @@ def test_normal_game_untouched():
         with R.proto_paytable():
             raise RuntimeError
     assert C.PAYTABLE["H4"] == h4
+
+
+# ---------------------------------------------------------------- full game round (test build)
+
+def test_game_round_accounting_and_no_old_bonus():
+    rng = np.random.Generator(np.random.PCG64(12))
+    seen = set()
+    for _ in range(3000):
+        r = R.play_game_round(numpy_drawer(rng))
+        ev = r["events"]
+        types = {e["type"] for e in ev}
+        assert not types & {"bonusStart", "hawkEye", "shot", "exchangeStart", "grandSlam"}
+        s = sum(e["totalWin"] for e in ev if e["type"] == "winInfo") + sum(e["reward"] for e in ev if e["type"] == "rallyPath")
+        s += sum(e["amount"] for e in ev if e["type"] == "scatterPay")
+        assert min(s, C.WINCAP_T * 10) == ev[-1]["amount"] == r["total_t"] * 10
+        seen.add(r["bonus"])
+    assert seen >= {None, "rally"}
+
+
+def test_game_round_bonus_by_scatter_count():
+    import json, os
+    d = json.load(open(os.path.join(os.path.dirname(__file__), "..", "..", "shared", "rally-path-proto.json")))
+    for key, want in (("game_rally", "rally"), ("game_final", "final"), ("game_full6", None)):
+        r = R.play_game_round(list_drawer(d["gameScenarios"][key]["draws"]))
+        assert r["bonus"] == want
+    r = R.play_game_round(list_drawer(d["gameScenarios"]["game_full6"]["draws"]))
+    assert r["length"] == 6 and r["cs"]

@@ -150,3 +150,54 @@ export function playProtoRound(draw: StopDrawer, mode: ProtoMode): ProtoRound {
   emit({ type: 'finalWin', amount: total * 10 });
   return { totalT: total, events };
 }
+
+// ------------------------------------------------------------------ full game round (test build RALLY-PATH-01)
+
+export interface GameScenario {
+  label: string;
+  draws: number[][];
+  totalX: number;
+}
+export const GAME_SCENARIOS = (raw as unknown as { gameScenarios: Record<string, GameScenario> }).gameScenarios;
+export const GAME_FIXTURES = (raw as unknown as { gameFixtures: { draws: number[][]; events: BookEvent[]; bonus: BonusLevel | null }[] }).gameFixtures;
+
+/** One complete paid round of the Rally Path game (port of rally_path.play_game_round):
+ *  base spin with Rally Path; 3 scatters -> RALLY CHALLENGE, 4+ -> THE GRAND FINAL. */
+export function playGameRound(draw: StopDrawer, id = 0): { book: { id: number; payoutMultiplier: number; events: BookEvent[] }; bonus: BonusLevel | null } {
+  const events: BookEvent[] = [];
+  const emit: Emit = (e) => events.push({ index: events.length, ...e } as BookEvent);
+  const s = playSpin(draw, PROTO.strips.base, emit, 'basegame');
+  const pos = positionsOf(s.board, 'S');
+  const nSc = pos.length;
+  const scPay = SC_PAY[nSc] ?? 0;
+  if (scPay) emit({ type: 'scatterPay', count: nSc, amount: scPay * 10 });
+  let total = s.spinT + scPay;
+  emit({ type: 'setWin', amount: Math.min(total, WINCAP_T) * 10 });
+  let bonus: BonusLevel | null = null;
+  if (nSc >= 3) {
+    bonus = nSc === 3 ? 'rally' : 'final';
+    const cfg = P.bonus[bonus];
+    let totalSpins = cfg.spins;
+    emit({ type: 'protoBonusStart', bonus, spins: totalSpins, positions: pos });
+    let done = 0;
+    let bt = 0;
+    let ssUsed = false;
+    while (done < totalSpins) {
+      done++;
+      emit({ type: 'spinStart', spin: done, total: totalSpins });
+      const f = playSpin(draw, PROTO.strips.free, emit, 'freegame');
+      bt += f.spinT;
+      if (f.rp && cfg.second_serve && !ssUsed && f.rp.length <= (cfg.second_serve_max_len ?? 0)) {
+        ssUsed = true;
+        totalSpins++;
+        emit({ type: 'secondServe', added: 1, total: totalSpins });
+      }
+      emit({ type: 'setTotalWin', amount: Math.min(total + bt, WINCAP_T) * 10 });
+    }
+    total += bt;
+    emit({ type: 'protoBonusEnd', bonus, amount: Math.min(total, WINCAP_T) * 10, spins: done });
+  }
+  total = Math.min(total, WINCAP_T);
+  emit({ type: 'finalWin', amount: total * 10 });
+  return { book: { id, payoutMultiplier: total * 10, events }, bonus };
+}

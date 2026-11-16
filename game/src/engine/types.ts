@@ -37,7 +37,7 @@ export interface ZoneHit {
 export type BookEvent =
   | { index: number; type: 'reveal'; gameType: GameType; board: Board; stops: number[]; paddingAbove: SymbolName[]; paddingBelow: SymbolName[]; anticipation: number[]; courtValues?: number[]; courtScatters?: number[] }
   | { index: number; type: 'winInfo'; gameType: GameType; multiplier: number; totalWin: number; wins: WinLine[] }
-  | { index: number; type: 'setWin'; amount: number; winLevel: string }
+  | { index: number; type: 'setWin'; amount: number; winLevel?: string }
   | { index: number; type: 'bonusStart'; bonus: BonusLevel; exchanges: number; positions: Position[]; bought?: boolean }
   | { index: number; type: 'exchangeStart'; exchange: number; total: number; remaining: number; championshipPoint: boolean; marks: number[] }
   | { index: number; type: 'hawkEye'; zone: number; call: 'in' | 'out'; prize: number; replay: boolean }
@@ -53,7 +53,7 @@ export type BookEvent =
   // ---- Rally Path PROTOTYPE (demo lab only, see docs/RALLY_PATH_PROTOTYPE.md)
   | { index: number; type: 'rallyPath'; length: number; path: Position[]; reward: number; championshipShot: boolean }
   | { index: number; type: 'scatterPay'; count: number; amount: number }
-  | { index: number; type: 'protoBonusStart'; bonus: BonusLevel; spins: number }
+  | { index: number; type: 'protoBonusStart'; bonus: BonusLevel; spins: number; positions?: Position[] }
   | { index: number; type: 'spinStart'; spin: number; total: number }
   | { index: number; type: 'secondServe'; added: number; total: number }
   | { index: number; type: 'protoBonusEnd'; bonus: BonusLevel; amount: number; spins: number };

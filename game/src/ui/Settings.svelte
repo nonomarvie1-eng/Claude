@@ -2,7 +2,13 @@
   import { game } from '../game/state.svelte';
   import type { Controller } from '../game/controller';
   import type { DemoRgs } from '../rgs/demoRgs';
-  import { PROTO, type ProtoMode } from '../engine/rallyPath';
+  import { PROTO, GAME_SCENARIOS, type ProtoMode } from '../engine/rallyPath';
+  import { RALLY_PATH_BUILD } from '../engine/gameplay';
+  import type { ForcedScenario } from '../rgs/demoRgs';
+  async function forceGame(k: string) {
+    game.modal = null;
+    await ctrl?.spin(k as ForcedScenario);
+  }
   let { ctrl }: { ctrl: Controller | null } = $props();
   const t = $derived(game.t);
 
@@ -46,14 +52,24 @@
 {#if game.isDemo}
   <section class="demo">
     <p>{t.demoNotice}</p>
+    {#if RALLY_PATH_BUILD}
+    <h3>{t.testTitle}</h3>
+    <div class="btns">
+      {#each Object.entries(GAME_SCENARIOS) as [k, sc] (k)}
+        <button onclick={() => forceGame(k)} disabled={game.phase !== 'idle'} data-testid={`force-${k}`}>{sc.label}</button>
+      {/each}
+    </div>
+    {:else}
     <h3>{t.testBonus}</h3>
     <div class="btns">
       <button onclick={() => force('bonus3')} disabled={game.phase !== 'idle'} data-testid="force-bonus3">3 × BONUS</button>
       <button onclick={() => force('bonus4')} disabled={game.phase !== 'idle'}>4 × BONUS</button>
       <button onclick={() => force('bonus5')} disabled={game.phase !== 'idle'}>5 × BONUS</button>
     </div>
+    {/if}
     <button class="refill" onclick={refill} disabled={game.phase !== 'idle'}>{t.resetCredits}</button>
   </section>
+  {#if !RALLY_PATH_BUILD}
   <section class="demo lab" data-testid="lab">
     <h3>{t.labTitle}</h3>
     <p>{t.labNotice}</p>
@@ -71,6 +87,7 @@
       {/each}
     </div>
   </section>
+  {/if}
 {/if}
 
 <style>

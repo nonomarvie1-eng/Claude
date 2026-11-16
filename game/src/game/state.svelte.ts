@@ -1,6 +1,7 @@
 import { detectLang, STRINGS, type Lang } from '../i18n/strings';
 import type { BookEvent, ModeName } from '../engine/types';
 import type { Jurisdiction } from '../rgs/types';
+import { RALLY_PATH_BUILD } from '../engine/gameplay';
 
 export interface HistoryEntry {
   id: string | number;
@@ -16,7 +17,7 @@ export interface HistoryEntry {
 }
 
 const PREFS_KEY = 'golden-rally-prefs-v1';
-const HIST_KEY = 'golden-rally-history-v1';
+const HIST_KEY = RALLY_PATH_BUILD ? 'golden-rally-history-rp01' : 'golden-rally-history-v1';
 
 function readJSON<T>(key: string, fallback: T): T {
   try {

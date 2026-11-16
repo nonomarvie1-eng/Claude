@@ -444,3 +444,52 @@ def simulate_game(n: int, seed: int, n_bonus: int = 200_000) -> dict:
     out["game"] = {"n": n, "rtp": mean, "ci95": [mean - 1.96 * sd / n ** .5, mean + 1.96 * sd / n ** .5], "std_dev_x": sd,
                    "hit_frequency": hits / n, "p_ge_100x": big / n}
     return out
+
+
+# ------------------------------------------------------------------ full game round (test build RALLY-PATH-01)
+
+def play_game_round(draw) -> dict:
+    """One complete paid round of the Rally Path game: prototype base spin
+    (ways + Rally Path + scatter pays); 3 scatters -> RALLY CHALLENGE,
+    4+ -> THE GRAND FINAL, played inside the same round (same draw stream).
+    Same law as simulate_game()."""
+    from .engine import positions_of
+
+    ev: list[dict] = []
+
+    def emit(e):
+        ev.append({"index": len(ev), **e})
+
+    strips = proto_reels("base")
+    s = play_spin(draw, strips, emit)
+    board = window(strips, ev[0]["stops"])
+    pos = positions_of(board, C.SCATTER)
+    n_sc = len(pos)
+    sc_pay = C.SCATTER_PAY.get(n_sc, 0)
+    if sc_pay:
+        emit({"type": "scatterPay", "count": n_sc, "amount": sc_pay * 10})
+    total = s["spin_t"] + sc_pay
+    emit({"type": "setWin", "amount": min(total, C.WINCAP_T) * 10})
+    bonus = None
+    if n_sc >= 3:
+        bonus = "rally" if n_sc == 3 else "final"
+        cfg = P["BONUS"][bonus]
+        free = proto_reels("free")
+        total_spins = cfg["spins"]
+        emit({"type": "protoBonusStart", "bonus": bonus, "spins": total_spins, "positions": pos})
+        done, bt, ss_used = 0, 0, False
+        while done < total_spins:
+            done += 1
+            emit({"type": "spinStart", "spin": done, "total": total_spins})
+            f = play_spin(draw, free, emit, "freegame")
+            bt += f["spin_t"]
+            if f["rp"] is not None and cfg["second_serve"] and not ss_used and f["rp"]["length"] <= cfg["second_serve_max_len"]:
+                ss_used = True
+                total_spins += 1
+                emit({"type": "secondServe", "added": 1, "total": total_spins})
+            emit({"type": "setTotalWin", "amount": min(total + bt, C.WINCAP_T) * 10})
+        total += bt
+        emit({"type": "protoBonusEnd", "bonus": bonus, "amount": min(total, C.WINCAP_T) * 10, "spins": done})
+    total = min(total, C.WINCAP_T)
+    emit({"type": "finalWin", "amount": total * 10})
+    return {"total_t": total, "events": ev, "bonus": bonus, "length": s["rp"]["length"] if s["rp"] else 0, "cs": s["cs"]}

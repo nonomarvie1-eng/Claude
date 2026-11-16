@@ -1,0 +1,226 @@
+{
+ "url": "http://localhost:4190/index.html?lang=fr",
+ "failures": 0,
+ "results": [
+  {
+   "name": "viewport 390x844",
+   "ok": true,
+   "detail": "390x844"
+  },
+  {
+   "name": "build id RALLY-PATH-01 visible",
+   "ok": true,
+   "detail": "RALLY-PATH-01"
+  },
+  {
+   "name": "old buy / modes button hidden",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "TEST 6 COUPS button visible",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-test6: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,rallyPath,setWin,finalWin"
+  },
+  {
+   "name": "390-test6: displayed win = payout",
+   "ok": true,
+   "detail": "750,00"
+  },
+  {
+   "name": "TEST 6 COUPS: Golden Ball crosses the 6 reels",
+   "ok": true,
+   "detail": "[{\"reel\":0,\"row\":3},{\"reel\":1,\"row\":2},{\"reel\":2,\"row\":1},{\"reel\":3,\"row\":1},{\"reel\":4,\"row\":0},{\"reel\":5,\"row\":0}]"
+  },
+  {
+   "name": "TEST 6 COUPS: every return is a racket on the same or adjacent row",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "TEST 6 COUPS: Championship Shot",
+   "ok": true,
+   "detail": "750x"
+  },
+  {
+   "name": "TEST 6 COUPS: round duration",
+   "ok": true,
+   "detail": "33823 ms"
+  },
+  {
+   "name": "390-game_rally: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,rallyPath,scatterPay,setWin,protoBonusStart,spinStart,winInfo,setTotalWin,protoBonusEnd,finalWin"
+  },
+  {
+   "name": "390-game_rally: displayed win = payout",
+   "ok": true,
+   "detail": "25,00"
+  },
+  {
+   "name": "game_rally: new bonus rally played",
+   "ok": true,
+   "detail": "8 spins"
+  },
+  {
+   "name": "390-game_final: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,scatterPay,setWin,protoBonusStart,spinStart,setTotalWin,winInfo,rallyPath,secondServe,protoBonusEnd,finalWin"
+  },
+  {
+   "name": "390-game_final: displayed win = payout",
+   "ok": true,
+   "detail": "63,50"
+  },
+  {
+   "name": "game_final: new bonus final played",
+   "ok": true,
+   "detail": "12 spins"
+  },
+  {
+   "name": "game_final: Second Serve shown in the book",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-spin1: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,setWin,finalWin"
+  },
+  {
+   "name": "390-spin1: displayed win = payout",
+   "ok": true,
+   "detail": "0,00"
+  },
+  {
+   "name": "spin 1: balance = before - bet + payout",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-spin2: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "390-spin2: displayed win = payout",
+   "ok": true,
+   "detail": "0,50"
+  },
+  {
+   "name": "spin 2: balance = before - bet + payout",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-spin3: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,winInfo,setWin,finalWin"
+  },
+  {
+   "name": "390-spin3: displayed win = payout",
+   "ok": true,
+   "detail": "0,80"
+  },
+  {
+   "name": "spin 3: balance = before - bet + payout",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390-spin4: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,setWin,finalWin"
+  },
+  {
+   "name": "390-spin4: displayed win = payout",
+   "ok": true,
+   "detail": "0,00"
+  },
+  {
+   "name": "spin 4: balance = before - bet + payout",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "info page: Rally Path rules present, Final Set rules absent",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: no horizontal/vertical overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: top bar items do not overlap the reels",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: HUD buttons do not overlap the reels",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: top bar items stay on screen",
+   "ok": true,
+   "detail": "[[10,120,4,57],[128,380,8,52]]"
+  },
+  {
+   "name": "390: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: build id + TEST button visible, no overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568-test6: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,rallyPath,setWin,finalWin"
+  },
+  {
+   "name": "320x568-test6: displayed win = payout",
+   "ok": true,
+   "detail": "750,00"
+  },
+  {
+   "name": "iphone-se: build id + TEST button visible, no overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "iphone-se-test6: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,rallyPath,setWin,finalWin"
+  },
+  {
+   "name": "iphone-se-test6: displayed win = payout",
+   "ok": true,
+   "detail": "750,00"
+  },
+  {
+   "name": "1440x900: build id + TEST button visible, no overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900-test6: no v6 Final Set event (Hawk-Eye, shots, exchanges)",
+   "ok": true,
+   "detail": "reveal,rallyPath,setWin,finalWin"
+  },
+  {
+   "name": "1440x900-test6: displayed win = payout",
+   "ok": true,
+   "detail": "750,00"
+  }
+ ]
+}

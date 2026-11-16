@@ -6,10 +6,13 @@
 import { drawBaseStopsWithScatters, playRound } from '../engine/engine';
 import { MODE_NAMES, type ModeName } from '../engine/types';
 import { RULES } from '../engine/rules';
-import { cryptoDrawer, cryptoInt } from '../engine/rng';
+import { cryptoDrawer, cryptoInt, listDrawer } from '../engine/rng';
+import { RALLY_PATH_BUILD } from '../engine/gameplay';
+import { GAME_SCENARIOS, playGameRound } from '../engine/rallyPath';
 import { MONEY_SCALE, RgsError, type AuthResult, type Balance, type RgsClient, type RgsConfig, type Round } from './types';
 
-const KEY = 'golden-rally-demo-v1';
+// separate storage per gameplay: an interrupted v6 round can never be resumed in the Rally Path build
+const KEY = RALLY_PATH_BUILD ? 'golden-rally-demo-rp01' : 'golden-rally-demo-v1';
 export const DEMO_START_BALANCE = 1_000 * MONEY_SCALE;
 
 export interface DemoStorage {
@@ -45,7 +48,7 @@ interface Persisted {
   nextId: number;
 }
 
-export type ForcedScenario = null | 'bonus3' | 'bonus4' | 'bonus5';
+export type ForcedScenario = null | 'bonus3' | 'bonus4' | 'bonus5' | 'game_full6' | 'game_rally' | 'game_final';
 
 export class DemoRgs implements RgsClient {
   readonly kind = 'demo' as const;
@@ -118,9 +121,22 @@ export class DemoRgs implements RgsClient {
     if (debit > this.s.balance) throw new RgsError('ERR_IPB', 'insufficient balance');
     const forced = m === 'base' ? this.forceNext : null;
     this.forceNext = null;
+    if (RALLY_PATH_BUILD) {
+      // test build: the Rally Path game is the only gameplay; old buys / Bonus Chance are disabled
+      if (m !== 'base') throw new RgsError('ERR_VAL', 'mode disabled in the Rally Path test build');
+      const sc = forced && forced.startsWith('game_') ? GAME_SCENARIOS[forced] : null;
+      const out = playGameRound(sc ? listDrawer(sc.draws) : cryptoDrawer, this.s.nextId);
+      return this.settle(out.book, amount, mode, cost, forced);
+    }
     // buys: exact conditional law of the normal reels given exactly 3 / 4 scatters
     const k = info.kind === 'buy' ? (info.scatters as number) : forced ? +forced.slice(-1) : 0;
     const out = playRound(cryptoDrawer, this.s.nextId, k ? drawBaseStopsWithScatters(k, cryptoInt) : undefined, m);
+    return this.settle(out.book, amount, mode, cost, forced);
+  }
+
+  private settle(book: { id: number; payoutMultiplier: number; events: Round['state'] }, amount: number, mode: string, cost: number, forced: ForcedScenario) {
+    const out = { book };
+    const debit = Math.round(amount * cost);
     const pm = out.book.payoutMultiplier;
     const round: Round = {
       betID: this.s.nextId,

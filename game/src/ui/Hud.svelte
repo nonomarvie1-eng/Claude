@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { RALLY_PATH_BUILD, BUILD_ID } from '../engine/gameplay';
   import { onMount } from 'svelte';
   import { game } from '../game/state.svelte';
   import { money } from '../game/format';
@@ -10,7 +11,7 @@
   const busy = $derived(game.phase !== 'idle');
   const idx = $derived(game.betLevels.indexOf(game.bet));
   const social = $derived(!!game.jurisdiction.socialCasino);
-  const canBuy = $derived((!game.jurisdiction.disabledBuyBonus || !game.jurisdiction.disabledBonusChance) && !game.inBonus);
+  const canBuy = $derived(!RALLY_PATH_BUILD && (!game.jurisdiction.disabledBuyBonus || !game.jurisdiction.disabledBonusChance) && !game.inBonus);
   const chance = $derived(game.spinMode === 'bonus_chance');
   const spinCost = $derived(Math.round(game.bet * RULES.modes[game.spinMode].cost));
   const canAuto = $derived(!game.jurisdiction.disabledAutoplay && !game.inBonus);
@@ -69,7 +70,10 @@
 </script>
 
 <div class="top" bind:this={topEl}>
-  {#if game.isDemo}<span class="demo" data-testid="demo-badge">{t.demoBadge}</span>{/if}
+  <div class="tags">
+    {#if game.isDemo}<span class="demo" data-testid="demo-badge">{t.demoBadge}</span>{/if}
+    <span class="build" data-testid="build-id">{BUILD_ID}</span>
+  </div>
   <nav aria-label="menu">
     <button class="icon" onclick={() => open('paytable')} aria-label={t.paytable} title={t.paytable} data-testid="btn-paytable">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 10.5V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7.3" r="1.2" fill="currentColor"/></svg>
@@ -106,8 +110,8 @@
 
   {#if game.inBonus}
     <div class="stat mid" data-testid="fs-counter" aria-live="polite">
-      <span class="label">{t.tbRound}</span>
-      <span class="value">{game.fsCurrent} / {game.fsTotal} <span class="mult">{game.points} pts</span></span>
+      <span class="label">{RALLY_PATH_BUILD ? t.rpSpins : t.tbRound}</span>
+      <span class="value">{game.fsCurrent} / {game.fsTotal}{#if !RALLY_PATH_BUILD} <span class="mult">{game.points} pts</span>{/if}</span>
     </div>
   {:else}
     <div class="stat mid">
@@ -124,7 +128,12 @@
 
   <div class="controls">
     <div class="slot side buyslot">
-      {#if canBuy}
+      {#if RALLY_PATH_BUILD && game.isDemo}
+        <!-- development test button (test build only): forced 6-shot Rally Path round -->
+        <button class="buy test6" onclick={() => ctrl?.spin('game_full6')} disabled={busy || !!game.autoplay || game.inBonus} data-testid="test-six" aria-label={t.testSix}>
+          <span class="buy-top">TEST</span><span class="buy-x">{t.testSix.replace(/^TEST /, '')}</span>
+        </button>
+      {:else if canBuy}
         <button class="buy" class:chance onclick={() => open('buy')} disabled={busy || !!game.autoplay} data-testid="btn-buy" aria-label={t.buyTitle}>
           <span class="buy-top">{t.buyShort}</span><span class="buy-x">{chance ? `×${RULES.modes.bonus_chance.cost}` : 'MODES'}</span>
         </button>
@@ -291,4 +300,8 @@
     .round { width: 42px; height: 42px; }
     .buy { width: 84px; height: 42px; flex-direction: row; gap: 6px; }
   }
+  .tags { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; }
+  .build { font: 800 9px/1.1 Inter, sans-serif; color: #071826; background: #D9EF38; border-radius: 5px; padding: 3px 5px; overflow-wrap: anywhere; max-width: 100%; }
+  .buy.test6 { border-color: #D9EF38; }
+  .buy.test6 .buy-x { color: #D9EF38; font-size: 11px; white-space: nowrap; }
 </style>

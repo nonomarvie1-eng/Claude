@@ -9,6 +9,7 @@ import { RULES } from '../engine/rules';
 import type { ModeName } from '../engine/types';
 import { PROTO, playProtoRound, type ProtoMode } from '../engine/rallyPath';
 import { cryptoDrawer, listDrawer } from '../engine/rng';
+import { RALLY_PATH_BUILD } from '../engine/gameplay';
 
 export interface AutoplayConfig {
   count: number;
@@ -63,6 +64,7 @@ export class Controller {
     if (!game.betLevels.includes(game.bet)) game.bet = auth.config.defaultBetLevel ?? game.betLevels[0];
     if (game.jurisdiction.disabledTurbo) game.prefs.turbo = false;
     this.scene.currency = game.currency;
+    this.scene.setProto(RALLY_PATH_BUILD);
     this.scene.setBoard(new Array(RULES.reels).fill(0), 'basegame');
     if (auth.round && auth.round.active) {
       // interrupted round (reload, crash, network loss): show it, then close it
@@ -81,7 +83,7 @@ export class Controller {
 
   /** Direct buy of a bonus level (explicit mode; never random between levels). */
   async buyBonus(mode: 'buy_rally' | 'buy_final') {
-    if (game.jurisdiction.disabledBuyBonus) return;
+    if (game.jurisdiction.disabledBuyBonus || RALLY_PATH_BUILD) return;
     await this.spin(null, mode);
   }
 
@@ -161,7 +163,7 @@ export class Controller {
   }
 
   private async present(round: Round, quick: boolean) {
-    this.scene.setProto(false);
+    this.scene.setProto(RALLY_PATH_BUILD);
     this.scene.bet = round.amount;
     await playBook(round.state, this.scene, this.hud, { bet: round.amount, cost: round.cost ?? 1, quick, mode: (round.mode as ModeName) ?? 'base' });
   }
@@ -175,7 +177,7 @@ export class Controller {
       mode: (round.mode as ModeName) ?? 'base',
       win: round.payout,
       payoutMultiplier: round.payoutMultiplier,
-      bonus: round.state.some((e) => e.type === 'bonusStart'),
+      bonus: round.state.some((e) => e.type === 'bonusStart' || e.type === 'protoBonusStart'),
       forced: round.forced,
       events: round.state,
     });
@@ -198,7 +200,7 @@ export class Controller {
         if (game.phase !== 'idle') break; // error or interruption
         const r = this.lastRound;
         if (start - game.balance >= cfg.lossLimit) break;
-        if (r && cfg.stopOnBonus && r.state.some((e) => e.type === 'bonusStart')) break;
+        if (r && cfg.stopOnBonus && r.state.some((e) => e.type === 'bonusStart' || e.type === 'protoBonusStart')) break;
         if (r && cfg.singleWinLimit !== null && r.payout >= cfg.singleWinLimit) break;
         await new Promise((res) => setTimeout(res, game.prefs.turbo ? 150 : 350));
       }
