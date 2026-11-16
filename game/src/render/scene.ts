@@ -9,6 +9,7 @@ import { money } from '../game/format';
 import type { Strings } from '../i18n/strings';
 import { ease, Tweener } from './tween';
 import LAYERS from '../assets/layers.json';
+import { fmt as fmtS } from '../i18n/strings';
 
 const imgs = import.meta.glob('../assets/img/*.{png,jpg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
@@ -109,6 +110,9 @@ export class RallyScene implements View {
   private fore = new Sprite();
   private flags = new Sprite();
   private cheerAmp = 0;
+  private flashLayer = new Container();
+  private flashes: { s: Sprite; life: number }[] = [];
+  private mpText: Text | null = null;
   private layerBase = { crowdY: 0 };
   private time = 0;
   private bonusTint = new Graphics();
@@ -145,7 +149,7 @@ export class RallyScene implements View {
     await this.app.init({
       resizeTo: host,
       antialias: true,
-      backgroundColor: 0x3f9fe0,
+      backgroundColor: 0x040b1c,
       resolution: Math.min(window.devicePixelRatio || 1, 2),
       autoDensity: true,
       powerPreference: 'high-performance',
@@ -154,7 +158,8 @@ export class RallyScene implements View {
     this.app.canvas.setAttribute('aria-hidden', 'true');
     this.tw = new Tweener(this.app.ticker, () => (this.prefs.turbo ? 1.8 : 1));
 
-    this.bg.addChild(this.sky, this.crowd, this.fore, this.flags);
+    this.bg.addChild(this.sky, this.crowd, this.flashLayer, this.fore, this.flags);
+    this.flags.blendMode = 'add';
     this.app.stage.addChild(this.bg, this.bonusTint, this.world);
     // decorative tennis balls and racket (behind the board)
     const g1 = new Sprite(tex.deco_1);
@@ -193,10 +198,10 @@ export class RallyScene implements View {
     this.winLayer.y = FRAME_M;
     this.winLayer.addChild(this.glowLayer, this.lineGfx);
     this.board.addChild(this.winLayer);
-    this.winText = new Text({ text: '', style: { fontFamily: 'Luckiest Guy', fontSize: 44, fill: '#ffd23f', stroke: { color: '#1b1410', width: 8 }, align: 'center', dropShadow: { color: '#000', blur: 8, distance: 0, alpha: 0.8 } } });
+    this.winText = new Text({ text: '', style: { fontFamily: 'Luckiest Guy', fontSize: 46, fill: '#ffe17a', stroke: { color: '#16120f', width: 8 }, align: 'center', dropShadow: { color: '#000', blur: 8, distance: 0, alpha: 0.8 } } });
     this.winText.anchor.set(0.5);
     this.winText.x = FRAME_W / 2;
-    this.winText.y = FRAME_H - 10;
+    this.winText.y = FRAME_H - 74;
     this.board.addChild(this.winText);
     this.world.addChild(this.board);
     this.world.addChild(this.logo); // the logo sits on the top edge of the frame
@@ -269,7 +274,7 @@ export class RallyScene implements View {
     const bs = Math.max(w / L.width, h / L.height);
     this.bg.scale.set(bs);
     this.bg.position.set((w - L.width * bs) / 2, (h - L.height * bs) / 2);
-    this.bonusTint.clear().rect(0, 0, w, h).fill({ color: 0xff8a1e, alpha: 1 });
+    this.bonusTint.clear().rect(0, 0, w, h).fill({ color: 0xffb21e, alpha: 1 });
     this.bonusTint.blendMode = 'add';
     this.bonusTint.alpha = this.mode === 'freegame' ? 0.16 : 0;
     // world: contain the design area (bottom HUD band is reserved)
@@ -277,11 +282,11 @@ export class RallyScene implements View {
     this.world.scale.set(s);
     this.world.position.set((w - DW * s) / 2, (h - DH * s) / 2);
     if (!this.portrait) {
-      this.logo.position.set(960, 120);
-      this.logo.scale.set(0.32);
-      const bs2 = 800 / FRAME_H;
+      this.logo.position.set(960, 96);
+      this.logo.scale.set(0.3);
+      const bs2 = 760 / FRAME_H;
       this.board.scale.set(bs2);
-      this.board.position.set(960 - (FRAME_W * bs2) / 2, 168);
+      this.board.position.set(960 - (FRAME_W * bs2) / 2, 196);
       this.dial.position.set(1690, 470);
       this.dial.scale.set(0.95);
       this.gears[0].s.position.set(170, 830);
@@ -289,11 +294,11 @@ export class RallyScene implements View {
       this.gears[2].s.position.set(1660, 820);
       this.gears[1].s.scale.set(0.55);
     } else {
-      this.logo.position.set(540, 262);
-      this.logo.scale.set(0.38);
+      this.logo.position.set(540, 236);
+      this.logo.scale.set(0.36);
       const bsc = 1050 / FRAME_W;
       this.board.scale.set(bsc);
-      this.board.position.set(15, 318);
+      this.board.position.set(15, 352);
       this.dial.position.set(540, 1338);
       this.dial.scale.set(0.6);
       this.gears[0].s.position.set(110, 1370);
@@ -316,8 +321,20 @@ export class RallyScene implements View {
       const jump = this.cheerAmp > 0 ? -Math.abs(Math.sin(this.time * 9)) * 22 * this.cheerAmp : 0;
       this.crowd.y = this.layerBase.crowdY + Math.sin(this.time * 2.2) * 2.5 + jump;
       this.cheerAmp = Math.max(0, this.cheerAmp - dt * 0.35);
-      this.flags.skew.x = Math.sin(this.time * 1.6) * 0.015;
-      this.flags.y = Math.sin(this.time * 1.3) * 3;
+      // stadium light beams breathe; camera flashes pop in the crowd
+      this.flags.alpha = 0.75 + 0.25 * Math.sin(this.time * 0.9);
+      this.flags.skew.x = Math.sin(this.time * 0.5) * 0.02;
+      const L = LAYERS[this.portrait ? 'portrait' : 'landscape'];
+      if (Math.random() < (0.05 + this.cheerAmp * 0.5) * dt * 60) {
+        const fl = new Sprite(this.tex.sparkle);
+        fl.anchor.set(0.5);
+        fl.blendMode = 'add';
+        fl.scale.set(0.35 + Math.random() * 0.35);
+        fl.position.set(Math.random() * L.width, L.crowdY + 40 + Math.random() * (L.crowdH - 90));
+        this.flashLayer.addChild(fl);
+        this.flashes.push({ s: fl, life: 0 });
+      }
+      if (this.mpText) this.mpText.scale.set(1 + 0.06 * Math.sin(this.time * 10));
     } else {
       this.crowd.y = this.layerBase.crowdY;
     }
@@ -328,6 +345,15 @@ export class RallyScene implements View {
       this.swayT += dt;
       this.gears[1].s.rotation = -0.35 + 0.06 * Math.sin(this.swayT * 0.6);
       this.dialGear.rotation += 0.04 * dt;
+    }
+    for (let i = this.flashes.length - 1; i >= 0; i--) {
+      const fl = this.flashes[i];
+      fl.life += dt;
+      fl.s.alpha = Math.max(0, 1 - fl.life / 0.18);
+      if (fl.life > 0.18) {
+        fl.s.destroy();
+        this.flashes.splice(i, 1);
+      }
     }
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
@@ -389,6 +415,18 @@ export class RallyScene implements View {
   private cellWorld(reel: number, row: number) {
     const sc = this.board.scale.x;
     return { x: this.board.x + (FRAME_M + reel * CELL + CELL / 2) * sc, y: this.board.y + (FRAME_M + row * CELL + CELL / 2) * sc };
+  }
+
+  /** short floating text (presentation only) */
+  private callout(text: string, x: number, y: number, size: number) {
+    const t = this.goldText(text, size);
+    t.position.set(x, y);
+    this.fx.addChild(t);
+    void this.tw.tween(this.prefs.reducedMotion ? 500 : 1100, (u) => {
+      t.y = y - 60 * u;
+      t.alpha = u < 0.7 ? 1 : 1 - (u - 0.7) / 0.3;
+      t.scale.set(this.prefs.reducedMotion ? 1 : 0.6 + 0.4 * ease.outBack(Math.min(1, u * 3)));
+    }).then(() => t.destroy());
   }
 
   /** crowd celebration (presentation only) */
@@ -514,6 +552,16 @@ export class RallyScene implements View {
   }
 
   private showAnticipation(fromReel: number) {
+    // MATCH POINT: 2 Trophies already landed (the outcome is already fixed;
+    // this only stages the reveal of the remaining reels)
+    if (!this.mpText) {
+      const t = this.goldText(this.t.matchPoint, 92);
+      t.position.set(FRAME_W / 2, -10);
+      this.board.addChild(t);
+      this.mpText = t;
+      this.cheer(0.4);
+      audio.play('match_point', { volume: 0.8 });
+    }
     const g = this.antGfx;
     g.clear();
     for (let r = fromReel; r < NR; r++) g.roundRect(FRAME_M + r * CELL + 4, FRAME_M + 4, CELL - 8, NROWS * CELL - 8, 14).stroke({ color: 0xffd23f, width: 8, alpha: 0.95 });
@@ -523,6 +571,10 @@ export class RallyScene implements View {
 
   private hideAnticipation() {
     this.antGfx.clear();
+    if (this.mpText) {
+      this.mpText.destroy();
+      this.mpText = null;
+    }
   }
 
   private pulse(s: Sprite, k: number, ms: number) {
@@ -545,7 +597,7 @@ export class RallyScene implements View {
 
   private drawGroup(w: WinLine, alpha = 1) {
     const g = this.lineGfx;
-    const color = w.kind === 'scatter' ? 0x7cd3ff : 0xffd23f;
+    const color = w.kind === 'scatter' ? 0x7cff9a : 0xffd75e;
     for (const p of w.positions) {
       const x = p.reel * CELL + CELL / 2, y = p.row * CELL + CELL / 2, r = CELL * 0.47;
       g.circle(x, y, r).stroke({ color: 0x1b1410, width: 12, alpha });
@@ -750,6 +802,7 @@ export class RallyScene implements View {
     }, ease.outElastic);
     this.setHand(target);
     if (multiplier !== previous) {
+      this.callout(fmtS(this.t.rallyCall, { m: multiplier }), this.dial.x, this.dial.y - 150 * this.dial.scale.x, 60);
       audio.play('mult_up', { volume: 0.8 });
       this.dialMult.text = `×${multiplier}`;
       this.burst(this.dial.x, this.dial.y, 24, 'sparkle', this.fx, { speed: 260, life: 0.8, scale: 0.5 });

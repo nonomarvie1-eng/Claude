@@ -56,7 +56,7 @@
   .demo p { color: #eef6c4; line-height: 1.5; margin-top: 0; }
   h3 { font-family: var(--font-title); font-size: 15px; color: var(--gold-hi); }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; }
-  button { padding: 10px 16px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #4fb85f, #2b7a3f); }
+  button { padding: 10px 16px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); }
   button:disabled { opacity: .4; }
   .refill { margin-top: 12px; }
 </style>

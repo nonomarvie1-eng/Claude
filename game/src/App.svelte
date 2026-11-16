@@ -147,5 +147,5 @@
   .error-box { max-width: 440px; background: var(--deep-1); border: var(--chunky); box-shadow: var(--pop); border-radius: 14px; padding: 24px; text-align: center; }
   .error-box h2 { font-family: var(--font-title); color: var(--gold-hi); margin: 0 0 10px; font-size: 22px; }
   .error-box p { color: var(--ink); line-height: 1.5; }
-  .btn { margin-top: 10px; padding: 12px 26px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #4fb85f, #2b7a3f); font-size: 16px; }
+  .btn { margin-top: 10px; padding: 12px 26px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); font-size: 16px; }
 </style>

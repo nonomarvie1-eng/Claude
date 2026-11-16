@@ -18,7 +18,7 @@ import os
 from dataclasses import dataclass, field
 
 GAME_ID = "golden_rally"
-GAME_NAME = "Golden Rally"
+GAME_NAME = "Golden Rally — Match Point"
 MATH_VERSION = "2.0.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -35,13 +35,13 @@ SCATTER = SYM["S"]
 PAYING = [s for s in SYMBOLS if s not in ("W", "S")]
 
 SYMBOL_INFO = {
-    "W": {"label": "Smash", "fr": "Smash", "role": "wild"},
-    "S": {"label": "Trophy", "fr": "Trophée", "role": "scatter"},
-    "H1": {"label": "The President", "fr": "Le Président", "role": "high"},
-    "H2": {"label": "The Champion", "fr": "La Championne", "role": "high"},
+    "W": {"label": "Golden Fireball", "fr": "Balle d'Or", "role": "wild"},
+    "S": {"label": "Golden Rally Cup", "fr": "Coupe Golden Rally", "role": "scatter"},
+    "H1": {"label": "The Champion", "fr": "Le Champion", "role": "high"},
+    "H2": {"label": "The Star", "fr": "La Championne", "role": "high"},
     "H3": {"label": "The Umpire", "fr": "L'Arbitre", "role": "high"},
-    "H4": {"label": "The Ball Kid", "fr": "Le Ramasseur", "role": "high"},
-    "H5": {"label": "The Club Bulldog", "fr": "Le Bulldog", "role": "high"},
+    "H4": {"label": "The President", "fr": "Le Président", "role": "high"},
+    "H5": {"label": "Ace, the club mascot", "fr": "Ace, la mascotte", "role": "high"},
     "L1": {"label": "Advantage", "fr": "Avantage", "role": "low"},
     "L2": {"label": "Forty", "fr": "Quarante", "role": "low"},
     "L3": {"label": "Thirty", "fr": "Trente", "role": "low"},

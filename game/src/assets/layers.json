@@ -2,15 +2,17 @@
  "landscape": {
   "width": 1920,
   "height": 1080,
-  "crowdY": 390,
-  "foreY": 516,
-  "flagsY": 0
+  "crowdY": 312,
+  "foreY": 544,
+  "flagsY": 0,
+  "crowdH": 280
  },
  "portrait": {
   "width": 1080,
   "height": 1920,
-  "crowdY": 656,
-  "foreY": 782,
-  "flagsY": 0
+  "crowdY": 556,
+  "foreY": 788,
+  "flagsY": 0,
+  "crowdH": 280
  }
 }

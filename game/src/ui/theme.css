@@ -1,24 +1,26 @@
 :root {
-  --deep-0: #163d2a;
-  --deep-1: #1f5e3a;
-  --deep-2: #2b6b45;
-  --deep-3: #3e9b4f;
-  --gold: #ffd23f;
-  --gold-hi: #fff3d6;
-  --gold-lo: #f08a12;
-  --copper: #d9733a;
-  --ink: #fff3d6;
-  --ink-line: #1b1410;
-  --accent: #d9f04a;
-  --accent-2: #ffd23f;
-  --muted: #cfe8c9;
+  --deep-0: #03130c;
+  --deep-1: #0b3326;
+  --deep-2: #14674a;
+  --deep-3: #1f6b4c;
+  --gold: #ffd75e;
+  --gold-hi: #fff6c8;
+  --gold-lo: #b9780f;
+  --copper: #ff8a1e;
+  --ink: #fbf6e9;
+  --ink-line: #16120f;
+  --accent: #e2f23c;
+  --accent-2: #ffd75e;
+  --muted: #b9d6c6;
   --danger: #ff7a8a;
   --font-ui: 'Lilita One', 'Trebuchet MS', sans-serif;
   --font-title: 'Luckiest Guy', 'Impact', sans-serif;
   --font-deco: 'Lilita One', 'Trebuchet MS', sans-serif;
-  --gold-grad: linear-gradient(180deg, #fff7c2 0%, #ffd23f 50%, #ffb21e 51%, #f47d12 100%);
-  --chunky: 3px solid var(--ink-line);
-  --pop: 0 4px 0 var(--ink-line);
+  --gold-grad: linear-gradient(180deg, #fffbe0 0%, #ffe17a 30%, #d99a1e 55%, #ffe9a0 70%, #b9780f 100%);
+  --glass: linear-gradient(180deg, rgba(20,80,58,.92), rgba(3,19,12,.96));
+  --gold-ring: 0 0 0 2px #16120f, 0 0 0 4px #e8b13a, 0 4px 10px rgba(0,0,0,.5);
+  --chunky: 2px solid #16120f;
+  --pop: 0 0 0 2px #e8b13a, 0 4px 10px rgba(0,0,0,.45);
   --safe-b: env(safe-area-inset-bottom, 0px);
   color-scheme: dark;
 }
@@ -27,4 +29,4 @@
 html, body { font-family: var(--font-ui); color: var(--ink); background: var(--deep-0); -webkit-font-smoothing: antialiased; }
 button { font-family: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
-.gold-text { color: var(--gold); -webkit-text-stroke: 1.5px var(--ink-line); text-shadow: 0 3px 0 var(--ink-line); }
+.gold-text { color: #ffe17a; text-shadow: 0 2px 0 #16120f; }

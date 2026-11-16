@@ -35,6 +35,6 @@
   .won { color: var(--gold-hi); }
   .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); margin-right: 4px; }
   .tag.f { border-color: #dcef4c; color: #eef6c4; }
-  button { padding: 6px 12px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #4fb85f, #2b7a3f); font-size: 13px; }
+  button { padding: 6px 12px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); font-size: 13px; }
   button:disabled { opacity: .4; }
 </style>

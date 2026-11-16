@@ -21,15 +21,15 @@
 <style>
   .loading {
     position: absolute; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 16px;
-    background: linear-gradient(180deg, #3f9fe0 0%, #9fdcf6 60%, #3e9b4f 60%, #2b7a3f 100%);
+    background: radial-gradient(ellipse at 50% 0%, #1d5a5a 0%, #0d2a4a 40%, #040b1c 75%), #040b1c;
   }
   .logo { width: min(620px, 86vw); filter: drop-shadow(0 8px 24px rgba(0,0,0,.6)); }
   .bar { width: min(420px, 70vw); height: 6px; border-radius: 6px; background: rgba(255,255,255,.08); overflow: hidden; border: 3px solid var(--ink-line); }
   .fill { height: 100%; background: var(--gold-grad); transition: width .2s; }
-  .hint { color: var(--ink-line); letter-spacing: .12em; font-size: 14px; margin: 0; }
+  .hint { color: var(--gold-hi); letter-spacing: .12em; font-size: 14px; margin: 0; }
   .start {
     font-family: var(--font-title); font-size: 26px; letter-spacing: .06em; padding: 16px 40px; border-radius: 999px; color: var(--ink-line);
-    border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #ffe066, #ffb21e); box-shadow: 0 6px 0 var(--ink-line);
+    border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 25%, #fffbe0, #ffd75e 40%, #c58512); box-shadow: 0 6px 0 var(--ink-line);
     animation: breathe 2.4s ease-in-out infinite;
   }
   @keyframes breathe { 50% { filter: brightness(1.15) saturate(1.2); } }

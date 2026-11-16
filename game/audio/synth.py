@@ -133,7 +133,7 @@ def reverb(x: np.ndarray, mix: float = 0.25, size: float = 1.0) -> np.ndarray:
 
 
 def place(buf: np.ndarray, sig: np.ndarray, at: float, gain: float = 1.0) -> None:
-    i = int(at * SR)
+    i = max(0, int(at * SR))
     j = min(len(buf), i + len(sig))
     if i < len(buf):
         buf[i:j] += gain * sig[: j - i]
@@ -321,6 +321,24 @@ def sfx_bonus_end() -> np.ndarray:
     place(buf, applause(3.4, 240), 0.3, 0.5)
     return norm(fade(reverb(buf, 0.35, 1.1)[: int(4.8 * SR)], 0.002, 0.8), 0.8)
 
+def sfx_match_point() -> np.ndarray:
+    """Match point tension: rising drum roll + crowd 'ooh' swell + bell sting."""
+    d = 2.6
+    buf = np.zeros(int(d * SR))
+    t = 0.0
+    gap = 0.11
+    while t < 1.9:
+        place(buf, bounce(0.12, 0.5 + 0.5 * t / 1.9), t)
+        t += gap
+        gap = max(gap * 0.93, 0.035)
+    tt = t_axis(d)
+    ooh = sum(np.sin(2 * np.pi * f0 * tt + rng.random() * 6) for f0 in (196, 247, 294, 330))
+    ooh = lowpass(ooh + 0.4 * bandpass(noise(d), 600, 0.8), 1200) * np.minimum(1, tt / 1.6) * np.minimum(1, (d - tt) / 0.5)
+    buf += 0.12 * ooh
+    place(buf, bell(note("A5"), 1.2, 1.0), 1.95, 0.5)
+    return norm(fade(reverb(buf, 0.3)[: int(3.2 * SR)], 0.002, 0.4), 0.8)
+
+
 def saw(f: float, d: float) -> np.ndarray:
     t = t_axis(d)
     ph = (f * t) % 1.0
@@ -405,6 +423,7 @@ def main() -> None:
     export("mult_up", sfx_mult_up())
     export("count_tick", sfx_count_tick())
     export("bonus_end", sfx_bonus_end())
+    export("match_point", sfx_match_point())
     export("music_base", music_base(), loop=True)
     export("music_free", music_free(), loop=True)
     total = sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT))

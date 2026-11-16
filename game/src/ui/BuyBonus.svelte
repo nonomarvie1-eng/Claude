@@ -41,8 +41,8 @@
   .warn { color: #ffb4b4; }
   .actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }
   button { font-family: var(--font-title); font-size: 20px; padding: 10px 24px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); }
-  .ghost { background: #fff3d6; color: var(--ink-line); }
-  .go { background: linear-gradient(180deg, #ffe066, #ffb21e); color: var(--ink-line); }
+  .ghost { background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); }
+  .go { background: radial-gradient(circle at 40% 25%, #fffbe0, #ffd75e 40%, #c58512); color: #3a2404; }
   .go:disabled { opacity: .4; }
   @media (max-width: 480px) { .buy { flex-direction: column; text-align: center; } }
 </style>

@@ -1,6 +1,6 @@
 {
  "gameId": "golden_rally",
- "name": "Golden Rally",
+ "name": "Golden Rally \u2014 Match Point",
  "mathVersion": "2.0.0",
  "reels": 6,
  "rows": 5,
@@ -20,22 +20,22 @@
  ],
  "symbolInfo": {
   "W": {
-   "label": "Smash",
-   "fr": "Smash",
+   "label": "Golden Fireball",
+   "fr": "Balle d'Or",
    "role": "wild"
   },
   "S": {
-   "label": "Trophy",
-   "fr": "Troph\u00e9e",
+   "label": "Golden Rally Cup",
+   "fr": "Coupe Golden Rally",
    "role": "scatter"
   },
   "H1": {
-   "label": "The President",
-   "fr": "Le Pr\u00e9sident",
+   "label": "The Champion",
+   "fr": "Le Champion",
    "role": "high"
   },
   "H2": {
-   "label": "The Champion",
+   "label": "The Star",
    "fr": "La Championne",
    "role": "high"
   },
@@ -45,13 +45,13 @@
    "role": "high"
   },
   "H4": {
-   "label": "The Ball Kid",
-   "fr": "Le Ramasseur",
+   "label": "The President",
+   "fr": "Le Pr\u00e9sident",
    "role": "high"
   },
   "H5": {
-   "label": "The Club Bulldog",
-   "fr": "Le Bulldog",
+   "label": "Ace, the club mascot",
+   "fr": "Ace, la mascotte",
    "role": "high"
   },
   "L1": {

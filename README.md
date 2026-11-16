@@ -1,4 +1,4 @@
-# Golden Rally — machine à sous de démonstration (tennis, style cartoon)
+# Golden Rally — Match Point · machine à sous de démonstration (tennis, « fun premium »)
 
 Jeu original **6 × 5, 15 625 façons de gagner**, personnages cartoon (le Président, la Championne, l'Arbitre, le Ramasseur, le Bulldog), Wild **Smash**, Scatter **Trophée**, bonus **Tie-Break** avec multiplicateur persistant **Rally** (×1 → ×20). RTP théorique **96,487 %** calculé exactement, vérifié par 200 millions de tours simulés ; gain maximal 5 000×. **Achat du bonus** (100× la mise, RTP 96,457 %) et **tours automatiques** avec limite de perte.
 

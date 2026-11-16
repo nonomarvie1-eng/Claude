@@ -1,4 +1,26 @@
-# Golden Rally — Conception du jeu (v2)
+# Golden Rally — Match Point · Conception du jeu (v3)
+
+## Direction artistique v3 « Match Point » (fun premium)
+
+**Concept** : le **Golden Rally Club** organise sa **Night Cup**, un tournoi fictif joué la nuit sous les projecteurs. C'est notre univers maison : notre club, notre trophée, nos personnages et notre mascotte.
+
+- **Palette** : vert court profond, or brillant, jaune balle, blanc cassé, touches d'orange.
+- **Matière** : dégradés métalliques, biseaux, reflets, lueurs colorées et ombres portées. Les contours restent fins et encrés, le style fun mais travaillé.
+- **Décor vivant** : ciel étoilé, tours de projecteurs dont les faisceaux respirent, tribunes avec **flashs d'appareils photo** (plus nombreux quand le public s'enflamme), panneau LED « GOLDEN RALLY CLUB · NIGHT CUP », court vert éclairé.
+- **Logo iconique** : « GOLDEN » en or poli, « RALLY » en jaune balle, petite coupe au-dessus, balle d'or avec traînée de feu, ruban **MATCH POINT**.
+- **Mascotte signature : ACE**, le bulldog du club (bandeau jaune balle, médaille d'or « ACE »).
+- **Symboles désirables** :
+  - **Wild** : la Balle d'Or en feu.
+  - **Scatter** : la **Coupe Golden Rally**, trophée fictif entouré de lauriers.
+  - **Personnages en médaillons dorés**, chacun avec sa gemme : le Champion (arrogant, bandeau or), la Championne (star, créoles dorées), l'Arbitre (« OUT ! »), le Président (monocle) et ACE.
+  - **Symboles faibles** : **jetons de tournoi** hexagonaux façon joyaux (0 améthyste et bronze, 15 ambre et argent, 30 saphir et argent, 40 émeraude et or, AD rubis et or), avec un chiffre lumineux.
+- **Moments forts** :
+  - **« MATCH POINT ! »** quand 2 Coupes sont tombées et que les derniers rouleaux peuvent encore déclencher le bonus : bannière pulsante, roulement de tambour, rumeur du public. Le résultat est déjà fixé ; on ne fait que mettre en scène sa révélation.
+  - Annonces des gros gains : **ACE !** (≥ 10×), **SMASH !** (≥ 50×), **JEU, SET ET MATCH !** (≥ 200×).
+  - Annonce **« RALLY ×N ! »** à chaque hausse du multiplicateur, avec le public qui saute.
+- **Interface** : verre sombre et liserés dorés. Le **bouton de lancement est une balle d'or** avec un halo pulsant, l'**achat de bonus une médaille dorée**, et le gain s'affiche en or plus grand que le reste.
+
+
 
 ## Identité
 

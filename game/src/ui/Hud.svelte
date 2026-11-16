@@ -57,7 +57,7 @@
 
 {#if !game.jurisdiction.disabledBuyBonus && !game.inBonus}
   <button class="buybadge" onclick={() => open('buy')} disabled={busy || !!game.autoplay} data-testid="btn-buy">
-    <span>{t.buyShort}</span>
+    <span class="cupicon" aria-hidden="true">🏆</span><span>{t.buyShort}</span>
   </button>
 {/if}
 
@@ -92,11 +92,12 @@
     <button class="spin" class:busy onclick={() => ctrl?.spin()} disabled={busy} aria-label={t.spinAria} data-testid="spin">
       <svg viewBox="0 0 100 100" aria-hidden="true">
         <defs>
-          <radialGradient id="sg" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#fbffb0"/><stop offset=".55" stop-color="#d9ef3b"/><stop offset="1" stop-color="#a9c21c"/></radialGradient>
+          <radialGradient id="sg" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffd75e"/><stop offset=".75" stop-color="#c58512"/><stop offset="1" stop-color="#6e4205"/></radialGradient>
         </defs>
         <g class="teeth">
           <circle cx="50" cy="50" r="45" fill="url(#sg)" stroke="#1b1410" stroke-width="5"/>
-          <path d="M8,36 C30,40 30,82 22,88 M92,64 C70,60 70,18 78,12" fill="none" stroke="#fffde8" stroke-width="5" stroke-linecap="round"/>
+          <path d="M8,36 C30,40 30,82 22,88 M92,64 C70,60 70,18 78,12" fill="none" stroke="#fff6c8" stroke-width="5" stroke-linecap="round"/>
+          <ellipse cx="36" cy="28" rx="13" ry="7" fill="#fff" opacity=".7" transform="rotate(-30 36 28)"/>
         </g>
         <path d="M68,40a20,20 0 1 0 1,16" fill="none" stroke="#1b1410" stroke-width="7" stroke-linecap="round" />
         <path d="M71,28v14H57" fill="none" stroke="#1b1410" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
@@ -119,32 +120,37 @@
 <style>
   .top { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 12px; z-index: 20; pointer-events: none; gap: 8px; }
   .top > * { pointer-events: auto; }
-  .demo { font-size: 12px; padding: 6px 12px; border-radius: 999px; background: #fff3d6; border: var(--chunky); box-shadow: var(--pop); color: var(--ink-line); max-width: 52vw; }
+  .demo { font-size: 11px; padding: 4px 10px; border-radius: 999px; background: rgba(3,19,12,.7); border: 1px solid rgba(232,177,58,.7); color: var(--gold-hi); letter-spacing: .04em; max-width: 52vw; backdrop-filter: blur(4px); }
   nav { display: flex; gap: 8px; margin-left: auto; }
-  @media (max-width: 600px) { .demo { font-size: 9px; padding: 4px 8px; max-width: 30vw; line-height: 1.25; } nav { gap: 5px; } }
-  .icon { width: 42px; height: 42px; border-radius: 50%; border: var(--chunky); box-shadow: var(--pop); background: #fff3d6; color: var(--ink-line); display: grid; place-items: center; font-family: var(--font-title); font-weight: 700; font-size: 18px; color: var(--ink-line); }
+  @media (max-width: 600px) { .demo { font-size: 10px; padding: 3px 8px; max-width: 34vw; } nav { gap: 7px; } .icon { width: 36px; height: 36px; } }
+  .icon { width: 40px; height: 40px; border-radius: 50%; border: none; box-shadow: var(--gold-ring); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); display: grid; place-items: center; font-family: var(--font-title); font-size: 18px; color: var(--gold); }
+  .icon:active { transform: scale(.94); }
 
   .hud {
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 20;
     display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
     padding: 10px max(16px, env(safe-area-inset-left)) calc(10px + var(--safe-b));
-    background: linear-gradient(180deg, rgba(20,70,46,.94), rgba(8,30,20,.98)); border-radius: 26px 26px 0 0; box-shadow: 0 -6px 0 rgba(27,20,16,.25);
+    background: var(--glass); border-radius: 26px 26px 0 0; box-shadow: 0 -2px 0 #e8b13a, 0 -10px 30px rgba(0,0,0,.45);
     border-top: 4px solid var(--ink-line);
   }
   .cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .cell.win { align-items: flex-end; text-align: right; }
-  .label { font-family: var(--font-deco); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); text-shadow: 0 2px 0 var(--ink-line); }
-  .value { font-family: var(--font-title); font-size: clamp(18px, 2.4vw, 28px); color: #fff; white-space: nowrap; -webkit-text-stroke: 1.5px var(--ink-line); text-shadow: 0 3px 0 var(--ink-line); letter-spacing: .03em; }
-  .value.hot { color: var(--gold); }
+  .label { font-family: var(--font-deco); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); opacity: .9; }
+  .value { font-family: var(--font-title); font-size: clamp(17px, 2.2vw, 26px); color: var(--ink); white-space: nowrap; letter-spacing: .03em; text-shadow: 0 2px 0 #16120f; }
+  .value.hot { color: #ffe17a; text-shadow: 0 2px 0 #16120f, 0 0 12px rgba(255,215,94,.7); }
+  .cell.win .value { font-size: clamp(20px, 2.8vw, 32px); }
   .center { display: flex; align-items: center; gap: 14px; }
   .bet { display: flex; align-items: center; gap: 10px; }
   .betval { display: flex; flex-direction: column; align-items: center; min-width: 92px; }
-  .round { width: 46px; height: 46px; border-radius: 50%; border: var(--chunky); box-shadow: var(--pop); background: linear-gradient(180deg, #ffd23f, #f08a12); color: var(--ink-line); font-family: var(--font-title); font-size: 28px; line-height: 1; }
+  .round { width: 44px; height: 44px; border-radius: 50%; border: none; box-shadow: var(--gold-ring); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); font-family: var(--font-title); font-size: 26px; line-height: 1; }
   .round:disabled { opacity: .35; cursor: default; }
   .fs { display: flex; flex-direction: column; align-items: center; min-width: 190px; }
   .fs .value { font-size: 30px; }
   .mult { font-family: var(--font-title); color: var(--gold); font-size: 22px; -webkit-text-stroke: 1px var(--ink-line); }
-  .spin { width: 100px; height: 100px; border: none; background: none; padding: 0; border-radius: 50%; filter: drop-shadow(0 5px 0 #1b1410); transition: transform .12s; margin-top: -26px; }
+  .spin { width: 104px; height: 104px; border: none; background: none; padding: 0; border-radius: 50%; transition: transform .12s; margin-top: -30px; position: relative; filter: drop-shadow(0 6px 8px rgba(0,0,0,.5)); }
+  .spin:not(:disabled)::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; box-shadow: 0 0 22px 6px rgba(255,215,94,.55); animation: halo 1.8s ease-in-out infinite; pointer-events: none; }
+  @keyframes halo { 50% { box-shadow: 0 0 34px 12px rgba(255,215,94,.8); } }
+  @media (prefers-reduced-motion: reduce) { .spin::before { animation: none !important; } }
   .spin svg { width: 100%; height: 100%; display: block; }
   .spin:hover:not(:disabled) { transform: scale(1.04); }
   .spin:active:not(:disabled) { transform: scale(.96); }
@@ -153,14 +159,16 @@
   .spin.stop { display: grid; place-items: center; background: radial-gradient(circle at 40% 35%, #ff8a7a, #d93b3b); border: 5px solid var(--ink-line); color: #fff; font-family: var(--font-title); position: relative; }
   .stopbox { font-size: 30px; line-height: 1; }
   .left { position: absolute; bottom: 10px; font-size: 18px; -webkit-text-stroke: 1px var(--ink-line); }
-  .round.auto { display: grid; place-items: center; background: #fff3d6; }
+  .round.auto { display: grid; place-items: center; }
   .buybadge {
     position: absolute; z-index: 21; left: max(14px, env(safe-area-inset-left)); bottom: calc(118px + var(--safe-b));
-    width: 92px; height: 92px; border-radius: 50%; border: 4px solid var(--ink-line); box-shadow: 0 5px 0 var(--ink-line);
-    background: radial-gradient(circle at 40% 35%, #ffe680, #ffb21e 60%, #f08a12); color: var(--ink-line);
-    font-family: var(--font-title); font-size: 17px; line-height: 1.05; padding: 8px; transform: rotate(-12deg);
+    width: 96px; height: 96px; border-radius: 50%; border: none; box-shadow: 0 0 0 3px #16120f, 0 0 0 7px #e8b13a, 0 0 24px 6px rgba(255,215,94,.45);
+    background: radial-gradient(circle at 38% 30%, #fffbe0, #ffd75e 35%, #c58512 75%, #6e4205); color: #3a2404;
+    font-family: var(--font-title); font-size: 15px; line-height: 1.05; padding: 8px; transform: rotate(-10deg);
+    animation: coin 2.6s ease-in-out infinite;
   }
-  .buybadge span { display: block; }
+  @keyframes coin { 50% { box-shadow: 0 0 0 3px #16120f, 0 0 0 7px #e8b13a, 0 0 34px 12px rgba(255,215,94,.7); } }
+  .buybadge span { display: block; } .cupicon { font-size: 20px; line-height: 1; filter: saturate(1.2); }
   .buybadge:disabled { opacity: .45; }
   @media (max-aspect-ratio: 1/1) { .buybadge { bottom: calc(178px + var(--safe-b)); width: 74px; height: 74px; font-size: 14px; } }
   @keyframes turn { to { transform: rotate(360deg); } }

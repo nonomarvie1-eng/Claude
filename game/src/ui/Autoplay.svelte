@@ -52,13 +52,13 @@
   fieldset { border: none; padding: 0; margin: 0 0 14px; }
   legend { font-family: var(--font-title); color: var(--gold); margin-bottom: 8px; -webkit-text-stroke: .8px var(--ink-line); }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chips button { min-width: 64px; padding: 8px 14px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: #fff3d6; color: var(--ink-line); font-family: var(--font-ui); font-size: 16px; }
-  .chips button.on { background: linear-gradient(180deg, #ffe066, #ffb21e); }
+  .chips button { min-width: 64px; padding: 8px 14px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); font-family: var(--font-ui); font-size: 16px; }
+  .chips button.on { background: radial-gradient(circle at 40% 25%, #fffbe0, #ffd75e 40%, #c58512); color: #3a2404; }
   .row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
   input[type='checkbox'] { width: 22px; height: 22px; accent-color: var(--gold); }
   .note { color: var(--muted); font-size: 14px; line-height: 1.5; }
   .actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; }
   .actions button { font-family: var(--font-title); font-size: 20px; padding: 10px 24px; border-radius: 999px; border: var(--chunky); box-shadow: var(--pop); }
-  .ghost { background: #fff3d6; color: var(--ink-line); }
-  .go { background: linear-gradient(180deg, #ffe066, #ffb21e); color: var(--ink-line); }
+  .ghost { background: radial-gradient(circle at 40% 30%, #2a7a5a, #06241a); color: var(--gold); }
+  .go { background: radial-gradient(circle at 40% 25%, #fffbe0, #ffd75e 40%, #c58512); color: #3a2404; }
 </style>
