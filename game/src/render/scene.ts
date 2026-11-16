@@ -4,6 +4,7 @@
 import { Application, BlurFilter, Container, FillGradient, Graphics, Sprite, Text, Texture, type Ticker } from 'pixi.js';
 import { audio } from '../audio/audio';
 import { STRIPS } from '../engine/engine';
+import { PROTO } from '../engine/rallyPath';
 import { RULES } from '../engine/rules';
 import type { Board, BonusLevel, BookEvent, GameType, ModeName, Position, SymbolName, WinLine } from '../engine/types';
 import { Match } from './match';
@@ -188,6 +189,15 @@ export class RallyScene implements View {
   private glowLayer = new Container();
   private badgeLayer = new Container();
   private antGfx = new Graphics();
+  // Rally Path prototype: path layer and its own plate (separate from the ways win)
+  private rpGfx = new Graphics();
+  private rpLayer = new Container();
+  private rpPlate = new Container();
+  private rpPlateBg = new Graphics();
+  private rpText!: Text;
+  /** Rally Path lab active: prototype strips + prototype panel labels (demo only). */
+  proto = false;
+  protoEvent = '—';
   private plate = new Container();
   private plateBg = new Graphics();
   private winText!: Text;
@@ -257,7 +267,7 @@ export class RallyScene implements View {
     this.board.addChild(this.reelLayer, this.antGfx);
     this.winLayer.x = FRAME_M;
     this.winLayer.y = FRAME_M;
-    this.winLayer.addChild(this.glowLayer, this.lineGfx, this.badgeLayer);
+    this.winLayer.addChild(this.glowLayer, this.lineGfx, this.badgeLayer, this.rpGfx, this.rpLayer);
     this.board.addChild(this.winLayer);
     this.match = new Match(this);
     this.board.addChild(this.match.court);
@@ -268,6 +278,12 @@ export class RallyScene implements View {
     this.plate.position.set(FRAME_W / 2, FRAME_H);
     this.plate.visible = false;
     this.board.addChild(this.plate);
+    this.rpText = new Text({ text: '', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 44, fill: '#FFF4D6', letterSpacing: 2, align: 'center' } });
+    this.rpText.anchor.set(0.5);
+    this.rpPlate.addChild(this.rpPlateBg, this.rpText);
+    this.rpPlate.position.set(FRAME_W / 2, 0);
+    this.rpPlate.visible = false;
+    this.board.addChild(this.rpPlate);
 
     this.world.addChild(this.header, this.board, this.tb, this.fx);
     this.app.stage.addChild(this.overlay, this.aceLayer);
@@ -275,7 +291,7 @@ export class RallyScene implements View {
     this.app.stage.eventMode = 'static';
     this.app.stage.hitArea = this.app.screen;
     this.app.stage.on('pointertap', () => {
-      if (this.mode === 'freegame') this.match.skip = true; // fast-forward only: the result is fixed
+      if (this.mode === 'freegame' || this.rpBusy) this.match.skip = true; // fast-forward only: the result is fixed
     });
     this.overlay.on('pointertap', () => this.onOverlayTap?.());
     this.buildAce();
@@ -383,7 +399,7 @@ export class RallyScene implements View {
       const step = 128;
       for (let i = 1; i < 3; i++) bg.moveTo(-W / 2 + 34, y0 + i * step - 22).lineTo(W / 2 - 34, y0 + i * step - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       bg.moveTo(-W / 2 + 34, y0 - 22).lineTo(W / 2 - 34, y0 - 22).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
-      cells = [mk(this.t.tbRound, 0, y0, W - 40), mk(this.t.tbPoints, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
+      cells = [mk(this.proto ? this.t.rpSpins : this.t.tbRound, 0, y0, W - 40), mk(this.proto ? this.t.rpEvent : this.t.tbPoints, 0, y0 + step, W - 40, '#D4E948'), mk(this.t.tbTotal, 0, y0 + 2 * step, W - 40)];
     } else {
       const title = this.goldText(this.level === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', variant === 'wide' ? 40 : 34);
       title.y = -H / 2 + 38;
@@ -400,7 +416,7 @@ export class RallyScene implements View {
       const y = -H / 2 + 92;
       for (const x of [-W / 6, W / 6]) bg.moveTo(x, y - 14).lineTo(x, H / 2 - 18).stroke({ color: C.gold, width: 1.5, alpha: 0.45 });
       const cw = W / 3 - 24;
-      cells = [mk(this.t.tbRound, -W / 3, y, cw), mk(this.t.tbPoints, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
+      cells = [mk(this.proto ? this.t.rpSpins : this.t.tbRound, -W / 3, y, cw), mk(this.proto ? this.t.rpEvent : this.t.tbPoints, 0, y, cw, '#D4E948'), mk(this.t.tbTotal, W / 3, y, cw)];
     }
     this.tbRound = cells[0].v;
     this.tbMult = cells[1].v;
@@ -416,7 +432,7 @@ export class RallyScene implements View {
     if (!this.tbRound) return;
     const i = this.bonusInfo;
     this.tbRound.text = `${i.cur} / ${i.total}`;
-    this.tbMult.text = String(i.mult);
+    this.tbMult.text = this.proto ? this.protoEvent : String(i.mult);
     this.tbTotal.text = money(i.win, this.currency, this.lang);
     for (const v of [this.tbRound, this.tbMult, this.tbTotal]) {
       v.scale.set(1);
@@ -888,7 +904,7 @@ export class RallyScene implements View {
 
   /** Shows a board immediately (initial screen / resume). */
   setBoard(stops: number[], gameType: GameType) {
-    const strips = gameType === 'freegame' ? STRIPS.free : STRIPS.base;
+    const strips = this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : STRIPS.base;
     this.reels.forEach((r, i) => {
       r.strip = strips[i];
       r.pos = stops[i];
@@ -898,7 +914,7 @@ export class RallyScene implements View {
 
   async spinTo(_board: Board, stops: number[], gameType: GameType, anticipation: number[], quick: boolean, betMode: ModeName = 'base') {
     // the stops index the reel set of the round's bet mode
-    const strips = gameType === 'freegame' ? STRIPS.free : betMode === 'bonus_chance' ? STRIPS.bonusChance : STRIPS.base;
+    const strips = this.proto ? PROTO.strips[gameType === 'freegame' ? 'free' : 'base'] : gameType === 'freegame' ? STRIPS.free : betMode === 'bonus_chance' ? STRIPS.bonusChance : STRIPS.base;
     const rm = this.prefs.reducedMotion;
     const turbo = this.prefs.turbo;
     const baseT = quick ? 260 : rm ? 420 : turbo ? 650 : gameType === 'freegame' ? 900 : 1050;
@@ -1028,6 +1044,7 @@ export class RallyScene implements View {
   clearWins() {
     this.clearGroupGfx();
     this.setPlate('');
+    this.clearRally();
     for (const r of this.reels) for (const s of r.sprites) {
       s.alpha = 1;
       s.rotation = 0;
@@ -1038,7 +1055,7 @@ export class RallyScene implements View {
 
   /** Colour of each symbol's connection (its dominant colour in the art). */
   private static SYM_COLOR: Record<string, number> = {
-    W: 0xff3fb4, S: 0x37b6ff, H1: 0xe8a74a, H2: 0xf2c54b, H3: 0x8fb0ff, H4: 0xdfe4ec,
+    G: 0xf2cf6b, W: 0xff3fb4, S: 0x37b6ff, H1: 0xe8a74a, H2: 0xf2c54b, H3: 0x8fb0ff, H4: 0xdfe4ec,
     L1: 0xd4e948, L2: 0x7fb2ff, L3: 0xff8a4c, L4: 0x2f8cff, L5: 0xff4d5e,
   };
 
@@ -1350,6 +1367,183 @@ export class RallyScene implements View {
 
   pause(ms: number) {
     return this.tw.wait(ms);
+  }
+
+  // ---------------------------------------------------------------- RALLY PATH (prototype, demo lab)
+  // Presentation only: length, path and reward arrive in the book event,
+  // computed by the engine before the animation; skipping never changes them.
+  private rpBusy = false;
+
+  private clearRally() {
+    this.rpGfx.clear();
+    this.rpLayer.removeChildren().forEach((c) => c.destroy());
+    this.rpPlate.visible = false;
+  }
+
+  private setRpPlate(text: string, cs: boolean) {
+    this.rpText.text = text;
+    this.rpPlate.visible = !!text;
+    if (!text) return;
+    const h = 66;
+    const w = Math.min(FRAME_W - 20, Math.max(300, this.rpText.width + 70));
+    this.rpText.scale.set(Math.min(1, (w - 50) / (this.rpText.width / this.rpText.scale.x)));
+    this.rpPlateBg.clear()
+      .roundRect(-w / 2, -h / 2, w, h, h / 2).fill({ color: cs ? 0x3a2a08 : 0x0b2440, alpha: 0.96 }).stroke({ color: 0xe7c877, width: 3 })
+      .roundRect(-w / 2 + 6, -h / 2 + 6, w - 12, h - 12, h / 2 - 6).stroke({ color: 0xf4e9d4, width: 1, alpha: 0.35 });
+  }
+
+  async rallyPath(e: Extract<BookEvent, { type: 'rallyPath' }>) {
+    this.rpBusy = true;
+    this.match.skip = false;
+    const rm = this.prefs.reducedMotion;
+    const cx = (r: number) => r * CELL + CELL / 2;
+    const cy = (row: number) => row * CELL + CELL / 2;
+    const gold = 0xe7c877;
+    const amt = Math.round((this.bet * e.reward) / 100);
+    // (1) Golden Ball reveal (~0.3 s)
+    const serve = e.path[0];
+    const ring = new Graphics().circle(0, 0, CELL * 0.47).stroke({ color: gold, width: 6 });
+    ring.position.set(cx(serve.reel), cy(serve.row));
+    this.rpLayer.addChild(ring);
+    audio.play('serve', { volume: 0.7 });
+    this.pulse(this.reels[serve.reel].cell(serve.row), 1.12, 300);
+    await this.tw.tween(rm ? 120 : 300, (u) => ring.scale.set(0.6 + 0.4 * ease.outBack(u)));
+    if (e.length === 1) {
+      // no return: short, clean stop
+      this.setRpPlate(this.t.rpNoReturn, false);
+      await this.tw.wait(rm ? 300 : 450);
+      this.rpBusy = false;
+      return;
+    }
+    // (2) the ball travels racket to racket (≈0.2 s per shot)
+    const ball = new Sprite(this.tex.sym_G);
+    ball.anchor.set(0.5);
+    ball.width = ball.height = 62;
+    ball.position.set(cx(serve.reel), cy(serve.row));
+    this.rpLayer.addChild(ball);
+    const hop = rm ? 90 : Math.max(150, Math.min(240, 1100 / (e.length - 1)));
+    for (let k = 1; k < e.path.length; k++) {
+      const a = e.path[k - 1];
+      const b = e.path[k];
+      const x0 = cx(a.reel), y0 = cy(a.row), x1 = cx(b.reel), y1 = cy(b.row);
+      await this.tw.tween(hop, (u) => {
+        ball.x = x0 + (x1 - x0) * u;
+        ball.y = y0 + (y1 - y0) * u - (rm ? 0 : Math.sin(u * Math.PI) * 46);
+      }, ease.inOutCubic);
+      this.rpGfx.moveTo(x0, y0).lineTo(x1, y1).stroke({ color: gold, width: 7, alpha: 0.9 }).circle(x1, y1, CELL * 0.44).stroke({ color: gold, width: 4 });
+      const n = this.goldText(String(k + 1), 30);
+      n.position.set(x1 + CELL * 0.33, y1 - CELL * 0.33);
+      this.rpLayer.addChild(n);
+      audio.play('racket', { volume: 0.55, rate: 0.95 + k * 0.04 });
+      this.pulse(this.reels[b.reel].cell(b.row), 1.1, 240);
+    }
+    ball.destroy();
+    // (3) clean stop: length + reward on the Rally Path plate (separate from the ways win)
+    if (e.championshipShot) {
+      await this.championshipShot(amt);
+    } else {
+      audio.play(e.length >= 4 ? 'win_2' : 'win_1', { volume: 0.7 });
+      const p = this.cellWorld(e.path[e.path.length - 1].reel, e.path[e.path.length - 1].row);
+      if (!rm) this.burst(p.x, p.y, 8 + 4 * e.length, 'sparkle', this.fx, { speed: 180, life: 0.6, scale: 0.35 });
+    }
+    this.protoEvent = e.championshipShot ? 'CHAMPIONSHIP SHOT' : `RALLY ×${e.length}`;
+    this.refreshPanel();
+    this.setRpPlate(`${fmtS(this.t.rpPlate, { n: e.length })} · ${money(amt, this.currency, this.lang)}`, e.championshipShot);
+    await this.tw.wait(rm ? 300 : 650);
+    this.rpBusy = false;
+  }
+
+  /** 6-shot rally: 2–3 s moment; the amount was drawn by the engine (CS table). */
+  private async championshipShot(amount: number) {
+    this.cheer(1.5);
+    audio.play('match_point', { volume: 0.9 });
+    const c = this.makeOverlay();
+    const inner = c.children[1] as Container;
+    const halo = new Sprite(this.tex.glow);
+    halo.anchor.set(0.5);
+    halo.blendMode = 'add';
+    halo.tint = 0xe7c877;
+    halo.width = halo.height = 760;
+    halo.alpha = 0.4;
+    const t1 = this.fit(this.goldText('CHAMPIONSHIP SHOT', 84), 600);
+    t1.y = -70;
+    const amt = this.goldText(money(0, this.currency, this.lang), 88);
+    amt.y = 90;
+    inner.addChild(halo, t1, amt);
+    c.relayout?.();
+    const skip = { now: false };
+    if (!this.prefs.reducedMotion) {
+      const w = this.app.screen.width;
+      for (let i = 0; i < 4; i++) this.burst(Math.random() * w, this.app.screen.height * 0.4, 12, 'sparkle', this.overlay, { speed: 260, life: 1.2, scale: 0.4 });
+    }
+    await this.fadeOverlay(c, 250, 250, async () => {
+      this.onOverlayTap = () => (skip.now = true);
+      await this.countUp(amt, amount, 1300, skip);
+      await this.waitTapOr(700);
+    });
+  }
+
+  /** Prototype bonus opener (≤ 1.5 s). RC electric blue, GF night blue + champagne gold. */
+  async protoBonusStart(e: Extract<BookEvent, { type: 'protoBonusStart' }>) {
+    this.protoEvent = '—';
+    audio.play('bonus_trigger', { volume: 0.85 });
+    const c = this.makeOverlay();
+    const inner = c.children[1] as Container;
+    const gf = e.bonus === 'final';
+    const t1 = this.fit(gf ? this.goldText('THE GRAND FINAL', 86) : this.superText('RALLY CHALLENGE', 86), 680);
+    t1.y = -40;
+    const t2 = this.plainText(fmtS(gf ? this.t.rpIntroGf : this.t.rpIntroRc, { n: e.spins }), 30, gf ? '#F4E9D4' : '#BFE6FF', '700');
+    t2.y = 60;
+    inner.addChild(t1, t2);
+    c.relayout?.();
+    await this.fadeOverlay(c, 220, 220, () => this.waitTapOr(this.prefs.reducedMotion ? 500 : 900));
+  }
+
+  protoSpinStart(_e: Extract<BookEvent, { type: 'spinStart' }>) {
+    this.protoEvent = '—';
+    this.refreshPanel();
+  }
+
+  /** Switches the reels to the prototype strips (lab on) or back to the normal game. */
+  setProto(on: boolean) {
+    if (this.proto === on) return;
+    this.proto = on;
+    const v = this.tbVariant;
+    this.tbVariant = null;
+    if (v) this.buildTieBreakPanel(v);
+    // no board reset: the next spin switches strips while the reels move
+  }
+
+  /** SECOND SERVE: +1 independent free spin (< 1.5 s). */
+  async secondServe(_e: Extract<BookEvent, { type: 'secondServe' }>) {
+    this.protoEvent = 'SECOND SERVE';
+    this.refreshPanel();
+    audio.play('serve', { volume: 0.8 });
+    const p = this.cellWorld(2.5, 2);
+    const t = this.fit(this.goldText('SECOND SERVE  +1', 64), FRAME_W * this.board.scale.x * 0.9);
+    t.position.set(p.x, p.y);
+    this.fx.addChild(t);
+    const k0 = t.scale.x;
+    await this.tw.tween(this.prefs.reducedMotion ? 500 : 1100, (u) => {
+      t.alpha = u < 0.15 ? u / 0.15 : u > 0.8 ? (1 - u) / 0.2 : 1;
+      t.scale.set(k0 * (this.prefs.reducedMotion ? 1 : 0.85 + 0.15 * ease.outBack(Math.min(1, u * 4))));
+    });
+    t.destroy();
+  }
+
+  async protoBonusEnd(e: Extract<BookEvent, { type: 'protoBonusEnd' }>, amount: number) {
+    audio.play('bonus_end', { volume: 0.8 });
+    const c = this.makeOverlay();
+    const inner = c.children[1] as Container;
+    const t1 = this.fit(this.goldText(e.bonus === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', 60), 680);
+    t1.y = -80;
+    const t2 = this.plainText(fmtS(this.t.rpOutro, { n: e.spins }), 28, '#F4E9D4', '700');
+    t2.y = -10;
+    const amt = this.goldText(money(amount, this.currency, this.lang), 84);
+    amt.y = 80;
+    inner.addChild(t1, t2, amt);
+    c.relayout?.();
+    await this.fadeOverlay(c, 220, 220, () => this.waitTapOr(1400));
   }
 }
 

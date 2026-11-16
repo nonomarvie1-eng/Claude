@@ -2,12 +2,22 @@
   import { game } from '../game/state.svelte';
   import type { Controller } from '../game/controller';
   import type { DemoRgs } from '../rgs/demoRgs';
+  import { PROTO, type ProtoMode } from '../engine/rallyPath';
   let { ctrl }: { ctrl: Controller | null } = $props();
   const t = $derived(game.t);
 
   async function force(f: 'bonus3' | 'bonus4' | 'bonus5') {
     game.modal = null;
     await ctrl?.spin(f);
+  }
+  const scenarios = Object.entries(PROTO.scenarios);
+  async function lab(mode: ProtoMode, scenario: string | null = null) {
+    game.modal = null;
+    await ctrl?.labRound(mode, scenario);
+  }
+  function toggleLab(on: boolean) {
+    game.labOn = on;
+    if (game.phase === 'idle') ctrl?.scene.setProto(on);
   }
   async function refill() {
     if (!ctrl || ctrl.rgs.kind !== 'demo' || game.phase !== 'idle') return;
@@ -44,6 +54,23 @@
     </div>
     <button class="refill" onclick={refill} disabled={game.phase !== 'idle'}>{t.resetCredits}</button>
   </section>
+  <section class="demo lab" data-testid="lab">
+    <h3>{t.labTitle}</h3>
+    <p>{t.labNotice}</p>
+    <label class="row"><span>{t.labToggle}</span><input type="checkbox" checked={game.labOn} onchange={(e) => toggleLab(e.currentTarget.checked)} disabled={game.phase !== 'idle'} data-testid="lab-toggle" /></label>
+    <h3>{t.labRandom}</h3>
+    <div class="btns">
+      <button onclick={() => lab('base')} disabled={game.phase !== 'idle'} data-testid="lab-base">Rally Path</button>
+      <button onclick={() => lab('rally')} disabled={game.phase !== 'idle'} data-testid="lab-rally">Rally Challenge</button>
+      <button onclick={() => lab('final')} disabled={game.phase !== 'idle'} data-testid="lab-final">The Grand Final</button>
+    </div>
+    <h3>{t.labScenarios}</h3>
+    <div class="btns">
+      {#each scenarios as [key, sc] (key)}
+        <button onclick={() => lab(sc.mode, key)} disabled={game.phase !== 'idle'} data-testid={`lab-sc-${key}`}>{sc.label}</button>
+      {/each}
+    </div>
+  </section>
 {/if}
 
 <style>
@@ -60,4 +87,6 @@
   button:hover:not(:disabled) { border-color: var(--gold); }
   button:disabled { opacity: .4; }
   .refill { margin-top: 12px; }
+  .lab { border-color: var(--gold); }
+  .lab .btns button { font-size: 13px; }
 </style>

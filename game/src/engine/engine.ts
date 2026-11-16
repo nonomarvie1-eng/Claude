@@ -21,12 +21,12 @@ export const baseStripsOf = (mode: ModeName): Strips => (mode === 'bonus_chance'
 const lengths = (s: Strips) => s.map((x) => x.length);
 
 // pays in t-units (tenths of bet), like the Python engine; events are x10
-const PAY: Record<string, Record<number, number>> = {};
+export const PAY: Record<string, Record<number, number>> = {};
 for (const [sym, p] of Object.entries(RULES.paytable)) {
   PAY[sym] = {};
   for (const [k, v] of Object.entries(p)) PAY[sym][+k] = v / 10;
 }
-const SC_PAY: Record<number, number> = {};
+export const SC_PAY: Record<number, number> = {};
 for (const [k, v] of Object.entries(RULES.scatterPay)) SC_PAY[+k] = v / 10;
 const FS_AWARD: Record<number, number> = {};
 for (const [k, v] of Object.entries(RULES.fsAward)) FS_AWARD[+k] = v;
@@ -52,7 +52,7 @@ export interface WaysWin {
   payPerWay: number; // t-units
 }
 
-export function evaluateWays(board: Board): WaysWin[] {
+export function evaluateWays(board: Board, pay: Record<string, Record<number, number>> = PAY): WaysWin[] {
   const out: WaysWin[] = [];
   for (const s of PAYING) {
     let ways = 1;
@@ -63,7 +63,7 @@ export function evaluateWays(board: Board): WaysWin[] {
       ways *= n;
       k++;
     }
-    if (k >= RULES.minKind) out.push({ symbol: s, reels: k, ways, payPerWay: PAY[s][k] });
+    if (k >= RULES.minKind) out.push({ symbol: s, reels: k, ways, payPerWay: pay[s][k] });
   }
   return out;
 }
@@ -91,7 +91,7 @@ export function winLevel(x: number): string {
   return name;
 }
 
-function winList(wins: WaysWin[], board: Board, mult: number): WinLine[] {
+export function winList(wins: WaysWin[], board: Board, mult: number): WinLine[] {
   return wins.map((w) => {
     const positions: Position[] = [];
     for (let r = 0; r < w.reels; r++) for (let row = 0; row < ROWS; row++) if (board[r][row] === w.symbol || board[r][row] === W) positions.push({ reel: r, row });

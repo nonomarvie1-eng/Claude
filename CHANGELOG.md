@@ -1,5 +1,15 @@
 # Changelog
 
+## Prototype RALLY PATH — Championship Night (2026-11-16, expérimental, non publié dans les modes Stake)
+- Nouvelle mécanique **Rally Path** : la Balle d'or (rouleau 1, ni Wild ni Scatter) sert, les raquettes renvoient (même rangée ou ±1), 1 seul chemin par tour, le plus long, départage déterministe ; récompenses 2/8/30/100× ; 6 coups = **Championship Shot** (table documentée 150–4 000×, moyenne 455,5×).
+- Bonus prototypes : Rally Challenge 8 tours, The Grand Final 12 tours + Second Serve (une fois).
+- Maths exactes (propagation des rangées atteignables) + simulation 10 M tours / 400 k bonus (graine 2026) : RTP prototype 96,18 % exact, 96,09 % simulé [95,16 ; 97,02].
+- Constat : Second Serve déclenché dans 91,2 % des Grand Final → variante « dernière balle » (18,3 %) proposée, non appliquée.
+- Port TS en parité exacte ; **Labo Rally Path** dans la démo (Réglages) avec 8 scénarios reproductibles, sans débit ni crédit.
+- Animations courtes : révélation 0,3 s, trajet ≤ 1,1 s, Championship Shot ≈ 2,5 s, Second Serve 1,1 s, accélérables sans changer le résultat.
+- Asset temporaire `sym_G` (Balle d'or recolorée) — à remplacer.
+- Tests : pytest 51/51 (dont 17 Rally Path), vitest 29/29, svelte-check 0 erreur, e2e labo 98/98. Détails : docs/RALLY_PATH_PROTOTYPE.md.
+
 ## v6 — THE FINAL SET — game 3.0.0 / math 4.0.0 (2026-11-16)
 
 ### Mathématiques

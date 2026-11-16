@@ -59,9 +59,9 @@ def _mul(a, b):
     return convolve2d(a, b)[:WMAX, :CMAX]
 
 
-def joint_stats(strips) -> tuple[np.ndarray, np.ndarray]:
+def joint_stats(strips, n_sym: int | None = None) -> tuple[np.ndarray, np.ndarray]:
     """Returns (P[w,c], E1[w,c]) with E1 = E[ways win (t-units) * 1{W=w,S=c}]."""
-    cnt = count_tables(strips)
+    cnt = count_tables(strips, n_sym)
     polys = [_reel_polys(cnt[r]) for r in range(C.NUM_REELS)]
     P = polys[0][0]
     for r in range(1, C.NUM_REELS):

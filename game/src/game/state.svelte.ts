@@ -55,6 +55,8 @@ class GameState {
   bet = $state(1_000_000);
   betLevels = $state<number[]>([]);
   win = $state(0);
+  /** Rally Path lab (demo only): Spin plays uncredited prototype rounds. */
+  labOn = $state(false);
   inBonus = $state(false);
   fsCurrent = $state(0);
   fsTotal = $state(0);

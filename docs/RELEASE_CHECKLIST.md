@@ -26,6 +26,12 @@ Légende : ✅ fait et vérifié ici · 🟡 fait, validation supplémentaire n�
 - 🟡 Droits du pack de symboles (« illustrations IA, vérifier les droits avant distribution commerciale » selon le README du pack).
 - 🟡 Recherche de marque « Golden Rally ».
 
+## Prototype Rally Path (Championship Night)
+- ✅ Règles formalisées, maths exactes et simulées, 17 tests Python, parité TS, labo jouable avec 8 scénarios, e2e 6 formats.
+- 🟡 Choix de la règle Second Serve (91 % actuellement) et recalibrage du Grand Final (73,8× < ancien 97,8×).
+- 🟡 Illustration finale de la Balle d'or (asset actuel temporaire).
+- ⛔ Pas encore de modes Stake, d'achats, ni de vérificateur pour le prototype : à faire seulement après validation de la variante.
+
 ## Avant toute mise en production
 - ⛔ Aucun paiement réel connecté ; la démo utilise des crédits fictifs.
 - ⛔ Pas de soumission sans vérification indépendante des maths, des obligations légales et des conditions de la plateforme.

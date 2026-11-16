@@ -108,6 +108,29 @@ def bonus_level(n_scatters: int) -> str | None:
         return None
     return "rally" if n_scatters == 3 else "final"
 
+# RALLY PATH — EXPERIMENTAL PROTOTYPE (rules in rally_path.py).  Used only by
+# the prototype mode / dev scenarios: the normal game, its reels and its RTP
+# are NOT affected.  Every value below is experimental and is evaluated with
+# the exact model in rally_path.py before any adoption.
+RALLY_PATH_PROTO = {
+    "RACKET": "H4",                  # return points: the racket symbol only (no Wild)
+    # In the prototype the racket is "the rally symbol": its own ways pay is
+    # reduced to the minimum (its value comes from Rally Path) -- see
+    # docs/RALLY_PATH_PROTOTYPE.md for why (dense rackets would explode ways wins).
+    "RACKET_WAYS_PAY": {"3": 1, "4": 1, "5": 1, "6": 2},
+    "G_ON_REEL1": {"base": 2, "free": 6},   # Golden Balls added to reel 1 of the prototype strips
+    "FREE_RACKETS": 35,              # racket count per bonus reel (normal bonus reels: 11)
+    "MAX_SHOTS": 6,
+    # reward by rally length in shots (t-units = 0.1 x bet); 6 shots = Championship Shot
+    "REWARD": {"1": 0, "2": 20, "3": 80, "4": 300, "5": 1000},
+    "CS_ROLL": 1000,
+    "CS_TABLE": [[1500, 450], [3000, 300], [7500, 170], [15000, 60], [40000, 20]],
+    "BONUS": {
+        "rally": {"spins": 8, "second_serve": False},
+        "final": {"spins": 12, "second_serve": True, "second_serve_max_len": 2},
+    },
+}
+
 # Bet modes (Stake Engine "modes").  Costs of the buy / bonus-chance modes are
 # DERIVED from the exact maths (see tune.py / reports/exact.json) and written
 # here once validated; they are not guesses.

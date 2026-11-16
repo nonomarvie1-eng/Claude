@@ -28,6 +28,12 @@ export interface View {
   bigWin(amount: number, tier: WinTier): Promise<void>;
   wincap(): Promise<void>;
   pause(ms: number): Promise<void>;
+  // Rally Path prototype (demo lab only)
+  rallyPath?(e: Ev<'rallyPath'>): Promise<void>;
+  protoBonusStart?(e: Ev<'protoBonusStart'>): Promise<void>;
+  protoSpinStart?(e: Ev<'spinStart'>): void;
+  secondServe?(e: Ev<'secondServe'>): Promise<void>;
+  protoBonusEnd?(e: Ev<'protoBonusEnd'>, amount: number): Promise<void>;
 }
 
 export interface Hud {
@@ -149,6 +155,33 @@ export async function playBook(events: BookEvent[], view: View, hud: Hud, opts: 
         hud.setBonusLevel?.(null);
         break;
       }
+      // ---- Rally Path prototype
+      case 'rallyPath':
+        await view.rallyPath?.(e);
+        break;
+      case 'protoBonusStart':
+        hasBonus = true;
+        hud.setBonusLevel?.(e.bonus);
+        hud.setInBonus(true);
+        hud.setFreeSpins(0, e.spins);
+        view.setMode('freegame', e.bonus);
+        await view.protoBonusStart?.(e);
+        break;
+      case 'spinStart':
+        exchange = e.spin;
+        hud.setFreeSpins(e.spin, e.total);
+        view.protoSpinStart?.(e);
+        break;
+      case 'secondServe':
+        hud.setFreeSpins(exchange, e.total);
+        await view.secondServe?.(e);
+        break;
+      case 'protoBonusEnd':
+        await view.protoBonusEnd?.(e, winAmount(bet, e.amount));
+        view.setMode('basegame');
+        hud.setInBonus(false);
+        hud.setBonusLevel?.(null);
+        break;
       case 'finalWin': {
         total = winAmount(bet, e.amount);
         hud.setWin(total);

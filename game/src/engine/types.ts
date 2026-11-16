@@ -3,7 +3,7 @@
 // math/rally_math/engine.py).  Amounts are payoutMultiplier units
 // (bet multiple x 100).
 
-export type SymbolName = 'W' | 'S' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'L1' | 'L2' | 'L3' | 'L4' | 'L5';
+export type SymbolName = 'W' | 'S' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5' | 'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'G'; // G = Golden Ball, Rally Path PROTOTYPE only
 export type GameType = 'basegame' | 'freegame';
 export type Board = SymbolName[][]; // board[reel][row]
 
@@ -49,7 +49,14 @@ export type BookEvent =
   | { index: number; type: 'setTotalWin'; amount: number }
   | { index: number; type: 'wincap'; amount: number }
   | { index: number; type: 'bonusEnd'; bonus: BonusLevel; amount: number; bonusWin: number; exchanges: number; points: number; ceremony: 'none' | 'trophy' | 'grand'; winLevel: string }
-  | { index: number; type: 'finalWin'; amount: number };
+  | { index: number; type: 'finalWin'; amount: number }
+  // ---- Rally Path PROTOTYPE (demo lab only, see docs/RALLY_PATH_PROTOTYPE.md)
+  | { index: number; type: 'rallyPath'; length: number; path: Position[]; reward: number; championshipShot: boolean }
+  | { index: number; type: 'scatterPay'; count: number; amount: number }
+  | { index: number; type: 'protoBonusStart'; bonus: BonusLevel; spins: number }
+  | { index: number; type: 'spinStart'; spin: number; total: number }
+  | { index: number; type: 'secondServe'; added: number; total: number }
+  | { index: number; type: 'protoBonusEnd'; bonus: BonusLevel; amount: number; spins: number };
 
 export interface Book {
   id: number;

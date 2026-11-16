@@ -7,6 +7,8 @@ import { playBook, type Hud } from './player';
 import { game } from './state.svelte';
 import { RULES } from '../engine/rules';
 import type { ModeName } from '../engine/types';
+import { PROTO, playProtoRound, type ProtoMode } from '../engine/rallyPath';
+import { cryptoDrawer, listDrawer } from '../engine/rng';
 
 export interface AutoplayConfig {
   count: number;
@@ -88,6 +90,7 @@ export class Controller {
   /** One round in `mode` (default: the spin mode selected by the player). */
   async spin(force: ForcedScenario = null, mode: ModeName = game.spinMode) {
     if (!this.canSpin() || this.inFlight) return; // no accidental double debit
+    if (game.labOn && this.rgs.kind === 'demo' && !force && mode === game.spinMode) return this.labRound('base');
     const cost = RULES.modes[mode].cost;
     if (Math.round(game.bet * cost) > game.balance) {
       game.notice = game.t.insufficient;
@@ -130,7 +133,35 @@ export class Controller {
     }
   }
 
+  /** Rally Path LAB (demo only): one prototype round, never debited nor credited.
+   *  scenario = recorded draws from shared/rally-path-proto.json (exact replay). */
+  async labRound(mode: ProtoMode, scenario: string | null = null) {
+    if (this.rgs.kind !== 'demo' || !this.canSpin() || this.inFlight) return;
+    this.inFlight = true;
+    game.modal = null;
+    game.phase = 'spinning';
+    game.win = 0;
+    game.banner = game.t.labBanner;
+    const savedWin = game.win;
+    try {
+      this.scene.setProto(true);
+      const sc = scenario ? PROTO.scenarios[scenario] : null;
+      const r = playProtoRound(sc ? listDrawer(sc.draws) : cryptoDrawer, sc ? sc.mode : mode);
+      (window as unknown as { __rallyLab: unknown }).__rallyLab = { mode: sc ? sc.mode : mode, scenario, events: r.events, bet: game.bet };
+      this.scene.bet = game.bet;
+      await playBook(r.events, this.scene, this.hud, { bet: game.bet, cost: 1 });
+    } catch (e) {
+      this.fail(e);
+    } finally {
+      game.banner = null;
+      game.win = savedWin;
+      if (game.phase === 'spinning') game.phase = 'idle';
+      this.inFlight = false;
+    }
+  }
+
   private async present(round: Round, quick: boolean) {
+    this.scene.setProto(false);
     this.scene.bet = round.amount;
     await playBook(round.state, this.scene, this.hud, { bet: round.amount, cost: round.cost ?? 1, quick, mode: (round.mode as ModeName) ?? 'base' });
   }

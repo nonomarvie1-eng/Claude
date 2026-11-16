@@ -72,10 +72,10 @@ def anticipation(board) -> list[int]:
 
 # ------------------------------------------------------------------ vectorised helpers (simulation)
 
-def count_tables(strips: list[list[int]]) -> list[np.ndarray]:
+def count_tables(strips: list[list[int]], n_sym: int | None = None) -> list[np.ndarray]:
     """cnt[r][stop, symbol] = occurrences of symbol in the window at that stop."""
     out = []
-    n_sym = len(C.SYMBOLS)
+    n_sym = n_sym or len(C.SYMBOLS)
     for strip in strips:
         a = np.array(strip)
         L = len(a)

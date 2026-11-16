@@ -1,0 +1,495 @@
+{
+ "failures": 0,
+ "results": [
+  {
+   "name": "lab-320x568 three: scenario replays the recorded result",
+   "ok": true,
+   "detail": "8x / 8x"
+  },
+  {
+   "name": "lab-320x568 three: rally length as expected",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "lab-320x568 three: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-320x568 three: duration",
+   "ok": true,
+   "detail": "4690 ms"
+  },
+  {
+   "name": "lab-320x568 full: scenario replays the recorded result",
+   "ok": true,
+   "detail": "300x / 300x"
+  },
+  {
+   "name": "lab-320x568 full: rally length as expected",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "name": "lab-320x568 full: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-320x568 full: duration",
+   "ok": true,
+   "detail": "15246 ms"
+  },
+  {
+   "name": "lab-320x568: no scroll/overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-320x568: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-375x812 three: scenario replays the recorded result",
+   "ok": true,
+   "detail": "8x / 8x"
+  },
+  {
+   "name": "lab-375x812 three: rally length as expected",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "lab-375x812 three: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-375x812 three: duration",
+   "ok": true,
+   "detail": "5565 ms"
+  },
+  {
+   "name": "lab-375x812 full: scenario replays the recorded result",
+   "ok": true,
+   "detail": "300x / 300x"
+  },
+  {
+   "name": "lab-375x812 full: rally length as expected",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "name": "lab-375x812 full: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-375x812 full: duration",
+   "ok": true,
+   "detail": "16182 ms"
+  },
+  {
+   "name": "lab-375x812: no scroll/overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-375x812: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 no_return: scenario replays the recorded result",
+   "ok": true,
+   "detail": "0x / 0x"
+  },
+  {
+   "name": "lab-390x844 no_return: rally length as expected",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "name": "lab-390x844 no_return: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 no_return: duration",
+   "ok": true,
+   "detail": "4315 ms"
+  },
+  {
+   "name": "lab-390x844 short: scenario replays the recorded result",
+   "ok": true,
+   "detail": "3.2x / 3.2x"
+  },
+  {
+   "name": "lab-390x844 short: rally length as expected",
+   "ok": true,
+   "detail": "2"
+  },
+  {
+   "name": "lab-390x844 short: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 short: duration",
+   "ok": true,
+   "detail": "5741 ms"
+  },
+  {
+   "name": "lab-390x844 three: scenario replays the recorded result",
+   "ok": true,
+   "detail": "8x / 8x"
+  },
+  {
+   "name": "lab-390x844 three: rally length as expected",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "lab-390x844 three: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 three: duration",
+   "ok": true,
+   "detail": "4760 ms"
+  },
+  {
+   "name": "lab-390x844 five: scenario replays the recorded result",
+   "ok": true,
+   "detail": "100x / 100x"
+  },
+  {
+   "name": "lab-390x844 five: rally length as expected",
+   "ok": true,
+   "detail": "5"
+  },
+  {
+   "name": "lab-390x844 five: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 five: duration",
+   "ok": true,
+   "detail": "11619 ms"
+  },
+  {
+   "name": "lab-390x844 full: scenario replays the recorded result",
+   "ok": true,
+   "detail": "300x / 300x"
+  },
+  {
+   "name": "lab-390x844 full: rally length as expected",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "name": "lab-390x844 full: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 full: duration",
+   "ok": true,
+   "detail": "16128 ms"
+  },
+  {
+   "name": "lab-390x844 rally_plain: scenario replays the recorded result",
+   "ok": true,
+   "detail": "50.9x / 50.9x"
+  },
+  {
+   "name": "lab-390x844 rally_plain: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 final_ss: scenario replays the recorded result",
+   "ok": true,
+   "detail": "34.4x / 34.4x"
+  },
+  {
+   "name": "lab-390x844 final_ss: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844 final_cs: scenario replays the recorded result",
+   "ok": true,
+   "detail": "201.9x / 201.9x"
+  },
+  {
+   "name": "lab-390x844 final_cs: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844: no scroll/overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-390x844: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-430x932 three: scenario replays the recorded result",
+   "ok": true,
+   "detail": "8x / 8x"
+  },
+  {
+   "name": "lab-430x932 three: rally length as expected",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "lab-430x932 three: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-430x932 three: duration",
+   "ok": true,
+   "detail": "5796 ms"
+  },
+  {
+   "name": "lab-430x932 full: scenario replays the recorded result",
+   "ok": true,
+   "detail": "300x / 300x"
+  },
+  {
+   "name": "lab-430x932 full: rally length as expected",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "name": "lab-430x932 full: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-430x932 full: duration",
+   "ok": true,
+   "detail": "16203 ms"
+  },
+  {
+   "name": "lab-430x932: no scroll/overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-430x932: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-768x1024 three: scenario replays the recorded result",
+   "ok": true,
+   "detail": "8x / 8x"
+  },
+  {
+   "name": "lab-768x1024 three: rally length as expected",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "lab-768x1024 three: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-768x1024 three: duration",
+   "ok": true,
+   "detail": "8115 ms"
+  },
+  {
+   "name": "lab-768x1024 full: scenario replays the recorded result",
+   "ok": true,
+   "detail": "300x / 300x"
+  },
+  {
+   "name": "lab-768x1024 full: rally length as expected",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "name": "lab-768x1024 full: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-768x1024 full: duration",
+   "ok": true,
+   "detail": "25721 ms"
+  },
+  {
+   "name": "lab-768x1024: no scroll/overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-768x1024: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 no_return: scenario replays the recorded result",
+   "ok": true,
+   "detail": "0x / 0x"
+  },
+  {
+   "name": "lab-1440x900 no_return: rally length as expected",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "name": "lab-1440x900 no_return: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 no_return: duration",
+   "ok": true,
+   "detail": "8246 ms"
+  },
+  {
+   "name": "lab-1440x900 short: scenario replays the recorded result",
+   "ok": true,
+   "detail": "3.2x / 3.2x"
+  },
+  {
+   "name": "lab-1440x900 short: rally length as expected",
+   "ok": true,
+   "detail": "2"
+  },
+  {
+   "name": "lab-1440x900 short: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 short: duration",
+   "ok": true,
+   "detail": "12229 ms"
+  },
+  {
+   "name": "lab-1440x900 three: scenario replays the recorded result",
+   "ok": true,
+   "detail": "8x / 8x"
+  },
+  {
+   "name": "lab-1440x900 three: rally length as expected",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "lab-1440x900 three: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 three: duration",
+   "ok": true,
+   "detail": "9276 ms"
+  },
+  {
+   "name": "lab-1440x900 five: scenario replays the recorded result",
+   "ok": true,
+   "detail": "100x / 100x"
+  },
+  {
+   "name": "lab-1440x900 five: rally length as expected",
+   "ok": true,
+   "detail": "5"
+  },
+  {
+   "name": "lab-1440x900 five: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 five: duration",
+   "ok": true,
+   "detail": "21422 ms"
+  },
+  {
+   "name": "lab-1440x900 full: scenario replays the recorded result",
+   "ok": true,
+   "detail": "300x / 300x"
+  },
+  {
+   "name": "lab-1440x900 full: rally length as expected",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "name": "lab-1440x900 full: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 full: duration",
+   "ok": true,
+   "detail": "32475 ms"
+  },
+  {
+   "name": "lab-1440x900 rally_plain: scenario replays the recorded result",
+   "ok": true,
+   "detail": "50.9x / 50.9x"
+  },
+  {
+   "name": "lab-1440x900 rally_plain: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 final_ss: scenario replays the recorded result",
+   "ok": true,
+   "detail": "34.4x / 34.4x"
+  },
+  {
+   "name": "lab-1440x900 final_ss: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900 final_cs: scenario replays the recorded result",
+   "ok": true,
+   "detail": "201.9x / 201.9x"
+  },
+  {
+   "name": "lab-1440x900 final_cs: balance unchanged (lab not credited)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900: no scroll/overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "lab-1440x900: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "skip by taps: same result as the recorded scenario",
+   "ok": true,
+   "detail": "16338 ms"
+  },
+  {
+   "name": "lab toggle: 3 prototype spins, balance unchanged",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}
