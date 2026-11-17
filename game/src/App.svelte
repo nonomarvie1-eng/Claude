@@ -8,6 +8,7 @@
   import Hud from './ui/Hud.svelte';
   import Intro from './ui/Intro.svelte';
   import { IntroScene } from './render/intro';
+  import { loadServeClip } from './render/serveClip';
   import { STORE_NS } from './engine/gameplay';
   import { tick } from 'svelte';
   import Modal from './ui/Modal.svelte';
@@ -27,6 +28,7 @@
   let intro: IntroScene | null = null;
   let showCard = $state(false);
   let entering = $state(false);
+  let cinematic = $state(false);
   let slow = $state(false);
   let failed = $state(false);
   const SEEN_KEY = `golden-rally-first-serve-seen-${STORE_NS}`;
@@ -86,12 +88,15 @@
 
   /** Sound only after a real user gesture (autoplay policies). */
   let audioStarted = false;
-  async function startAudio() {
-    if (audioStarted) return;
+  async function startAudio(withMusic = true) {
+    if (audioStarted) {
+      if (withMusic) audio.setMusic('music_base');
+      return;
+    }
     audioStarted = true;
     await audio.unlock();
-    audio.setMusic('music_base');
     audio.startLoop('ambience', 0.5);
+    if (withMusic) audio.setMusic('music_base');
   }
   function armAudioOnFirstGesture() {
     const go = () => {
@@ -103,12 +108,15 @@
     window.addEventListener('keydown', go, true);
   }
 
-  async function enter(fromGesture: boolean) {
+  async function enter(fromGesture: boolean, allowCinematic = true) {
     if (!ctrl || !intro || entering || game.phase !== 'ready') return;
     markSeen();
-    if (fromGesture) void startAudio();
+    // the ACE! opening: first visit (PLAY gesture: sound allowed), never with reduced motion
+    const playCine = allowCinematic && fromGesture && !game.prefs.reducedMotion && intro.hasCinematicAssets();
+    if (fromGesture) void startAudio(!playCine);
     else armAudioOnFirstGesture();
     entering = true;
+    cinematic = playCine;
     showCard = false;
     game.phase = 'spinning'; // the HUD mounts (hidden while entering) so the reels get their final layout
     await tick();
@@ -116,7 +124,13 @@
     scene.layout();
     const L = scene.layoutInfo;
     const target = L ? L.board : { x: 0, y: 0, w: 1, h: 1 };
-    await intro.enter(target, () => scene.setIntro(false, game.prefs.reducedMotion ? 150 : 260));
+    if (playCine) {
+      const clip = await loadServeClip();
+      await intro.playCinematic({ clip: clip?.clip, video: clip?.video, onOcclude: () => scene.setIntro(false, 0) });
+      clip?.video.removeAttribute('src');
+      void startAudio(true);
+    } else await intro.enter(target, () => scene.setIntro(false, game.prefs.reducedMotion ? 150 : 260));
+    cinematic = false;
     intro.destroy();
     intro = null;
     entering = false;
@@ -175,7 +189,7 @@
   {/if}
 
   {#if game.phase === 'loading' || game.phase === 'ready' || entering || failed}
-    <Intro bind:host={introHost} {showCard} {entering} {slow} {failed} oncontinue={() => enter(true)} onskiptransition={() => intro?.skipTransition()} />
+    <Intro bind:host={introHost} {showCard} {entering} {cinematic} {slow} {failed} oncontinue={() => enter(true)} onskipintro={() => enter(true, false)} onskiptransition={() => { intro?.skipTransition(); intro?.skipCinematic(); }} />
   {/if}
 
   {#if game.notice}

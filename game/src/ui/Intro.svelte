@@ -3,13 +3,15 @@
   // error messages, first-visit buttons.  The visuals are drawn by IntroScene
   // (PixiJS) in its own canvas, mounted in `host`.
   import { game } from '../game/state.svelte';
-  let { host = $bindable(), showCard, entering, slow, failed, oncontinue, onskiptransition }: {
+  let { host = $bindable(), showCard, entering, cinematic = false, slow, failed, oncontinue, onskipintro, onskiptransition }: {
     host?: HTMLDivElement;
     showCard: boolean;
     entering: boolean;
+    cinematic?: boolean;
     slow: boolean;
     failed: boolean;
     oncontinue: () => void;
+    onskipintro?: () => void;
     onskiptransition: () => void;
   } = $props();
   const t = $derived(game.t);
@@ -32,8 +34,11 @@
   {#if showCard && !entering}
     <div class="actions">
       <button class="btn primary" onclick={oncontinue} data-testid="start">{t.introContinue}</button>
-      <button class="link" onclick={oncontinue} data-testid="intro-skip">{t.introSkip}</button>
+      <button class="link" onclick={onskipintro ?? oncontinue} data-testid="intro-skip">{t.introSkip}</button>
     </div>
+  {/if}
+  {#if cinematic}
+    <button class="skipcine" onpointerdown={(e) => e.stopPropagation()} onclick={onskiptransition} data-testid="cine-skip">{t.introSkipShort}</button>
   {/if}
   {#if !entering}<p class="demo">{t.demoNotice}</p>{/if}
 </div>
@@ -66,6 +71,7 @@
     width: min(560px, calc(100% - 32px)); margin: 0; text-align: center; font-size: 11px; line-height: 1.45; color: rgba(244, 233, 212, .75);
   }
   .entering { background: transparent; pointer-events: auto; }
+  .skipcine { position: absolute; top: calc(12px + var(--safe-t)); right: calc(12px + var(--safe-r, 0px)); min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(231, 200, 119, .6); background: rgba(7, 24, 38, .55); color: #f4e9d4; font: 700 13px/1 Inter, sans-serif; letter-spacing: .12em; }
   /* phone on its side: the card takes the left, the buttons the right */
   @media (max-height: 499px) and (orientation: landscape) {
     .actions { left: auto; right: calc(4% + var(--safe-r, 0px)); bottom: auto; top: 50%; transform: translateY(-60%); width: 34%; }

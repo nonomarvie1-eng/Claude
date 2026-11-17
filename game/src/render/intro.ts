@@ -6,6 +6,7 @@
 import { Application, BlurFilter, Container, FillGradient, Graphics, Sprite, Text, type Texture } from 'pixi.js';
 import { audio } from '../audio/audio';
 import { ease, Tweener } from './tween';
+import { AceCinematic, type CinematicResult, type ServeClip } from './aceCinematic';
 
 export interface Rect { x: number; y: number; w: number; h: number }
 
@@ -402,6 +403,52 @@ export class IntroScene {
     });
     if (!revealed) onReveal();
     done();
+  }
+
+  /** the 9:16 composition rectangle: where the stadium image is shown in full height */
+  compRect(): Rect {
+    const w = this.app.screen.width, h = this.app.screen.height;
+    const st = this.stadium.texture;
+    const s = this.stadium.scale.x;
+    const cw = Math.min(w, st.width * s), ch = Math.min(h, st.height * s);
+    return { x: (w - cw) / 2, y: (h - ch) / 2, w: cw, h: ch };
+  }
+
+  // ------------------------------------------------------------ ACE! opening cinematic
+  cinematic: AceCinematic | null = null;
+  cinematicResult: CinematicResult | null = null;
+  /**
+   * Plays the ACE! opening on this stadium (the loading bar and the card are
+   * already gone).  `onOcclude` must show the real game under the ball.
+   */
+  async playCinematic(opts: { clip?: ServeClip | null; video?: HTMLVideoElement | null; onOcclude: () => void }) {
+    this.barLayer.visible = false;
+    if (this.card.children.length) await this.tw.tween(160, (u) => {
+      this.card.alpha = 1 - u;
+      this.veil.alpha = 0.45 * (1 - u);
+    });
+    this.card.visible = false;
+    this.veil.alpha = 0;
+    // QA only (demo builds): __rallyTimeScale slows the presentation for frame captures
+    const qa = () => (import.meta.env.VITE_ENABLE_RGS === '1' ? 1 : ((window as unknown as { __rallyTimeScale?: number }).__rallyTimeScale ?? 1));
+    this.tw.speed = () => qa();
+    const c0 = this.clock;
+    this.cinematic = new AceCinematic({ app: this.app, tw: this.tw, root: this.root, stadium: this.stadium, comp: this.compRect(), tex: this.tex });
+    if (this.cineSkipRequested) this.cinematic.skip();
+    this.cinematicResult = await this.cinematic.play(opts);
+    this.qa.transitionAnimMs = this.clock - c0;
+    this.qa.transitionMs = this.cinematicResult.totalMs;
+    return this.cinematicResult;
+  }
+
+  hasCinematicAssets() {
+    return !!(this.tex.ace_logo_noball && this.tex.ace_logo_ball && this.tex.loading_ball);
+  }
+
+  private cineSkipRequested = false;
+  skipCinematic() {
+    this.cineSkipRequested = true; // also honoured if the opening has not started yet
+    this.cinematic?.skip();
   }
 
   destroy() {

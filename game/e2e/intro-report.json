@@ -1,5 +1,5 @@
 {
- "url": "http://localhost:4197/?lang=fr",
+ "url": "http://localhost:4190/index.html?lang=fr",
  "failures": 0,
  "results": [
   {
@@ -10,7 +10,7 @@
   {
    "name": "390: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "514 samples, 0,5,15,20,23,26,28,31,34,37,39,42…"
+   "detail": "67 samples, 30,32,35,38,40,45,57,73,80,83,100…"
   },
   {
    "name": "390: the ball reached the end of the track, never left it",
@@ -50,12 +50,12 @@
   {
    "name": "390: HUD hidden during the transition",
    "ok": true,
-   "detail": "10 frames, max opacity 0.00"
+   "detail": "63 frames, max opacity 0.00"
   },
   {
-   "name": "390: transition into the game ~0.5 s",
+   "name": "390: PLAY on the first visit runs the ACE! opening into the reels",
    "ok": true,
-   "detail": "500 ms animation · 619 ms wall @ 15 fps (software rendering)"
+   "detail": "4689 ms"
   },
   {
    "name": "390: sound started by the PLAY gesture",
@@ -83,6 +83,11 @@
    "detail": ""
   },
   {
+   "name": "390: returning visit: transition into the game ~0.5 s",
+   "ok": true,
+   "detail": "500 ms animation · 600 ms wall @ 18 fps (software rendering)"
+  },
+  {
    "name": "390: returning visit: no sound before a gesture",
    "ok": true,
    "detail": ""
@@ -105,7 +110,7 @@
   {
    "name": "pixel7-landscape: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "62 samples, 0,5,15,20,31,34,37,39,42,47,53,69…"
+   "detail": "60 samples, 0,5,15,25,30,32,35,38,40,45,57,70…"
   },
   {
    "name": "pixel7-landscape: the ball reached the end of the track, never left it",
@@ -143,9 +148,9 @@
    "detail": "{\"top\":121,\"h\":52}"
   },
   {
-   "name": "pixel7-landscape: skip link enters the game",
+   "name": "pixel7-landscape: skip link enters the game without the opening",
    "ok": true,
-   "detail": "1580 ms"
+   "detail": "1869 ms"
   },
   {
    "name": "pixel7-landscape: no overflow, no console errors",
@@ -160,7 +165,7 @@
   {
    "name": "1440x900: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "90 samples, 0,5,15,20,31,34,37,39,42,45,47,63…"
+   "detail": "61 samples, 0,5,15,25,30,32,35,38,40,45,52,68…"
   },
   {
    "name": "1440x900: the ball reached the end of the track, never left it",
@@ -198,9 +203,9 @@
    "detail": "{\"top\":750,\"h\":52}"
   },
   {
-   "name": "1440x900: skip link enters the game",
+   "name": "1440x900: skip link enters the game without the opening",
    "ok": true,
-   "detail": "2928 ms"
+   "detail": "3288 ms"
   },
   {
    "name": "1440x900: no overflow, no console errors",
@@ -215,7 +220,7 @@
   {
    "name": "320x568: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "85 samples, 0,5,15,20,26,28,31,34,37,39,42,45…"
+   "detail": "63 samples, 0,5,15,25,30,32,35,38,40,45,55,68…"
   },
   {
    "name": "320x568: the ball reached the end of the track, never left it",
@@ -253,9 +258,9 @@
    "detail": "{\"top\":418,\"h\":52}"
   },
   {
-   "name": "320x568: skip link enters the game",
+   "name": "320x568: skip link enters the game without the opening",
    "ok": true,
-   "detail": "617 ms"
+   "detail": "769 ms"
   },
   {
    "name": "320x568: no overflow, no console errors",
@@ -265,17 +270,12 @@
   {
    "name": "reduced motion: short crossfade only (≤ 0.3 s of animation)",
    "ok": true,
-   "detail": "217 ms"
+   "detail": "183 ms"
   },
   {
-   "name": "tap skips the transition (shorter than the slowed-down one)",
+   "name": "tap skips the opening (much shorter than the slowed-down one)",
    "ok": true,
-   "detail": "433 ms of animation at 0.25x speed"
-  },
-  {
-   "name": "load error: message + retry button, no game entered",
-   "ok": true,
-   "detail": ""
+   "detail": "2067 ms of animation at 0.25x speed"
   }
  ]
 }

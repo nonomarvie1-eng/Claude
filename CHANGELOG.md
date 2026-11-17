@@ -1,5 +1,13 @@
 # Changelog
 
+## ACE-OPEN-01 — cinématique d'ouverture ACE! (2026-11-17)
+- Logo ACE! sur le stade officiel ; la balle du « ! » (découpée du logo, sans redessin) se détache, tombe et rebondit en devenant la balle photographique : une seule balle, même position, même taille.
+- Sans séquence de joueur : la caméra se rapproche de la même balle jusqu'à l'occultation, puis les vrais rouleaux apparaissent (aucun personnage de substitution, aucun faux rouleau).
+- Point d'intégration prêt pour la séquence du joueur (`src/assets/cinematic/serve.mp4` et `serve.json`), avec synchronisation de l'impact et de l'occultation et repli automatique ; testé avec un clip synthétique.
+- Bouton PASSER, accélération par toucher, réduction des mouvements, interface masquée, nettoyage.
+- Analyse de la vidéo de référence et cahier des charges de production : docs/ACE_CINEMATIC.md.
+- Tests : cinématique 19/19 (16/16 sur le fichier publié), intro 56/56 (55/55), Return Spins 104/104.
+
 ## FIRST-SERVE-02 — écran de chargement avec les assets fournis (2026-11-17)
 - Stade de nuit, barre ivoire et champagne, balle de tennis fournis (WebP fidèles et PNG d'origine en secours), proportions conservées.
 - Remplissage or champagne et balle qui suit la progression réelle ; à 100 % : rebond unique, son d'impact s'il est disponible, reflet sur la barre, fondu ; transition de 500 ms vers le jeu sur le même stade.

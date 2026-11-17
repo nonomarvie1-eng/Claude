@@ -1,0 +1,86 @@
+{
+ "url": "http://localhost:4190/index.html?lang=fr",
+ "failures": 0,
+ "results": [
+  {
+   "name": "390: the ACE! opening plays after PLAY (first visit)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: ONE ball — the falling ball starts exactly at the logo ball (same x, same size)",
+   "ok": true,
+   "detail": "{\"logoBallX\":307.27779030439683,\"logoBallY\":174.13479143179256,\"fallStartX\":307.27779030439683,\"fallStartY\":166.29381285231116,\"dStart\":35.640811724915444,\"dLogo\":35.640811724915444}"
+  },
+  {
+   "name": "390: the ball leaves its socket upwards before falling (lift only)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: two bounces on the court with sound cues",
+   "ok": true,
+   "detail": "2"
+  },
+  {
+   "name": "390: no player clip: no stand-in character, camera push into the ball",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: real reels revealed under the ball (occlusion), game playable",
+   "ok": true,
+   "detail": "occluded at 4614 ms of 5256 ms"
+  },
+  {
+   "name": "390: HUD hidden during the whole opening",
+   "ok": true,
+   "detail": "66 frames"
+  },
+  {
+   "name": "390: loading/opening canvas removed (one canvas left)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: a spin works right after the opening",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: returning visit goes straight to the grid (no opening)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "skip: the opening can be skipped (shorter, game reached)",
+   "ok": true,
+   "detail": "1018 ms"
+  },
+  {
+   "name": "reduced motion: no opening, short crossfade",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: opening plays and reaches the game, no overflow, no errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: opening plays and reaches the game, no overflow, no errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: opening plays and reaches the game, no overflow, no errors",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

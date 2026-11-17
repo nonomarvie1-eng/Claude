@@ -111,9 +111,8 @@ try {
   const hs = await page.evaluate(() => window.__hudSamples);
   check('390: HUD hidden during the transition', hs.length > 0 && Math.max(...hs) < 0.5, `${hs.length} frames, max opacity ${hs.length ? Math.max(...hs).toFixed(2) : '-'}`);
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
-  const tq = await page.evaluate(() => ({ ...window.__rallyIntro.qa }));
-  // animation time (what a fluid device shows); the wall time of this software-rendered browser is reported too
-  check('390: transition into the game ~0.5 s', tq.transitionAnimMs >= 450 && tq.transitionAnimMs <= 700, `${Math.round(tq.transitionAnimMs)} ms animation · ${Math.round(tq.transitionMs)} ms wall @ ${tq.fps} fps (software rendering)`);
+  const cr = await page.evaluate(() => window.__rallyIntro.cinematicResult);
+  check('390: PLAY on the first visit runs the ACE! opening into the reels', cr && cr.occludedAt > 0, cr && `${Math.round(cr.totalMs)} ms`);
   check('390: sound started by the PLAY gesture', (await page.evaluate(() => window.__audioCtx)) === 1);
   check('390: intro canvas removed, reels visible', (await page.$('[data-testid=intro-progress]')) === null && (await page.evaluate(() => window.__rallyLayout.board.w)) > 300);
   check('390: loading loops cleaned up (one canvas left)', (await page.evaluate(() => document.querySelectorAll('canvas').length)) === 1);
@@ -127,6 +126,9 @@ try {
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 60000 });
   const sawCard = await page.evaluate(() => !!document.querySelector('[data-testid=intro-skip]'));
   check('390: returning visit goes straight to the grid (no card)', !sawCard);
+  const tq = await page.evaluate(() => ({ ...window.__rallyIntro.qa }));
+  // animation time (what a fluid device shows); the wall time of this software-rendered browser is reported too
+  check('390: returning visit: transition into the game ~0.5 s', tq.transitionAnimMs >= 450 && tq.transitionAnimMs <= 700, `${Math.round(tq.transitionAnimMs)} ms animation · ${Math.round(tq.transitionMs)} ms wall @ ${tq.fps} fps (software rendering)`);
   check('390: returning visit: no sound before a gesture', (await page.evaluate(() => window.__audioCtx)) === 0);
   await page.click('[data-testid=spin]');
   await page.waitForTimeout(300);
@@ -143,7 +145,7 @@ try {
     await o.page.click('[data-testid=intro-skip]');
     await o.page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
     const tq2 = await o.page.evaluate(() => window.__rallyIntro.qa.transitionMs);
-    check(`${name}: skip link enters the game`, tq2 > 0, `${Math.round(tq2)} ms`);
+    check(`${name}: skip link enters the game without the opening`, tq2 > 0 && !(await o.page.evaluate(() => window.__rallyIntro.cinematicResult)), `${Math.round(tq2)} ms`);
     await o.page.waitForTimeout(400);
     await o.page.screenshot({ path: path.join(SHOTS, `fs-${name}-game.png`) });
     const mm = await o.page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth }));
@@ -172,9 +174,10 @@ try {
     await page.click('[data-testid=start]');
     await page.waitForTimeout(150);
     for (let i = 0; i < 4; i++) await page.mouse.click(195, 500).catch(() => {});
-    await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
+    await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 90000 });
     const tq4 = await page.evaluate(() => window.__rallyIntro.qa.transitionAnimMs);
-    check('tap skips the transition (shorter than the slowed-down one)', tq4 < (0.5 / 0.25) * 1000 * 0.8, `${Math.round(tq4)} ms of animation at 0.25x speed`);
+    // PLAY starts the ACE! opening (~5 s, 20 s at 0.25x): taps accelerate it to the reels
+    check('tap skips the opening (much shorter than the slowed-down one)', tq4 < 20000 * 0.5, `${Math.round(tq4)} ms of animation at 0.25x speed`);
     await ctx.close();
   }
   // loading error: an image cannot be fetched -> clear message + retry
