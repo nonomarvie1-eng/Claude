@@ -60,8 +60,13 @@ async function firstVisit(name, opts, throttle) {
     await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 120, downloadThroughput: (+(process.env.KBPS || 2500) * 1000) / 8, uploadThroughput: 1e5 });
   }
   await page.goto(URL, { waitUntil: 'commit' });
-  await page.waitForSelector('#preboot, [data-testid=intro-progress]', { timeout: 20000 });
-  check(`${name}: stadium pre-boot layer shown before the game script`, await page.isVisible('#preboot .pb-bg').catch(() => false) || (await page.$('[data-testid=intro-progress]')) !== null);
+  // the stadium (pre-boot layer, or the loading scene if the script was faster) is on screen
+  await page.waitForFunction(() => {
+    const img = document.querySelector('#preboot .pb-bg');
+    return (img && img.complete && img.naturalWidth > 0) || !!document.querySelector('[data-testid=intro-progress]');
+  }, null, { timeout: 30000 });
+  const early = await page.evaluate(() => !document.querySelector('[data-testid=intro-progress]'));
+  check(`${name}: stadium shown${early ? ' by the pre-boot layer, before the game script' : ' (script already running)'}`, true);
   await page.waitForSelector('[data-testid=intro-progress]', { timeout: 60000 });
   await probe(page);
   await page.screenshot({ path: path.join(SHOTS, `fs-${name}-loading.png`) });
@@ -70,7 +75,8 @@ async function firstVisit(name, opts, throttle) {
   const mono = prog.every((v, i) => i === 0 || v >= prog[i - 1]);
   check(`${name}: real progress, monotonic, ends at 100`, mono && prog[prog.length - 1] === 100, `${prog.length} samples, ${[...new Set(prog)].slice(0, 12).join(',')}…`);
   const q = await page.evaluate(() => ({ ...window.__rallyIntro.qa }));
-  check(`${name}: the four light banks switched on with the progress`, q.lightsOn === 4);
+  check(`${name}: the ball reached the end of the track, never left it`, q.ballAtEnd && !q.ballOffTrack);
+  check(`${name}: completion: one bounce + highlight across the bar`, q.completed && q.bounced && q.swept);
   check(`${name}: preboot removed once the scene is up`, (await page.$('#preboot')) === null);
   check(`${name}: no sound before a gesture`, (await page.evaluate(() => window.__audioCtx)) === 0);
   await page.waitForTimeout(400);
@@ -87,17 +93,30 @@ async function firstVisit(name, opts, throttle) {
 try {
   // ---- iPhone-size, slowed network: loading sequence, card, transition, return visit
   const { ctx, page, errors } = await firstVisit('390', { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, userAgent: devices['iPhone 13'].userAgent }, true);
+  // sample the HUD opacity on every frame while the transition runs
+  await page.evaluate(() => {
+    window.__hudSamples = [];
+    const loop = () => {
+      const el = document.querySelector('.hud');
+      const intro = document.querySelector('[data-testid=intro-progress]');
+      if (el && intro) window.__hudSamples.push(+getComputedStyle(el).opacity);
+      if (!window.__rallyIntro?.qa.transitionMs) requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  });
   await page.click('[data-testid=start]');
-  await page.waitForTimeout(250);
+  await page.waitForTimeout(150);
   await page.screenshot({ path: path.join(SHOTS, 'fs-390-transition.png') });
-  const hudOp = await page.evaluate(() => getComputedStyle(document.querySelector('.hud')).opacity);
-  check('390: HUD hidden during the transition', +hudOp < 0.5, `opacity ${hudOp}`);
+  await page.waitForFunction(() => window.__rallyIntro?.qa.transitionMs > 0, null, { timeout: 30000 });
+  const hs = await page.evaluate(() => window.__hudSamples);
+  check('390: HUD hidden during the transition', hs.length > 0 && Math.max(...hs) < 0.5, `${hs.length} frames, max opacity ${hs.length ? Math.max(...hs).toFixed(2) : '-'}`);
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
   const tq = await page.evaluate(() => ({ ...window.__rallyIntro.qa }));
   // animation time (what a fluid device shows); the wall time of this software-rendered browser is reported too
-  check('390: transition animation 0.5–0.8 s', tq.transitionAnimMs >= 500 && tq.transitionAnimMs <= 800, `${Math.round(tq.transitionAnimMs)} ms animation · ${Math.round(tq.transitionMs)} ms wall @ ${tq.fps} fps (software rendering)`);
+  check('390: transition into the game ~0.5 s', tq.transitionAnimMs >= 450 && tq.transitionAnimMs <= 700, `${Math.round(tq.transitionAnimMs)} ms animation · ${Math.round(tq.transitionMs)} ms wall @ ${tq.fps} fps (software rendering)`);
   check('390: sound started by the PLAY gesture', (await page.evaluate(() => window.__audioCtx)) === 1);
   check('390: intro canvas removed, reels visible', (await page.$('[data-testid=intro-progress]')) === null && (await page.evaluate(() => window.__rallyLayout.board.w)) > 300);
+  check('390: loading loops cleaned up (one canvas left)', (await page.evaluate(() => document.querySelectorAll('canvas').length)) === 1);
   await page.waitForTimeout(500);
   await page.screenshot({ path: path.join(SHOTS, 'fs-390-game.png') });
   await page.click('[data-testid=spin]');
@@ -155,7 +174,7 @@ try {
     for (let i = 0; i < 4; i++) await page.mouse.click(195, 500).catch(() => {});
     await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
     const tq4 = await page.evaluate(() => window.__rallyIntro.qa.transitionAnimMs);
-    check('tap skips the transition (shorter than the slowed-down one)', tq4 < (0.7 / 0.25) * 1000 * 0.8, `${Math.round(tq4)} ms of animation at 0.25x speed`);
+    check('tap skips the transition (shorter than the slowed-down one)', tq4 < (0.5 / 0.25) * 1000 * 0.8, `${Math.round(tq4)} ms of animation at 0.25x speed`);
     await ctx.close();
   }
   // loading error: an image cannot be fetched -> clear message + retry

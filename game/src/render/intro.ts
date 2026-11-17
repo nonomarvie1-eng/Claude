@@ -1,45 +1,61 @@
-// GOLDEN RALLY — THE FIRST SERVE: loading + entry scene (PixiJS, own canvas).
-// Separate from the gameplay scene: it is created first with the stadium
-// assets only, shows the REAL loading progress of the game, and is destroyed
-// once the player is on the reels.  It never touches results or the RGS.
-import { Application, Container, Graphics, Sprite, Text, type Texture } from 'pixi.js';
-import LAYERS from '../assets/layers.json';
+// GOLDEN RALLY — loading + entry scene (PixiJS, own canvas).
+// Separate from the gameplay scene: created first with the three loading
+// assets only (stadium, loading bar, tennis ball), it shows the REAL loading
+// progress of the game, then hands over to the reels and is destroyed.
+// It never touches results, the RGS or the gameplay logic.
+import { Application, BlurFilter, Container, FillGradient, Graphics, Sprite, Text, type Texture } from 'pixi.js';
+import { audio } from '../audio/audio';
 import { ease, Tweener } from './tween';
 
 export interface Rect { x: number; y: number; w: number; h: number }
-const FRAME_RATIO = 1080 / 910; // reel frame (6 x 5 cells + margins), same as the game board
 
-const C = { night: 0x071826, navy: 0x0b2440, gold: 0xe7c877, champagne: 0xd6b36a, ivory: 0xf4e9d4, court: 0x16483e };
+/** Usable track of `loading_bar` (inner ivory channel, between the two end caps),
+ *  in fractions of the image, measured on the provided PNG (see docs). */
+export const TRACK = { x0: 0.0773, x1: 0.924, y0: 0.468, y1: 0.558 };
+/** Outer tube (gold rails included), fractions of the image height. */
+const TUBE = { y0: 0.4448, y1: 0.587 };
+/** The ball fills 89 % of its image (measured): sprite size = visible diameter / 0.89. */
+const BALL_FILL = 0.89;
+/** Layout (portrait reference): logo area reserved at the top centre, bar below it. */
+const LOGO_AREA = { y0: 0.075, y1: 0.235 };
+const BAR_CY = 0.29; // bar centre, fraction of the viewport height
+const BAR_W = 0.53; // bar width, fraction of the (portrait-equivalent) viewport width
+const BALL_D = 2.3; // visible ball diameter in tube heights
+
+const C = { night: 0x071826, navy: 0x0b2440, gold: 0xe7c877, champagne: 0xd6b36a, ivory: 0xf4e9d4 };
 
 export class IntroScene {
   app = new Application();
   tw!: Tweener;
   private root = new Container();
-  private bg = new Container();
-  private sky = new Sprite();
-  private crowd = new Sprite();
-  private fore = new Sprite();
-  private flags = new Sprite();
-  private dark = new Graphics();
-  private lights: { glow: Sprite; cone: Graphics; on: number; x: number; y: number }[] = [];
-  private board = new Container();
-  private boardBg = new Graphics();
-  private logo = new Sprite();
-  private logoMask = new Graphics();
-  private subtitle!: Text;
-  private baseline = new Graphics();
-  private ball = new Sprite();
+  private stadium = new Sprite();
+  private backdrop = new Sprite(); // wide screens: the same stadium, blurred and darkened, fills the sides
+  private barLayer = new Container();
+  private bar = new Sprite();
+  private fill = new Graphics();
+  private sweep = new Graphics();
+  private trackMask = new Graphics();
   private ballShadow = new Graphics();
-  private caption!: Text;
+  private ball = new Sprite();
+  private veil = new Graphics(); // only behind the first-visit card
   private card = new Container();
   private progress = 0;
-  private shown = 0; // displayed progress (eased towards the real value, never ahead of it)
-  private boardRect: Rect = { x: 0, y: 0, w: 0, h: 0 };
-  private portrait = true;
+  private shown = 0; // displayed progress: eased towards the real value, never ahead of it
+  private track = { x0: 0, x1: 0, y: 0, h: 0 };
+  private ballR = 10;
+  private lastBallX = 0;
+  private bounce = 0; // vertical offset of the completion bounce
+  private completing = false;
   reducedMotion = false;
   /** QA */
-  qa = { lightsOn: 0, maxShown: 0, transitionMs: 0, transitionAnimMs: 0, fps: 0 };
+  qa = { maxShown: 0, completed: false, bounced: false, swept: false, transitionMs: 0, transitionAnimMs: 0, fps: 0, ballAtEnd: false, ballOffTrack: false };
   private clock = 0;
+  private ro: ResizeObserver | null = null;
+  private destroyed = false;
+  private tick = (tk: { deltaMS: number }) => {
+    this.clock += tk.deltaMS;
+    this.update(tk.deltaMS);
+  };
 
   constructor(private tex: Record<string, Texture>, private strings: { preparing: string; ready: string; subtitle: string }) {}
 
@@ -48,46 +64,34 @@ export class IntroScene {
     host.appendChild(this.app.canvas);
     this.app.canvas.setAttribute('aria-hidden', 'true');
     this.tw = new Tweener(this.app.ticker, () => 1);
-    this.bg.addChild(this.sky, this.crowd, this.fore, this.flags);
-    this.flags.blendMode = 'add';
-    for (let i = 0; i < 4; i++) {
-      const glow = new Sprite(this.tex.glow);
-      glow.anchor.set(0.5);
-      glow.blendMode = 'add';
-      glow.tint = 0xfff1d0;
-      glow.alpha = 0;
-      const cone = new Graphics();
-      cone.blendMode = 'add';
-      cone.alpha = 0;
-      this.lights.push({ glow, cone, on: 0, x: 0, y: 0 });
-    }
-    this.logo.texture = this.tex.logo;
-    this.logo.anchor.set(0.5);
-    this.logo.mask = this.logoMask;
-    this.subtitle = new Text({ text: this.strings.subtitle, style: { fontFamily: 'Cinzel', fontWeight: '600', fontSize: 22, fill: '#D6B36A', letterSpacing: 7 } });
-    this.subtitle.anchor.set(0.5);
-    this.subtitle.alpha = 0;
-    this.board.addChild(this.boardBg, this.logo, this.logoMask, this.subtitle);
-    this.ball.texture = this.tex.sym_G;
+    this.stadium.texture = this.tex.loading_stadium;
+    this.stadium.anchor.set(0.5);
+    this.backdrop.texture = this.tex.loading_stadium;
+    this.backdrop.anchor.set(0.5);
+    this.backdrop.filters = [new BlurFilter({ strength: 18, quality: 3 })];
+    this.backdrop.tint = 0x8a93a8;
+    this.backdrop.alpha = 0.55;
+    this.bar.texture = this.tex.loading_bar;
+    this.bar.anchor.set(0.5);
+    this.ball.texture = this.tex.loading_ball;
     this.ball.anchor.set(0.5);
-    this.caption = new Text({ text: this.strings.preparing, style: { fontFamily: 'Inter', fontWeight: '700', fontSize: 13, fill: '#F4E9D4', letterSpacing: 3 } });
-    this.caption.anchor.set(0.5);
-    this.caption.alpha = 0.8;
-    this.root.addChild(this.bg, ...this.lights.map((l) => l.cone), this.dark, ...this.lights.map((l) => l.glow), this.board, this.baseline, this.ballShadow, this.ball, this.caption, this.card);
+    this.fill.mask = this.trackMask;
+    this.sweep.mask = this.trackMask;
+    this.sweep.blendMode = 'add';
+    this.sweep.visible = false;
+    this.barLayer.addChild(this.bar, this.fill, this.sweep, this.trackMask, this.ballShadow, this.ball);
+    this.veil.alpha = 0;
+    this.root.addChild(this.backdrop, this.stadium, this.veil, this.barLayer, this.card);
     this.app.stage.addChild(this.root);
-    this.app.ticker.add((tk) => {
-      this.clock += tk.deltaMS;
-      this.update(tk.deltaMS);
-    });
+    this.app.ticker.add(this.tick);
     this.ro = new ResizeObserver(() => this.layout());
     this.ro.observe(host);
     this.layout();
   }
 
-  /** game images decoded later (other orientation, flags) */
+  /** kept for compatibility: the loading scene needs no other texture */
   addTextures(t: Record<string, Texture>) {
     this.tex = { ...t, ...this.tex };
-    this.layout();
   }
 
   /** real loading progress in [0, 1] (monotonic) */
@@ -95,133 +99,139 @@ export class IntroScene {
     this.progress = Math.max(this.progress, Math.min(1, p));
   }
 
-  private ro: ResizeObserver | null = null;
-  private destroyed = false;
+  /** the reserved logo area (for a future logo), CSS px */
+  logoArea(): Rect {
+    const w = this.app.screen.width, h = this.app.screen.height;
+    return { x: w * 0.15, y: h * LOGO_AREA.y0, w: w * 0.7, h: h * (LOGO_AREA.y1 - LOGO_AREA.y0) };
+  }
 
   private layout() {
     if (this.destroyed) return;
     const w = this.app.screen.width, h = this.app.screen.height;
-    this.portrait = h > w * 1.05;
-    const key = this.portrait ? 'portrait' : 'landscape';
-    const L = LAYERS[key];
-    // only the current orientation is loaded first; the other one arrives with the game images
-    const pick = (n: string) => this.tex[`${n}_${key}`] ?? this.tex[`${n}_${this.portrait ? 'landscape' : 'portrait'}`];
-    const parts: [Sprite, string][] = [[this.sky, 'bg'], [this.crowd, 'crowd'], [this.fore, 'fore'], [this.flags, 'flags']];
-    for (const [sp, n] of parts) {
-      const tx = pick(n);
-      sp.visible = !!tx;
-      if (tx) {
-        sp.texture = tx;
-        sp.scale.set(L.width / tx.width);
-      }
+    // stadium: the 9:16 composition is always kept.  Narrower than 9:16 -> cover (sides
+    // cropped); wider (landscape, desktop) -> full height, the sides are filled with the
+    // same stadium, blurred and darkened (no stretched or cropped composition).
+    const st = this.stadium.texture;
+    const wide = w / h > st.width / st.height;
+    const s = wide ? h / st.height : Math.max(w / st.width, h / st.height);
+    this.stadium.scale.set(s);
+    this.stadium.position.set(w / 2, h / 2);
+    this.backdrop.visible = wide;
+    if (wide) {
+      const bs2 = Math.max(w / st.width, h / st.height) * 1.05;
+      this.backdrop.scale.set(bs2);
+      this.backdrop.position.set(w / 2, h / 2);
     }
-    this.crowd.y = L.crowdY;
-    this.fore.y = L.foreY;
-    this.flags.y = L.flagsY;
-    const bs = Math.max(w / L.width, h / L.height);
-    this.bg.scale.set(bs);
-    this.bg.position.set((w - L.width * bs) / 2, (h - L.height * bs) / 2);
-    this.dark.clear().rect(0, 0, w, h).fill({ color: C.night });
-    // floodlight banks (positions of the light rigs painted in the sky layer)
-    const rigs = this.portrait ? [[0.1, 0.035], [0.9, 0.035], [0.3, 0.02], [0.7, 0.02]] : [[0.06, 0.06], [0.94, 0.06], [0.3, 0.03], [0.7, 0.03]];
-    this.lights.forEach((l, i) => {
-      l.x = this.bg.x + rigs[i][0] * L.width * bs;
-      l.y = this.bg.y + rigs[i][1] * L.height * bs;
-      l.glow.position.set(l.x, l.y);
-      l.glow.width = l.glow.height = Math.min(w, h) * 0.55;
-      const tx = w / 2 + (l.x - w / 2) * 0.25;
-      l.cone.clear().poly([l.x - 14, l.y, l.x + 14, l.y, tx + w * 0.22, h * 0.95, tx - w * 0.22, h * 0.95]).fill({ color: 0xfff1d0, alpha: 0.07 });
-    });
-    // scoreboard: where the reels will be (6:5 frame)
-    const bw = Math.min(w * (this.portrait ? 0.9 : 0.5), (h * 0.5) * FRAME_RATIO);
-    const bh = bw / FRAME_RATIO;
-    const by = this.portrait ? h * 0.27 : h * 0.18;
-    this.boardRect = { x: (w - bw) / 2, y: by, w: bw, h: bh };
-    this.drawBoard(this.boardRect, 1);
-    // baseline progress: near baseline of the court
-    this.drawBaseline();
-    this.caption.position.set(w / 2, this.baseY() + Math.max(26, h * 0.035));
-    this.caption.scale.set(Math.min(1.25, Math.max(0.9, w / 520)));
-    this.ball.width = this.ball.height = Math.max(30, Math.min(52, w * 0.085));
+    this.veil.clear().rect(0, 0, w, h).fill({ color: C.night });
+    // bar: ~53 % of a portrait-equivalent width, centred below the logo area
+    const bt = this.bar.texture;
+    const bw = BAR_W * Math.min(w, h * 0.5625);
+    const bs = bw / bt.width;
+    this.bar.scale.set(bs);
+    this.bar.position.set(w / 2, h * BAR_CY);
+    const left = w / 2 - bw / 2, top = h * BAR_CY - (bt.height * bs) / 2;
+    const y0 = top + TRACK.y0 * bt.height * bs, y1 = top + TRACK.y1 * bt.height * bs;
+    this.track = { x0: left + TRACK.x0 * bw, x1: left + TRACK.x1 * bw, y: (y0 + y1) / 2, h: y1 - y0 };
+    this.trackMask.clear().roundRect(this.track.x0, y0, this.track.x1 - this.track.x0, this.track.h, this.track.h / 2).fill(0xffffff);
+    const tubeH = (TUBE.y1 - TUBE.y0) * bt.height * bs;
+    this.ballR = (BALL_D * tubeH) / 2;
+    this.ball.width = this.ball.height = (this.ballR * 2) / BALL_FILL;
+    this.lastBallX = this.ballX();
+    this.drawProgress();
     this.layoutCard();
   }
 
-  private baseY() {
-    return this.app.screen.height * (this.portrait ? 0.8 : 0.84);
-  }
-  private baseX() {
-    const w = this.app.screen.width;
-    const half = Math.min(w * 0.42, 420);
-    return [w / 2 - half, w / 2 + half];
+  /** ball centre for the displayed progress: always inside the usable track */
+  private ballX() {
+    return this.track.x0 + (this.track.x1 - this.track.x0) * this.shown;
   }
 
-  private drawBoard(r: Rect, logoAlpha: number) {
-    const g = this.boardBg.clear();
-    g.roundRect(r.x, r.y, r.w, r.h, 18).fill({ color: C.navy, alpha: 0.93 }).stroke({ color: C.gold, width: 3 });
-    g.roundRect(r.x + 7, r.y + 7, r.w - 14, r.h - 14, 13).stroke({ color: C.ivory, width: 1, alpha: 0.22 });
-    // scoreboard lamp rows (top and bottom)
-    const n = 18;
-    for (const yy of [r.y + 18, r.y + r.h - 18]) for (let i = 0; i < n; i++) {
-      const x = r.x + 26 + ((r.w - 52) * i) / (n - 1);
-      g.circle(x, yy, Math.max(1.5, r.w / 260)).fill({ color: C.champagne, alpha: 0.35 });
+  private fillGrad: FillGradient | null = null;
+  private drawProgress() {
+    const t = this.track;
+    const len = (t.x1 - t.x0) * this.shown;
+    const g = this.fill.clear();
+    if (len > 0.5) {
+      if (!this.fillGrad) {
+        this.fillGrad = new FillGradient({ type: 'linear', start: { x: 0, y: 0 }, end: { x: 0, y: 1 }, textureSpace: 'local',
+          colorStops: [{ offset: 0, color: '#F4E2AE' }, { offset: 0.45, color: '#DDBA6E' }, { offset: 1, color: '#B98A3A' }] });
+      }
+      g.roundRect(t.x0, t.y - t.h / 2, Math.max(len, t.h), t.h, t.h / 2).fill({ fill: this.fillGrad, alpha: 0.88 });
     }
-    const ls = Math.min((r.w * 0.82) / this.tex.logo.width, (r.h * 0.5) / this.tex.logo.height);
-    this.logo.scale.set(ls);
-    this.logo.position.set(r.x + r.w / 2, r.y + r.h * 0.44);
-    this.logo.alpha = logoAlpha;
-    this.subtitle.position.set(r.x + r.w / 2, r.y + r.h * 0.77);
-    this.subtitle.scale.set(Math.min(1, (r.w * 0.8) / (this.subtitle.width / this.subtitle.scale.x)));
-  }
-
-  private drawBaseline() {
-    const [x0, x1] = this.baseX();
-    const y = this.baseY();
-    const k = this.shown;
-    const g = this.baseline.clear();
-    g.moveTo(x0, y).lineTo(x1, y).stroke({ color: C.ivory, width: 4, alpha: 0.55 });
-    const xe = x0 + (x1 - x0) * k;
-    if (k > 0) {
-      g.moveTo(x0, y).lineTo(xe, y).stroke({ color: 0xf2cf6b, width: 6, alpha: 1 });
-      g.moveTo(x0, y).lineTo(xe, y).stroke({ color: 0xf2cf6b, width: 16, alpha: 0.18 });
-    }
-    this.ball.position.set(xe, y - this.ball.height * 0.55);
-    this.ballShadow.clear().ellipse(xe, y + 2, this.ball.width * 0.45, this.ball.width * 0.12).fill({ color: 0x000000, alpha: 0.35 });
+    const x = this.ballX();
+    // very subtle rolling: rotation follows the distance travelled (no extra spin)
+    if (!this.reducedMotion) this.ball.rotation += (x - this.lastBallX) / Math.max(1, this.ballR);
+    this.lastBallX = x;
+    this.ball.position.set(x, t.y - this.bounce);
+    const k = 1 - Math.min(1, this.bounce / (this.ballR * 2));
+    this.ballShadow.clear().ellipse(x, t.y + this.ballR * 0.78, this.ballR * 0.78 * (0.6 + 0.4 * k), this.ballR * 0.16 * (0.6 + 0.4 * k)).fill({ color: 0x000000, alpha: 0.28 * k });
+    if (x < t.x0 - 0.5 || x > t.x1 + 0.5) this.qa.ballOffTrack = true;
   }
 
   private update(dt: number) {
-    // displayed value follows the real progress quickly (never shows more than what is loaded)
-    if (this.shown < this.progress) this.shown = Math.min(this.progress, this.shown + Math.max(0.0025 * dt, (this.progress - this.shown) * 0.2));
-    this.qa.maxShown = Math.max(this.qa.maxShown, this.shown);
-    if (!this.entering) {
-      this.drawBaseline();
-      this.ball.rotation += dt * 0.006;
-      // the stadium wakes up: light banks switch on one by one with the progress
-      this.dark.alpha = 0.82 - 0.6 * this.shown;
-      this.lights.forEach((l, i) => {
-        const th = [0.12, 0.35, 0.6, 0.85][i];
-        if (this.shown >= th && l.on === 0) {
-          l.on = 1;
-          this.qa.lightsOn++;
-          if (this.reducedMotion) {
-            l.glow.alpha = 0.55;
-            l.cone.alpha = 1;
-          } else void this.tw.tween(260, (u) => {
-            const f = u < 0.3 ? u / 0.3 : u < 0.45 ? 0.4 : u < 0.6 ? 1 : 0.85 + 0.15 * u; // short flicker
-            l.glow.alpha = 0.55 * f;
-            l.cone.alpha = f;
-          });
-        }
-      });
-      // the logo is revealed on the scoreboard as the game gets ready
-      const r = this.boardRect;
-      const rev = Math.max(0, Math.min(1, (this.shown - 0.1) / 0.85));
-      this.logoMask.clear().rect(r.x, r.y, r.w * rev, r.h).fill(0xffffff);
-      this.subtitle.alpha = Math.max(0, (this.shown - 0.85) / 0.15);
+    if (this.destroyed) return;
+    // smooth interpolation towards the real progress (never shows more than what is loaded)
+    if (this.shown < this.progress) {
+      const step = this.reducedMotion ? 1 : 1 - Math.exp(-dt / 140);
+      this.shown = Math.min(this.progress, this.shown + Math.max(0.0006 * dt, (this.progress - this.shown) * step));
+      if (this.progress - this.shown < 0.0005) this.shown = this.progress;
     }
+    this.qa.maxShown = Math.max(this.qa.maxShown, this.shown);
+    this.drawProgress();
   }
 
   ready() {
-    this.caption.text = this.strings.ready;
+    /* the completion sequence is played by complete() */
+  }
+
+  /**
+   * Real loading reached 100 %: the ball reaches the end of the track, makes one
+   * small bounce (impact sound if the sound is already unlocked), a restrained
+   * highlight travels across the filled bar, then the bar and the ball fade out.
+   * ~1 s; 0.2 s fade with reduced motion.
+   */
+  async complete() {
+    if (this.completing) return;
+    this.completing = true;
+    this.progress = 1;
+    // let the displayed progress arrive at the end (real value is already 100 %)
+    while (this.shown < 1 && !this.destroyed) await this.tw.wait(16);
+    this.qa.ballAtEnd = Math.abs(this.ball.x - this.track.x1) < 1;
+    this.qa.completed = true;
+    if (this.reducedMotion) {
+      await this.tw.tween(200, (u) => (this.barLayer.alpha = 1 - u));
+      return;
+    }
+    // one small, realistic bounce: up (decelerating) then down (accelerating), short squash on landing
+    const H = this.ballR * 0.9;
+    const base = this.ball.scale.x;
+    await this.tw.tween(170, (u) => (this.bounce = H * ease.outCubic(u)));
+    await this.tw.tween(150, (u) => (this.bounce = H * (1 - u * u)));
+    this.bounce = 0;
+    this.qa.bounced = true;
+    audio.play('bounce', { volume: 0.55 });
+    const sweepDone = this.runSweep();
+    await this.tw.tween(110, (u) => {
+      const q = Math.sin(u * Math.PI);
+      this.ball.scale.set(base * (1 + 0.06 * q), base * (1 - 0.08 * q));
+    });
+    this.ball.scale.set(base);
+    await sweepDone;
+    await this.tw.tween(240, (u) => (this.barLayer.alpha = 1 - ease.inOutCubic(u)));
+  }
+
+  /** a restrained highlight travelling across the filled bar */
+  private async runSweep() {
+    const t = this.track;
+    const w = (t.x1 - t.x0) * 0.16;
+    const g = this.sweep;
+    const grad = new FillGradient({ type: 'linear', start: { x: 0, y: 0 }, end: { x: 1, y: 0 }, textureSpace: 'local',
+      colorStops: [{ offset: 0, color: 'rgba(255,248,226,0)' }, { offset: 0.5, color: 'rgba(255,248,226,0.55)' }, { offset: 1, color: 'rgba(255,248,226,0)' }] });
+    g.clear().rect(0, t.y - t.h / 2, w, t.h).fill({ fill: grad });
+    g.visible = true;
+    await this.tw.tween(520, (u) => (g.x = t.x0 - w + (t.x1 - t.x0 + w) * ease.inOutCubic(u)));
+    g.visible = false;
+    this.qa.swept = true;
   }
 
   // ------------------------------------------------------------ first-visit feature card
@@ -233,10 +243,15 @@ export class IntroScene {
     const W = 560, H = 690;
     const panel = new Graphics().roundRect(-W / 2, -H / 2, W, H, 26).fill({ color: C.navy, alpha: 0.96 }).stroke({ color: C.gold, width: 3 });
     panel.roundRect(-W / 2 + 9, -H / 2 + 9, W - 18, H - 18, 20).stroke({ color: C.ivory, width: 1, alpha: 0.22 });
-    const logo = new Sprite(this.tex.logo);
-    logo.anchor.set(0.5);
-    logo.scale.set(Math.min((W * 0.62) / logo.texture.width, 120 / logo.texture.height));
-    logo.y = -H / 2 + 74;
+    const logoTex = gameTex.logo ?? this.tex.logo;
+    const parts: Container[] = [panel];
+    if (logoTex) {
+      const logo = new Sprite(logoTex);
+      logo.anchor.set(0.5);
+      logo.scale.set(Math.min((W * 0.62) / logo.texture.width, 120 / logo.texture.height));
+      logo.y = -H / 2 + 74;
+      parts.push(logo);
+    }
     const kick = new Text({ text: s.title, style: { fontFamily: 'Inter', fontWeight: '800', fontSize: 19, fill: '#D6B36A', letterSpacing: 5 } });
     kick.anchor.set(0.5);
     kick.y = -H / 2 + 150;
@@ -252,7 +267,9 @@ export class IntroScene {
     const syms = [['H2', 'L3', 'H4', 'L1', 'W', 'L2'], ['G', 'H3', 'L5', 'H1', 'L4', 'H2'], ['L4', 'L2', 'H2', 'L3', 'H4', 'L5']];
     const zx0 = -gw / 2 + 2 * cell, zx1 = zx0 + 2 * cell;
     syms.forEach((row, r) => row.forEach((k, i) => {
-      const sp = new Sprite(gameTex[`sym_${k}`] ?? this.tex.sym_G);
+      const tx = gameTex[`sym_${k}`];
+      if (!tx) return;
+      const sp = new Sprite(tx);
       sp.anchor.set(0.5);
       sp.width = sp.height = cell * 0.86;
       sp.position.set(-gw / 2 + cell * (i + 0.5), -gh / 2 + cell * (r + 0.5));
@@ -266,16 +283,13 @@ export class IntroScene {
     const tagC = new Container();
     tagC.addChild(tagBg, tag);
     tagC.position.set((zx0 + zx1) / 2, -gh / 2 - 12);
-    // trajectory: from the Golden Ball (reel 1, middle row) to the centre zone
     const traj = new Graphics();
     const sx = -gw / 2 + cell * 0.5, sy = 0;
     const ex = (zx0 + zx1) / 2, ey = gh * 0.1;
-    for (let k = 0; k <= 16; k++) {
+    for (let k = 0; k <= 16; k += 2) {
       const u = k / 16;
-      const x = sx + (ex - sx) * u, y = sy + (ey - sy) * u - Math.sin(u * Math.PI) * cell * 0.9;
-      if (k % 2 === 0) traj.circle(x, y, 3.2).fill({ color: 0xf2cf6b });
+      traj.circle(sx + (ex - sx) * u, sy + (ey - sy) * u - Math.sin(u * Math.PI) * cell * 0.9, 3.2).fill({ color: 0xf2cf6b });
     }
-    // respin marks on the two struck reels
     const spinMarks = new Graphics();
     for (const x of [zx0 + cell / 2, zx0 + 1.5 * cell]) {
       spinMarks.moveTo(x, gh / 2 + 18).lineTo(x - 9, gh / 2 + 30).moveTo(x, gh / 2 + 18).lineTo(x + 9, gh / 2 + 30).stroke({ color: C.gold, width: 3 });
@@ -290,16 +304,20 @@ export class IntroScene {
     const t2 = new Text({ text: s.text2, style: { ...style, fontSize: 22, lineHeight: 30, fill: '#D6B36A' } });
     t2.anchor.set(0.5, 0);
     t2.y = t1.y + t1.height + 10;
-    c.addChild(panel, logo, kick, name, ill, t1, t2);
-    // fit the texts
-    const used = t2.y + t2.height - (-H / 2);
+    c.addChild(...parts, kick, name, ill, t1, t2);
+    const used = t2.y + t2.height - -H / 2;
     if (used > H - 30) panel.clear().roundRect(-W / 2, -H / 2, W, used + 40, 26).fill({ color: C.navy, alpha: 0.96 }).stroke({ color: C.gold, width: 3 });
     (c as Container & { H?: number }).H = Math.max(H, used + 40);
     c.alpha = 0;
-    for (const o of [this.board, this.baseline, this.ball, this.ballShadow, this.caption]) o.visible = false;
+    this.barLayer.visible = false;
     this.layoutCard();
-    if (this.reducedMotion) c.alpha = 1;
-    else void this.tw.tween(260, (u) => (c.alpha = u));
+    if (this.reducedMotion) {
+      c.alpha = 1;
+      this.veil.alpha = 0.45;
+    } else void this.tw.tween(260, (u) => {
+      c.alpha = u;
+      this.veil.alpha = 0.45 * u;
+    });
   }
 
   shortLandscape() {
@@ -311,39 +329,36 @@ export class IntroScene {
     const w = this.app.screen.width, h = this.app.screen.height;
     const H = (this.card as Container & { H?: number }).H ?? 720;
     if (this.shortLandscape()) {
-      // short landscape (phone on its side): card on the left at full height, buttons on the right
       const s = Math.min((h - 28) / H, (w * 0.56) / 560);
       this.card.scale.set(s);
       this.card.position.set(w * 0.36, h / 2);
       return;
     }
-    // leave room at the bottom for the DOM buttons
     const avail = h - 185; // the DOM buttons (PLAY + skip + demo notice) take the bottom ~175 px
     const s = Math.min((w * 0.96) / 560, (avail * 0.96) / H, 1.2);
     this.card.scale.set(s);
-    this.card.position.set(w / 2, 12 + (avail * 0.5));
+    this.card.position.set(w / 2, 12 + avail * 0.5);
   }
 
-  /** card rect in CSS px (to place the DOM buttons under it) */
+  /** card bottom in CSS px (the DOM buttons sit under it) */
   cardBottom() {
     if (!this.cardBuilt) return null;
-    if (this.shortLandscape()) return 0; // buttons are beside the card, not below
+    if (this.shortLandscape()) return 0; // buttons are beside the card
     const H = (this.card as Container & { H?: number }).H ?? 720;
     return this.card.y + (H / 2) * this.card.scale.x;
   }
 
   // ------------------------------------------------------------ transition to the reels
-  private entering = false;
   private skip = false;
   skipTransition() {
     this.skip = true;
   }
 
   /**
-   * Ball bounces on the court, the scoreboard becomes the reel frame, slight
-   * camera push.  `target` is the real board rectangle of the game scene.
-   * ~0.65 s (0.18 s crossfade with reduced motion); `onReveal` is called when
-   * the reels must start to show through.
+   * Transition into the slot game, preserving the stadium: the card (if any) and
+   * what is left of the loading layer fade, the stadium makes a very slight push
+   * towards the reels while the game crossfades in (~0.5 s; 0.18 s fade with
+   * reduced motion).  `target` is the real board rectangle of the game scene.
    */
   async enter(target: Rect, onReveal: () => void) {
     const t0 = performance.now();
@@ -357,62 +372,34 @@ export class IntroScene {
       this.qa.transitionAnimMs = this.clock - c0;
       this.qa.fps = Math.round((frames * 1000) / Math.max(1, this.qa.transitionMs));
     };
-    this.entering = true;
-    this.shown = this.progress = 1;
-    this.drawBaseline();
     // QA only (demo builds): __rallyTimeScale slows the presentation for frame captures
     const qa = () => (import.meta.env.VITE_ENABLE_RGS === '1' ? 1 : ((window as unknown as { __rallyTimeScale?: number }).__rallyTimeScale ?? 1));
-    const speed = () => (this.skip ? 6 : 1) * qa();
-    this.tw.speed = speed;
+    this.tw.speed = () => (this.skip ? 6 : 1) * qa();
     if (this.reducedMotion) {
-      this.card.visible = false;
-      this.board.visible = true;
       onReveal();
       await this.tw.tween(180, (u) => (this.root.alpha = 1 - u));
       done();
       return;
     }
-    // One timeline of 600 ms (overlapping phases, a single frame-synchronised tween):
-    //   0-90 ms    the feature card (if any) fades out
-    //   0-180 ms   the Golden Ball bounces once on the court, towards the centre
-    //   100-440 ms the scoreboard becomes the reel frame + slight camera push
-    //   ~290 ms    the reels start to show through (onReveal)
-    //   470-600 ms the stadium of the game takes over
-    const T = 600;
-    const bx0 = this.ball.x, by0 = this.ball.y, w = this.app.screen.width;
-    const bx1 = w / 2, by1 = this.baseY() - this.ball.height * 0.55;
-    this.caption.alpha = 0;
-    const from = { ...this.boardRect };
-    const cxT = target.x + target.w / 2, cyT = target.y + target.h / 2;
-    const card0 = this.card.alpha;
-    for (const o of [this.board, this.baseline, this.ball, this.ballShadow]) o.visible = true;
+    const T = 500;
+    const cx = target.x + target.w / 2, cy = target.y + target.h / 2;
+    const card0 = this.card.alpha, veil0 = this.veil.alpha, bar0 = this.barLayer.alpha;
     let revealed = false;
     const seg = (t: number, a: number, b: number) => Math.max(0, Math.min(1, (t - a) / (b - a)));
     await this.tw.tween(T, (u) => {
       const t = u * T;
-      this.card.alpha = card0 * (1 - seg(t, 0, 90));
-      const ub = seg(t, 0, 180);
-      this.ball.x = bx0 + (bx1 - bx0) * ub;
-      this.ball.y = by0 + (by1 - by0) * ub - Math.abs(Math.sin(ub * Math.PI)) * this.app.screen.height * 0.06;
-      this.ball.rotation += 0.3;
-      this.ballShadow.clear().ellipse(this.ball.x, this.baseY() + 2, this.ball.width * 0.45, this.ball.width * 0.12).fill({ color: 0x000000, alpha: 0.3 });
-      const um = seg(t, 100, 440);
-      const k = ease.inOutCubic(um);
-      const r = { x: from.x + (target.x - from.x) * k, y: from.y + (target.y - from.y) * k, w: from.w + (target.w - from.w) * k, h: from.h + (target.h - from.h) * k };
-      this.drawBoard(r, 1 - k);
-      this.logoMask.clear().rect(r.x, r.y, r.w, r.h).fill(0xffffff);
-      this.subtitle.alpha = 1 - k;
-      const z = 1 + 0.05 * Math.sin((um * Math.PI) / 2);
+      this.card.alpha = card0 * (1 - seg(t, 0, 120));
+      this.veil.alpha = veil0 * (1 - seg(t, 0, 160));
+      this.barLayer.alpha = bar0 * (1 - seg(t, 0, 120));
+      const z = 1 + 0.035 * ease.outCubic(seg(t, 0, T));
       this.root.scale.set(z);
-      this.root.position.set(cxT * (1 - z), cyT * (1 - z));
-      this.ball.alpha = this.baseline.alpha = this.ballShadow.alpha = 1 - k;
-      if (um > 0.55 && !revealed) {
+      this.root.position.set(cx * (1 - z), cy * (1 - z));
+      if (t > 140 && !revealed) {
         revealed = true;
         onReveal();
       }
-      this.root.alpha = 1 - seg(t, 470, T);
+      this.root.alpha = 1 - ease.inOutCubic(seg(t, 160, T));
     });
-    this.card.visible = false;
     if (!revealed) onReveal();
     done();
   }
@@ -420,6 +407,7 @@ export class IntroScene {
   destroy() {
     this.destroyed = true;
     this.ro?.disconnect();
+    this.app.ticker.remove(this.tick);
     this.app.destroy({ removeView: true }, { children: true, texture: false });
   }
 }

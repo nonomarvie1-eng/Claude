@@ -10,7 +10,7 @@ export const DUEL_BUILD = G === 'duel';
 export const GOLDEN_SERVE_BUILD = G === 'goldenserve';
 export const RALLY_PATH_BUILD = G === 'rallypath';
 export const FINAL_SET_BUILD = G === 'finalset';
-export const BUILD_ID = RETURN_SPINS_BUILD ? 'FIRST-SERVE-01' : DUEL_BUILD ? 'DUEL-01' : GOLDEN_SERVE_BUILD ? 'GOLDEN-SERVE-02' : RALLY_PATH_BUILD ? 'RALLY-PATH-01' : 'FINAL-SET-v6';
+export const BUILD_ID = RETURN_SPINS_BUILD ? 'FIRST-SERVE-02' : DUEL_BUILD ? 'DUEL-01' : GOLDEN_SERVE_BUILD ? 'GOLDEN-SERVE-02' : RALLY_PATH_BUILD ? 'RALLY-PATH-01' : 'FINAL-SET-v6';
 /** development tools (forced scenarios): test builds only; a player build sets VITE_DEV_TOOLS=0 */
 export const DEV_TOOLS = import.meta.env.VITE_DEV_TOOLS !== '0';
 /** storage namespace: a round of another gameplay can never be resumed here */

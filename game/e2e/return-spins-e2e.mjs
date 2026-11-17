@@ -77,7 +77,7 @@ async function play(page, label, scenario, { taps = false, shot = [] } = {}) {
 try {
   const { ctx, page, errors } = await open(PHONE);
   const id = norm(await page.textContent('[data-testid=build-id]'));
-  check('390x844: build id FIRST-SERVE-01 visible', id === 'FIRST-SERVE-01', id);
+  check('390x844: build id FIRST-SERVE-02 visible', id === 'FIRST-SERVE-02', id);
   check('390x844: no buy / modes button, no test button in the player HUD', !(await page.isVisible('[data-testid=btn-buy]')) && !(await page.isVisible('[data-testid=test-point]')) && !(await page.isVisible('[data-testid=test-serve]')));
   await page.screenshot({ path: path.join(SHOTS, 'rs01-390-idle.png') });
   const s1 = await play(page, '1-plain', 'plain');

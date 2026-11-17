@@ -64,7 +64,8 @@
       clearTimeout(slowTimer);
       slow = false;
       intro.addTextures(tex);
-      intro.ready();
+      // completion: ball at the end of the track, one small bounce, highlight, bar fades
+      await intro.complete();
       game.phase = 'ready';
       if (seen()) void enter(false); // returning player: straight to the reels, no artificial delay
       else {

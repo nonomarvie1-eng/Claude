@@ -1,3 +1,67 @@
+# Écran de chargement — version 2 (build FIRST-SERVE-02), avec les trois assets fournis
+
+## Assets fournis (aucun autre asset inventé)
+| Fichier fourni | Fichier du jeu | Format | Fidélité |
+|---|---|---|---|
+| Stade de nuit (941×1672, PNG) | `loading_stadium.webp` (185 Ko) + PNG d'origine en secours | WebP q92 | écart moyen < 1,7/255 |
+| Barre ivoire et champagne (2172×724, PNG transparent) | `loading_bar.webp` (47 Ko) + PNG | WebP q95, transparence exacte | écart moyen < 1,8/255 |
+| Balle jaune transparente (1024×1024) | `loading_ball.webp` (251 Ko) + PNG | WebP q92, transparence exacte | écart moyen < 2,3/255 |
+
+Proportions toujours conservées : aucun étirement.
+
+**Mesures sur l'image de la barre** : canal ivoire de x = 7,73 % à 92,40 % de la largeur, et de y = 46,8 % à 55,8 % de la hauteur ; tube complet de y = 44,5 % à 58,7 %. La balle occupe 89 % de son image.
+
+## Composition (portrait 9:16)
+- **Stade** : il remplit l'écran (coupé sur les côtés si l'écran est plus étroit que le 9:16). Sur un écran plus large (paysage, ordinateur), la composition 9:16 est conservée en pleine hauteur, et les côtés sont complétés par le même stade flouté et assombri, sans recadrage ni déformation.
+- **Zone logo réservée** : de 7,5 à 23,5 % de la hauteur, au centre, vide pour le futur logo (`IntroScene.logoArea()`).
+- **Barre** : centrée à 29 % de la hauteur, largeur égale à 53 % de la largeur portrait (dans la fourchette demandée de 48 à 58 %).
+- **Balle** : diamètre visible égal à 2,3 fois la hauteur du tube, au début de la piste.
+
+## Animation
+1. **Progression** :
+   - Le canal ivoire se remplit d'or champagne (dégradé discret, à 88 % d'opacité) en suivant la progression **réelle** : images de l'intro 15 %, images du jeu 70 %, polices 5 %, scène 10 %.
+   - L'interpolation est douce (exponentielle, environ 140 ms) et ne dépasse jamais la valeur réelle.
+   - Le centre de la balle reste toujours entre les bornes de la piste (testé). Sa rotation correspond exactement à la distance parcourue, sans rotation ajoutée.
+2. **Fin du chargement** (environ 1 s) :
+   - la balle atteint le bout de la piste ;
+   - elle fait un seul petit rebond (montée qui ralentit, descente qui accélère, léger écrasement à l'atterrissage) ;
+   - le son d'impact est joué seulement si l'audio a déjà été débloqué par un geste ; sinon il est silencieux, ce qui est le cas normal à la première ouverture ;
+   - un reflet sobre traverse la barre remplie ;
+   - la barre et la balle disparaissent en fondu.
+3. **Transition** (500 ms) :
+   - le stade reste à l'écran et se rapproche très légèrement ;
+   - le jeu apparaît en fondu par-dessus ;
+   - l'interface se révèle ensuite.
+
+   À la première visite, la carte de fonctionnalité s'affiche d'abord, sur le stade assombri.
+4. **Réduction des mouvements** : ni roulement, ni rebond, ni reflet ; fondu de 0,2 s.
+5. **Nettoyage** : boucle du ticker retirée, `ResizeObserver` déconnecté, application PixiJS détruite. Le test vérifie qu'il ne reste qu'un canvas.
+
+## Pré-chargement HTML
+- Même composition que la scène (stade, barre, balle au départ), aux mêmes coordonnées : la reprise par PixiJS ne fait aucun saut.
+- Aucun pourcentage n'est affiché, seulement un léger éclat de la balle.
+- Dans le fichier unique publié, le stade est intégré une seule fois : le décor flouté en recopie la source.
+
+## Tests
+`e2e/intro-e2e.mjs` : **55/55** sur le site de test, **54/54** sur le fichier publié (le test d'erreur réseau ne s'applique qu'au site de test). Sont vérifiés :
+- l'affichage du stade avant le script ;
+- la progression réelle et monotone ;
+- la balle en bout de piste, jamais hors piste ;
+- le rebond et le reflet ;
+- l'interface masquée pendant toute la transition (relevé image par image) ;
+- la durée de la transition : 567 ms d'animation ;
+- le nettoyage des boucles ;
+- la visite suivante ;
+- l'absence de son avant un geste ;
+- la réduction des mouvements ;
+- l'accélération par toucher ;
+- l'erreur de chargement ;
+- les formats 390×844, Pixel 7 en paysage, 1440×900 et 320×568.
+
+Pas de régression : Return Spins 104/104, vitest 39/39. Aucune logique de jeu n'a été modifiée.
+
+---
+
 # GOLDEN RALLY — THE FIRST SERVE (chargement et entrée en jeu)
 
 Build : **FIRST-SERVE-01**, sur la base de RETURN-01. Les mécaniques de bonus ne changent pas.

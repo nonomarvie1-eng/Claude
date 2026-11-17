@@ -65,9 +65,9 @@ function decode(url: string): Promise<HTMLImageElement> {
 }
 
 /** Names of the images needed by the loading / entry scene (loaded first). */
-export function introImages(portrait: boolean) {
-  const o = portrait ? 'portrait' : 'landscape';
-  return [`bg_${o}`, `fore_${o}`, `crowd_${o}`, 'logo', 'glow', 'sym_G'];
+export function introImages(_portrait?: boolean) {
+  // the three provided loading assets: night stadium, loading bar, tennis ball
+  return ['loading_stadium', 'loading_bar', 'loading_ball'];
 }
 
 /** Decodes the game images.  `only` restricts the set; `have` are already decoded (not decoded twice).

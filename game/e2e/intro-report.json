@@ -1,19 +1,24 @@
 {
- "url": "http://localhost:4190/index.html?lang=fr",
+ "url": "http://localhost:4197/?lang=fr",
  "failures": 0,
  "results": [
   {
-   "name": "390: stadium pre-boot layer shown before the game script",
+   "name": "390: stadium shown by the pre-boot layer, before the game script",
    "ok": true,
    "detail": ""
   },
   {
    "name": "390: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "21 samples, 10,15,22,26,29,32,50,71,100…"
+   "detail": "514 samples, 0,5,15,20,23,26,28,31,34,37,39,42…"
   },
   {
-   "name": "390: the four light banks switched on with the progress",
+   "name": "390: the ball reached the end of the track, never left it",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: completion: one bounce + highlight across the bar",
    "ok": true,
    "detail": ""
   },
@@ -45,12 +50,12 @@
   {
    "name": "390: HUD hidden during the transition",
    "ok": true,
-   "detail": "opacity 0.108769"
+   "detail": "10 frames, max opacity 0.00"
   },
   {
-   "name": "390: transition animation 0.5–0.8 s",
+   "name": "390: transition into the game ~0.5 s",
    "ok": true,
-   "detail": "633 ms animation · 744 ms wall @ 15 fps (software rendering)"
+   "detail": "500 ms animation · 619 ms wall @ 15 fps (software rendering)"
   },
   {
    "name": "390: sound started by the PLAY gesture",
@@ -59,6 +64,11 @@
   },
   {
    "name": "390: intro canvas removed, reels visible",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390: loading loops cleaned up (one canvas left)",
    "ok": true,
    "detail": ""
   },
@@ -88,17 +98,22 @@
    "detail": ""
   },
   {
-   "name": "pixel7-landscape: stadium pre-boot layer shown before the game script",
+   "name": "pixel7-landscape: stadium shown by the pre-boot layer, before the game script",
    "ok": true,
    "detail": ""
   },
   {
    "name": "pixel7-landscape: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "27 samples, 3,5,15,19,26,29,32,36,50,71,82,100…"
+   "detail": "62 samples, 0,5,15,20,31,34,37,39,42,47,53,69…"
   },
   {
-   "name": "pixel7-landscape: the four light banks switched on with the progress",
+   "name": "pixel7-landscape: the ball reached the end of the track, never left it",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "pixel7-landscape: completion: one bounce + highlight across the bar",
    "ok": true,
    "detail": ""
   },
@@ -130,7 +145,7 @@
   {
    "name": "pixel7-landscape: skip link enters the game",
    "ok": true,
-   "detail": "1797 ms"
+   "detail": "1580 ms"
   },
   {
    "name": "pixel7-landscape: no overflow, no console errors",
@@ -138,17 +153,22 @@
    "detail": ""
   },
   {
-   "name": "1440x900: stadium pre-boot layer shown before the game script",
+   "name": "1440x900: stadium shown by the pre-boot layer, before the game script",
    "ok": true,
    "detail": ""
   },
   {
    "name": "1440x900: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "27 samples, 3,5,10,15,19,26,29,32,39,57,68,78…"
+   "detail": "90 samples, 0,5,15,20,31,34,37,39,42,45,47,63…"
   },
   {
-   "name": "1440x900: the four light banks switched on with the progress",
+   "name": "1440x900: the ball reached the end of the track, never left it",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440x900: completion: one bounce + highlight across the bar",
    "ok": true,
    "detail": ""
   },
@@ -180,7 +200,7 @@
   {
    "name": "1440x900: skip link enters the game",
    "ok": true,
-   "detail": "1728 ms"
+   "detail": "2928 ms"
   },
   {
    "name": "1440x900: no overflow, no console errors",
@@ -188,17 +208,22 @@
    "detail": ""
   },
   {
-   "name": "320x568: stadium pre-boot layer shown before the game script",
+   "name": "320x568: stadium shown by the pre-boot layer, before the game script",
    "ok": true,
    "detail": ""
   },
   {
    "name": "320x568: real progress, monotonic, ends at 100",
    "ok": true,
-   "detail": "24 samples, 3,5,15,19,26,29,32,54,75,82,100…"
+   "detail": "85 samples, 0,5,15,20,26,28,31,34,37,39,42,45…"
   },
   {
-   "name": "320x568: the four light banks switched on with the progress",
+   "name": "320x568: the ball reached the end of the track, never left it",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "320x568: completion: one bounce + highlight across the bar",
    "ok": true,
    "detail": ""
   },
@@ -230,7 +255,7 @@
   {
    "name": "320x568: skip link enters the game",
    "ok": true,
-   "detail": "664 ms"
+   "detail": "617 ms"
   },
   {
    "name": "320x568: no overflow, no console errors",
@@ -240,12 +265,17 @@
   {
    "name": "reduced motion: short crossfade only (≤ 0.3 s of animation)",
    "ok": true,
-   "detail": "183 ms"
+   "detail": "217 ms"
   },
   {
    "name": "tap skips the transition (shorter than the slowed-down one)",
    "ok": true,
-   "detail": "550 ms of animation at 0.25x speed"
+   "detail": "433 ms of animation at 0.25x speed"
+  },
+  {
+   "name": "load error: message + retry button, no game entered",
+   "ok": true,
+   "detail": ""
   }
  ]
 }

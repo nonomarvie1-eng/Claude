@@ -1,5 +1,11 @@
 # Changelog
 
+## FIRST-SERVE-02 — écran de chargement avec les assets fournis (2026-11-17)
+- Stade de nuit, barre ivoire et champagne, balle de tennis fournis (WebP fidèles et PNG d'origine en secours), proportions conservées.
+- Remplissage or champagne et balle qui suit la progression réelle ; à 100 % : rebond unique, son d'impact s'il est disponible, reflet sur la barre, fondu ; transition de 500 ms vers le jeu sur le même stade.
+- Composition 9:16 conservée sur les écrans larges (stade flouté sur les côtés), zone logo réservée, pré-chargement HTML identique à la scène.
+- Tests : intro 55/55 (54/54 sur le fichier publié), Return Spins 104/104.
+
 ## FIRST-SERVE-01 — chargement et entrée en jeu « The First Serve » (2026-11-16)
 - Nouvelle scène de chargement PixiJS séparée (`render/intro.ts`) : stade nocturne réel, projecteurs qui s'allument avec la progression réelle, logo révélé sur un tableau d'affichage, barre de progression sur la ligne de fond avec la Balle d'or.
 - Pré-chargement HTML avec le vrai fond de stade avant le script (aucun faux pourcentage) ; chargement en deux temps (orientation courante d'abord).

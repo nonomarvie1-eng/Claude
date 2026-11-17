@@ -8,25 +8,26 @@
     <title>Golden Rally</title>
     <style>html,body{margin:0;height:100%;background:#071826;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
       #preboot{position:fixed;inset:0;z-index:40;background:#071826}
-      #preboot .pb-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.55)}
-      #preboot .pb-logo{position:absolute;left:50%;top:42%;width:min(74vw,520px);transform:translate(-50%,-50%);opacity:.92}
-      #preboot .pb-line{position:absolute;left:8%;right:8%;bottom:calc(19% + 34px);height:3px;background:rgba(244,233,212,.35);overflow:hidden;border-radius:2px}
-      #preboot .pb-line i{position:absolute;top:0;bottom:0;width:22%;background:linear-gradient(90deg,transparent,#f2cf6b,transparent);animation:pbmove 1.4s ease-in-out infinite}
-      @keyframes pbmove{from{left:-22%}to{left:100%}}
-      @media (prefers-reduced-motion:reduce){#preboot .pb-line i{animation:none;left:39%;opacity:.7}}
-      #preboot .pb-cap{position:absolute;left:0;right:0;bottom:19%;margin:0;text-align:center;font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.3em;color:#d6b36a}</style>
+      #preboot .pb-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+      #preboot .pb-bd{display:none}
+      @media (min-aspect-ratio:941/1672){#preboot .pb-bg{object-fit:contain}#preboot .pb-bd{display:block;position:absolute;inset:-5%;width:110%;height:110%;object-fit:cover;filter:blur(18px) brightness(.5)}}
+      /* same geometry as render/intro.ts: bar 53 % of min(100vw, 56.25vh), centred at 29 % height */
+      #preboot .pb-bar{position:absolute;left:50%;top:29%;width:calc(.53*min(100vw,56.25vh));width:calc(.53*min(100vw,56.25dvh));transform:translate(-50%,-50%)}
+      #preboot .pb-track{display:block;width:100%;height:auto}
+      #preboot .pb-ball{position:absolute;left:7.73%;top:51.3%;width:12.25%;transform:translate(-50%,-50%)}
+      @media (prefers-reduced-motion:no-preference){#preboot .pb-ball{animation:pbb 1.6s ease-in-out infinite}}
+      @keyframes pbb{50%{filter:brightness(1.12)}}</style>
   </head>
   <body>
     <!-- pre-boot: the real night stadium shows from the first bytes, before the game script
          has arrived (no fake progress here: the real progress starts with the script) -->
+    <!-- pre-boot: the same composition as the loading scene (stadium, bar, ball at the start of
+         the track), painted from the first bytes; no progress is shown here (none is measurable yet) -->
     <div id="preboot" aria-hidden="true">
-      <picture>
-        <source media="(orientation: landscape)" srcset="/src/assets/img/bg_landscape.jpg" />
-        <img class="pb-bg" src="/src/assets/img/bg_portrait.jpg" alt="" />
-      </picture>
-      <img class="pb-logo" src="/src/assets/img/logo.webp" alt="" />
-      <div class="pb-line" role="progressbar" aria-label="Chargement" aria-busy="true"><i></i></div>
-      <p class="pb-cap">GOLDEN RALLY · THE FIRST SERVE</p>
+      <img class="pb-bd" alt="" />
+      <img class="pb-bg" src="/src/assets/img/loading_stadium.webp" alt="" fetchpriority="high" decoding="async" />
+      <script>(function(){var b=document.querySelector('#preboot .pb-bg'),d=document.querySelector('#preboot .pb-bd');if(b&&d)d.src=b.currentSrc||b.src;})();</script>
+      <div class="pb-bar"><img class="pb-track" src="/src/assets/img/loading_bar.webp" alt="" /><img class="pb-ball" src="/src/assets/img/loading_ball.webp" alt="" /></div>
     </div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
