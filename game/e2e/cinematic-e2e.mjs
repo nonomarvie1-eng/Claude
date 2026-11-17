@@ -60,8 +60,12 @@ async function playFirstVisit(page, { shots = [], skipAt = null, label = 'x' } =
     await page.waitForTimeout(Math.max(0, skipAt - (Date.now() - t0)));
     await page.click('[data-testid=cine-skip]').catch(() => {});
   }
-  await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 120000 });
-  return page.evaluate(() => ({ r: window.__rallyIntro?.cinematicResult ?? null, hud: window.__hud, canvases: document.querySelectorAll('canvas').length, wall: 0 }));
+  // screen order: the feature explanations come AFTER the reels (first visit)
+  await page.waitForSelector('[data-testid=feature-ok]', { timeout: 120000 });
+  const out = await page.evaluate(() => ({ r: window.__rallyIntro?.cinematicResult ?? null, hud: window.__hud, canvases: document.querySelectorAll('canvas').length, board: window.__rallyLayout?.board?.w ?? 0 }));
+  await page.click('[data-testid=feature-ok]');
+  await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
+  return out;
 }
 
 try {
@@ -73,8 +77,11 @@ try {
     check('390: the ACE! opening plays after PLAY (first visit)', !!r);
     check('390: ONE ball — the falling ball starts exactly at the logo ball (same x, same size)', r && Math.abs(r.continuity.fallStartX - r.continuity.logoBallX) < 0.5 && Math.abs(r.continuity.dStart - r.continuity.dLogo) < 0.01, r && JSON.stringify(r.continuity));
     check('390: the ball leaves its socket upwards before falling (lift only)', r && r.continuity.fallStartY < r.continuity.logoBallY);
-    check('390: two bounces on the court with sound cues', r && r.bounces === 2, r && `${r.bounces}`);
-    check('390: no player clip: no stand-in character, camera push into the ball', r && r.usedClip === false);
+    check('390: natural bounces (decreasing), each with its sound', r && r.bounces === 4, r && `${r.bounces}`);
+    const near = (a, b, e) => Math.abs(a - b) <= e;
+    check('390: the camera followed the fall and the ball came to rest exactly at the hand-off point (60 % / 84 %, d 11.5 %)', r && r.rest && near(r.rest.x, 0.6, 0.006) && near(r.rest.y, 0.84, 0.006) && near(r.rest.d, 0.115, 0.004), r && JSON.stringify(r.rest));
+    check('390: no player clip: no stand-in character, camera push into the ball', r && r.usedClip === false && r.ending === 'push');
+    check('390: the reels were laid out under the opening (visible when the card appears)', o.board > 300);
     check('390: real reels revealed under the ball (occlusion), game playable', r && r.occludedAt > 0 && (await page.isEnabled('[data-testid=spin]')), r && `occluded at ${Math.round(r.occludedAt)} ms of ${Math.round(r.totalMs)} ms`);
     check('390: HUD hidden during the whole opening', o.hud.length > 0 && Math.max(...o.hud) < 0.5, `${o.hud.length} frames`);
     check('390: loading/opening canvas removed (one canvas left)', o.canvases === 1);
@@ -94,7 +101,7 @@ try {
   {
     const { ctx, page } = await open(PHONE);
     const o = await playFirstVisit(page, { skipAt: 600, label: 'skip' });
-    check('skip: the opening can be skipped (shorter, game reached)', o.r && o.r.occludedAt > 0 && o.r.totalMs < 2500, o.r && `${Math.round(o.r.totalMs)} ms`);
+    check('skip: the opening can be skipped (shorter, game reached)', o.r && o.r.occludedAt > 0 && o.r.totalMs < 3000, o.r && `${Math.round(o.r.totalMs)} ms`);
     await ctx.close();
   }
   // ---- reduced motion: no opening
@@ -106,14 +113,23 @@ try {
   }
   // ---- external player clip integration point (synthetic QA clip, never shipped)
   if (TEST_CLIP) {
-    const clip = { src: 'qa.webm', width: 1080, height: 1920, handoffAt: 0, ball: { x: 0.5, y: 0.81, d: 0.11 }, contactAt: 1.0, occludedAt: 2.0 };
+    const clip = { src: 'qa.webm', width: 1080, height: 1920, handoffAt: 0, ball: { x: 0.5, y: 0.81, d: 0.11 }, contactAt: 1.0, occludedAt: 2.0, cues: [{ t: 0.4, sound: 'bounce', volume: 0.6 }] };
     const init = { fn: (c) => { window.__aceClipOverride = { clip: c, url: '/__qa/clip.webm' }; }, arg: clip };
     const { ctx, page, errors } = await open(PHONE, init);
     await page.route('**/__qa/clip.webm', (r) => r.fulfill({ path: TEST_CLIP, contentType: 'video/webm' }));
     const o = await playFirstVisit(page, { shots: [2600, 3400], label: 'clip' });
     check('clip: the external serve clip is played between the bounce and the occlusion', o.r && o.r.usedClip === true, o.r && `occluded at ${Math.round(o.r.occludedAt)} ms`);
-    check('clip: reels revealed after the clip, no console errors', o.r && o.r.occludedAt > 0 && errors.length === 0, errors.slice(0, 2).join(' | '));
+    check('clip: the HTML5 ball comes to rest on the clip\'s first-frame ball (hand-off)', o.r && o.r.rest && Math.abs(o.r.rest.x - 0.5) < 0.006 && Math.abs(o.r.rest.y - 0.81) < 0.006 && Math.abs(o.r.rest.d - 0.11) < 0.004, o.r && JSON.stringify(o.r.rest));
+    check('clip: sound cues on the clip clock (bounce + racket contact)', o.r && o.r.cues === 2, o.r && `${o.r.cues}`);
+    check('clip: occludedAt mode, reels revealed after the clip, no console errors', o.r && o.r.ending === 'occludedAt' && o.r.occludedAt > 0 && errors.length === 0, errors.slice(0, 2).join(' | '));
     await ctx.close();
+    // exit mode: the struck ball leaves the (frozen) clip as the HTML5 ball and rushes to the lens
+    const clipX = { ...clip, exit: { at: 1.4, x: 0.52, y: 0.3, d: 0.03 } };
+    const e = await open(PHONE, { fn: (c) => { window.__aceClipOverride = { clip: c, url: '/__qa/clip.webm' }; }, arg: clipX });
+    await e.page.route('**/__qa/clip.webm', (r) => r.fulfill({ path: TEST_CLIP, contentType: 'video/webm' }));
+    const oe = await playFirstVisit(e.page, { shots: [3300, 3500], label: 'clip-exit' });
+    check('clip exit mode: ball to camera over the clip, then the reels', oe.r && oe.r.usedClip && oe.r.ending === 'exit' && oe.r.occludedAt > 0 && e.errors.length === 0, oe.r && `${oe.r.ending} ${e.errors.slice(0, 1)}`);
+    await e.ctx.close();
     // broken clip -> HTML5 version, never a blank screen
     const b = await open(PHONE, { fn: (c) => { window.__aceClipOverride = { clip: c, url: '/__qa/missing.webm' }; }, arg: clip });
     const ob = await playFirstVisit(b.page, { label: 'clip-missing' });

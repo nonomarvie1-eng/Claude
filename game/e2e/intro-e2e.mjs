@@ -80,12 +80,12 @@ async function firstVisit(name, opts, throttle) {
   check(`${name}: preboot removed once the scene is up`, (await page.$('#preboot')) === null);
   check(`${name}: no sound before a gesture`, (await page.evaluate(() => window.__audioCtx)) === 0);
   await page.waitForTimeout(400);
-  await page.screenshot({ path: path.join(SHOTS, `fs-${name}-card.png`) });
-  check(`${name}: first visit shows the feature card with continue and skip`, (await page.isVisible('[data-testid=start]')) && (await page.isVisible('[data-testid=intro-skip]')));
+  await page.screenshot({ path: path.join(SHOTS, `fs-${name}-play.png`) });
+  check(`${name}: first visit: PLAY and skip on the loading screen`, (await page.isVisible('[data-testid=start]')) && (await page.isVisible('[data-testid=intro-skip]')));
+  const noCard = await page.evaluate(() => window.__rallyIntro.cardBottom() === null && !document.querySelector('[data-testid=feature-card]'));
+  check(`${name}: no feature card before the opening (screen order)`, noCard);
   const b = await page.evaluate(() => document.querySelector('[data-testid=start]').getBoundingClientRect().toJSON());
   const vp = page.viewportSize();
-  const cardBottom = await page.evaluate(() => window.__rallyIntro.cardBottom());
-  check(`${name}: the feature card never covers the buttons`, cardBottom !== null && cardBottom <= b.top - 4, `card bottom ${Math.round(cardBottom)} / button top ${Math.round(b.top)}`);
   check(`${name}: continue button fully on screen, >= 44 px`, b.top >= 0 && b.bottom <= vp.height && b.height >= 44, JSON.stringify({ top: Math.round(b.top), h: Math.round(b.height) }));
   return { ctx, page, errors };
 }
@@ -110,22 +110,38 @@ try {
   await page.waitForFunction(() => window.__rallyIntro?.qa.transitionMs > 0, null, { timeout: 30000 });
   const hs = await page.evaluate(() => window.__hudSamples);
   check('390: HUD hidden during the transition', hs.length > 0 && Math.max(...hs) < 0.5, `${hs.length} frames, max opacity ${hs.length ? Math.max(...hs).toFixed(2) : '-'}`);
-  await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
+  await page.waitForSelector('[data-testid=feature-card]', { timeout: 30000 });
   const cr = await page.evaluate(() => window.__rallyIntro.cinematicResult);
   check('390: PLAY on the first visit runs the ACE! opening into the reels', cr && cr.occludedAt > 0, cr && `${Math.round(cr.totalMs)} ms`);
   check('390: sound started by the PLAY gesture', (await page.evaluate(() => window.__audioCtx)) === 1);
   check('390: intro canvas removed, reels visible', (await page.$('[data-testid=intro-progress]')) === null && (await page.evaluate(() => window.__rallyLayout.board.w)) > 300);
   check('390: loading loops cleaned up (one canvas left)', (await page.evaluate(() => document.querySelectorAll('canvas').length)) === 1);
   await page.waitForTimeout(500);
+  await page.screenshot({ path: path.join(SHOTS, 'fs-390-feature.png') });
+  const fc = await page.evaluate(() => {
+    const r = document.querySelector('[data-testid=feature-ok]').getBoundingClientRect();
+    const card = document.querySelector('[data-testid=feature-card] [role=dialog]').getBoundingClientRect();
+    return { okIn: r.top >= 0 && r.bottom <= innerHeight && r.height >= 44, cardIn: card.top >= 0 && card.bottom <= innerHeight + 1, logo: document.querySelector('[data-testid=feature-card] img.logo').naturalWidth };
+  });
+  check('390: feature explanations shown AFTER the opening, over the real reels', fc.okIn && fc.cardIn && fc.logo > 0, JSON.stringify(fc));
+  const blocked = await page.evaluate(() => { const r = document.querySelector('[data-testid=spin]').getBoundingClientRect(); const el = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2); return !el.closest('[data-testid=spin]'); });
+  check('390: the card is read first (spin not reachable under it)', blocked);
+  await page.click('[data-testid=feature-ok]');
+  await page.waitForTimeout(300);
+  check('390: card closed, mascot greets with the ACE! name', !(await page.$('[data-testid=feature-card]')));
+  const hdr = await page.evaluate(() => window.__rallyScene.header());
+  check('390: in-game header shows the ACE! logo (1774x887), not the old Golden Rally logo', hdr.ace && hdr.w === 1774 && hdr.h === 887, JSON.stringify(hdr));
+  check('390: page title is ACE!', (await page.title()) === 'ACE!');
+  await page.waitForTimeout(400);
   await page.screenshot({ path: path.join(SHOTS, 'fs-390-game.png') });
   await page.click('[data-testid=spin]');
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 60000 });
   check('390: a spin works after the entry', true);
   // return visit (same storage): straight to the reels, no card, no sound until a gesture
-  await page.reload();
+  await page.reload({ timeout: 120000 });
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 60000 });
-  const sawCard = await page.evaluate(() => !!document.querySelector('[data-testid=intro-skip]'));
-  check('390: returning visit goes straight to the grid (no card)', !sawCard);
+  const sawCard = await page.evaluate(() => !!document.querySelector('[data-testid=intro-skip]') || !!document.querySelector('[data-testid=feature-card]'));
+  check('390: returning visit goes straight to the grid (no PLAY screen, no card)', !sawCard);
   const tq = await page.evaluate(() => ({ ...window.__rallyIntro.qa }));
   // animation time (what a fluid device shows); the wall time of this software-rendered browser is reported too
   check('390: returning visit: transition into the game ~0.5 s', tq.transitionAnimMs >= 450 && tq.transitionAnimMs <= 700, `${Math.round(tq.transitionAnimMs)} ms animation · ${Math.round(tq.transitionMs)} ms wall @ ${tq.fps} fps (software rendering)`);
@@ -143,6 +159,11 @@ try {
       await o.page.evaluate(() => { const p = JSON.parse(localStorage.getItem('golden-rally-prefs-v1') || '{}'); p.reducedMotion = true; localStorage.setItem('golden-rally-prefs-v1', JSON.stringify(p)); });
     }
     await o.page.click('[data-testid=intro-skip]');
+    await o.page.waitForSelector('[data-testid=feature-ok]', { timeout: 30000 });
+    await o.page.screenshot({ path: path.join(SHOTS, `fs-${name}-feature.png`) });
+    const fb = await o.page.evaluate(() => { const r = document.querySelector('[data-testid=feature-ok]').getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; });
+    check(`${name}: feature card after the reels, its button on screen`, fb);
+    await o.page.click('[data-testid=feature-ok]');
     await o.page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
     const tq2 = await o.page.evaluate(() => window.__rallyIntro.qa.transitionMs);
     check(`${name}: skip link enters the game without the opening`, tq2 > 0 && !(await o.page.evaluate(() => window.__rallyIntro.cinematicResult)), `${Math.round(tq2)} ms`);
@@ -159,6 +180,7 @@ try {
     await page.goto(URL);
     await page.waitForSelector('[data-testid=start]', { timeout: 60000 });
     await page.click('[data-testid=start]');
+    await page.click('[data-testid=feature-ok]', { timeout: 30000 });
     await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 30000 });
     const tq3 = await page.evaluate(() => window.__rallyIntro.qa.transitionAnimMs);
     check('reduced motion: short crossfade only (≤ 0.3 s of animation)', tq3 > 0 && tq3 <= 300, `${Math.round(tq3)} ms`);
@@ -174,7 +196,7 @@ try {
     await page.click('[data-testid=start]');
     await page.waitForTimeout(150);
     for (let i = 0; i < 4; i++) await page.mouse.click(195, 500).catch(() => {});
-    await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 90000 });
+    await page.waitForSelector('[data-testid=feature-ok]', { timeout: 90000 });
     const tq4 = await page.evaluate(() => window.__rallyIntro.qa.transitionAnimMs);
     // PLAY starts the ACE! opening (~5 s, 20 s at 0.25x): taps accelerate it to the reels
     check('tap skips the opening (much shorter than the slowed-down one)', tq4 < 20000 * 0.5, `${Math.round(tq4)} ms of animation at 0.25x speed`);

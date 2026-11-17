@@ -244,7 +244,7 @@ export class IntroScene {
     const W = 560, H = 690;
     const panel = new Graphics().roundRect(-W / 2, -H / 2, W, H, 26).fill({ color: C.navy, alpha: 0.96 }).stroke({ color: C.gold, width: 3 });
     panel.roundRect(-W / 2 + 9, -H / 2 + 9, W - 18, H - 18, 20).stroke({ color: C.ivory, width: 1, alpha: 0.22 });
-    const logoTex = gameTex.logo ?? this.tex.logo;
+    const logoTex = gameTex.ace_logo ?? gameTex.logo ?? this.tex.logo;
     const parts: Container[] = [panel];
     if (logoTex) {
       const logo = new Sprite(logoTex);

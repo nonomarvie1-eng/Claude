@@ -40,6 +40,8 @@ async function open(w, h) {
   await page.goto(URL);
   await page.waitForSelector('[data-testid=start]', { timeout: 40000 });
   await page.click('[data-testid=start]');
+  // first visit: the feature explanations come after the opening, over the reels
+  await page.click('[data-testid=feature-ok]', { timeout: 60000 }).catch(() => {});
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 40000 });
   return { ctx, page, errors };
 }

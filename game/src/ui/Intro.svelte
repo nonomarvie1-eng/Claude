@@ -1,11 +1,11 @@
 <script lang="ts">
   // DOM layer of THE FIRST SERVE: accessible progress, status, slow-network and
-  // error messages, first-visit buttons.  The visuals are drawn by IntroScene
+  // error messages, first-visit PLAY button (the tap that allows sound on iOS).  The visuals are drawn by IntroScene
   // (PixiJS) in its own canvas, mounted in `host`.
   import { game } from '../game/state.svelte';
-  let { host = $bindable(), showCard, entering, cinematic = false, slow, failed, oncontinue, onskipintro, onskiptransition }: {
+  let { host = $bindable(), showPlay, entering, cinematic = false, slow, failed, oncontinue, onskipintro, onskiptransition }: {
     host?: HTMLDivElement;
-    showCard: boolean;
+    showPlay: boolean;
     entering: boolean;
     cinematic?: boolean;
     slow: boolean;
@@ -31,7 +31,7 @@
       <button class="btn" onclick={() => location.reload()}>{t.retry}</button>
     </div>
   {/if}
-  {#if showCard && !entering}
+  {#if showPlay && !entering}
     <div class="actions">
       <button class="btn primary" onclick={oncontinue} data-testid="start">{t.introContinue}</button>
       <button class="link" onclick={onskipintro ?? oncontinue} data-testid="intro-skip">{t.introSkip}</button>

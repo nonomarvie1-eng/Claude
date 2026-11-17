@@ -18,9 +18,14 @@
    "detail": ""
   },
   {
-   "name": "390: two bounces on the court with sound cues",
+   "name": "390: natural bounces (decreasing), each with its sound",
    "ok": true,
-   "detail": "2"
+   "detail": "4"
+  },
+  {
+   "name": "390: the camera followed the fall and the ball came to rest exactly at the hand-off point (60 % / 84 %, d 11.5 %)",
+   "ok": true,
+   "detail": "{\"x\":0.6,\"y\":0.8399999999999999,\"d\":0.115}"
   },
   {
    "name": "390: no player clip: no stand-in character, camera push into the ball",
@@ -28,14 +33,19 @@
    "detail": ""
   },
   {
+   "name": "390: the reels were laid out under the opening (visible when the card appears)",
+   "ok": true,
+   "detail": ""
+  },
+  {
    "name": "390: real reels revealed under the ball (occlusion), game playable",
    "ok": true,
-   "detail": "occluded at 4614 ms of 5256 ms"
+   "detail": "occluded at 6133 ms of 6744 ms"
   },
   {
    "name": "390: HUD hidden during the whole opening",
    "ok": true,
-   "detail": "66 frames"
+   "detail": "82 frames"
   },
   {
    "name": "390: loading/opening canvas removed (one canvas left)",
@@ -60,10 +70,40 @@
   {
    "name": "skip: the opening can be skipped (shorter, game reached)",
    "ok": true,
-   "detail": "1018 ms"
+   "detail": "2019 ms"
   },
   {
    "name": "reduced motion: no opening, short crossfade",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "clip: the external serve clip is played between the bounce and the occlusion",
+   "ok": true,
+   "detail": "occluded at 6873 ms"
+  },
+  {
+   "name": "clip: the HTML5 ball comes to rest on the clip's first-frame ball (hand-off)",
+   "ok": true,
+   "detail": "{\"x\":0.5,\"y\":0.8100000000000002,\"d\":0.11000000000000001}"
+  },
+  {
+   "name": "clip: sound cues on the clip clock (bounce + racket contact)",
+   "ok": true,
+   "detail": "2"
+  },
+  {
+   "name": "clip: occludedAt mode, reels revealed after the clip, no console errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "clip exit mode: ball to camera over the clip, then the reels",
+   "ok": true,
+   "detail": "exit "
+  },
+  {
+   "name": "clip missing/broken: falls back to the HTML5 version and reaches the game",
    "ok": true,
    "detail": ""
   },

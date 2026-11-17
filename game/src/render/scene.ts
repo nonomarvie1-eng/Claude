@@ -254,9 +254,9 @@ export class RallyScene implements View {
     this.app.stage.addChild(this.bg, this.dustLayer, this.world);
 
     // header
-    this.logo.texture = tex.logo;
+    this.logo.texture = this.headerLogo(tex);
     this.logo.anchor.set(0.5);
-    this.logoMask.texture = tex.logo;
+    this.logoMask.texture = this.headerLogo(tex);
     this.logoMask.anchor.set(0.5);
     this.logoShine.mask = this.logoMask;
     this.logoShine.blendMode = 'add';
@@ -411,7 +411,7 @@ export class RallyScene implements View {
     };
     let cells: { l: Text; v: Text }[];
     if (variant === 'tall') {
-      const kicker = new Text({ text: 'GOLDEN RALLY', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 22, fill: '#D5A64B', letterSpacing: 6 } });
+      const kicker = new Text({ text: 'ACE!', style: { fontFamily: 'Cinzel', fontWeight: '700', fontSize: 22, fill: '#D5A64B', letterSpacing: 6 } });
       kicker.anchor.set(0.5);
       kicker.y = -H / 2 + 40;
       const title = this.goldText(this.level === 'final' ? 'THE GRAND FINAL' : 'RALLY CHALLENGE', 30);
@@ -634,6 +634,11 @@ export class RallyScene implements View {
     void this.tw.tween(fadeMs ?? (this.prefs.reducedMotion ? 150 : 600), (u) => (this.world.alpha = u));
   }
 
+  /** Visible game identity: the ACE! logo (the old Golden Rally logo stays only as a fallback). */
+  private headerLogo(tex: Record<string, Texture>) {
+    return tex.ace_logo ?? tex.logo;
+  }
+
   /** Launch: Ace welcomes the player (once, after the start screen). */
   welcome() {
     void this.aceSay(this.t.aceHello, 1600);
@@ -686,7 +691,7 @@ export class RallyScene implements View {
     const headW = Math.min(aw, Math.max(bw, headH * 3));
     const hx = cx, hy = y0 + headH / 2;
     this.header.position.set(hx, hy);
-    const ls = Math.min((headW * 0.92) / this.tex.logo.width, (headH * 0.98) / this.tex.logo.height);
+    const ls = Math.min((headW * 0.92) / this.headerLogo(this.tex).width, (headH * 0.98) / this.headerLogo(this.tex).height);
     this.logo.scale.set(ls);
     this.logoMask.scale.set(ls);
     this.headerBox = { x: hx, y: hy, w: headW, h: headH };
@@ -821,7 +826,7 @@ export class RallyScene implements View {
 
   private sweepLogo() {
     const g = this.logoShine;
-    const lw = this.tex.logo.width, lh = this.tex.logo.height;
+    const lw = this.headerLogo(this.tex).width, lh = this.headerLogo(this.tex).height;
     g.clear().poly([-60, -lh / 2, 30, -lh / 2, -40, lh / 2, -130, lh / 2]).fill({ color: 0xfff3d0, alpha: 0.55 });
     g.scale.set(this.logo.scale.x);
     void this.tw.tween(1100, (u) => (g.x = (-lw / 2 + (lw + 200) * u) * this.logo.scale.x), ease.inOutCubic).then(() => g.clear());
@@ -1459,6 +1464,7 @@ export class RallyScene implements View {
       qa: () => ({ ...this.qa }),
       court: () => ({ ...this.court.qa, visible: this.court.root.visible }),
       rs: () => JSON.parse(JSON.stringify(this.qaRs)),
+      header: () => ({ w: this.logo.texture.width, h: this.logo.texture.height, ace: this.logo.texture === this.tex.ace_logo }),
       leftovers: () => ({ court: this.court.root.visible, overlay: this.overlay.children.length, gsLayer: this.gsLayer.children.length, rpPlate: this.rpPlate.visible, fx: this.fx.children.length }),
     };
   }
@@ -1768,7 +1774,7 @@ export class RallyScene implements View {
     panel.roundRect(-W / 2, -H / 2, W, H, 22).fill({ color: 0x0b2440, alpha: 0.97 }).stroke({ color: 0xe7c877, width: 4 });
     panel.roundRect(-W / 2 + 10, -H / 2 + 10, W - 20, H - 20, 16).stroke({ color: 0xf4e9d4, width: 1, alpha: 0.35 });
     panel.moveTo(-W / 2 + 40, -40).lineTo(W / 2 - 40, -40).stroke({ color: 0xe7c877, width: 1.5, alpha: 0.5 });
-    const kick = this.plainText('GOLDEN RALLY · NIGHT FINAL', 20, '#D6B36A', '800');
+    const kick = this.plainText('ACE! · NIGHT FINAL', 20, '#D6B36A', '800');
     kick.y = -H / 2 + 38;
     const title = this.fit(this.goldText('CHAMPIONSHIP POINT', 46), W - 60);
     title.y = -78;

@@ -41,6 +41,8 @@ async function open(opts) {
   await page.goto(URL);
   await page.waitForSelector('[data-testid=start]', { timeout: 40000 });
   await page.click('[data-testid=start]');
+  // first visit: the feature explanations come after the opening, over the reels
+  await page.click('[data-testid=feature-ok]', { timeout: 60000 }).catch(() => {});
   await page.waitForSelector('[data-testid=spin]:not([disabled])', { timeout: 40000 });
   await page.waitForTimeout(2000);
   return { ctx, page, errors };
@@ -77,7 +79,7 @@ async function play(page, label, scenario, { taps = false, shot = [] } = {}) {
 try {
   const { ctx, page, errors } = await open(PHONE);
   const id = norm(await page.textContent('[data-testid=build-id]'));
-  check('390x844: build id ACE-OPEN-01 visible', id === 'ACE-OPEN-01', id);
+  check('390x844: build id ACE-OPEN-02 visible', id === 'ACE-OPEN-02', id);
   check('390x844: no buy / modes button, no test button in the player HUD', !(await page.isVisible('[data-testid=btn-buy]')) && !(await page.isVisible('[data-testid=test-point]')) && !(await page.isVisible('[data-testid=test-serve]')));
   await page.screenshot({ path: path.join(SHOTS, 'rs01-390-idle.png') });
   const s1 = await play(page, '1-plain', 'plain');

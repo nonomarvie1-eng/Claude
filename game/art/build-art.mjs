@@ -409,7 +409,7 @@ function background(w, h, key) {
   for (const v of [0, .45]) court += L(at(-1, v), at(1, v));
   court += L(at(0, .45), at(0, 1));
   let led = '';
-  for (let i = 0; i < Math.ceil(w / 560) + 1; i++) led += `<text x="${i * 560 + 30}" y="${horizon + 20}" style="font-family:'Cinzel',serif;font-weight:700" font-size="19" fill="#D5A64B" opacity=".8" letter-spacing="5">GOLDEN RALLY · NIGHT CUP ·</text>`;
+  for (let i = 0; i < Math.ceil(w / 560) + 1; i++) led += `<text x="${i * 560 + 30}" y="${horizon + 20}" style="font-family:'Cinzel',serif;font-weight:700" font-size="19" fill="#D5A64B" opacity=".8" letter-spacing="5">ACE! · CHAMPIONSHIP NIGHT ·</text>`;
   const fore = svg(w, h - fy0, `<g transform="translate(0 ${-fy0})">
     <radialGradient id="courtGlow" cx=".5" cy=".15" r=".7"><stop offset="0" stop-color="#fff2d6" stop-opacity=".18"/><stop offset="1" stop-color="#fff2d6" stop-opacity="0"/></radialGradient>
     <rect x="-10" y="${horizon - 14}" width="${w + 20}" height="44" fill="#041016"/>

@@ -33,7 +33,9 @@ const SCALE = { default: 2, bg_landscape: 1, bg_portrait: 1, frame: 1.5 };
 
 const browser = await chromium.launch();
 const page = await browser.newPage();
-const files = fs.readdirSync(SRC).filter((f) => f.endsWith('.svg'));
+// ONLY=fore_portrait,fore_landscape re-renders just those assets (no contact sheet)
+const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
+const files = fs.readdirSync(SRC).filter((f) => f.endsWith('.svg') && (!ONLY || ONLY.includes(f.replace('.svg', ''))));
 for (const file of files) {
   const name = file.replace('.svg', '');
   const svg = fs.readFileSync(path.join(SRC, file), 'utf8');
@@ -62,6 +64,11 @@ for (const f of fs.readdirSync(OUT).filter((x) => x.endsWith('.png'))) {
   execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', src, '-c:v', 'libwebp', '-quality', '86', '-compression_level', '6', dst]);
 }
 // contact sheet for review
+if (ONLY) {
+  for (const f of fs.readdirSync(OUT).filter((x) => x.endsWith('.png'))) fs.rmSync(path.join(OUT, f));
+  await browser.close();
+  process.exit(0);
+}
 const syms = ['W', 'S', 'H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'L5'];
 await page.setViewportSize({ width: 1580, height: 540 });
 await page.setContent(`<html><body style="margin:0;background:#081B23;display:flex;flex-wrap:wrap;gap:10px;padding:10px">

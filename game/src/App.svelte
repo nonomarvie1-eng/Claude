@@ -17,21 +17,27 @@
   import History from './ui/History.svelte';
   import BuyBonus from './ui/BuyBonus.svelte';
   import Autoplay from './ui/Autoplay.svelte';
+  import FeatureCard from './ui/FeatureCard.svelte';
 
   let host: HTMLDivElement;
   let ctrl: Controller | null = $state(null);
   const scene = new RallyScene();
   const t = $derived(game.t);
 
-  // ---- THE FIRST SERVE: loading -> (first visit: feature card) -> transition -> reels
+  // ---- ACE! opening, screen order: loading -> (first visit: PLAY) -> logo, ball fall, [player clip],
+  //      ball to camera -> real reels -> (first visit) feature explanations over the reels
   let introHost: HTMLDivElement | undefined = $state();
   let intro: IntroScene | null = null;
-  let showCard = $state(false);
+  // the player clip (if produced) is preloaded during the loading screen, never on the critical path
+  let clipP: ReturnType<typeof loadServeClip> | null = null;
+  let showPlay = $state(false);
+  let showFeature = $state(false);
   let entering = $state(false);
   let cinematic = $state(false);
   let slow = $state(false);
   let failed = $state(false);
-  const SEEN_KEY = `golden-rally-first-serve-seen-${STORE_NS}`;
+  // presentation flag only (not game data): v2 = new screen order, so the new opening is shown once again
+  const SEEN_KEY = `ace-opening-seen-v2-${STORE_NS}`;
   const seen = () => { try { return localStorage.getItem(SEEN_KEY) === '1'; } catch { return false; } };
   const markSeen = () => { try { localStorage.setItem(SEEN_KEY, '1'); } catch { /* private mode */ } };
   // real progress: intro images 15 %, game images 70 %, fonts 5 %, scene + session objects 10 %
@@ -63,6 +69,7 @@
       // demo-only QA handle (simulate server errors in automated tests)
       if (ctrl.rgs.kind === 'demo') (window as unknown as { __rallyDemo: unknown }).__rallyDemo = ctrl.rgs;
       progress(1);
+      clipP = loadServeClip(8000);
       clearTimeout(slowTimer);
       slow = false;
       intro.addTextures(tex);
@@ -70,10 +77,7 @@
       await intro.complete();
       game.phase = 'ready';
       if (seen()) void enter(false); // returning player: straight to the reels, no artificial delay
-      else {
-        intro.showFeatureCard(tex, { title: game.t.introFeatureKicker, name: 'GOLDEN SERVE · RETURN SPINS', text1: game.t.introFeature1, text2: game.t.introFeature2, zone: game.t.introZone });
-        showCard = true;
-      }
+      else showPlay = true; // first visit: one tap (unlocks sound on iOS), then the opening — no card before it
     } catch (e) {
       console.error(e);
       clearTimeout(slowTimer);
@@ -110,6 +114,7 @@
 
   async function enter(fromGesture: boolean, allowCinematic = true) {
     if (!ctrl || !intro || entering || game.phase !== 'ready') return;
+    const firstVisit = !seen();
     markSeen();
     // the ACE! opening: first visit (PLAY gesture: sound allowed), never with reduced motion
     const playCine = allowCinematic && fromGesture && !game.prefs.reducedMotion && intro.hasCinematicAssets();
@@ -117,7 +122,7 @@
     else armAudioOnFirstGesture();
     entering = true;
     cinematic = playCine;
-    showCard = false;
+    showPlay = false;
     game.phase = 'spinning'; // the HUD mounts (hidden while entering) so the reels get their final layout
     await tick();
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -125,7 +130,7 @@
     const L = scene.layoutInfo;
     const target = L ? L.board : { x: 0, y: 0, w: 1, h: 1 };
     if (playCine) {
-      const clip = await loadServeClip();
+      const clip = await (clipP ?? loadServeClip());
       await intro.playCinematic({ clip: clip?.clip, video: clip?.video, onOcclude: () => scene.setIntro(false, 0) });
       clip?.video.removeAttribute('src');
       void startAudio(true);
@@ -137,7 +142,9 @@
     try {
       await ctrl.boot(); // session, interrupted round resumed and closed if any
       game.phase = 'idle';
-      scene.welcome();
+      // explanations AFTER the reels: they are seen first, then the card (only if nothing was started meanwhile)
+      if (firstVisit) setTimeout(() => { if (game.phase === 'idle' && !game.modal) showFeature = true; else scene.welcome(); }, game.prefs.reducedMotion ? 0 : 700);
+      else scene.welcome();
     } catch (e) {
       game.error = { message: game.t.networkError, retryable: true, fatal: false };
       game.phase = 'error';
@@ -173,6 +180,7 @@
     const el = e.target as HTMLElement;
     if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA' || el.tagName === 'BUTTON')) return;
     e.preventDefault();
+    if (showFeature) return; // the explanation card is read first (its button closes it)
     if (game.phase === 'ready') void enter(true);
     else if (game.autoplay) ctrl?.stopAutoplay();
     else void ctrl?.spin();
@@ -189,7 +197,11 @@
   {/if}
 
   {#if game.phase === 'loading' || game.phase === 'ready' || entering || failed}
-    <Intro bind:host={introHost} {showCard} {entering} {cinematic} {slow} {failed} oncontinue={() => enter(true)} onskipintro={() => enter(true, false)} onskiptransition={() => { intro?.skipTransition(); intro?.skipCinematic(); }} />
+    <Intro bind:host={introHost} {showPlay} {entering} {cinematic} {slow} {failed} oncontinue={() => enter(true)} onskipintro={() => enter(true, false)} onskiptransition={() => { intro?.skipTransition(); intro?.skipCinematic(); }} />
+  {/if}
+
+  {#if showFeature}
+    <FeatureCard onclose={() => { showFeature = false; scene.welcome(); }} />
   {/if}
 
   {#if game.notice}

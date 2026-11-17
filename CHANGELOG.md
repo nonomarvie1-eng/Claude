@@ -1,5 +1,13 @@
 # Changelog
 
+## ACE-OPEN-02 — correction de l'introduction, identité ACE! (2026-11-17)
+- Ordre des écrans : chargement → JOUER → logo → détachement → chute (la caméra suit) → rebonds → balle au repos → [joueur] → balle vers la caméra → vrais rouleaux → carte des fonctionnalités par-dessus les rouleaux (première visite). Plus de carte avant l'ouverture.
+- Balle : rebonds décroissants physiques (4 contacts sonores), roulade, arrêt au point de relais fixe (60 % / 84 %, Ø 11,5 %) = première image du futur clip.
+- Clip du joueur : préchargé pendant le chargement ; relais sans glissement ; repères sonores ; mode `exit` (la balle HTML5 part vers l'objectif sur l'image figée) ; abandon en cas de blocage.
+- Image de relais 1080×1920 exportée (avec et sans balle) : docs/ace_handoff/, script `tools/export-handoff.mjs`.
+- Identité : logo ACE! dans l'en-tête et sur la carte, bandeaux du court, panneaux de bonus, mascotte, titre de la page. Identifiants internes et sauvegardes inchangés.
+- Mécaniques, mises, bonus et RNG inchangés.
+
 ## ACE-OPEN-01 — cinématique d'ouverture ACE! (2026-11-17)
 - Logo ACE! sur le stade officiel ; la balle du « ! » (découpée du logo, sans redessin) se détache, tombe et rebondit en devenant la balle photographique : une seule balle, même position, même taille.
 - Sans séquence de joueur : la caméra se rapproche de la même balle jusqu'à l'occultation, puis les vrais rouleaux apparaissent (aucun personnage de substitution, aucun faux rouleau).
