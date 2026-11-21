@@ -163,7 +163,13 @@ def build(project_file: Path, cfg: dict, backend: str | None = None, out: Path |
     rel_fonts = os.path.relpath(p(cfg, "fonts"), work).replace("\\", "/")
     post += f",ass=subs.ass:fontsdir='{rel_fonts}'"
     if fx.get("progress_bar"):
-        post += (f",drawbox=x=0:y=ih-12:w='iw*t/{total}':h=12:color=0x{cfg['style']['highlight_color']}@0.95:t=fill")
+        # Barre de progression : une bande de couleur qui glisse depuis la gauche.
+        # (overlay avec x dépendant du temps : compatible FFmpeg 4 à 9, contrairement
+        #  à drawbox dont la largeur 0 au départ est refusée par FFmpeg >= 7)
+        fps = cfg["video"]["fps"]
+        filters.append(post + "[pre]")
+        filters.append(f"color=c=0x{cfg['style']['highlight_color']}:s={W}x12:r={fps}:d={total}[bar]")
+        post = f"[pre][bar]overlay=x='-w+w*t/{total}':y=H-12:eval=frame:shortest=1"
     post += ",fade=t=out:st={:.3f}:d=0.4,format=yuv420p[vout]".format(total - 0.4)
     filters.append(post)
 
