@@ -7,6 +7,8 @@
   python gta.py library                        liste les captures importées
   python gta.py new NOM                        crée un projet à partir des captures
   python gta.py voices --download VOIX         télécharge une voix Piper
+  python gta.py voices --elevenlabs            liste vos voix ElevenLabs (voice_id)
+  python gta.py say "phrase" [--tts …]         écoute une phrase → output/voix_test.wav
   python gta.py build projects/NOM/episode.yaml [--tts test|piper|azure|elevenlabs]
   python gta.py verify output/NOM.mp4
 """
@@ -69,7 +71,11 @@ def main() -> int:
     s = sub.add_parser("new")
     s.add_argument("name")
     s = sub.add_parser("voices")
-    s.add_argument("--download", required=True)
+    s.add_argument("--download", help="télécharge une voix Piper")
+    s.add_argument("--elevenlabs", action="store_true", help="liste les voix de votre compte ElevenLabs")
+    s = sub.add_parser("say")
+    s.add_argument("text")
+    s.add_argument("--tts", default=None)
     s = sub.add_parser("build")
     s.add_argument("project", type=Path)
     s.add_argument("--tts", default=None)
@@ -96,7 +102,16 @@ def main() -> int:
         elif args.cmd == "new":
             cmd_new(cfg, args.name)
         elif args.cmd == "voices":
-            tts.download_voice(cfg, args.download)
+            if args.elevenlabs:
+                tts.eleven_list_voices()
+            elif args.download:
+                tts.download_voice(cfg, args.download)
+            else:
+                print("Précisez --download VOIX ou --elevenlabs")
+        elif args.cmd == "say":
+            out = p(cfg, "output") / "voix_test.wav"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            tts.preview(args.text, cfg, args.tts, out)
         elif args.cmd == "build":
             tl = compose.build(args.project, cfg, backend=args.tts, out=args.out)
             if not args.no_verify:

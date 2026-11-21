@@ -38,3 +38,26 @@ Sources : [piper-voices siwis](https://huggingface.co/rhasspy/piper-voices/tree/
 [Tarifs Azure Speech](https://azure.microsoft.com/pricing/details/cognitive-services/speech-services),
 [Facturation ElevenLabs](https://elevenlabs.io/docs/overview/administration/billing),
 [Tarifs ElevenLabs](https://www.elevenlabs.io/pricing).
+
+## Mise en place d'ElevenLabs (choix retenu)
+*Conditions vérifiées le 21/11/2026 : Starter = 6 $/mois (1 $ le premier mois en promotion),
+30 000 crédits/mois, licence commerciale incluse. L'offre gratuite n'autorise pas la monétisation.*
+
+Avec `eleven_multilingual_v2`, 1 caractère ≈ 1 crédit, soit environ **45 Shorts par mois**.
+`eleven_flash_v2_5` coûte deux fois moins cher, avec une qualité un peu inférieure.
+Le pipeline garde chaque phrase en cache (`work/tts_cache`) : remonter une vidéo sans en changer
+le texte **ne consomme aucun crédit**.
+
+1. Créez le compte sur elevenlabs.io et prenez l'abonnement **Starter** (c'est vous qui payez).
+2. Choisissez une voix : **Voices → Voice Library**, filtre *French*, puis écoutez et cliquez sur **Add**.
+3. Créez une clé API : **Developers → API Keys → Create** et cochez la permission *Text to Speech*.
+   Ne collez **jamais** la clé dans une conversation ni dans un fichier du projet.
+4. Enregistrez la clé sur le PC (PowerShell), puis fermez et rouvrez PowerShell :
+   `setx ELEVENLABS_API_KEY "collez_la_clé_ici"`
+5. Récupérez l'identifiant de la voix : `python gta.py voices --elevenlabs`
+6. Dans `config/settings.yaml` : `tts.backend: elevenlabs` et `tts.elevenlabs.voice_id: "…"`.
+7. Écoutez une phrase avant de monter une vidéo : `python gta.py say "Ce glitch est complètement fou !"`
+   Le fichier produit est `output/voix_test.wav`.
+
+Réglages d'expressivité dans `tts.elevenlabs.voice_settings` : `stability` (plus bas = plus vivant),
+`style`, `speed`.

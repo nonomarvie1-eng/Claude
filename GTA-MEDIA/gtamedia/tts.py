@@ -80,22 +80,67 @@ def _azure(text: str, out: Path, cfg: dict) -> None:
     out.write_bytes(r.content)
 
 
+ELEVEN_LANG_MODELS = ("eleven_turbo_v2_5", "eleven_flash_v2_5")   # seuls à accepter language_code
+
+
+def _eleven_key() -> str:
+    key = os.environ.get("ELEVENLABS_API_KEY", "").strip()
+    if not key:
+        raise PipelineError("Clé ElevenLabs absente. Dans PowerShell : setx ELEVENLABS_API_KEY \"votre_clé\" "
+                            "puis fermez et rouvrez PowerShell (voir docs/VOIX_OFF.md).")
+    return key
+
+
+def _eleven_error(r) -> PipelineError:
+    hints = {401: "clé API invalide ou permission « Text to Speech » non cochée sur la clé",
+             402: "plan gratuit ou crédits épuisés ce mois-ci",
+             404: "voice_id introuvable : vérifiez tts.elevenlabs.voice_id",
+             422: "paramètre refusé (modèle ou réglages de voix)",
+             429: "trop de requêtes, réessayez dans une minute"}
+    return PipelineError(f"ElevenLabs HTTP {r.status_code} : {hints.get(r.status_code, '')}\n{r.text[:300]}")
+
+
 def _elevenlabs(text: str, out: Path, cfg: dict) -> None:
     import requests
-    key = os.environ.get("ELEVENLABS_API_KEY")
-    if not key:
-        raise PipelineError("Variable d'environnement ELEVENLABS_API_KEY absente.")
+    key = _eleven_key()
     ec = cfg["tts"]["elevenlabs"]
     if not ec.get("voice_id"):
-        raise PipelineError("tts.elevenlabs.voice_id est vide dans settings.yaml")
+        raise PipelineError("tts.elevenlabs.voice_id est vide dans config/settings.yaml "
+                            "(liste de vos voix : python gta.py voices --elevenlabs)")
+    body = {"text": text, "model_id": ec["model"]}
+    if ec["model"] in ELEVEN_LANG_MODELS:
+        body["language_code"] = "fr"
+    if ec.get("voice_settings"):
+        body["voice_settings"] = ec["voice_settings"]
     r = requests.post(
         f"https://api.elevenlabs.io/v1/text-to-speech/{ec['voice_id']}?output_format=pcm_44100",
-        headers={"xi-api-key": key, "Content-Type": "application/json"},
-        json={"text": text, "model_id": ec["model"], "language_code": "fr"}, timeout=120)
+        headers={"xi-api-key": key, "Content-Type": "application/json"}, json=body, timeout=120)
     if r.status_code != 200:
-        raise PipelineError(f"ElevenLabs : HTTP {r.status_code} {r.text[:200]}")
+        raise _eleven_error(r)
     pcm = np.frombuffer(r.content, dtype="<i2").astype(np.float32) / 32768.0
     write_wav(out, pcm, 44100)
+
+
+def eleven_list_voices() -> None:
+    """Affiche les voix de votre compte ElevenLabs (nom, voice_id, langue)."""
+    import requests
+    r = requests.get("https://api.elevenlabs.io/v1/voices", headers={"xi-api-key": _eleven_key()}, timeout=60)
+    if r.status_code != 200:
+        raise _eleven_error(r)
+    voices = r.json().get("voices", [])
+    log(f"{len(voices)} voix dans votre compte (ajoutez-en depuis la Voice Library du site) :")
+    for v in voices:
+        lab = v.get("labels") or {}
+        desc = ", ".join(x for x in (lab.get("language"), lab.get("accent"), lab.get("gender"), lab.get("age")) if x)
+        log(f"   {v['voice_id']}   {v['name']:<28} {desc}")
+
+
+def preview(text: str, cfg: dict, backend: str | None, out: Path) -> None:
+    """Synthétise une phrase seule pour écouter une voix (économise les crédits)."""
+    seg = synthesize([text], cfg, backend)[0]
+    import shutil
+    shutil.copy(seg.wav, out)
+    log(f"✔ Écoutez : {out}  ({seg.duration:.2f}s)")
 
 
 def _test(text: str, out: Path, cfg: dict) -> None:

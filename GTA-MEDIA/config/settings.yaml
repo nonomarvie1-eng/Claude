@@ -75,6 +75,12 @@ tts:
     voice: fr-FR-HenriNeural
     region: westeurope
     rate: "+8%"
-  elevenlabs:                  # clé : variable d'env ELEVENLABS_API_KEY
-    voice_id: ""
-    model: eleven_multilingual_v2
+  elevenlabs:                  # clé : variable d'env ELEVENLABS_API_KEY (jamais dans ce fichier)
+    voice_id: ""               # python gta.py voices --elevenlabs pour le trouver
+    model: eleven_multilingual_v2   # meilleure qualité FR ; eleven_flash_v2_5 = 2x moins de crédits
+    voice_settings:
+      stability: 0.40          # plus bas = plus expressif / vivant
+      similarity_boost: 0.80
+      style: 0.30              # exagération du style (0 à 1)
+      use_speaker_boost: true
+      speed: 1.05              # 0.7 à 1.2
