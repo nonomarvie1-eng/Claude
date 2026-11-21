@@ -188,7 +188,11 @@ def download_voice(cfg: dict, voice: str) -> None:
                           (f"{voice}.onnx", f"{voice}.onnx")]:
         url = f"{base}/{remote}"
         log(f"   ↓ {url}")
-        r = requests.get(url, timeout=300)
+        try:
+            r = requests.get(url, timeout=300)
+        except requests.RequestException as e:
+            raise PipelineError(f"Connexion impossible pour {url}\n"
+                                f"Vérifiez Internet / pare-feu / proxy. Détail : {str(e)[:300]}") from e
         if r.status_code != 200:
             raise PipelineError(f"Téléchargement impossible ({r.status_code}) : {url}")
         (dst / fname).write_bytes(r.content)
