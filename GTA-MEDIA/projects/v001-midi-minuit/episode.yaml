@@ -1,0 +1,45 @@
+# V001 — GTA 6 : la même rue à midi et à minuit
+# Format : comparaison en écran partagé dans GTA 6 (haut = midi, bas = minuit).
+# Après "python gta.py ingest", remplacez les noms de fichiers (voir "python gta.py library").
+name: v001-midi-minuit
+title: "MIDI OU MINUIT ?"
+title_duration: 2.6
+badge: "TESTÉ EN JEU"
+length: clips                  # la durée suit les plans, pas la voix
+music: assets/music/test_beat_libre.wav    # à remplacer par une musique libre de droits
+
+config:
+  audio: {game_volume: 0.9, music_volume: 0.12}
+  effects: {transition: fade, transition_duration: 0.25}
+  style: {positions: [0.70, 0.70, 0.70]}
+
+clips:
+  - layout: compare
+    caption: "LA PLAGE"
+    audio_from: top
+    top:    {file: library/MIDI_PLAGE.mp4,   start: 0.0, label: "MIDI"}
+    bottom: {file: library/MINUIT_PLAGE.mp4, start: 0.0, label: "MINUIT"}
+    start: 0
+    end: 5
+  - layout: compare
+    caption: "LE CENTRE-VILLE"
+    top:    {file: library/MIDI_VILLE.mp4,   start: 0.0, label: "MIDI"}
+    bottom: {file: library/MINUIT_VILLE.mp4, start: 0.0, label: "MINUIT"}
+    start: 0
+    end: 5
+  - layout: compare
+    caption: "LE PORT"
+    top:    {file: library/MIDI_PORT.mp4,   start: 0.0, label: "MIDI"}
+    bottom: {file: library/MINUIT_PORT.mp4, start: 0.0, label: "MINUIT"}
+    start: 0
+    end: 5
+  - layout: compare
+    caption: "L'AUTOROUTE"
+    top:    {file: library/MIDI_ROUTE.mp4,   start: 0.0, label: "MIDI"}
+    bottom: {file: library/MINUIT_ROUTE.mp4, start: 0.0, label: "MINUIT"}
+    start: 0
+    end: 5.5
+
+narration:
+  - "Le même endroit dans *GTA 6*, à *midi*… et à *minuit*."
+  - {text: "Et toi, tu joues plutôt de jour ou de nuit ? Dis-le en commentaire.", at: -4.0}

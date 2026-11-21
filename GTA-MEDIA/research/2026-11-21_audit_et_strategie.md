@@ -106,7 +106,7 @@ mises à jour, GTA Online. Il se monte avec notre habillage graphique et nos cap
 ## 5. Matériel : la question décisive
 
 GTA VI ne fonctionne **que sur Xbox Series X|S ou PS5**, pas sur Xbox One [CONFIRMÉ].
-- Avec une **Xbox Series X|S** : acheter GTA VI (dépense à valider par vous) ouvre les trois formats.
+- Situation réelle (21/11) : **Xbox Series X + GTA VI, sans GTA V**. Format 3 « GTA 5 contre GTA 6 » remplacé par des comparaisons internes à GTA VI (midi/minuit, soleil/pluie, avant/après…).
 - Avec une **Xbox One** : seul GTA V est possible. Format 1 et format 2 sur GTA V / GTA Online,
   et le format 3 sans les images de GTA 6. C'est une position nettement plus faible pendant la
   période de lancement.
