@@ -1,0 +1,25 @@
+# MODÈLE de vidéo multisource : copiez ce dossier, renommez-le, remplissez les beats.
+# Chaque "say" = une phrase de voix off ; "clip" = l'extrait affiché pendant cette phrase.
+# Les sources viennent du registre (python gta.py sources). Statut non autorisé = montage bloqué.
+name: mon-sujet
+title: "ACCROCHE EN 3 MOTS"
+title_duration: 2.6
+badge: "TESTÉ EN JEU"          # CONFIRMÉ | TESTÉ EN JEU | THÉORIE | RUMEUR
+music: assets/music/test_beat_libre.wav
+
+beats:
+  - say: "Phrase d'accroche concrète, avec un *mot fort*."
+    clip: {source: xbox_IDENTIFIANT, in: 12.0, layout: crop, focus_x: 0.5}
+    fallback: "Si l'extrait manque : description précise du plan à filmer sur Xbox"
+  - say: "Phrase de contexte."
+    clip: {source: yt_IDENTIFIANT, in: 34.5, layout: blur}      # source CC BY : crédit automatique
+  - say: "Le détail précis dont on parle."
+    clip: {source: xbox_IDENTIFIANT, in: 3.0}
+    annotate:
+      - {ring: true, text: "ICI", x: 0.55, y: 0.42, r: 0.10, at: 0.3, dur: 2.0}   # x, y en fraction de l'écran
+  - say: "Conclusion ou question pour les commentaires ?"
+    clip:
+      layout: compare
+      top:    {source: xbox_A, in: 0, label: "AVANT"}
+      bottom: {source: xbox_B, in: 0, label: "APRÈS"}
+      caption: "SUJET"

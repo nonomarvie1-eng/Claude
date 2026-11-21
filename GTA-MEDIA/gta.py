@@ -9,6 +9,11 @@
   python gta.py voices --download VOIX         télécharge une voix Piper
   python gta.py voices --elevenlabs            liste vos voix ElevenLabs (voice_id)
   python gta.py say "phrase" [--tts …]         écoute une phrase → output/voix_test.wav
+  python gta.py sources                        registre des sources et de leurs droits
+  python gta.py source-add ID --status … --url … --author … --file …
+  python gta.py rights projects/NOM/episode.yaml   vérifie les droits (le build le fait aussi)
+  python gta.py research "sujet"               vidéos YouTube Creative Commons (clé YOUTUBE_API_KEY)
+  python gta.py permission ID                  message de demande d'autorisation à un créateur
   python gta.py build projects/NOM/episode.yaml [--tts test|piper|azure|elevenlabs]
   python gta.py verify output/NOM.mp4
 """
@@ -22,7 +27,7 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # accents sous Windows
 
-from gtamedia import compose, doctor, ingest, testassets, tts, verify  # noqa: E402
+from gtamedia import compose, doctor, ingest, sources, testassets, tts, verify  # noqa: E402
 from gtamedia.utils import ROOT, PipelineError, load_config, p  # noqa: E402
 
 TEMPLATE = """# Projet GTA-MEDIA : {name}
@@ -73,6 +78,19 @@ def main() -> int:
     s = sub.add_parser("voices")
     s.add_argument("--download", help="télécharge une voix Piper")
     s.add_argument("--elevenlabs", action="store_true", help="liste les voix de votre compte ElevenLabs")
+    sub.add_parser("sources", help="liste le registre des sources et leurs droits")
+    s = sub.add_parser("source-add", help="inscrit ou met à jour une source")
+    s.add_argument("id")
+    s.add_argument("--url"); s.add_argument("--title"); s.add_argument("--author"); s.add_argument("--date")
+    s.add_argument("--status"); s.add_argument("--file"); s.add_argument("--proof"); s.add_argument("--note")
+    s.add_argument("--platform")
+    s = sub.add_parser("rights", help="vérifie les droits d'un projet sans monter")
+    s.add_argument("project", type=Path)
+    s = sub.add_parser("research", help="cherche des vidéos réutilisables (YouTube Creative Commons)")
+    s.add_argument("query")
+    s.add_argument("--all-licenses", action="store_true", help="inclut les vidéos non réutilisables (pour demander l'accord)")
+    s = sub.add_parser("permission", help="génère le message de demande d'autorisation à un créateur")
+    s.add_argument("id"); s.add_argument("--from", dest="tin", default="…"); s.add_argument("--to", dest="tout", default="…")
     s = sub.add_parser("say")
     s.add_argument("text")
     s.add_argument("--tts", default=None)
@@ -108,6 +126,35 @@ def main() -> int:
                 tts.download_voice(cfg, args.download)
             else:
                 print("Précisez --download VOIX ou --elevenlabs")
+        elif args.cmd == "sources":
+            reg = sources.load()
+            for sid, e in sorted(reg.items()):
+                ok = "OK " if e.get("status") in sources.ALLOWED else "-- "
+                print(f"{ok}{sid:<45} {e.get('status', ''):<20} {e.get('author', ''):<20} {e.get('file') or e.get('url', '')}")
+            print(f"{len(reg)} source(s). Utilisables au montage : statuts {', '.join(sorted(sources.ALLOWED))}")
+        elif args.cmd == "source-add":
+            e = sources.add(args.id, url=args.url, title=args.title, author=args.author, date=args.date,
+                            status=args.status, file=args.file, proof=args.proof, note=args.note, platform=args.platform)
+            print(f"✔ {args.id} : {e}")
+        elif args.cmd == "rights":
+            proj = compose.load_project(args.project)
+            res = sources.check_project(proj, cfg)
+            sources.write_reports(args.project.parent, proj.get("name") or args.project.parent.name, res, p(cfg, "output"))
+            print("✔ Tous les extraits sont autorisés" if res["ok"] else "✗ Problèmes :\n  - " + "\n  - ".join(res["problems"]))
+            for sid, src in res["credits"].items():
+                print("  crédit :", sources.credit_line(sid, src))
+            return 0 if res["ok"] else 2
+        elif args.cmd == "research":
+            rows = sources.youtube_search(args.query, cc_only=not args.all_licenses)
+            if not rows:
+                print("Aucun résultat.")
+            else:
+                path = sources.save_candidates(args.query, rows)
+                for r in rows:
+                    print(f"{r['status']:<13} {r['id']:<16} {r['date']} {str(r['views']):>10} vues  {r['author'][:20]:<20} {r['title'][:60]}")
+                print(f"✔ {len(rows)} candidat(s) → {path} (inscrits au registre)")
+        elif args.cmd == "permission":
+            print(sources.permission_message(args.id, cfg, args.tin, args.tout))
         elif args.cmd == "say":
             out = p(cfg, "output") / "voix_test.wav"
             out.parent.mkdir(parents=True, exist_ok=True)

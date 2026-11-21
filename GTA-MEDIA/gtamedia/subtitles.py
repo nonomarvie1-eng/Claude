@@ -288,6 +288,23 @@ def overlay_events(overlays: list[dict], cfg: dict) -> list[str]:
             col = BADGE_COLORS.get(o["text"].upper(), pal[0])
             out.append(f"Dialogue: 5,{t0},{t1},Tag,,0,0,0,,{{\\an7\\pos(40,{int(H * 0.075)})\\fs40"
                        f"\\3c{ass_color(col)}}}{txt}")
+        elif k == "source":         # crédit visible pendant l'extrait
+            out.append(f"Dialogue: 2,{t0},{t1},Brand,,0,0,0,,{{\\an9\\pos({W - 40},{int(H * 0.075)})\\fs34}}"
+                       f"{esc(o['text'])}")
+        elif k == "callout":        # bulle de texte posée sur l'image
+            x, y = int(W * o["x"]), int(H * o["y"])
+            out.append(f"Dialogue: 6,{t0},{t1},Tag,,0,0,0,,{{\\an5\\pos({x},{y})\\fs50\\3c{ass_color(pal[0])}"
+                       f"\\fscx60\\fscy60\\t(0,120,\\fscx105\\fscy105)\\t(120,180,\\fscx100\\fscy100)}}{txt}")
+        elif k == "ring":           # cercle de mise en évidence
+            x, y, r = int(W * o["x"]), int(H * o["y"]), int(W * o["r"])
+            c = 0.5523 * r
+            # tracé dans le carré [0, 2r] : libass aligne alors correctement le centre sur \pos
+            P = lambda u, v: f"{u + r:.0f} {v + r:.0f}"
+            path = (f"m {P(0, -r)} b {P(c, -r)} {P(r, -c)} {P(r, 0)} b {P(r, c)} {P(c, r)} {P(0, r)} "
+                    f"b {P(-c, r)} {P(-r, c)} {P(-r, 0)} b {P(-r, -c)} {P(-c, -r)} {P(0, -r)}")
+            out.append(f"Dialogue: 6,{t0},{t1},Sub,,0,0,0,,{{\\an5\\pos({x},{y})\\1a&HFF&\\bord7\\shad0"
+                       f"\\3c{ass_color(pal[2])}\\fscx140\\fscy140\\t(0,180,\\fscx100\\fscy100)"
+                       f"\\t(400,700,\\fscx108\\fscy108)\\t(700,1000,\\fscx100\\fscy100)\\p1}}{path}{{\\p0}}")
         elif k == "brand":          # filigrane discret
             # centre bas, hors de la colonne de boutons TikTok (à droite) et des sous-titres
             y, an, x = int(H * 0.775), 8, W // 2

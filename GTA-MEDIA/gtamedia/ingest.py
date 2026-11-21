@@ -193,5 +193,9 @@ def ingest(cfg: dict, move: bool = False, dry_run: bool = False) -> list[dict]:
             shutil.move(str(src), done / src.name)
     if not dry_run:
         save_index(lib, index)
+        from . import sources
+        n = sources.register_library(index)
+        if n:
+            log(f"   {n} capture(s) inscrite(s) au registre des sources (statut capture_perso)")
     log(f"✔ Import terminé : {len(added)} nouvelle(s) capture(s), {len(index)} au total dans library/")
     return added

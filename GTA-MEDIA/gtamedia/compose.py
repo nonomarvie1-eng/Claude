@@ -15,7 +15,7 @@ from pathlib import Path
 
 import yaml
 
-from . import subtitles, tts
+from . import sources, subtitles, tts
 from .utils import ROOT, PipelineError, deep_merge, ffprobe, log, p, require_tool, run
 
 
@@ -33,9 +33,8 @@ def filter_script_args(ffmpeg: str, name: str) -> list[str]:
 def load_project(path: Path) -> dict:
     with open(path, encoding="utf-8") as f:
         proj = yaml.safe_load(f)
-    for key in ("clips", "narration"):
-        if not proj.get(key):
-            raise PipelineError(f"{path} : section '{key}' vide")
+    if not (proj.get("clips") or proj.get("beats")):
+        raise PipelineError(f"{path} : il faut une section 'clips' ou 'beats'")
     return proj
 
 
@@ -53,8 +52,8 @@ def plan_segments(clips: list[dict], target: float, xd: float) -> list[dict]:
     """Enchaîne les plans (en boucle si besoin) jusqu'à couvrir la durée voulue."""
     segs, covered, i = [], 0.0, 0
     while covered < target + 0.05:
-        c = dict(clips[i % len(clips)])
-        c["dur"] = float(c["end"]) - float(c["start"])
+        c = _with_file(clips[i % len(clips)])
+        c["dur"] = float(c.get("end", c.get("out", 0))) - float(c.get("start", 0))
         if c["dur"] <= xd + 0.2:
             raise PipelineError(f"Plan trop court : {c}")
         segs.append(c)
@@ -108,7 +107,7 @@ def video_chain(label: int, ins: list[int], seg: dict, cfg: dict) -> str:
         chain += ",unsharp=5:5:0.5"
     if fx.get("vignette") and layout != "compare":
         chain += ",vignette=angle=PI/5"
-    chain += f",format=yuv420p,trim=0:{d:.3f},setpts=PTS-STARTPTS[v{label}]"
+    chain += f",tpad=stop_mode=clone:stop_duration={d:.3f},format=yuv420p,trim=0:{d:.3f},setpts=PTS-STARTPTS[v{label}]"
     return chain
 
 
@@ -125,14 +124,25 @@ def audio_chain(label: int, ins: list[int], seg: dict) -> str:
     return f"{parts};{mix}amix=inputs={len(srcs)}:normalize=0,volume=0.8[ga{label}]"
 
 
+def _with_file(ref: dict) -> dict:
+    """Complète 'file' à partir du registre quand l'extrait est désigné par 'source'."""
+    ref = dict(ref)
+    if ref.get("source") and not ref.get("file"):
+        src = sources.load().get(ref["source"], {})
+        ref["file"] = src.get("file")
+    if "in" in ref and "start" not in ref:
+        ref["start"] = ref["in"]
+    return ref
+
+
 def _sources(seg: dict) -> list[dict]:
     """Liste des sources vidéo d'un plan (1, ou 2 en mode compare)."""
     if seg.get("layout") == "compare":
-        top, bot = dict(seg["top"]), dict(seg["bottom"])
+        top, bot = _with_file(seg["top"]), _with_file(seg["bottom"])
         for x in (top, bot):
             x.setdefault("start", seg.get("start", 0))
         return [top, bot]
-    return [seg]
+    return [_with_file(seg)]
 
 
 def _seg_duration(seg: dict) -> float:
@@ -141,9 +151,11 @@ def _seg_duration(seg: dict) -> float:
     return float(seg["end"]) - float(seg["start"])
 
 
-def make_overlays(segments: list[dict], xd: float, total: float, proj: dict, cfg: dict) -> list[dict]:
+def make_overlays(segments: list[dict], xd: float, total: float, proj: dict, cfg: dict,
+                  credits: dict | None = None) -> list[dict]:
     """Étiquettes à l'écran : comparaison, pastille de fiabilité, filigrane de marque."""
     ov, t = [], 0.0
+    credits = credits or {}
     for i, s in enumerate(segments):
         start = t
         end = t + s["dur"]
@@ -155,6 +167,20 @@ def make_overlays(segments: list[dict], xd: float, total: float, proj: dict, cfg
                 ov.append({"kind": "label_bottom", "text": s["bottom"]["label"], "start": a0, "end": a1})
             if s.get("caption"):
                 ov.append({"kind": "center", "text": s["caption"], "start": a0, "end": a1})
+        for ref in _sources(s):
+            sid = ref.get("source")
+            if sid and sid in credits:
+                ov.append({"kind": "source", "text": sources.short_tag(credits[sid]),
+                           "start": start + (0.1 if i else 0), "end": end - xd * (i < len(segments) - 1)})
+        for a in s.get("annotate") or []:
+            a0 = start + float(a.get("at", 0.3))
+            ov.append({"kind": "ring" if a.get("ring") else "callout", "text": a.get("text", ""),
+                       "x": float(a.get("x", 0.5)), "y": float(a.get("y", 0.4)), "r": float(a.get("r", 0.09)),
+                       "start": a0, "end": min(end, a0 + float(a.get("dur", 1.6)))})
+            if a.get("ring") and a.get("text"):
+                ov.append({"kind": "callout", "text": a["text"], "x": float(a.get("x", 0.5)),
+                           "y": float(a.get("y", 0.4)) - float(a.get("r", 0.09)) * 0.75 - 0.045,
+                           "start": a0 + 0.15, "end": min(end, a0 + float(a.get("dur", 1.6)))})
         t = end - xd
     badge = proj.get("badge")
     if badge:
@@ -179,6 +205,15 @@ def build(project_file: Path, cfg: dict, backend: str | None = None, out: Path |
     out.parent.mkdir(parents=True, exist_ok=True)
 
     cfg = deep_merge(cfg, proj.get("config") or {})          # réglages propres au projet
+
+    # 0) Contrôle des droits : aucun extrait non autorisé ne passe
+    rights = sources.check_project(proj, cfg)
+    sources.write_reports(project_file.parent, name, rights, out.parent)
+    if not rights["ok"]:
+        raise PipelineError("Montage bloqué : extraits non autorisés ou incomplets\n  - " +
+                            "\n  - ".join(rights["problems"]) +
+                            f"\nPlans de remplacement à filmer : {project_file.parent / 'A_FILMER.md'}")
+    log(f"▶ Droits : OK ({len(rights['credits'])} source(s) à créditer)")
     fx = cfg["effects"]
     xd = float(fx["transition_duration"])
 
@@ -189,7 +224,8 @@ def build(project_file: Path, cfg: dict, backend: str | None = None, out: Path |
         clips_total = round(sum(durs) - xd * (len(durs) - 1), 3)
 
     # 1) Voix off
-    items = proj.get("narration") or []
+    beats = proj.get("beats") or []
+    items = [b["say"] for b in beats] if beats else (proj.get("narration") or [])
     texts = [it if isinstance(it, str) else it["text"] for it in items]
     ats = []
     for it in items:
@@ -210,14 +246,31 @@ def build(project_file: Path, cfg: dict, backend: str | None = None, out: Path |
     log(f"   durée finale : {total:.2f}s")
 
     # 2) Plan de montage
-    segments = plan_segments(proj["clips"], total, xd) if clips_total is None else \
-        [dict(c, dur=_seg_duration(c)) for c in proj["clips"]]
+    if beats:
+        # Chaque phrase porte son extrait : le plan commence juste avant la phrase
+        bounds = [0.0] + [max(0.0, c["start"] - 0.12) for c in cues[1:]] + [total]
+        segments = []
+        for k, b in enumerate(beats):
+            seg = dict(b["clip"])
+            seg["annotate"] = b.get("annotate")
+            span = bounds[k + 1] - bounds[k]
+            seg["dur"] = round(span + (xd if k < len(beats) - 1 else 0.0), 3)
+            segments.append(seg)
+    elif clips_total is None:
+        segments = plan_segments(proj["clips"], total, xd)
+    else:
+        segments = [dict(c, dur=_seg_duration(c)) for c in proj["clips"]]
     if clips_total is not None and total > clips_total:
         segments[-1]["dur"] = round(segments[-1]["dur"] + total - clips_total, 3)   # la voix déborde : on prolonge le dernier plan
 
+    # Écran partagé : sous-titres sous les étiquettes, sauf réglage explicite du projet
+    if any(sg.get("layout") == "compare" for sg in segments) and \
+            "positions" not in ((proj.get("config") or {}).get("style") or {}):
+        cfg = deep_merge(cfg, {"style": {"positions": [0.70]}})
+
     # 3) Sous-titres et habillage
     ass, srt = work / "subs.ass", out.with_suffix(".srt")
-    overlays = make_overlays(segments, xd, total, proj, cfg)
+    overlays = make_overlays(segments, xd, total, proj, cfg, rights["credits"])
     words = subtitles.build_ass(cues, cfg, proj.get("title", ""), float(proj.get("title_duration", 2.8)),
                                 total, ass, srt, overlays)
 
@@ -225,6 +278,8 @@ def build(project_file: Path, cfg: dict, backend: str | None = None, out: Path |
     for i, s in enumerate(segments):
         ins, has = [], []
         for src_def in _sources(s):
+            if not src_def.get("file"):
+                raise PipelineError(f"Plan {i + 1} : aucun fichier (source « {src_def.get('source')} » sans champ file)")
             src = resolve(src_def["file"], project_file.parent)
             src_def["path"] = str(src)
             has.append(any(st["codec_type"] == "audio" for st in ffprobe(src)["streams"]))
