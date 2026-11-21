@@ -45,8 +45,26 @@ def p(cfg: dict, key: str) -> Path:
     return path if path.is_absolute() else ROOT / path
 
 
+def _windows_fallback(name: str) -> str | None:
+    """Sous Windows, retrouve un outil installé par winget même si le PATH de la
+    fenêtre courante n'a pas encore été rechargé."""
+    import os
+    if os.name != "nt":
+        return None
+    local = Path(os.environ.get("LOCALAPPDATA", ""))
+    cands = [local / "Microsoft" / "WinGet" / "Links" / f"{name}.exe"]
+    pkgs = local / "Microsoft" / "WinGet" / "Packages"
+    if pkgs.exists():
+        cands += sorted(pkgs.glob(f"Gyan.FFmpeg*/**/bin/{name}.exe"), reverse=True)
+    for c in cands:
+        if c.exists():
+            os.environ["PATH"] = str(c.parent) + os.pathsep + os.environ.get("PATH", "")
+            return str(c)
+    return None
+
+
 def require_tool(name: str) -> str:
-    exe = shutil.which(name)
+    exe = shutil.which(name) or _windows_fallback(name)
     if not exe:
         raise PipelineError(
             f"'{name}' est introuvable dans le PATH. Lancez scripts/windows/install.ps1 "
