@@ -8,8 +8,11 @@ $root = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 Set-Location $root
 
 function Ask($q) {
-    $r = Read-Host "$q [O/N]"
-    return ($r -match "^[oOyY]")
+    $r = (Read-Host "$q [O/N]").Trim()
+    # accepte O, o, Oui, Y, yes et aussi 0 (zéro, souvent tapé par erreur)
+    $ok = ($r -match "^(o|oui|y|yes|0)$")
+    if (-not $ok) { Write-Host "  (réponse '$r' comprise comme NON)" -ForegroundColor Yellow }
+    return $ok
 }
 function Has($cmd) {
     $c = Get-Command $cmd -ErrorAction SilentlyContinue
