@@ -146,7 +146,7 @@ def synthesize(sentences: list[str], cfg: dict, backend: str | None = None) -> l
         final = cache / f"{key}.wav"
         if not final.exists():
             raw = cache / f"{key}.raw.wav"
-            BACKENDS[backend](text, raw, cfg)
+            BACKENDS[backend](text.replace("*", ""), raw, cfg)
             to_wav48(raw, final, trim_silence=True)
             raw.unlink(missing_ok=True)
         data, sr = read_wav(final)

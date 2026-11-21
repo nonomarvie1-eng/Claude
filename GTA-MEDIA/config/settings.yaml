@@ -33,7 +33,11 @@ style:
   uppercase: true
   sub_size: 96
   sub_color: "FFFFFF"
-  highlight_color: "FFD400"    # jaune "GTA"
+  highlight_color: "FFD400"    # jaune "GTA" (titre, barre de progression)
+  dynamic: true                # sous-titres animés : couleur, taille, position variables
+  palette: ["FFD400", "3CFF6B", "FF4D4D", "4DD2FF"]   # jaune, vert, rouge, bleu
+  positions: [0.62, 0.54, 0.68]                       # hauteurs alternées par phrase
+  keywords: []                 # mots à mettre en valeur en plus de la liste intégrée
   outline: 8
   sub_y: 0.62                  # position verticale des sous-titres (0 = haut)
   words_per_chunk: 3

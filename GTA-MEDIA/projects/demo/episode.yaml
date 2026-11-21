@@ -27,8 +27,9 @@ clips:
     layout: blur
 
 narration:
-  - "Bienvenue sur la chaîne : ici, on décortique GTA en moins d'une minute."
-  - "Cette vidéo est un test technique, les images sont des mires générées automatiquement."
-  - "La voix, les sous-titres, la musique et les effets ont été montés sans intervention manuelle."
-  - "Chaque mot s'affiche au moment exact où il est prononcé."
+  # Astuce : entourez un mot d'astérisques pour le mettre en valeur : *comme ça*
+  - "Bienvenue sur la chaîne : ici, on décortique *GTA* en moins d'une minute."
+  - "Tu savais que ce montage a coûté *zéro euro* ?"
+  - "La voix, les sous-titres et les effets sont créés *automatiquement*."
+  - "Les mots importants ressortent en *gros*, en couleur, au bon moment."
   - "Abonne-toi, les vraies vidéos arrivent très bientôt !"
