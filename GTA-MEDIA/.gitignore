@@ -13,3 +13,5 @@ assets/music/test_beat_libre.wav
 __pycache__/
 *.pyc
 audit-report.txt
+!*/.gitkeep
+!assets/*/.gitkeep

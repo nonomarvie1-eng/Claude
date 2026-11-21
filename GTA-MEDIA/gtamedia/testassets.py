@@ -61,6 +61,7 @@ def generate() -> None:
         log(f"   + inbox/{hdr.name}")
 
     music = ROOT / "assets" / "music" / "test_beat_libre.wav"
+    music.parent.mkdir(parents=True, exist_ok=True)
     if not music.exists():
         root = "(110*eq(floor(mod(t,8)/2),0)+87.31*eq(floor(mod(t,8)/2),1)+130.81*eq(floor(mod(t,8)/2),2)+98*eq(floor(mod(t,8)/2),3))"
         kick = "0.9*sin(2*PI*55*mod(t,0.5))*exp(-14*mod(t,0.5))"
