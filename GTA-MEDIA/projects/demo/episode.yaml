@@ -1,0 +1,34 @@
+# Projet de démonstration : prototype technique GTA-MEDIA
+# Images = mires de test générées par FFmpeg (aucun contenu protégé).
+name: demo
+title: "PROTOTYPE GTA-MEDIA"
+title_duration: 2.8
+music: assets/music/test_beat_libre.wav
+
+clips:
+  - file: library/20261120_211433_gtav_a13421.mp4
+    start: 1.0
+    end: 6.0
+    layout: crop          # plein écran recadré 9:16
+    focus_x: 0.5
+  - file: library/20261120_211802_gtav_95a067.mp4
+    start: 0.5
+    end: 5.5
+    layout: blur          # image entière + fond flouté
+    fg_zoom: 1.35
+  - file: library/20261120_212547_gtav_22be31.mp4
+    start: 2.0
+    end: 7.0
+    layout: crop
+    focus_x: 0.3
+  - file: library/20261120_220210_gtav-hdr-4k_b8e339.mp4
+    start: 0.0
+    end: 4.8
+    layout: blur
+
+narration:
+  - "Bienvenue sur la chaîne : ici, on décortique GTA en moins d'une minute."
+  - "Cette vidéo est un test technique, les images sont des mires générées automatiquement."
+  - "La voix, les sous-titres, la musique et les effets ont été montés sans intervention manuelle."
+  - "Chaque mot s'affiche au moment exact où il est prononcé."
+  - "Abonne-toi, les vraies vidéos arrivent très bientôt !"

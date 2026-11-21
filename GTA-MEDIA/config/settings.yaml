@@ -1,0 +1,76 @@
+# =====================================================================
+# GTA-MEDIA — réglages globaux du pipeline
+# Les chemins relatifs partent du dossier GTA-MEDIA.
+# Sous Windows, écrivez les chemins avec des / (ex: C:/Users/Moi/Videos).
+# =====================================================================
+
+paths:
+  inbox: inbox                 # Déposez ici vos captures Xbox (MP4)
+  xbox_sources: []             # Dossiers supplémentaires scannés à l'import, ex :
+                               #  - "C:/Users/MOI/OneDrive/Vidéos/Captures Xbox"
+  library: library             # Captures normalisées (1080p SDR, CFR, H.264)
+  output: output               # Vidéos finales 1080x1920
+  work: work                   # Fichiers intermédiaires (supprimables)
+  fonts: assets/fonts
+  voices: assets/voices
+
+video:
+  width: 1080
+  height: 1920
+  fps: 30                      # 30 suffit pour TikTok/Shorts ; 60 possible
+  encoder: libx264             # h264_nvenc si carte NVIDIA (plus rapide)
+  crf: 18                      # qualité libx264 (plus bas = meilleur)
+  preset: medium
+  audio_bitrate: 192k
+
+ingest:
+  max_height: 1080             # les captures 4K sont réduites en 1080p
+  max_fps: 60
+  crf: 16                      # qualité "mezzanine" quasi sans perte visible
+
+style:
+  font: Inter Display Black    # police OFL fournie dans assets/fonts
+  uppercase: true
+  sub_size: 96
+  sub_color: "FFFFFF"
+  highlight_color: "FFD400"    # jaune "GTA"
+  outline: 8
+  sub_y: 0.62                  # position verticale des sous-titres (0 = haut)
+  words_per_chunk: 3
+  max_chunk_chars: 20
+  title_size: 78
+  title_y: 0.14
+
+effects:
+  zoom: 0.06                   # zoom lent de 6 % par plan
+  contrast: 1.08
+  saturation: 1.25
+  brightness: 0.0
+  vignette: true
+  sharpen: true
+  transition: fade             # fade, slideleft, slideup, circleopen, wipeleft…
+  transition_duration: 0.25
+  flash_intro: true
+  progress_bar: true
+
+audio:
+  lead_in: 0.35                # silence avant la première phrase (s)
+  sentence_gap: 0.18           # pause entre deux phrases (s)
+  tail: 0.9                    # durée après la dernière phrase (s)
+  music_volume: 0.20
+  game_volume: 0.15            # son du jeu sous la voix
+  ducking: true                # baisse musique+jeu quand la voix parle
+  loudness: -14                # LUFS cible (standard TikTok/YouTube)
+
+tts:
+  backend: piper               # piper | azure | elevenlabs | test
+  piper:
+    voice: fr_FR-siwis-medium
+    length_scale: 0.92         # < 1 = débit plus rapide
+  azure:                       # clé : variable d'env AZURE_SPEECH_KEY
+    voice: fr-FR-HenriNeural
+    region: westeurope
+    rate: "+8%"
+  elevenlabs:                  # clé : variable d'env ELEVENLABS_API_KEY
+    voice_id: ""
+    model: eleven_multilingual_v2

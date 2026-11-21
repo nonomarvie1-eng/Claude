@@ -1,0 +1,15 @@
+# Médias lourds : jamais dans Git
+inbox/*
+!inbox/LISEZMOI.txt
+library/*
+output/*
+work/*
+assets/voices/*
+assets/music/test_beat_libre.wav
+*.mp4
+*.mov
+*.mkv
+.venv/
+__pycache__/
+*.pyc
+audit-report.txt

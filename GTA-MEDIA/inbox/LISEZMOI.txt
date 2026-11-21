@@ -1,0 +1,2 @@
+Déposez ici vos captures Xbox (.mp4), puis lancez :  python gta.py ingest
+Les originaux ne sont jamais modifiés. Avec --move ils sont rangés dans inbox/_importes.
