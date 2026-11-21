@@ -1,0 +1,45 @@
+# V001 — GTA 5 contre GTA 6 : la même action, 13 ans d'écart
+# Format : comparaison en écran partagé (haut = GTA 5, bas = GTA 6), voix courte au début et à la fin.
+# Remplacez les noms de fichiers après "python gta.py ingest" (voir "python gta.py library").
+name: v001-gta5-vs-gta6
+title: "13 ANS D'ÉCART"
+title_duration: 2.6
+badge: "TESTÉ EN JEU"
+length: clips                  # la durée suit les plans, pas la voix
+music: assets/music/test_beat_libre.wav    # à remplacer par une musique libre de droits
+
+config:                        # réglages propres à ce format
+  audio: {game_volume: 0.9, music_volume: 0.12}
+  effects: {transition: fade, transition_duration: 0.25}
+  style: {positions: [0.70, 0.70, 0.70]}
+
+clips:
+  - layout: compare
+    caption: "PLONGEON"
+    audio_from: bottom
+    top:    {file: library/GTA5_PLONGEON.mp4, start: 0.0, label: "GTA 5 · 2013"}
+    bottom: {file: library/GTA6_PLONGEON.mp4, start: 0.0, label: "GTA 6 · 2026"}
+    start: 0
+    end: 5
+  - layout: compare
+    caption: "CRASH À 100 KM/H"
+    top:    {file: library/GTA5_CRASH.mp4, start: 0.0, label: "GTA 5 · 2013"}
+    bottom: {file: library/GTA6_CRASH.mp4, start: 0.0, label: "GTA 6 · 2026"}
+    start: 0
+    end: 5
+  - layout: compare
+    caption: "COURSE SUR LA PLAGE"
+    top:    {file: library/GTA5_PLAGE.mp4, start: 0.0, label: "GTA 5 · 2013"}
+    bottom: {file: library/GTA6_PLAGE.mp4, start: 0.0, label: "GTA 6 · 2026"}
+    start: 0
+    end: 5
+  - layout: compare
+    caption: "LA NUIT EN VILLE"
+    top:    {file: library/GTA5_NUIT.mp4, start: 0.0, label: "GTA 5 · 2013"}
+    bottom: {file: library/GTA6_NUIT.mp4, start: 0.0, label: "GTA 6 · 2026"}
+    start: 0
+    end: 5.5
+
+narration:
+  - "La même action, dans *GTA 5* et dans *GTA 6*. Regarde bien."
+  - {text: "Alors, lequel t'impressionne le plus ? Dis-le en commentaire.", at: -3.6}

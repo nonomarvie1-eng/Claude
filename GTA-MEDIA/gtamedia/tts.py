@@ -200,12 +200,20 @@ def synthesize(sentences: list[str], cfg: dict, backend: str | None = None) -> l
     return segs
 
 
-def build_narration(segs: list[Segment], cfg: dict, out: Path) -> list[dict]:
-    """Place les phrases sur la timeline à l'échantillon près. Renvoie les repères."""
+def write_silence(out: Path, seconds: float, sr: int = 48000) -> None:
+    write_wav(out, np.zeros(int(seconds * sr) + 1, dtype=np.float32), sr)
+
+
+def build_narration(segs: list[Segment], cfg: dict, out: Path, ats: list | None = None) -> list[dict]:
+    """Place les phrases sur la timeline à l'échantillon près. Renvoie les repères.
+    ats[i] (optionnel) force l'instant de début de la phrase i (en secondes)."""
     a = cfg["audio"]
     sr = 48000
     cues, t = [], float(a["lead_in"])
-    for s in segs:
+    ats = ats or [None] * len(segs)
+    for s, at in zip(segs, ats):
+        if at is not None:
+            t = max(t, float(at))
         cues.append({"text": s.text, "start": round(t, 4), "end": round(t + s.duration, 4)})
         t += s.duration + float(a["sentence_gap"])
     total = cues[-1]["end"] + float(a["tail"])

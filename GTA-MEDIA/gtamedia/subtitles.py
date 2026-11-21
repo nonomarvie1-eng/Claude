@@ -102,7 +102,7 @@ def chunk_words(words: list[dict], max_words: int, max_chars: int) -> list[list[
 
 
 def build_ass(cues: list[dict], cfg: dict, title: str, title_dur: float, total: float,
-              out_ass: Path, out_srt: Path) -> list[dict]:
+              out_ass: Path, out_srt: Path, overlays: list[dict] | None = None) -> list[dict]:
     st, v = cfg["style"], cfg["video"]
     W, H = v["width"], v["height"]
     up = (lambda s: s.upper()) if st.get("uppercase") else (lambda s: s)
@@ -122,6 +122,8 @@ YCbCr Matrix: TV.709
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Sub,{st['font']},{st['sub_size']},{white},{yellow},{black},{shadow},-1,0,0,0,100,100,0,0,1,{st['outline']},4,5,60,60,0,1
 Style: Emph,{st['font']},{st['sub_size']},{black},{black},{yellow},{shadow},-1,0,0,0,100,100,0,0,3,16,0,5,60,60,0,1
+Style: Tag,{st['font']},58,{black},{black},{yellow},{shadow},-1,0,0,0,100,100,0,0,3,12,0,5,40,40,0,1
+Style: Brand,{st['font']},38,&H50FFFFFF,&H50FFFFFF,&H90000000,&H00000000,-1,0,0,0,100,100,1,0,1,3,0,5,40,40,0,1
 Style: Title,{st['font']},{st['title_size']},{black},{black},{yellow},{shadow},-1,0,0,0,100,100,0,0,3,18,0,8,90,90,{int(H*st['title_y'])},1
 
 [Events]
@@ -131,6 +133,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if title:
         lines.append(f"Dialogue: 1,{ass_time(0.05)},{ass_time(title_dur)},Title,,0,0,0,,"
                      f"{{\\fad(120,250)\\fscx85\\fscy85\\t(0,180,\\fscx100\\fscy100)}}{esc(up(title))}")
+    lines += overlay_events(overlays or [], cfg)
     words_all = []
     for si, cue in enumerate(cues):
         words = word_timings(cue)
@@ -255,4 +258,38 @@ def dynamic_events(words: list[dict], si: int, text: str, cfg: dict) -> list[str
             anim = "\\fscx70\\fscy70\\t(0,110,\\fscx104\\fscy104)\\t(110,170,\\fscx100\\fscy100)" if i == 0 else ""
             out.append(f"Dialogue: 0,{ass_time(w['start'])},{ass_time(end)},Sub,,0,0,0,,"
                        f"{{\\pos({x},{y})\\fs{size}\\frz{rot}{anim}}}" + " \\h".join(parts))
+    return out
+
+
+# ------------------------------------------------------------ habillage
+BADGE_COLORS = {"CONFIRMÉ": "4DD2FF", "TESTÉ EN JEU": "3CFF6B", "THÉORIE": "FF9F1C", "RUMEUR": "FF4D4D"}
+
+
+def overlay_events(overlays: list[dict], cfg: dict) -> list[str]:
+    st, v = cfg["style"], cfg["video"]
+    W, H = v["width"], v["height"]
+    black = ass_color("000000")
+    pal = st.get("palette", ["FFD400", "3CFF6B", "FF4D4D", "4DD2FF"])
+    seam = H // 2
+    out = []
+    for o in overlays:
+        t0, t1, txt = ass_time(o["start"]), ass_time(o["end"]), esc(o["text"].upper())
+        k = o["kind"]
+        if k == "label_top":        # au-dessus de la séparation, à gauche
+            out.append(f"Dialogue: 3,{t0},{t1},Tag,,0,0,0,,{{\\an1\\pos(40,{seam - 34})\\3c{ass_color(pal[0])}"
+                       f"\\fad(120,120)}}{txt}")
+        elif k == "label_bottom":   # sous la séparation, à gauche
+            out.append(f"Dialogue: 3,{t0},{t1},Tag,,0,0,0,,{{\\an7\\pos(40,{seam + 34})\\3c{ass_color(pal[1])}"
+                       f"\\fad(120,120)}}{txt}")
+        elif k == "center":         # sujet de la comparaison, sur la séparation
+            out.append(f"Dialogue: 4,{t0},{t1},Tag,,0,0,0,,{{\\an5\\pos({W // 2 + 170},{seam})\\fs52\\3c&H00FFFFFF&"
+                       f"\\1c{black}\\fscx70\\fscy70\\t(0,140,\\fscx100\\fscy100)}}{txt}")
+        elif k == "badge":          # pastille de fiabilité, en haut à gauche
+            col = BADGE_COLORS.get(o["text"].upper(), pal[0])
+            out.append(f"Dialogue: 5,{t0},{t1},Tag,,0,0,0,,{{\\an7\\pos(40,{int(H * 0.075)})\\fs40"
+                       f"\\3c{ass_color(col)}}}{txt}")
+        elif k == "brand":          # filigrane discret
+            # centre bas, hors de la colonne de boutons TikTok (à droite) et des sous-titres
+            y, an, x = int(H * 0.775), 8, W // 2
+            out.append(f"Dialogue: 1,{t0},{t1},Brand,,0,0,0,,{{\\an{an}\\pos({x},{y})}}{esc(o['text'])}")
     return out

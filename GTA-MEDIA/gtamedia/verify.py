@@ -99,8 +99,10 @@ def verify(video: Path, timeline_file: Path | None = None, sheet: bool = True) -
           "OK" if not errs else errs.splitlines()[0][:120])
 
     report = {"video": str(video), "checks": checks}
-    if timeline_file and timeline_file.exists():
-        tl = json.loads(timeline_file.read_text(encoding="utf-8"))
+    tl = json.loads(timeline_file.read_text(encoding="utf-8")) if timeline_file and timeline_file.exists() else None
+    if tl and not tl["cues"]:
+        log("   (pas de voix off : contrôles de synchronisation voix/sous-titres sans objet)")
+    if tl and tl["cues"]:
         nar, sr = read_wav(Path(tl["narration_wav"]))
         nar = resample(nar, sr, SR)
         final = decode_audio(video)
