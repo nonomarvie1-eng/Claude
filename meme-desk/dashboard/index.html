@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meme Desk</title>
+<style>
+:root{
+  --bg:#050606; --card:#141617; --card2:#1b1e1f; --line:#25292b;
+  --text:#f2f4f3; --muted:#8a9190; --dim:#5b6261;
+  --green:#3ddc97; --green-bg:#1f5f43; --red:#ff5c6c; --red-dim:#7a2a33;
+  --blue:#4c8dff; --cyan:#3cc3d9; --violet:#a47cf3; --gray:#9aa0a0; --amber:#f2b84b;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.35 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;min-height:100vh}
+.glow{position:fixed;inset:0 0 auto 0;height:420px;pointer-events:none;
+  background:radial-gradient(60% 70% at 50% 0%,rgba(61,220,151,.16),transparent 70%)}
+main{position:relative;max-width:480px;margin:0 auto;padding:14px 16px 40px}
+header{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center}
+.logo i{display:inline-block;width:4px;height:13px;background:#000;border-radius:2px;margin:0 2px}
+h1{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:11.5px}
+.live{margin-left:auto;font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.live.off::before{background:var(--red);box-shadow:none}
+.paper{margin-top:10px;font-size:11px;color:var(--amber);border:1px solid #5a4620;background:#2a2110;
+  border-radius:8px;padding:6px 10px;text-align:center;letter-spacing:.02em}
+.meta{display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin-top:14px}
+.eq{display:flex;align-items:flex-end;gap:8px;margin-top:2px}
+.big{font-size:64px;font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.pills{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px;padding-bottom:8px}
+.pill{font-size:13px;font-weight:700;padding:4px 8px;border-radius:7px;background:var(--green-bg);color:var(--green)}
+.pill.neg{background:#4a1d23;color:var(--red)}
+.pill.small{font-size:11px;padding:2px 6px;font-weight:600}
+.pnl{font-size:13px;color:var(--text);margin-top:6px;font-variant-numeric:tabular-nums}
+.chart{height:110px;margin:12px -4px 8px}
+.chart svg{width:100%;height:100%;display:block;overflow:visible}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:6px 0 8px}
+.tile{background:var(--card);padding:6px 4px 8px;text-align:center}
+.tile:first-child{border-radius:10px 0 0 10px}.tile:last-child{border-radius:0 10px 10px 0}
+.tile b{display:block;font-size:16px;font-variant-numeric:tabular-nums}
+.tile span{font-size:8.5px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.tile.r b{color:var(--red)}
+.card{background:var(--card);border-radius:12px;padding:10px 12px;margin-top:8px}
+.card h2{font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.card h2 em{font-style:normal;font-weight:400;font-size:10.5px;color:var(--dim)}
+.card h2 em.r{color:var(--red)}
+.agent{display:grid;grid-template-columns:24px 92px 1fr auto;gap:8px;align-items:center;padding:4px 0}
+.ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:800;color:#0b0b0b}
+.an b{display:block;font-size:12.5px}.an span{font-size:9.5px;color:var(--dim)}
+.al{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.al.k{color:var(--red)}
+.as{font-size:10px;color:var(--dim);text-align:right;white-space:nowrap}
+.log{font-family:var(--mono);font-size:10.5px;color:#c9cecd;list-style:none}
+.log li{padding:1.5px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.log li::before{content:"●";color:var(--red);font-size:7px;margin-right:6px;vertical-align:2px}
+.log li.ok::before{color:var(--green)}.log li.risk::before{color:var(--violet)}
+.log .t{color:var(--dim)}
+.kills{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.kr{font-size:9.5px;color:var(--dim)}
+.kr .row{display:flex;justify-content:space-between}
+.kr .row b{color:var(--text);font-weight:500}
+.bar{height:2px;background:var(--line);border-radius:2px;margin-top:3px}
+.bar i{display:block;height:100%;background:var(--red);border-radius:2px}
+table{width:100%;border-collapse:collapse;font-size:11.5px;font-variant-numeric:tabular-nums}
+td{padding:3px 0}td:last-child,th:last-child{text-align:right}
+th{font-size:9px;color:var(--dim);font-weight:500;text-align:left;text-transform:uppercase;letter-spacing:.06em}
+.g{color:var(--green)}.rd{color:var(--red)}.mu{color:var(--dim)}
+.empty{color:var(--dim);font-size:11.5px;padding:4px 0}
+.err{display:none;margin-top:16px;background:#2a1216;border:1px solid var(--red-dim);border-radius:10px;padding:12px;font-size:12.5px}
+.err code{font-family:var(--mono);background:#000;padding:1px 5px;border-radius:4px}
+footer{color:var(--dim);font-size:10.5px;text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<main>
+  <header>
+    <div class="logo"><i></i><i></i></div>
+    <div><h1>Meme Desk</h1><div class="sub" id="subtitle">Solana memes · strict RM · paper</div></div>
+    <div class="live" id="live">Live</div>
+  </header>
+  <div class="paper">SIMULATION · paper trading, aucun ordre réel · pas un conseil financier</div>
+
+  <div class="meta"><span id="metaL">Equity</span><span id="metaR"></span></div>
+  <div class="eq">
+    <div class="big" id="equity">—</div>
+    <div class="pills"><span class="pill" id="mult">1,00×</span><span class="pill small" id="peak" hidden></span></div>
+  </div>
+  <div class="pnl" id="pnl"></div>
+  <div class="chart" id="chart"></div>
+
+  <div class="tiles">
+    <div class="tile"><span>Tokens scannés</span><b id="cScanned">0</b></div>
+    <div class="tile r"><span>Rejetés</span><b id="cRejected">0</b></div>
+    <div class="tile"><span>Retenus</span><b id="cPassed">0</b></div>
+  </div>
+
+  <section class="card"><h2>Desk · 6 agents <em id="deskMeta"></em></h2><div id="agents"></div></section>
+  <section class="card"><h2>Positions ouvertes <em id="posMeta"></em></h2><div id="positions"></div></section>
+  <section class="card"><h2>Logger <em class="r" id="logMeta"></em></h2><ul class="log" id="log"></ul></section>
+  <section class="card"><h2>Killed by rule</h2><div class="kills" id="kills"></div></section>
+  <section class="card"><h2>Trades clôturés <em id="closedMeta"></em></h2><div id="closed"></div></section>
+
+  <div class="err" id="err">Pas de connexion au moteur. Lance <code>python -m desk --demo</code> dans le dossier
+    <code>meme-desk</code>, puis ouvre <code>http://127.0.0.1:8000</code>.</div>
+  <footer id="foot"></footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const nf = (x, d = 2) => x.toLocaleString("fr-FR", {minimumFractionDigits: d, maximumFractionDigits: d});
+const ni = x => x.toLocaleString("fr-FR");
+const sign = x => (x >= 0 ? "+" : "−") + nf(Math.abs(x));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const clock = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
+  return (h ? h + ":" : "") + String(m).padStart(h ? 2 : 1, "0") + ":" + String(x).padStart(2, "0"); };
+const AG = {scout:["S","var(--blue)"],filter:["F","var(--red)"],analyst:["A","var(--cyan)"],
+            executor:["E","var(--green)"],risk:["R","var(--violet)"],logger:["L","var(--gray)"]};
+
+function chart(hist, start) {
+  const W = 440, H = 110, pad = 4;
+  if (hist.length < 2) { $("chart").innerHTML = ""; return; }
+  const xs = hist.map(p => p[0]), ys = hist.map(p => p[1]);
+  const x0 = xs[0], x1 = Math.max(xs[xs.length-1], x0 + 1);
+  const lo = Math.min(start, ...ys), hi = Math.max(start * 1.02, ...ys);
+  const X = x => pad + (x - x0) / (x1 - x0) * (W - 2*pad);
+  const Y = y => H - pad - (y - lo) / (hi - lo || 1) * (H - 2*pad);
+  const pts = hist.map(p => X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1));
+  const up = ys[ys.length-1] >= start, col = up ? "var(--green)" : "var(--red)";
+  const last = pts[pts.length-1].split(",");
+  $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${up ? "#3ddc97" : "#ff5c6c"}" stop-opacity=".28"/>
+      <stop offset="1" stop-color="${up ? "#3ddc97" : "#ff5c6c"}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${pad}" x2="${W-pad}" y1="${Y(start)}" y2="${Y(start)}" stroke="#2a2f30" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>
+    <polygon points="${X(x0)},${H} ${pts.join(" ")} ${last[0]},${H}" fill="url(#fill)"/>
+    <polyline points="${pts.join(" ")}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  </svg>`;
+}
+
+function render(s) {
+  const [ip, dp] = nf(s.equity).split(",");
+  $("equity").innerHTML = `${ip}<small>,${dp} €</small>`;
+  $("mult").textContent = nf(s.multiple) + "×";
+  $("mult").classList.toggle("neg", s.multiple < 1);
+  const dd = s.peak_equity - s.equity;
+  $("peak").hidden = !(dd > 0.01);
+  $("peak").textContent = "pic " + nf(s.peak_equity) + " €";
+  $("pnl").innerHTML = `<span class="${s.pnl >= 0 ? "" : "rd"}">${sign(s.pnl)} € (${sign(s.pnl_pct)} %)</span>`;
+  $("metaL").textContent = `Capital de départ ${nf(s.start_capital)} € · ${nf(s.config.size,0)} % max par position`;
+  $("metaR").textContent = (s.mode === "demo" ? "marché synthétique · " : "données réelles · ") + clock(s.elapsed);
+  $("subtitle").textContent = `Solana memes · strict RM · paper · ${s.mode === "demo" ? "démo" : "live"}`;
+  chart(s.history, s.start_capital);
+
+  const c = s.counts;
+  $("cScanned").textContent = ni(c.scanned); $("cRejected").textContent = ni(c.rejected); $("cPassed").textContent = ni(c.passed);
+  $("deskMeta").textContent = `${ni(c.scanned)} scannés · ${c.traded} tradés`;
+  $("agents").innerHTML = s.agents.map(a => `<div class="agent">
+    <div class="ic" style="background:${AG[a.key][1]}">${AG[a.key][0]}</div>
+    <div class="an"><b>${esc(a.name)}</b><span>${esc(a.sub)}</span></div>
+    <div class="al ${a.key === "filter" ? "k" : ""}">${esc(a.last)}</div>
+    <div class="as">${esc(a.stat)}</div></div>`).join("");
+
+  $("posMeta").textContent = `${s.positions.length} / ${s.config.max_open}`;
+  $("positions").innerHTML = s.positions.length ? `<table><tr><th>Token</th><th>Mise</th><th>Valeur</th><th>Score</th><th>P&amp;L</th></tr>` +
+    s.positions.map(p => `<tr><td>$${esc(p.symbol)}</td><td>${nf(p.size_eur)} €</td><td>${nf(p.value_eur)} €</td>
+      <td class="mu">${p.score}</td><td class="${p.pnl_pct >= 0 ? "g" : "rd"}">${sign(p.pnl_pct)} %</td></tr>`).join("") + "</table>"
+    : `<div class="empty">Aucune position — le desk attend un token qui passe toutes les règles.</div>`;
+
+  $("logMeta").textContent = `${ni(c.rejected)} killed`;
+  $("log").innerHTML = s.log.map(l => {
+    const cls = l.agent === "RISK" ? "risk" : (l.agent === "EXECUTOR" || l.msg.startsWith("passed")) ? "ok" : "";
+    return `<li class="${cls}"><span class="t">${clock(l.t)}</span> ${esc(l.agent)}: ${esc(l.msg)}</li>`;
+  }).join("");
+
+  const mx = Math.max(1, ...s.kills.map(k => k.n));
+  $("kills").innerHTML = s.kills.map(k => `<div class="kr"><div class="row"><span>${esc(k.label)}</span><b>${ni(k.n)}</b></div>
+    <div class="bar"><i style="width:${(k.n / mx * 100).toFixed(1)}%"></i></div></div>`).join("");
+
+  const st = s.stats;
+  $("closedMeta").textContent = st.trades ? `${st.trades} trades · win rate ${nf(st.win_rate, 0)} %` : "";
+  $("closed").innerHTML = s.closed.length ? `<table>` + s.closed.map(r => `<tr><td>$${esc(r.symbol)}</td>
+      <td class="mu">${esc(r.reason)}</td><td class="${r.pnl_eur >= 0 ? "g" : "rd"}">${sign(r.pnl_eur)} € (${sign(r.pnl_pct)} %)</td></tr>`).join("") + "</table>"
+    : `<div class="empty">Pas encore de trade clôturé.</div>`;
+  $("foot").textContent = st.source_errors ? `${st.source_errors} erreurs de source (réseau / RPC)` : "";
+}
+
+async function poll() {
+  try {
+    const r = await fetch("/api/state", {cache: "no-store"});
+    if (!r.ok) throw 0;
+    render(await r.json());
+    $("err").style.display = "none"; $("live").classList.remove("off");
+  } catch (e) {
+    $("err").style.display = "block"; $("live").classList.add("off");
+  }
+  setTimeout(poll, 1000);
+}
+poll();
+</script>
+</body>
+</html>

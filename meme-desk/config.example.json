@@ -1,0 +1,11 @@
+{
+  "start_capital_eur": 107.30,
+  "min_liquidity_usd": 40000,
+  "min_volume_h1_usd": 50000,
+  "max_top10_pct": 25,
+  "min_score": 70,
+  "max_position_pct": 8,
+  "stop_loss_pct": 6,
+  "max_open_positions": 4,
+  "rpc_url": "https://api.mainnet-beta.solana.com"
+}
