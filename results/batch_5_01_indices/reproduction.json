@@ -1,0 +1,25 @@
+{
+  "coûts NEXUS": {
+    "n_trades": 141,
+    "win_rate": 0.7021276595744681,
+    "mean_ret_pct": 0.41620348276457536,
+    "profit_factor": 2.247358036453066,
+    "exposure_pct": 11.588083509265775,
+    "growth_multiple": 1.774743339834438
+  },
+  "sans coûts": {
+    "n_trades": 141,
+    "win_rate": 0.723404255319149,
+    "mean_ret_pct": 0.5110992190063471,
+    "profit_factor": 2.6953678030152615,
+    "exposure_pct": 11.588083509265775,
+    "growth_multiple": 2.0280852920189023
+  },
+  "annonce_doc2": {
+    "win_rate": 0.766,
+    "mean_ret_pct": 0.63,
+    "profit_factor": 2.98,
+    "exposure_pct": 10.6,
+    "note": "SPY 1993 → fin des données de l'auteur (≈ 2026) ; notre fenêtre s'arrête à 2009 (période principale séparée)"
+  }
+}

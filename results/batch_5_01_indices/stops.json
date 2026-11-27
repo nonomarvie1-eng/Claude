@@ -1,0 +1,18 @@
+{
+  "US": {
+    "sd_5d_pct": 2.145432276071055,
+    "stop_pct": 6
+  },
+  "Europe": {
+    "sd_5d_pct": 2.6226278816537105,
+    "stop_pct": 8
+  },
+  "Japan": {
+    "sd_5d_pct": 3.5007351137363,
+    "stop_pct": 11
+  },
+  "AsiaPacExJapan": {
+    "sd_5d_pct": 3.011724699074402,
+    "stop_pct": 9
+  }
+}

@@ -116,7 +116,10 @@ class Result:
 def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], *, start, end,
              risk: float = 0.005, costs: Costs = SPOT, cost_mult: float = 1.0, initial: float = 1000.0,
              rules_mode: bool = False, daily_loss: float = 0.02, dd_halt: float = 0.10,
-             stop_mult: float = 1.0) -> Result:
+             stop_mult: float = 1.0, tiers: list[tuple[float, float]] | None = None) -> Result:
+    """`tiers` : paliers Cubrik « lock » en % du prix (phase 5) : dès que le prix atteint entrée × (1 + at)
+    (plus haut pour un achat), le stop remonte à entrée × (1 + lock), effectif à partir de la bougie H1
+    suivante (aucune hypothèse favorable sur l'ordre intrabougie)."""
     start, end = pd.Timestamp(start), pd.Timestamp(end)
     cst = costs.scaled(cost_mult)
     allow_short = costs.perp
@@ -223,6 +226,12 @@ def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], 
                     close(s, min(o, p["stop_px"]), grid[k], "stop")
                 elif p["dir"] < 0 and h >= p["stop_px"]:
                     close(s, max(o, p["stop_px"]), grid[k], "stop")
+                if tiers and s in pos:
+                    for at, lock in tiers:
+                        if p["dir"] > 0 and h >= p["entry"] * (1 + at):
+                            p["stop_px"] = max(p["stop_px"], p["entry"] * (1 + lock))
+                        elif p["dir"] < 0 and l <= p["entry"] * (1 - at):
+                            p["stop_px"] = min(p["stop_px"], p["entry"] * (1 - lock))
             if rules_mode and pos and not halted:
                 e = mtm(k)
                 peak = max(peak, e)
