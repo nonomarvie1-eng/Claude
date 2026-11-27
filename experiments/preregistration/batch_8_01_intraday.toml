@@ -1,0 +1,106 @@
+# NEXUS QUANT — Pré-enregistrement définitif, lot 8-01 : day trading H1 sur perpétuels crypto.
+# Autorisé par l'utilisateur. Rédigé et commité AVANT le téléchargement des données perpétuelles et toute exécution.
+# Remplace le brouillon experiments/drafts/batch_8_01_intraday_DRAFT.toml (conservé).
+# Période : 2020-01-01 → 2023-07-01 (développement). Rien après le 2023-06-30 n'est téléchargé ni lu.
+
+[data]
+bars = "klines USDT-M perpétuels 1h, Binance Vision (futures/um/monthly/klines), sommes SHA-256 vérifiées"
+funding = "fundingRate USDT-M (déjà téléchargés en phase 4)"
+calibration = "stops calibrés sur les bougies 1h au comptant du S2 2019 (avant la période ; certains perpétuels sont cotés après 2020-01)"
+availability = "un actif n'est négociable qu'à partir de sa première bougie perpétuelle et de sa première échéance de financement ; indicateurs amorcés sur l'historique perpétuel antérieur (EMA200 : 200 bougies)"
+terms = "Binance Vision Dataset Terms v1.0 §4.1 (backtest personnel hors production) ; §4.2 (trading réel) à trancher avant tout usage réel"
+
+[universe]
+decision = ["BTCUSDT", "ETHUSDT"]
+replication = ["BNBUSDT", "XRPUSDT", "EOSUSDT", "BCHUSDT", "LTCUSDT", "TRXUSDT", "LINKUSDT", "MATICUSDT"]
+priority = "ordre de la liste (BTC, ETH, puis volume du T4 2019) pour départager des signaux simultanés"
+survivorship = "univers figé sur le volume d'oct.-déc. 2019 (phase 4), avant la période : pas de sélection des survivants d'aujourd'hui"
+
+[periods]
+eval = ["2020-01-01", "2023-07-01"]
+subperiods = [["2020-01-01", "2022-01-01"], ["2022-01-01", "2023-07-01"]]
+
+[conventions]
+signal = "calculé sur des bougies H1 CLÔTURÉES (UTC)"
+execution = "ordre au marché à l'ouverture de la bougie H1 suivante"
+channels = "highest/lowest(N) = extrême des N bougies PRÉCÉDENTES, bougie de signal exclue"
+vwap = "VWAP ancré à 00:00 UTC : somme((H+L+C)/3 × volume) / somme(volume) des bougies clôturées depuis 00:00 UTC, bougie de signal incluse (connue à sa clôture) ; aucune donnée future"
+indicators = "EMA (alpha = 2/(n+1)) ; RSI et ADX de Wilder (alpha = 1/n) ; Bollinger : SMA 20 ± k × écart-type de population (ddof = 0)"
+cross = "croisement au-dessus : x(t) > y(t) et x(t−1) <= y(t−1)"
+stop = "par actif : s = k × médiane(ATR14 H1 / clôture) du S2 2019 au comptant, k = 2, borné [0,5 %, 10 %] ; vérifié sur le plus haut et le plus bas H1 à partir de la bougie d'entrée ; exécution au stop, ou à l'ouverture si le prix ouvre au-delà"
+take_profit = "aucun (sorties sur signal) : pas d'ambiguïté stop/objectif dans une même bougie"
+reversal = "si un signal opposé apparaît en position : sortie puis entrée inverse à la même ouverture, sous réserve de capacité"
+
+[costs]
+taker_fee = 0.0005
+spread_slippage = 0.0005        # par côté (demi-écart + glissement), prudent pour BTC/ETH, réaliste pour les autres
+funding = "réel, à chaque échéance (00:00, 08:00, 16:00 UTC), sur le notionnel au prix d'ouverture de la bougie"
+stress_costs = 2.0              # frais + glissement x 2 (financement inchangé)
+stress_delay_bars = 1           # exécution une bougie plus tard (contrôle Cubrik toutes les 60 min)
+
+[portfolio]
+risk_per_trade = 0.005          # du capital courant (marqué au marché) au moment du signal
+max_positions = 2
+max_cum_risk = 0.01             # au stop, théorique ; = 2 positions × 0,5 %
+notional_cap = 1.0              # somme des notionnels <= capital (levier 1)
+daily_loss_entry_block = 0.02   # si la valeur liquidative horaire <= 98 % de celle de 00:00 UTC : plus d'entrée jusqu'au lendemain (positions gérées par leurs stops)
+dd_target = 0.10                # rapporté ; variante « arrêt à 10 % » rapportée à part
+note = "Limites théoriques : les gaps et le glissement peuvent les dépasser ; seules les règles exprimables dans Cubrik sont reproductibles (voir docs/phase8/04)."
+profiles_info = [0.0025, 0.01, 0.02]
+
+[hypothesis.H8-3-BB-RANGE-MR]
+priority_user = 1
+long = "close < BB_lower(20, 2) ET ADX14 < 20"
+short = "close > BB_upper(20, 2) ET ADX14 < 20"
+exit_long = "close croise au-dessus de SMA20"
+exit_short = "close croise au-dessous de SMA20"
+sensitivity = ["adx_th = 15", "adx_th = 25", "bb_k = 1.5", "bb_k = 2.5"]
+
+[hypothesis.H8-4-TREND-PULLBACK]
+priority_user = 2
+long = "EMA50 > EMA200 ET RSI14 < 30"
+short = "EMA50 < EMA200 ET RSI14 > 70"
+exit_long = "RSI14 croise au-dessus de 50"
+exit_short = "RSI14 croise au-dessous de 50"
+sensitivity = ["rsi 25/75", "rsi 35/65", "k_stop = 1.5", "k_stop = 3.0"]
+
+[hypothesis.H8-1-BREAKOUT24]
+priority_user = 3
+long = "close croise au-dessus de highest(high, 24)"
+short = "close croise au-dessous de lowest(low, 24)"
+exit_long = "close croise au-dessous de lowest(low, 12)"
+exit_short = "close croise au-dessus de highest(high, 12)"
+sensitivity = ["n_entry = 18 (sortie 9)", "n_entry = 36 (sortie 18)", "k_stop = 1.5", "k_stop = 3.0"]
+
+[hypothesis.H8-2-VWAP-TREND]
+priority_user = 4
+long = "close croise au-dessus du VWAP du jour ET EMA50 > EMA200"
+short = "close croise au-dessous du VWAP du jour ET EMA50 < EMA200"
+exit_long = "close croise au-dessous du VWAP"
+exit_short = "close croise au-dessus du VWAP"
+sensitivity = ["EMA rapide 34", "EMA rapide 89", "k_stop = 1.5", "k_stop = 3.0"]
+
+[tests]
+primary = "R moyen net par trade du portefeuille de 10 actifs ; p unilatéral (H0 : R <= 0) par bootstrap de semaines ; Holm sur les 4 hypothèses (l'ordre de priorité de l'utilisateur n'intervient pas)"
+random = "entrées aléatoires appariées par actif (même nombre, mêmes durées en heures, mêmes sens, même stop, mêmes coûts), 1 000 tirages : centile du R moyen réel (rapporté)"
+dsr = "Sharpe déflaté des rendements quotidiens du portefeuille, N = nombre total d'essais du registre, variance des Sharpe estimée sur les 20 simulations P8"
+frequency = "trades par jour au niveau du portefeuille, journées sans trade incluses ; aucune entrée forcée"
+
+[criteria]
+C1 = "p Holm < 0,05"
+C2 = "IC95 du R moyen net > 0"
+C3 = "R moyen > 0 avec coûts x 2 ET avec 1 bougie de retard"
+C4 = "au moins 3 des 4 voisins de sensibilité avec R moyen > 0"
+C5 = "R moyen > 0 sur 2020-2021 ET sur 2022-2023 S1"
+C6 = "simulation mono-actif : R moyen > 0 sur BTC ET ETH, et sur au moins 6 des 8 actifs de réplication"
+C7 = "drawdown maximal du portefeuille < 10 % (risque 0,5 %)"
+C8 = "Sharpe déflaté > 0,95"
+verdict = "candidate : C1 à C8 ; prometteur : C2, C3 et p Holm < 0,20 ; sinon rejeté"
+montecarlo = "pour les candidates et prometteuses : bootstrap de semaines (10 000), suppression de 5/10/20 % des trades (signaux manqués), retrait du meilleur trade et de la meilleure semaine"
+leverage = "seulement si une hypothèse est candidate : x1, x2, x3, x5, x10, x20 en simulation (marge initiale = 1/levier, marge de maintenance 0,5 %, liquidation au prix franchissant le seuil, frais de liquidation 0,5 %) ; à risque égal, le levier nominal ne change que la marge immobilisée"
+
+[budget]
+P8 = 4
+P8-SENS = 16
+P8-DIAG = 4
+diagnostics = ["calibration des stops et disponibilité des perpétuels", "bases aléatoires", "stress (coûts x 2, retard, signaux manqués)", "Monte Carlo ou levier (conditionnel)"]
