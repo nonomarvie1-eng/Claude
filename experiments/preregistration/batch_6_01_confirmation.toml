@@ -1,0 +1,57 @@
+# NEXUS QUANT — Pré-enregistrement, lot 6-01 : confirmation des signaux et dimensionnement.
+# Rédigé et commité AVANT le téléchargement des taux BCE et toute nouvelle exécution.
+# Aucune règle d'entrée ou de sortie n'est modifiée. Aucun nouvel essai de sélection.
+# Période : développement uniquement (rien après le 2023-06-30). Validation et test final verrouillés.
+
+[frozen]
+japan = "H5-04-RSI2-INTL / Japan : RSI(2) < 10 et clôture > SMA200 ; sortie clôture > SMA5 ; stop 11 % vérifié à la clôture ; exécution à la clôture ; coûts 0,03 %/côté + financement (RF + 2,5 %)/360 par nuit ; 1991-07 → 2023-06"
+us = "H5-02-RSI3050 / US : RSI(5) < 30 et clôture > SMA200 ; sortie RSI(5) croise au-dessus de 50 ; stop 6 % à la clôture ; mêmes coûts ; 2010-01 → 2023-06"
+
+[data]
+fx = "Taux de référence BCE (eurofxref-hist), EUR/JPY et EUR/USD → USD/JPY = EURJPY / EURUSD ; 14:15 CET ; 1999-01 → ; coupé au 2023-06-30 ; « Source : ECB statistics »"
+japan_local = "Pas de source légale et automatisable trouvée pour Nikkei 225 / TOPIX en JPY (FRED refuse les clients automatisés ; Nikkei Inc. titulaire des droits ; Yahoo exclu). Décomposition par le change seulement."
+
+# ------------------------------------------------------------------ diagnostics (famille P6-DIAG)
+[[diagnostic]]
+key = "P6-D0-REPRO"
+statement = "Reproduction exacte de H5-04 Japon et H5-02 US avec le code figé : mêmes trades, mêmes statistiques (contrôle technique)."
+
+[[diagnostic]]
+key = "P6-D1-FX-DECOMP"
+statement = "Pour chaque trade japonais depuis 1999 : rendement USD = (1 + local) × (1 + change) − 1, change = USDJPY(entrée) / USDJPY(sortie) − 1 (BCE). Moyennes et IC95 (bootstrap par mois) de la composante locale et de la composante change ; part de la composante change dans le rendement moyen."
+decision = "Si l'IC95 de la composante locale est > 0 et que la composante change n'est pas significativement > 0 : l'avantage provient du marché, non du change. Sinon : non attribuable au marché."
+
+[[diagnostic]]
+key = "P6-D2-JPY-INDEX"
+statement = "Indice japonais reconstruit en JPY (rendement USD French ÷ variation de change BCE), 1999-2023 S1 ; règle figée appliquée (signaux et P&L en JPY) ; test des entrées aléatoires appariées (10 000). Comparaison avec la version USD sur la même fenêtre."
+caveat = "Décalage horaire : clôture de Tokyo (≈ 07:00 CET) contre fixing BCE à 14:15 CET contre conversion inconnue chez French ; bruit de change journalier dans l'indice reconstruit."
+
+[[diagnostic]]
+key = "P6-D3-FX-ALONE"
+statement = "Règle RSI 2 figée appliquée au cours JPY/USD seul (achat du yen), 1999-2023 S1 : le change seul produit-il un avantage ?"
+
+[[diagnostic]]
+key = "P6-D4-STOP-AUDIT"
+statement = "Audit du stop simulé à la clôture : nombre de sorties sur stop, distribution du pire écart à la clôture pendant les trades (MAE en clôture) rapporté au stop, dépassement au-delà du stop lors des sorties ; limites (pas de plus bas journalier)."
+
+[[diagnostic]]
+key = "P6-D5-US-STABILITY"
+statement = "RSI 30/50 figé : rendement moyen par trade et test des entrées aléatoires par décennie (1930-2023 S1) et sur 1928-1992 contre 1993-2009 contre 2010-2023 S1."
+
+[[diagnostic]]
+key = "P6-D6-COMBINED"
+statement = "Faisabilité de l'utilisation du capital : jours investis, corrélation des rendements quotidiens des deux stratégies, chevauchement des positions, corrélation des pertes, corrélation des indices sous-jacents (1991-2023 S1) ; simulation des deux stratégies sur un capital commun au dimensionnement NEXUS."
+
+# ------------------------------------------------------------------ dimensionnement (famille P6-SIZE)
+[sizing]
+profiles_risk = [0.0025, 0.005, 0.01, 0.02]            # risque au stop ; notionnel = risque / stop, plafonné à 100 % (sans levier)
+diagnostic_fixed_exposure = [0.10, 0.25, 0.50, 1.00]
+metrics = ["rendement annualisé", "drawdown maximal", "Sharpe", "Calmar", "exposition moyenne et maximale", "risque de gap (pire perte d'un trade et pire journée, en % du capital)", "frais", "financement", "P(DD > 10/15/20/25 %) par bootstrap de blocs mensuels de trades (10 000)", "frontière de Pareto (rendement annualisé médian vs 95e percentile du drawdown)"]
+rule = "Aucun profil n'est sélectionné par le rendement historique. Le choix du dimensionnement est une décision de l'utilisateur, présentée comme un compromis."
+
+[budget.P6-DIAG]
+max_trials = 8
+justification = "D0 à D6 (7) + 1 de réserve."
+[budget.P6-SIZE]
+max_trials = 2
+justification = "Une étude de dimensionnement par stratégie figée (Japon, US)."
