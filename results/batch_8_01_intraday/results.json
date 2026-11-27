@@ -659,7 +659,49 @@
             "total_return_p05_pct": -98.13957335162385
           }
         }
-      }
+      },
+      "sensitivity": [
+        {
+          "variant": {
+            "n_entry": 18,
+            "n_exit": 9,
+            "stop_mult": 1
+          },
+          "R_mean": -0.08286405734359081,
+          "trades": 2723,
+          "capital_final": 268.6661155098188,
+          "max_dd_pct": 79.81678060999413
+        },
+        {
+          "variant": {
+            "n_entry": 36,
+            "n_exit": 18,
+            "stop_mult": 1
+          },
+          "R_mean": -0.034147916146877136,
+          "trades": 1715,
+          "capital_final": 628.0688683188857,
+          "max_dd_pct": 65.92329224978326
+        },
+        {
+          "variant": {
+            "stop_mult": 0.75
+          },
+          "R_mean": -0.07084925010923748,
+          "trades": 2491,
+          "capital_final": 302.3680152117882,
+          "max_dd_pct": 88.2588259172748
+        },
+        {
+          "variant": {
+            "stop_mult": 1.5
+          },
+          "R_mean": -0.00777272330232719,
+          "trades": 1976,
+          "capital_final": 819.624373892322,
+          "max_dd_pct": 55.958548561688545
+        }
+      ]
     },
     "H8-2-VWAP-TREND": {
       "portfolio": {
