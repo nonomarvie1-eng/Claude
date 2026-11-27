@@ -4,12 +4,22 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
+## Phase 3 — Liquidity Intelligence (études événementielles)
+
+Commencer par [`docs/phase3/RAPPORT_PHASE_3.md`](docs/phase3/RAPPORT_PHASE_3.md).
+
+```bash
+python -m pytest                                                                      # 87 tests
+python -m nexus.research.nli_runner experiments/preregistration/batch_3_01_events.toml BTCUSDT
+python -m nexus.research.nli_diag && python -m nexus.research.report_3
+```
+
 ## Phase 2D — Diversification, allocation dynamique, audit technique
 
 Commencer par [`docs/phase2d/RAPPORT_PHASE_2D.md`](docs/phase2d/RAPPORT_PHASE_2D.md).
 
 ```bash
-python -m pytest                                                        # 77 tests
+python -m pytest
 python -m nexus.research.g_runner experiments/preregistration/batch_2d_01.toml     # NEXUS G
 python -m nexus.research.lab_runner experiments/preregistration/batch_2d_01.toml   # NEXUS E
 python -m nexus.research.report_2d

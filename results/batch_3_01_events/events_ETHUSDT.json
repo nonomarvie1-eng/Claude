@@ -1,0 +1,46 @@
+{
+  "symbol": "ETHUSDT",
+  "code_version": "eb98994",
+  "registry_trials_total": 137,
+  "results": {
+    "EV-12-ORB": {
+      "primary": "M_continuation",
+      "delta": {
+        "n_real": 1166,
+        "n_ctrl": 1186,
+        "real": 0.5145797598627787,
+        "ctrl": 0.5109612141652614,
+        "delta": 0.0036185456975172947,
+        "ci95": [
+          -0.03801919065385491,
+          0.044535021692072026
+        ],
+        "p": 0.43071385722855426
+      },
+      "n_real": 1168,
+      "n_ctrl": 1187,
+      "p_cont_with_retest": 0.43941109852774635,
+      "p_cont_without_retest": 0.7491166077738516,
+      "n_with_retest": 883,
+      "n_without_retest": 283,
+      "retest_selection": {
+        "n_real": 283,
+        "n_ctrl": 883,
+        "real": 0.7491166077738516,
+        "ctrl": 0.43941109852774635,
+        "delta": 0.30970550924610524,
+        "ci95": [
+          0.24911559726142868,
+          0.36524301510870766
+        ],
+        "p": 0.0004997501249375312
+      },
+      "p_cont_big_break": 0.5060034305317325,
+      "p_cont_small_break": 0.5231560891938251,
+      "trial_id": 137,
+      "p_bh": 0.43071385722855426,
+      "information": false,
+      "exploitable": null
+    }
+  }
+}
