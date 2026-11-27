@@ -1,0 +1,2 @@
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
