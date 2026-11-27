@@ -1,0 +1,121 @@
+# NEXUS QUANT — Pré-enregistrement, lot 4-01 : stratégies compatibles Cubrik.
+# Rédigé et commité AVANT tout téléchargement des nouvelles données et toute exécution.
+# Période de DÉVELOPPEMENT uniquement (2020-01-01 → 2023-07-01). Validation et test final verrouillés.
+# Protocole détaillé : docs/phase4/02_hypotheses_protocole.md.
+
+[common]
+period = "dev"
+eval_start = "2020-01-01"
+eval_end = "2023-07-01"
+timeframe_signal = "1D"          # bougies journalières UTC, signal à la clôture
+timeframe_execution = "1h"       # simulation intrajournalière des stops sur bougies H1
+initial_capital_eur = 1000
+risk_per_trade = 0.005           # profil équilibré ; 0,25 % rapporté en complément (redimensionnement)
+max_concurrent_notional = 1.0    # pas de levier : somme des positions <= capital
+one_position_per_symbol = true
+metrics = ["voir docs/phase4/02_hypotheses_protocole.md §5"]
+rejection = "critères C1 à C6 du protocole (§6) ; sinon statut « prometteur, preuves insuffisantes » ou « rejeté »."
+
+[universe]
+# Univers figé AVANT la période de développement, sans biais de survie : les 10 paires USDT
+# au comptant Binance au plus fort volume en quote (USDT) cumulé d'octobre à décembre 2019,
+# parmi la liste de candidats ci-dessous (paires USDT cotées en 2019, connues avant toute donnée),
+# hors stablecoins et jetons à effet de levier. Un actif dont les données manquent est remplacé
+# par le suivant du classement.
+rank_window = ["2019-10-01", "2020-01-01"]
+size = 10
+candidates = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "LTCUSDT", "BCHUSDT", "EOSUSDT", "TRXUSDT",
+              "ETCUSDT", "LINKUSDT", "XLMUSDT", "ADAUSDT", "XTZUSDT", "ATOMUSDT", "NEOUSDT", "BATUSDT",
+              "ONTUSDT", "IOTAUSDT", "VETUSDT", "DASHUSDT", "ZECUSDT", "XMRUSDT", "QTUMUSDT", "ICXUSDT",
+              "MATICUSDT", "DOGEUSDT", "ALGOUSDT", "FTMUSDT", "ONEUSDT", "ZILUSDT", "THETAUSDT", "WAVESUSDT",
+              "HBARUSDT", "KAVAUSDT", "BTTUSDT", "IOSTUSDT", "OMGUSDT", "ENJUSDT"]
+
+[stops]
+# Cubrik n'accepte qu'un stop en % fixe : stop de chaque actif = 3 × médiane(ATR14 D1 / clôture)
+# mesurée du 2019-07-01 au 2019-12-31 (avant la période de développement), arrondie au % entier,
+# bornée à [5 %, 25 %]. Aucune donnée de 2020+ n'intervient.
+atr_mult = 3.0
+window = ["2019-07-01", "2020-01-01"]
+floor_pct = 5
+cap_pct = 25
+
+[costs]
+spot_fee_per_side = 0.0010       # taker Binance au comptant
+spot_slippage_per_side = 0.0005
+perp_fee_per_side = 0.0005       # taker USDT-M
+perp_slippage_per_side = 0.0005
+funding = "taux réels Binance USDT-M (archives fundingRate), payés par les positions ouvertes à chaque échéance"
+eur_conversion_per_side = 0.0010
+stress_multiplier = 2.0          # frais + glissement doublés (financement inchangé)
+
+[budget.P4]
+max_trials = 4
+justification = "4 hypothèses principales, une seule configuration chacune, paramètres fixés a priori par la littérature ou les phases précédentes."
+[budget.P4-SENS]
+max_trials = 20
+justification = "4 voisins pré-déclarés par hypothèse (16) + 4 stress de coûts ×2. Ne servent jamais à choisir des paramètres."
+[budget.P4-DIAG]
+max_trials = 8
+justification = "Sélection de l'univers, calibration des stops, bases aléatoires (4), écart entre moteurs sur BTC (1), réserve (1)."
+
+# ------------------------------------------------------------------------------------------
+# Règles écrites dans le format Cubrik (docs/phase4/01_audit_cubrik.md §3).
+# « price » = clôture de la bougie D1. highest/lowest(N) = extrême des N bougies PRÉCÉDENTES
+# (bougie courante exclue). Exécution à l'ouverture de la bougie D1 suivante.
+# ------------------------------------------------------------------------------------------
+
+[[hypothesis]]
+key = "P4-01-DONCH"
+family = "P4"
+priority = 1
+statement = "Cassure de Donchian D1, achat seulement, portefeuille de 10 cryptos au comptant : entrée si la clôture croise au-dessus du plus haut des 55 bougies précédentes ; sortie si elle croise sous le plus bas des 20 précédentes ; stop % par actif ; pas d'objectif."
+rationale = "Suivi de tendance (règle des Turtles ; Hurst, Ooi & Pedersen 2017) ; tendance documentée sur les cryptos (Liu & Tsyvinski 2021 ; Zarattini, Pagani & Barbon 2025, ensemble de Donchian sur les 20 cryptos les plus liquides). La diversification sur 10 actifs vise à augmenter le nombre de trades indépendants à risque fixe par trade."
+params = { entry_n = 55, exit_n = 20, side = "long", market = "spot" }
+cubrik = { timeframe = "1D", side = "long", entry = "price crossesAbove highest(55)", exit_signal = "price crossesBelow lowest(20)", takeProfitPct = "null", stopLossPct = "stop de l'actif", perTradePct = 0.5, leverage = 1 }
+sensitivity = [{ entry_n = 40, exit_n = 15 }, { entry_n = 70, exit_n = 25 }, { stop_mult = 0.75 }, { stop_mult = 1.5 }]
+data = { period = "dev", symbols = "univers", bars = "Binance Vision spot 1h + 1d" }
+metrics = ["alpha vs panier équipondéré passif à même exposition", "R moyen net par trade", "rendement, drawdown, Sharpe, profit factor"]
+rejection = { text = "C1–C6 du protocole" }
+
+[[hypothesis]]
+key = "P4-02-SMA"
+family = "P4"
+priority = 2
+statement = "Filtre de tendance SMA100 D1 (type Faber), achat seulement, même univers : entrée si la clôture croise au-dessus de la SMA100 ; sortie si elle croise en dessous ; stop % par actif."
+rationale = "Faber (2007) ; généralisation multi-actifs de NXG-01 et REF-SMA-01, seuls résultats « prometteurs » des phases 2C–2D (sur BTC seul, alpha non significatif). La règle est directement exprimable dans Cubrik."
+params = { sma_n = 100, side = "long", market = "spot" }
+cubrik = { timeframe = "1D", side = "long", entry = "price crossesAbove sma(100)", exit_signal = "price crossesBelow sma(100)", takeProfitPct = "null", stopLossPct = "stop de l'actif", perTradePct = 0.5, leverage = 1 }
+sensitivity = [{ sma_n = 75 }, { sma_n = 150 }, { stop_mult = 0.75 }, { stop_mult = 1.5 }]
+data = { period = "dev", symbols = "univers", bars = "Binance Vision spot 1h + 1d" }
+metrics = ["alpha vs panier équipondéré passif à même exposition", "R moyen net par trade", "rendement, drawdown, Sharpe, profit factor"]
+rejection = { text = "C1–C6 du protocole" }
+
+[[hypothesis]]
+key = "P4-03-TSMOM-LS"
+family = "P4"
+priority = 3
+statement = "Momentum de série temporelle 90 jours, achat ET vente à découvert sur perpétuels USDT-M, même univers : long quand ROC(90) croise au-dessus de 0, short quand il croise en dessous ; sortie (et retournement) au croisement inverse ; stop % par actif ; financement réel."
+rationale = "Moskowitz, Ooi & Pedersen (2012) ; la jambe vendeuse vise à retirer l'exposition au marché qui expliquait les résultats de tendance sur BTC (phase 2C). Attente a priori défavorable pour la jambe courte (Han, Kang & Ryu : momentum crypto concentré dans les marchés haussiers) : c'est un test de falsification."
+params = { roc_n = 90, side = "both", market = "perp" }
+cubrik = { timeframe = "1D", side = "both", entry = "roc(90) crossesAbove 0", entryShort = "roc(90) crossesBelow 0", exit_signal = "roc(90) crossesBelow 0", exit_signalShort = "roc(90) crossesAbove 0", takeProfitPct = "null", stopLossPct = "stop de l'actif", perTradePct = 0.5, leverage = 1, symbols = "notation perpétuelle XXX/USDT:USDT" }
+sensitivity = [{ roc_n = 60 }, { roc_n = 120 }, { stop_mult = 0.75 }, { stop_mult = 1.5 }]
+data = { period = "dev", symbols = "univers (à partir de la cotation du perpétuel)", bars = "prix spot 1h + financement USDT-M" }
+metrics = ["rendement quotidien moyen > 0 (bootstrap)", "bêta vs panier", "R moyen net par trade, séparément long et short"]
+rejection = { text = "C1–C6 du protocole ; C1 testé contre 0 (stratégie non directionnelle en moyenne)" }
+
+[[hypothesis]]
+key = "P4-04-RSI2"
+family = "P4"
+priority = 4
+statement = "Retour à la moyenne court terme dans une tendance haussière (Connors RSI2), achat seulement, même univers : entrée si RSI(2) < 10 et clôture > SMA200 ; sortie si la clôture croise au-dessus de la SMA5 ou après 10 bougies ; stop % par actif."
+rationale = "Règle documentée sur les indices actions (Connors & Alvarez 2008). Probabilité a priori faible sur cryptos (momentum quotidien et hebdomadaire documenté ; famille E rejetée sur BTC en H1/H4). Différence avec E : horizon D1 et filtre de tendance SMA200. Test de falsification bon marché, avant d'envisager la même règle sur indices."
+params = { rsi_n = 2, rsi_th = 10, trend_sma = 200, exit_sma = 5, max_bars = 10, side = "long", market = "spot" }
+cubrik = { timeframe = "1D", side = "long", entry = "rsi(2) < 10 AND price > sma(200)", exit_signal = "price crossesAbove sma(5)", maxBarsInTrade = 10, takeProfitPct = "null", stopLossPct = "stop de l'actif", perTradePct = 0.5, leverage = 1 }
+sensitivity = [{ rsi_th = 5 }, { rsi_th = 15 }, { stop_mult = 0.75 }, { stop_mult = 1.5 }]
+data = { period = "dev", symbols = "univers", bars = "Binance Vision spot 1h + 1d" }
+metrics = ["alpha vs panier passif à même exposition", "R moyen net par trade"]
+rejection = { text = "C1–C6 du protocole" }
+
+# P4-05 (forex majeurs, or, indices en D1 avec les règles de P4-01/P4-02) : NON pré-enregistrée
+# pour exécution. En attente de la liste des instruments Cubrik et d'une source de données ;
+# aucune dépense avant cette vérification.
