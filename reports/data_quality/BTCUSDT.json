@@ -1,0 +1,33 @@
+{
+  "symbol": "BTCUSDT",
+  "source": "binance_data_vision",
+  "open_periods": {
+    "rows": 2628555,
+    "start": "2020-01-01 00:00:00+00:00",
+    "end": "2024-12-31 23:59:00+00:00",
+    "duplicates": 0,
+    "monotonic": true,
+    "misaligned_minutes": 0,
+    "expected_minutes": 2630880,
+    "coverage": 0.9991162652800584,
+    "gaps_over_60min": 15,
+    "largest_gap_min": 355.0,
+    "min_month_rows": 40241,
+    "bad_ohlc_rows": 0,
+    "spikes_gt_20x_median": 6957
+  },
+  "final_test_locked": {
+    "rows": 786240,
+    "start": "2025-01-01 00:00:00+00:00",
+    "end": "2026-06-30 23:59:00+00:00",
+    "duplicates": 0,
+    "monotonic": true,
+    "misaligned_minutes": 0,
+    "expected_minutes": 786240,
+    "coverage": 1.0,
+    "gaps_over_60min": 0,
+    "largest_gap_min": 1.0,
+    "min_month_rows": 40320,
+    "note": "période verrouillée : couverture uniquement"
+  }
+}

@@ -1,0 +1,13 @@
+[project]
+name = "nexus-quant"
+version = "0.2.0"
+description = "NEXUS QUANT — recherche et backtesting (simulation uniquement)"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "pandas>=2.1", "pyarrow>=14", "scipy>=1.11"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]

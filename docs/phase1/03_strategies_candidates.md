@@ -17,7 +17,7 @@ Règles communes à toutes les stratégies (sauf mention) :
 
 | Paramètre | Valeur | Source |
 |---|---|---|
-| Range | 00:00–09:00 Europe/Paris | DOC (fuseau PROP) |
+| Range | 00:00–09:00, fuseau inconnu : hypothèses `paris`, `london`, `utc` testées comme essais distincts (révision phase 2) | DOC (fuseau PROP) |
 | Fenêtre d'entrée | 09:00–13:00 | DOC |
 | Déclencheur | Clôture au-delà du range, entrée à l'ouverture suivante | DOC |
 | SL | EMA 50 (TF d'exécution) − `0,1·ATR` (achat) ; trade ignoré si EMA du mauvais côté ou distance < `0,5·ATR` | DOC + PROP |

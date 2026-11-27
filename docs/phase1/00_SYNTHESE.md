@@ -1,5 +1,7 @@
 # NEXUS QUANT — Phase 1 : synthèse des conclusions
 
+> Révisions apportées en phase 2 : voir [`docs/phase2/01_decisions_et_revisions.md`](../phase2/01_decisions_et_revisions.md) (capital 1 000 €, hypothèses de session multiples, justification corrigée des tailles d'échantillon, quatre catégories de verdict).
+
 Date : 2026-11-27. Aucun développement du bot n'a été engagé. **Aucun résultat de performance n'est présenté : aucun test n'a encore été exécuté sur données réelles.**
 
 ## Ce qui a été fait
@@ -21,7 +23,7 @@ Date : 2026-11-27. Aucun développement du bot n'a été engagé. **Aucun résul
 3. **Les documents contiennent des contradictions** (SBA : sortie 20 h vs position conservée overnight, BE 3R vs 3,2R, résultat +2,75R vs +0,75R, fuseau absent, stop indéfini quand l'EMA est du mauvais côté ; NY : instrument non précisé, erreur arithmétique). Les filtres jour/mois de SBA ont une forte probabilité d'être du surajustement.
 4. **La taille d'échantillon est le premier verrou statistique** : détecter +0,1R/trade avec un RR de 4 demande ≈ 1 500 trades (≈ 3 600 en tenant compte des comparaisons multiples). Les setups rares (ICT, H4) ne seront probablement pas validables actif par actif.
 5. **Les coûts sont le premier verrou économique** : sur M1, ≈ 0,1–0,4R par trade.
-6. **Le capital de 500 € impose des CFD/spot** (les micro-futures représentent 7–15 % de risque par trade) et quantifie fortement le risque ; XAU/USD sera souvent impossible à dimensionner à ≤ 1 %.
+6. **Le capital (500 € en phase 1, 1 000 € depuis la phase 2) impose des CFD/spot** (les micro-futures représentent 3,7–7,4 % de risque par trade à 1 000 €) et quantifie le risque ; XAU/USD sera souvent impossible à dimensionner au profil prudent.
 7. **Données : coût 0 €.** Dukascopy (FX, or, CFD NASDAQ/DAX, bid/ask M1 et ticks), HistData (contrôle croisé), Binance Data Vision (crypto + funding), MT5 démo (spécifications courtier). ≈ 250–400 Mo de Parquet pour 8 actifs × 6 ans ; 8 Go de RAM suffisent en traitant un actif à la fois.
 8. **Avis a priori** : la probabilité qu'une des stratégies, telle que décrite, survive au protocole est **faible**. Un éventuel avantage sera vraisemblablement petit et structurel (volatilité de session, momentum intraday, fausses cassures). La conclusion « aucun avantage démontré » est un résultat prévu et acceptable.
 

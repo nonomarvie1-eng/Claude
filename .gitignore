@@ -1,0 +1,9 @@
+# Données de marché : jamais versionnées (reproductibles via les scripts + manifestes)
+data/
+*.parquet
+*.bi5
+*.zip
+__pycache__/
+.pytest_cache/
+*.pyc
+results/*.sqlite-journal

@@ -18,26 +18,28 @@ Pour mesurer votre PC : exécuter `python scripts/check_env.py` (fourni dans ce 
 
 Pile logicielle proposée (toute open source, gratuite, compatible Windows sans compilateur) : Python 3.12, `numpy`, `pandas`, `pyarrow` (Parquet), `numba` (accélération des boucles de simulation sur CPU), `scipy`, `statsmodels`, `duckdb` (requêtes sur Parquet sans tout charger en RAM), `matplotlib`/`plotly`, `streamlit` (tableau de bord local), `pytest`, `pydantic` (validation des configs), `sqlite3` (bibliothèque standard). Pas de framework de backtest tiers comme moteur principal : aucun ne gère nativement la résolution intrabar conservatrice, bid/ask, lots minimaux et funding comme requis ; ils pourront servir de contrôle croisé.
 
-## 2. Contrainte du capital de 500 € (calcul effectué)
+## 2. Contrainte du capital (révisée en phase 2 : 1 000 €)
+
+> Révision phase 2 : le capital simulé de référence est désormais **1 000 €** (décision validée). Les pourcentages ci-dessous ont été recalculés ; la version 500 € est conservée dans l'historique git.
 
 Risque minimal imposé par le **lot minimal** (spécifications CFD courantes, à vérifier chez un courtier) :
 
-| Instrument (lot min) | Stop typique M5–M15 | Risque au lot min | % de 500 € |
+| Instrument (lot min) | Stop typique M5–M15 | Risque au lot min | % de 1 000 € |
 |---|---|---|---|
-| EUR/USD (0,01 lot) | 10–20 pips | 0,93–1,85 € | 0,19–0,37 % |
-| USD/JPY (0,01 lot) | 10–20 pips | 0,62–1,23 € | 0,12–0,25 % |
-| XAU/USD (0,01 lot = 1 oz) | 5–10 $ | 4,63–9,26 € | **0,93–1,85 %** |
-| NASDAQ 100 CFD (0,1 $/pt) | 20–40 pts | 1,85–3,70 € | 0,37–0,74 % |
-| DAX CFD (0,1 €/pt) | 20–40 pts | 2,00–4,00 € | 0,40–0,80 % |
-| Micro future MNQ (2 $/pt) | 20–40 pts | 37–74 € | **7–15 %** → exclu |
-| Crypto (min. ≈ 5 USDT notionnel) | — | quasi continu | OK |
+| EUR/USD (0,01 lot) | 10–20 pips | 0,93–1,85 € | 0,09–0,19 % |
+| USD/JPY (0,01 lot) | 10–20 pips | 0,62–1,23 € | 0,06–0,12 % |
+| XAU/USD (0,01 lot = 1 oz) | 5–10 $ | 4,63–9,26 € | 0,46–0,93 % |
+| NASDAQ 100 CFD (0,1 $/pt) | 20–40 pts | 1,85–3,70 € | 0,19–0,37 % |
+| DAX CFD (0,1 €/pt) | 20–40 pts | 2,00–4,00 € | 0,20–0,40 % |
+| Micro future MNQ (2 $/pt) | 20–40 pts | 37–74 € | **3,7–7,4 %** → exclu |
+| Crypto spot (min. ≈ 5 USDT notionnel) | — | quasi continu | OK |
 
 Conséquences :
 
-- Avec 0,5 % de risque (2,50 €), le dimensionnement est **grossièrement quantifié** : le risque réel varie de 0,2 % à 0,9 % selon la distance du stop. Le moteur doit simuler exactement cet arrondi.
-- XAU/USD n'est tradable à ≤ 1 % que pour des stops < ≈ 5,4 $ : beaucoup de setups seront ignorés.
-- Les futures sont incompatibles avec ce capital ; seuls les CFD/spot sont réalistes.
-- **Ordre de grandeur des gains** : même une stratégie remarquable à +20 %/an rapporterait ≈ 100 €/an sur 500 €. L'objectif de la phase de recherche est la connaissance, pas le revenu.
+- Profil prudent (0,25 % = 2,50 €) : sur XAU/USD, la plupart des stops dépassent le budget au lot minimal → trades refusés. Sur EUR/USD, un stop > ≈ 27 pips est refusé.
+- Le dimensionnement reste quantifié (pas de 0,01 lot) : le risque réel est arrondi vers le bas et le moteur simule exactement cet arrondi.
+- Les futures restent incompatibles avec ce capital ; seuls les CFD et le spot sont réalistes.
+- Aucune estimation de revenu n'est présentée avant d'avoir des résultats empiriques suffisants (décision phase 2).
 
 ## 3. Coûts d'exécution exprimés en R (point critique)
 

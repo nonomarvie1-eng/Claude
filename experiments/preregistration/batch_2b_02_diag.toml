@@ -1,0 +1,26 @@
+# NEXUS QUANT — Pré-enregistrement, lot 2B-02 (DIAGNOSTIC)
+# Rédigé après le lot 2B-01 BTC, AVANT exécution de ce lot.
+# Motif : sur BTC spot, > 90 % des signaux NEXUS B sont refusés car les coûts estimés
+# dépassent 33 % du risque. Ce lot désactive ce filtre pour mesurer l'espérance
+# BRUTE et NETTE du mécanisme, afin de distinguer « mécanisme absent » de
+# « mécanisme écrasé par les coûts ». Ce n'est PAS une stratégie candidate :
+# aucun profil de risque n'est simulé, et ces essais comptent dans le registre.
+
+[common]
+period = "dev"
+symbols = ["BTCUSDT", "EURUSD"]
+sessions = ["paris", "london", "utc"]
+cost_stress = [1.0, 1.5, 2.0]
+random_baseline_reps = 200
+max_cost_frac = 1e9
+diagnostic_only = true
+metrics = ["mean_r_gross", "mean_r_net", "block_bootstrap_ci95_weekly", "p_vs_matched_random"]
+rejection = """Diagnostic : si E[R] brut <= 0 (IC95 incluant 0 ou négatif), le mécanisme est jugé absent
+sur cet actif, indépendamment des coûts."""
+
+[[hypothesis]]
+key = "NXB-01-DIAG"
+family = "B"
+statement = "NXB-01 sans filtre de coûts (diagnostic de l'espérance brute)."
+rationale = "Séparer l'effet du mécanisme de l'effet des coûts d'exécution."
+params = { target = ["mid", "2R"] }

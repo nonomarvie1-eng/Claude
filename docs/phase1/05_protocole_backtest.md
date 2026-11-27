@@ -31,6 +31,8 @@ Dans le bloc Développement + Validation : fenêtres glissantes **18 mois d'entr
 
 ### Taille d'échantillon nécessaire (calcul effectué)
 
+> Révision phase 2 : ces chiffres correspondent à une **puissance de 50 %** (z_β = 0). La dérivation complète, avec puissance 80 %, dépendance et comparaisons multiples, est dans `docs/phase2/01_decisions_et_revisions.md §3`. Le nombre de trades n'est plus un critère de rejet automatique.
+
 Pour un trade à résultat binaire −1R / +RR avec probabilité de gain au point mort, l'écart-type par trade vaut `σ = √(p·RR² + (1−p))` avec `p = 1/(1+RR)` (soit `σ = √RR`). Nombre de trades pour détecter une espérance de **+0,10R** :
 
 | RR | σ (R) | n à z = 1,96 | n à z = 3 (comparaisons multiples) |

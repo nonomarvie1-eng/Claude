@@ -1,0 +1,80 @@
+# NEXUS QUANT — Pré-enregistrement, lot 2B-01
+# Rédigé AVANT toute exécution sur données réelles. Toute modification
+# ultérieure d'une hypothèse doit recevoir une nouvelle clé.
+#
+# Données : uniquement la période de DÉVELOPPEMENT (2020-01-01 → 2023-07-01).
+# La validation (2023-07 → 2024-12) et le test final verrouillé (2025-01 → 2026-06)
+# ne sont PAS utilisés dans ce lot.
+#
+# Hypothèses de session (comptées comme essais distincts) : paris, london, utc
+# (voir nexus/timeutils.py). Profil de calcul des R : 0,5 % sans disjoncteur
+# (statistique de l'avantage) ; les trois profils de risque sont ensuite
+# simulés avec les limites actives (2 % / jour, arrêt à 10 % de drawdown).
+
+[common]
+period = "dev"
+symbols = ["EURUSD", "BTCUSDT"]
+sessions = ["paris", "london", "utc"]
+signal_timeframe_min = 5
+execution_timeframe_min = 1
+cost_stress = [1.0, 1.5, 2.0]
+random_baseline_reps = 200
+metrics = ["mean_r_net", "block_bootstrap_ci95_weekly", "p_vs_zero", "p_vs_matched_random",
+           "mean_r_cost_x1.5", "mean_r_cost_x2", "annual_mean_r", "profit_factor", "max_drawdown",
+           "risk_profiles_eur", "monte_carlo_drawdown"]
+rejection = """Critères FIXÉS AVANT les résultats (période de développement) :
+- incompatible : borne haute IC95 de l'espérance nette < 0 ;
+- prometteur : espérance nette > 0, p ajusté BH < 0,25 et espérance > 0 avec coûts x2 ;
+  (« démontré » est impossible sur le développement : exige validation + test final) ;
+- sinon : absence d'avantage démontré.
+Un filtre (ablation) n'est jugé utile que si son gain d'espérance par rapport au modèle
+de base est positif ET si son IC95 de différence exclut 0."""
+
+[[hypothesis]]
+key = "REF-SBA-01"
+family = "REF"
+statement = "Référence SBA : cassure en clôture M5 du range nocturne, stop EMA50 M5 ± 0,1 ATR, TP 2R, sortie horaire."
+rationale = "Reproduction minimale du document SBA (règles [DOC] + compléments [PROP] documentés en phase 1), sans filtres jour/mois."
+params = { target_r = [2.0], ema_buffer_atr = [0.1], min_stop_atr = [0.5] }
+
+[[hypothesis]]
+key = "NXA-01"
+family = "A"
+statement = "Session Breakout minimal : première clôture M5 hors du range nocturne dans la fenêtre d'entrée ; entrée au marché ; stop au milieu du range ; objectif 2R ou sortie horaire seule."
+rationale = "Expansion de volatilité à l'ouverture européenne après une phase nocturne calme ; la direction de cassure contiendrait de l'information (momentum de court terme)."
+params = { target_r = [2.0, "none"] }
+
+[[hypothesis]]
+key = "NXA-02"
+family = "A"
+statement = "NXA-01 (objectif 2R) + filtre directionnel : clôture H1 du côté de l'EMA100 H1."
+rationale = "Ablation : contribution marginale d'un filtre de tendance de plus haut niveau."
+params = { target_r = [2.0], trend_filter = [true] }
+
+[[hypothesis]]
+key = "NXA-03"
+family = "A"
+statement = "NXA-01 (objectif 2R) + filtre de compression : largeur du range / ATR journalier de la veille <= médiane des 60 jours précédents."
+rationale = "Ablation : une compression nocturne marquée précéderait une expansion plus directionnelle."
+params = { target_r = [2.0], compression_filter = [true] }
+
+[[hypothesis]]
+key = "NXA-04"
+family = "A"
+statement = "NXA-01 (objectif 2R) avec entrée sur retest : ordre limite au niveau cassé, expiration 60 min."
+rationale = "Ablation : améliorer le prix d'entrée au prix d'un risque de non-exécution."
+params = { target_r = [2.0], entry_mode = ["retest"] }
+
+[[hypothesis]]
+key = "NXB-01"
+family = "B"
+statement = "Liquidity Reversal minimal : bougie M5 dont la mèche dépasse un extrême du range et qui clôture à l'intérieur ; entrée au marché à contre-sens ; stop au-delà de l'extrême balayé ; objectif milieu du range ou 2R ; sortie horaire."
+rationale = "Les extrêmes de range très visibles concentrent des ordres stop ; leur déclenchement sans suite (fausse cassure) produirait un retour vers l'intérieur plus souvent que le hasard."
+params = { target = ["mid", "2R"] }
+
+[[hypothesis]]
+key = "NXB-02"
+family = "B"
+statement = "NXB-01 (objectif milieu) + confirmation par CHoCH M5 dans le sens du trade dans les 6 bougies suivant le sweep."
+rationale = "Ablation : contribution marginale d'un changement de structure (MSS/CHoCH)."
+params = { target = ["mid"], require_choch = [true] }
