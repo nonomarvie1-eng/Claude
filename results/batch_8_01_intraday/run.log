@@ -18,3 +18,12 @@ H8-3-BB-RANGE-MR {"capital_final": 53.33845889619841, "trades_per_day": 2.893500
 H8-4-TREND-PULLBACK {"capital_final": 201.13324238130252, "trades_per_day": 1.3046202036021926, "R_mean": -0.18700248444061596, "R_ci95": [-0.24884850183955956, -0.12057665660736851], "p_R_le_0": 1.0, "max_dd_pct": 80.02747947372997, "win_rate": 0.3865546218487395, "profit_factor": 0.6982915937592646}
 /home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
   wk = dr.groupby(dr.index.to_period("W"))
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
+H8-1-BREAKOUT24 {"capital_final": 920.3741694666005, "trades_per_day": 1.7439310884886452, "R_mean": 0.014779913030697235, "R_ci95": [-0.10635759547529293, 0.15013271115618496], "p_R_le_0": 0.393121375724855, "max_dd_pct": 73.51824634749228, "win_rate": 0.2604400538841491, "profit_factor": 0.994122908071372}
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
