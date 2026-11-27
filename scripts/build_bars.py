@@ -24,7 +24,7 @@ from nexus.data.store import save_bars  # noqa: E402
 
 def main(argv):
     symbol = argv[0]
-    if symbol == "BTCUSDT":
+    if symbol.endswith("USDT"):
         df = binance.build_bars(symbol, argv[1] if len(argv) > 1 else "2020-01", argv[2] if len(argv) > 2 else "2026-07")
         market = "crypto"
     else:

@@ -1,0 +1,152 @@
+# NEXUS QUANT — Phase 3, lot 3-01 : ÉTUDES ÉVÉNEMENTIELLES « Liquidity Intelligence »
+# Rédigé AVANT l'écriture des détecteurs et AVANT tout résultat. Période de DÉVELOPPEMENT
+# uniquement (2020-01-01 → 2023-07-01). Validation et test final verrouillés.
+#
+# Actif principal : BTC/USDT spot (Binance Vision). ETH/USDT : SMT et réplication.
+# Les documents portent surtout sur NQ/ES (futures CME) et EUR/USD : ces données ne sont pas
+# disponibles légalement et gratuitement (docs/phase3/03_donnees_legalite.md). La transposition
+# à BTC est une hypothèse [PROP] : un résultat négatif sur BTC ne réfute pas le concept sur NQ/ES.
+#
+# Fuseau des sessions : America/New_York (IANA, DST automatique), comme exigé par les documents.
+# Jour de trading NY = jour calendaire NY ; semaine NY = lundi 00:00 → lundi 00:00.
+#
+# ---------------------------------------------------------------------------------------------
+# MÉTRIQUES (identiques pour tous les tests)
+# Unité de mesure : ATR14 H1 (dernière bougie H1 close à la disponibilité du niveau).
+# Horizon : 24 h après la disponibilité (48 h pour les niveaux hebdomadaires et les swings H1).
+# - M_target : P(le prix touche le niveau dans l'horizon) — effet « aimant » (draw on liquidity).
+# - M_reaction : au premier contact, course de barrières symétriques à ±1 ATR_H1 depuis le niveau :
+#   P(retournement de 1 ATR avant franchissement de 1 ATR). Même minute ambiguë = franchissement
+#   (hypothèse défavorable au retournement).
+# - Aussi publiés : P(clôture M5 au-delà dans les 6 bougies), P(réintégration | franchissement),
+#   délai jusqu'au contact, MFE et MAE (en ATR) sur l'horizon, P(cible avant invalidation).
+# NIVEAUX DE CONTRÔLE : pour chaque niveau réel, 3 niveaux fictifs du même côté du prix, à une
+# distance = distance réelle × U(0,5 ; 1,5), à plus de 0,25 ATR du niveau réel, même instant de
+# disponibilité (donc même heure et même volatilité). Δ = métrique(réel) − métrique(contrôle).
+# INFÉRENCE : bootstrap par blocs de semaines (5 000 tirages), p unilatéral (Δ > 0), correction de
+# Benjamini–Hochberg sur l'ensemble des tests principaux du lot.
+# CRITÈRE D'INFORMATION : p_BH < 0,05 ET Δ >= 5 points de pourcentage.
+# CRITÈRE D'EXPLOITABILITÉ (réaction) : P(retournement) réelle > (1 + c) / 2 où c = coût
+# aller-retour / ATR_H1 (frais spot 0,10 % par côté + demi-spread + glissement).
+# Un backtest n'est pré-enregistré QUE pour les niveaux satisfaisant les deux critères.
+# ---------------------------------------------------------------------------------------------
+
+[common]
+period = "dev"
+symbols = ["BTCUSDT"]
+replication_symbol = "ETHUSDT"
+horizon_h = 24
+atr_tf_min = 60
+barrier_atr = 1.0
+n_controls = 3
+n_boot = 5000
+metrics = ["M_target", "M_reaction", "cross", "reintegration", "time_to_touch", "mfe", "mae"]
+rejection = "Voir en-tête : critère d'information et critère d'exploitabilité."
+
+[budget.NLI-EV]
+max_trials = 20
+justification = "14 tests principaux (un par concept documenté et transposable) + au plus 6 réplications sur ETH des tests satisfaisant le critère d'information."
+[budget.NLI-DIAG]
+max_trials = 3
+justification = "Diagnostics hors sélection : cointégration BTC/ETH, faisabilité OFI (déséquilibre taker), Silver Bullet décrit par la volatilité horaire."
+[budget.NLI-BT]
+max_trials = 6
+justification = "Backtests pré-enregistrés seulement si un test événementiel satisfait les critères d'information ET d'exploitabilité."
+
+[[test]]
+key = "EV-01-PDHL"
+doc = "Draw on liquidity PDH/PDL ; Silver Bullet (DOL)"
+level = "Plus haut / plus bas du jour NY précédent, disponibles à 00:00 NY."
+primary = "M_target"
+claim = "Sauf consolidation, le prix va chercher le PDH ou le PDL."
+
+[[test]]
+key = "EV-02-PWHL"
+doc = "Silver Bullet (DOL : previous weekly high/low)"
+level = "Plus haut / plus bas de la semaine NY précédente, disponibles le lundi 00:00 NY ; horizon 48 h."
+primary = "M_target"
+claim = "Les extrêmes hebdomadaires précédents sont des cibles."
+
+[[test]]
+key = "EV-03-LONDON"
+doc = "One Trade Setup for Life (London session raid) ; Power of Three"
+level = "Plus haut / plus bas 02:00–05:00 NY, disponibles à 05:00 NY ; contact avant 16:00 NY."
+primary = "M_reaction"
+claim = "Le raid d'un extrême de Londres (Judas swing) précède un retournement."
+
+[[test]]
+key = "EV-04-PMRANGE"
+doc = "One Trade Setup for Life (PM session range de la veille)"
+level = "Plus haut / plus bas 13:30–16:00 NY de la veille, disponibles à 16:00 NY ; contact le lendemain 09:30–16:00 NY."
+primary = "M_reaction"
+claim = "Le raid d'un extrême du range PM de la veille à l'ouverture précède un retournement."
+
+[[test]]
+key = "EV-05-SWING"
+doc = "ICT (swing H4), 2022 Mentorship, Market Maker Models"
+level = "Swing highs / lows H1 fractals 2/2, disponibles à la confirmation ; horizon 48 h."
+primary = "M_reaction"
+claim = "Le balayage d'un swing (liquidité au-delà) précède un retournement."
+
+[[test]]
+key = "EV-06-EQHL"
+doc = "Silver Bullet, Unicorn, 2022 Mentorship (relative equal highs/lows)"
+level = "Deux swings H1 du même côté à moins de 0,1 ATR_H1, disponibles à la confirmation du second ; niveau = extrême des deux."
+primary = "M_target"
+claim = "Les relative equal highs/lows sont des cibles privilégiées."
+
+[[test]]
+key = "EV-07-LRL"
+doc = "Low / High Resistance Liquidity"
+level = "Swings H1 classés à leur confirmation : failure swing (sans balayage du swing précédent du même côté) = LRL ; swing ayant balayé le précédent = HRL."
+primary = "M_target"
+claim = "La liquidité à faible résistance (failure swings) est atteinte plus facilement. Δ principal = P_touch(LRL) − P_touch(contrôle) ; publié aussi LRL − HRL."
+
+[[test]]
+key = "EV-08-FVG"
+doc = "NY M1/M15, ICT, 2022 Mentorship, Silver Bullet"
+level = "FVG M5 de taille >= 0,3 ATR14 M5, zone [bord, bord] disponible à la clôture de la 3e bougie ; niveau de réaction = CE (50 %) ; invalidé par une clôture au-delà du bord opposé."
+primary = "M_reaction"
+claim = "Le prix réagit au retour dans un FVG (CE respecté)."
+
+[[test]]
+key = "EV-09-IFVG"
+doc = "Power of Three, One Trade Setup (inversion FVG)"
+level = "FVG M5 invalidé par une clôture au-delà de son bord opposé, puis retesté depuis l'autre côté ; niveau = CE."
+primary = "M_reaction"
+claim = "Un FVG inversé devient support/résistance."
+
+[[test]]
+key = "EV-10-FPFVG"
+doc = "First Presented / Reflection FVG"
+level = "Premier FVG M5 après 09:30 NY faisant partie d'un déplacement (sa bougie centrale dépasse le plus haut ou le plus bas des 12 bougies précédentes) ; contrôle = autres FVG du même jour NY de même sens."
+primary = "M_reaction"
+claim = "Le first presented FVG with displacement est plus respecté que les autres FVG."
+
+[[test]]
+key = "EV-11-UNICORN"
+doc = "Modèle Unicorn, Market Maker Models"
+level = "Breaker M5 (swings 2/2 : bas, haut, plus bas balayant, puis plus haut avec déplacement — et symétrique) dont la bougie breaker chevauche un FVG créé par le déplacement ; niveau = milieu de la zone de chevauchement."
+primary = "M_reaction"
+claim = "La zone Unicorn (breaker + FVG) produit une réaction favorable."
+
+[[test]]
+key = "EV-12-ORB"
+doc = "ORB Breakout/Pullback Backtest ; One Trade Setup (opening range 09:30–10:00)"
+level = "Range 09:30–10:00 NY ; première clôture M5 hors du range avant 12:00 NY ; contrôle = même construction sur le range 03:30–04:00 NY (même durée, autre heure)."
+primary = "M_continuation"
+claim = "Après cassure du range d'ouverture, P(continuation de 1 ATR avant retour de 1 ATR) ; publié aussi : continuation des cassures avec retest vs sans retest (biais de sélection décrit par le document ORB)."
+
+[[test]]
+key = "EV-13-SILVERBULLET"
+doc = "ICT Silver Bullet"
+level = "FVG M5 (même définition que EV-08) créés dans les fenêtres 03–04, 10–11, 14–15 NY ; contrôle = FVG créés dans 05–06, 12–13, 16–17 NY."
+primary = "M_reaction"
+claim = "Les FVG des fenêtres Silver Bullet sont plus respectés que ceux des fenêtres de contrôle."
+
+[[test]]
+key = "EV-14-SMT"
+doc = "SMT Divergence ; Low/High Resistance Liquidity (SMT NQ/ES)"
+level = "Balayage BTC d'un swing H1 (mèche au-delà, clôture H1 revenue) ; SMT = au même moment ETH ne dépasse pas son dernier swing H1 du même côté (tolérance ±2 h) ; contrôle = balayages BTC sans SMT."
+primary = "M_reaction"
+claim = "Une SMT divergence au balayage améliore la probabilité de retournement par rapport au simple balayage."
