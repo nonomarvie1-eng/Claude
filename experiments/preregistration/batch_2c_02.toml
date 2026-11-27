@@ -1,0 +1,31 @@
+# NEXUS QUANT — Pré-enregistrement, lot 2C-02 : NEXUS D (Volatility Expansion)
+# Rédigé après l'enregistrement des conclusions intermédiaires C et F
+# (docs/phase2c/03_conclusions_intermediaires_C_F.md), AVANT toute exécution de D.
+# BTC/USDT spot, achat seulement, période de développement uniquement.
+
+[common]
+period = "dev"
+symbols = ["BTCUSDT"]
+random_baseline_reps = 200
+metrics = ["identiques au lot 2C-01", "différence compression vs contrôle sans compression"]
+rejection = "verdict_v2. La compression n'est jugée utile que si NXD-01 bat NXD-02 (même unité de temps) avec un IC95 de différence excluant 0."
+
+[budget.D]
+max_trials = 8
+justification = "H1, H4 × (avec compression, contrôle sans compression) = 4 essais ; 4 réserves non utilisées par défaut."
+
+[[hypothesis]]
+key = "NXD-01"
+family = "D"
+strategy = "D"
+statement = "Compression : largeur de Bollinger(20,2)/prix sur la bougie précédente au plus bas 20 % de son historique des 90 jours précédents ; entrée sur clôture au-dessus de la bande haute ; sortie clôture < moyenne 20 ; stop 2 ATR14."
+rationale = "Les phases de faible volatilité précéderaient des expansions directionnelles (regroupement de la volatilité)."
+params = { tf = ["H1", "H4"], require_compression = [true] }
+
+[[hypothesis]]
+key = "NXD-02"
+family = "D"
+strategy = "D"
+statement = "Contrôle : même cassure de la bande haute de Bollinger, mêmes sorties, SANS condition de compression."
+rationale = "Isoler la contribution de la compression de celle d'une simple cassure haussière (exposition à la tendance)."
+params = { tf = ["H1", "H4"], require_compression = [false] }
