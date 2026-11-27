@@ -1,0 +1,44 @@
+{
+  "E": {
+    "folds": [
+      {
+        "fold": "2020-07-01..2021-01-01",
+        "choice": "NXE-04 {\"consolidation_filter\": true, \"mode\": \"zscore\", \"tf\": \"H1\"}",
+        "n": 59,
+        "mean_r": -0.08494386862820841
+      },
+      {
+        "fold": "2021-01-01..2021-07-01",
+        "choice": "NXE-03 {\"mode\": \"shock\", \"tf\": \"H4\"}",
+        "n": 7,
+        "mean_r": -0.4757420455348623
+      },
+      {
+        "fold": "2021-07-01..2022-01-01",
+        "choice": "NXE-04 {\"consolidation_filter\": true, \"mode\": \"zscore\", \"tf\": \"H1\"}",
+        "n": 76,
+        "mean_r": -0.06618798195861593
+      },
+      {
+        "fold": "2022-01-01..2022-07-01",
+        "choice": "NXE-04 {\"consolidation_filter\": true, \"mode\": \"zscore\", \"tf\": \"H1\"}",
+        "n": 84,
+        "mean_r": -0.25679692940886795
+      },
+      {
+        "fold": "2022-07-01..2023-01-01",
+        "choice": "NXE-03 {\"mode\": \"shock\", \"tf\": \"H1\"}",
+        "n": 21,
+        "mean_r": -0.4510667668571711
+      },
+      {
+        "fold": "2023-01-01..2023-07-01",
+        "choice": "NXE-04 {\"consolidation_filter\": true, \"mode\": \"zscore\", \"tf\": \"H1\"}",
+        "n": 53,
+        "mean_r": -0.10587605222725285
+      }
+    ],
+    "oos_n": 300,
+    "oos_mean_r": -0.1667564804635102
+  }
+}
