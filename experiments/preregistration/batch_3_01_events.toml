@@ -150,3 +150,20 @@ doc = "SMT Divergence ; Low/High Resistance Liquidity (SMT NQ/ES)"
 level = "Balayage BTC d'un swing H1 (mèche au-delà, clôture H1 revenue) ; SMT = au même moment ETH ne dépasse pas son dernier swing H1 du même côté (tolérance ±2 h) ; contrôle = balayages BTC sans SMT."
 primary = "M_reaction"
 claim = "Une SMT divergence au balayage améliore la probabilité de retournement par rapport au simple balayage."
+
+# =============================================================================================
+# AMENDEMENT 3-01a — rédigé APRÈS calibration sur marche aléatoire SYNTHÉTIQUE et AVANT toute
+# exécution sur données réelles (aucun résultat réel n'a été vu).
+# Constat (400 jours synthétiques, H0 vraie) : avec des contrôles à distance × U(0,5 ; 1,5),
+# Δ(P_contact) vaut +1,4 à +10 points, significatif (PD +0,039 [0,016 ; 0,062] ; LONDON +0,102
+# [0,075 ; 0,129] ; FVG +0,065 [0,023 ; 0,110]) : P(contact) n'est pas linéaire en distance.
+# La métrique de réaction n'est pas biaisée (IC incluant 0 ; P_rev ≈ 0,50).
+# Correction : pour M_target, contrôles « décalés » = même distance normalisée par l'ATR_H1,
+# même heure NY, autre jour tiré dans ±30 jours (sous H0 : Δ ≈ 0, IC incluant 0 pour les 4 types).
+# Pour M_reaction : contrôles inchangés. Métrique secondaire de contact non calculée pour les
+# tests FVG (EV-08, EV-09, EV-13 : > 10 000 niveaux, coût de calcul).
+# =============================================================================================
+[amendment]
+id = "3-01a"
+target_controls = "timeshift"
+reaction_controls = "distance"
