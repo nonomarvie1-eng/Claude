@@ -100,9 +100,24 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
                 ctx = contexts[tf]
                 if v.pop("regime_filter", False):
                     v["regime"], v["regime_filter"] = regimes, True
-                seed = 1000 + reg.n_trials()
-                tid = reg.start_trial(h["key"], {**variant}, symbol, period, 1.0, data_hash=dh, seed=seed,
-                                      purpose=h.get("purpose", "selection"))
+                # Reprise : un essai déjà terminé (même hypothèse, variante, actif, période) n'est pas relancé
+                done = reg.con.execute(
+                    "SELECT id FROM trials WHERE hypothesis_key=? AND variant_json=? AND symbol=? AND period=? "
+                    "AND status IN ('done','too_few_trades') ORDER BY id DESC",
+                    (h["key"], json.dumps(variant, sort_keys=True), symbol, period)).fetchone()
+                if done and (out_dir / f"row_{done[0]}.json").exists():
+                    rows.append(json.loads((out_dir / f"row_{done[0]}.json").read_text()))
+                    print(f"  reprise : essai {done[0]} {h['key']} {json.dumps(variant, sort_keys=True)}", flush=True)
+                    continue
+                if done:
+                    # Essai terminé dont le résumé a été perdu (interruption) : recalcul déterministe
+                    # sous le MÊME identifiant et la MÊME graine — ce n'est pas un nouvel essai.
+                    tid, seed = done[0], reg.con.execute("SELECT seed FROM trials WHERE id=?", (done[0],)).fetchone()[0]
+                    print(f"  recalcul du résumé de l'essai {tid} (graine {seed})", flush=True)
+                else:
+                    seed = 1000 + reg.n_trials()
+                    tid = reg.start_trial(h["key"], {**variant}, symbol, period, 1.0, data_hash=dh, seed=seed,
+                                          purpose=h.get("purpose", "selection"))
                 t1 = time.time()
                 try:
                     signals = STRATS[h["strategy"]](ctx, **v)
@@ -117,6 +132,7 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
                     if len(tr) < 5:
                         row["verdict"] = "Données insuffisantes (< 20 trades)"
                         reg.finish_trial(tid, status="too_few_trades", n_trades=len(tr))
+                        (out_dir / f"row_{tid}.json").write_text(json.dumps(row, default=str, ensure_ascii=False))
                         rows.append(row); continue
                     block = (tr["exit_time"].dt.year * 100 + tr["exit_time"].dt.month).to_numpy() if tf != "H1" else \
                         (tr["exit_time"].dt.isocalendar().year * 100 + tr["exit_time"].dt.isocalendar().week).to_numpy()
@@ -177,6 +193,7 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
                     })
                     row["overfit_flags"] = overfit_flags(row)
                     tr.to_parquet(out_dir / f"trades_{tid}.parquet", index=False)
+                    (out_dir / f"row_{tid}.json").write_text(json.dumps(row, default=str, ensure_ascii=False))
                     reg.finish_trial(tid, status="done", n_trades=len(tr), mean_r=m, p_value=p,
                                      result={k: row[k] for k in ("mean_r", "ci_lo", "ci_hi", "mean_r_frictionless", "p_random")})
                 except Exception as exc:
