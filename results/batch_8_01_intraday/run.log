@@ -37,3 +37,4 @@ H8-2-VWAP-TREND {"capital_final": 52.42452169014057, "trades_per_day": 7.2169146
 H8-3-BB-RANGE-MR sens [-0.174, -0.153, -0.161, -0.165]
 H8-4-TREND-PULLBACK sens [-0.174, -0.152, -0.229, -0.125]
 H8-1-BREAKOUT24 sens [-0.083, -0.034, -0.071, -0.008]
+H8-2-VWAP-TREND sens [-0.058, -0.047, -0.089, -0.042]
