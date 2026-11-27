@@ -35,8 +35,8 @@ Mesuré dans le cloud : 10 à 40 s par essai, dominé par les 200 réplications 
 |---|---|---|---|
 | AUDIT | 12 | 12 | Ré-analyse diagnostique du lot 2B-01 (aucune sélection) |
 | C (Trend Pullback) | 12 | 12 | H1, H4 × (minimal + 5 ablations unitaires) |
-| F (Momentum) | 12 | 11 | TSMOM D1 (2), Donchian D1 (2) + H4 (1), filtre de volatilité (4), stop suiveur (1) |
-| REF | 2 | 1 | Moyenne mobile simple D1 |
+| F (Momentum) | 12 | 10 | TSMOM D1 (2), Donchian D1 (2) + H4 (1), filtre de volatilité (4), stop suiveur (1) — total réel 10 (le chiffre de 11 initialement écrit était une erreur d'addition) |
+| REF | 2 nouveaux (7 au total) | 1 | Moyenne mobile simple D1. La famille REF contient déjà 5 essais REF-SBA-01 de la phase 2 : budget absolu corrigé à 7, voir `budget_changes` |
 | REG | 4 | 2 | Filtre de régime journalier sur C minimal (H1, H4) |
 | D (Volatility Expansion) | 8 | 4 | H1, H4 × (avec compression, sans compression = contrôle) — **seulement après les conclusions C et F** |
 

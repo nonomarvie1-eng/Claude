@@ -1,0 +1,44 @@
+{
+  "D": {
+    "folds": [
+      {
+        "fold": "2020-07-01..2021-01-01",
+        "choice": "NXD-02 {\"require_compression\": false, \"tf\": \"H1\"}",
+        "n": 79,
+        "mean_r": 0.24711504365881756
+      },
+      {
+        "fold": "2021-01-01..2021-07-01",
+        "choice": "NXD-02 {\"require_compression\": false, \"tf\": \"H1\"}",
+        "n": 83,
+        "mean_r": -0.001049828957521652
+      },
+      {
+        "fold": "2021-07-01..2022-01-01",
+        "choice": "NXD-02 {\"require_compression\": false, \"tf\": \"H1\"}",
+        "n": 86,
+        "mean_r": -0.03558021648739893
+      },
+      {
+        "fold": "2022-01-01..2022-07-01",
+        "choice": "NXD-02 {\"require_compression\": false, \"tf\": \"H1\"}",
+        "n": 81,
+        "mean_r": -0.14288588100644212
+      },
+      {
+        "fold": "2022-07-01..2023-01-01",
+        "choice": "NXD-02 {\"require_compression\": false, \"tf\": \"H1\"}",
+        "n": 66,
+        "mean_r": -0.1474642598368585
+      },
+      {
+        "fold": "2023-01-01..2023-07-01",
+        "choice": "NXD-02 {\"require_compression\": false, \"tf\": \"H1\"}",
+        "n": 80,
+        "mean_r": 0.17447856072534687
+      }
+    ],
+    "oos_n": 475,
+    "oos_mean_r": 0.019004087105114236
+  }
+}

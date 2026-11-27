@@ -13,7 +13,7 @@ Enregistré **avant** l'exécution de la famille D. BTC/USDT spot, période de d
 - Ablations (différence avec C minimal, IC95) : **aucune contribution démontrée**, ni structure, ni confirmation, ni stop structurel, ni stop suiveur, ni sortie sur invalidation, ni filtre de régime.
 - Walk-forward de la sélection au sein de C : E[R] hors échantillon −0,08 sur 258 trades.
 
-## F — Momentum (11 essais) et référence moyenne mobile (1 essai)
+## F — Momentum (10 essais) et référence moyenne mobile (1 essai)
 
 - Verdict pré-enregistré « prometteur mais preuves insuffisantes » pour NXF-01 (L = 20 et 60), NXF-02 H4 (N = 120), NXF-03 L = 20 et REF-SMA-01. Les autres variantes ont moins de 20 trades.
 - Réserves majeures, qui empêchent toute sélection :

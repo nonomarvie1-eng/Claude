@@ -7,7 +7,11 @@
 #   4. télécharge les bougies 1 minute EUR/USD (bid et ask) depuis le flux
 #      historique public de Dukascopy, à un rythme lent (le serveur limite le débit) ;
 #   5. construit les fichiers Parquet et un rapport qualité ;
-#   6. crée une archive ZIP sur votre Bureau, à me transmettre.
+#   6. vérifie l'intégrité des fichiers et crée une archive ZIP (avec manifeste SHA-256)
+#      sur votre Bureau, à me transmettre.
+#
+# AVANT DE LANCER : lisez les conditions d'utilisation de Dukascopy
+# (docs/phase2c/02_conditions_utilisation.md) — vérification encore en attente.
 #
 # Il ne passe AUCUN ordre, ne se connecte à aucun courtier et n'envoie rien
 # d'autre que des demandes de téléchargement de fichiers historiques publics.
@@ -44,12 +48,17 @@ $vpy = Join-Path $Projet ".venv\Scripts\python.exe"
 & $vpy scripts\download_data.py dukascopy EURUSD 2019-12-01 2023-07-01
 & $vpy scripts\download_data.py dukascopy EURUSD 2023-07-01 2026-07-01
 
+# 4b. Contrôle d'intégrité : les fichiers corrompus sont supprimés puis retéléchargés
+& $vpy scripts\transfer.py verify EURUSD 2019-12-01 2026-07-01 --repair
+& $vpy scripts\download_data.py dukascopy EURUSD 2019-12-01 2026-07-01
+& $vpy scripts\transfer.py verify EURUSD 2019-12-01 2026-07-01
+
 # 5. Parquet + rapport qualité
 & $vpy scripts\build_bars.py EURUSD 2019-12-01 2026-07-01
 
-# 6. Archive à transmettre
+# 6. Archive à transmettre : uniquement les Parquet, le rapport qualité, check_env et un manifeste SHA-256
 $zip = Join-Path ([Environment]::GetFolderPath("Desktop")) "nexus_eurusd_bars.zip"
 if (Test-Path $zip) { Remove-Item $zip }
-Compress-Archive -Path "data\bars\EURUSD", "reports\data_quality\EURUSD.json", "reports\check_env_windows.txt" -DestinationPath $zip
+& $vpy scripts\transfer.py pack EURUSD $zip
 Write-Host "Terminé. Archive créée : $zip" -ForegroundColor Green
 Write-Host "Transmettez ce fichier dans la conversation Claude (glisser-déposer)."

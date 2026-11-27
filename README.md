@@ -4,13 +4,27 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
-## Phase 2 — Moteur et premières expériences (en cours)
+## Phase 2C — Recherche avancée BTC (H1/H4/D1)
+
+Commencer par [`docs/phase2c/RAPPORT_PHASE_2C.md`](docs/phase2c/RAPPORT_PHASE_2C.md).
+
+```bash
+python -m pytest                                                        # 60 tests
+python -m nexus.research.audit_2b                                        # audit des résultats 2B
+python -m nexus.research.lab_runner experiments/preregistration/batch_2c_01.toml
+python -m nexus.research.report_2c                                       # rapports générés
+python scripts/transfer.py verify|pack|import ...                        # données EUR/USD
+```
+
+*Les résultats publiés dans `reports/` et `results/` sont dérivés de données Binance Vision (data.binance.vision), licence CC BY-NC-SA 4.0 ; Binance n'est pas associé à ce projet. Les données elles-mêmes ne sont jamais versionnées ni redistribuées.*
+
+## Phase 2 — Moteur et premières expériences
 
 Commencer par [`docs/phase2/RAPPORT_PHASE_2.md`](docs/phase2/RAPPORT_PHASE_2.md).
 
 ```bash
 pip install -e .[dev]            # numpy, pandas, pyarrow, scipy, pytest
-python -m pytest                 # 42 tests
+python -m pytest
 python scripts/download_data.py binance BTCUSDT 2020-01 2026-07
 python scripts/build_bars.py BTCUSDT
 python -m nexus.research.runner experiments/preregistration/batch_2b_01.toml --symbols BTCUSDT
