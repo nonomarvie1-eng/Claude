@@ -1,0 +1,71 @@
+# NEXUS QUANT — Pré-enregistrement, lot 7-01. Rédigé et commité AVANT tout code d'exécution et toute donnée.
+# Développement seulement (rien après le 2023-06-30). Validation et test final verrouillés.
+# Risque de sélection : 194 essais antérieurs au registre ; le Sharpe déflaté est calculé avec le
+# nombre total d'essais du registre au moment de l'exécution.
+
+[common]
+capital_eur = 1000
+risk_per_trade = 0.005
+sizing_info = ["0,25 %", "notionnel 100 % sans levier"]
+execution = "signal à la clôture de la bougie, exécution à l'OUVERTURE de la bougie suivante (décision) ; clôture du signal calculée seulement pour comparaison avec les chiffres annoncés"
+references = ["entrées aléatoires appariées (même nombre, mêmes durées)", "achat-conservation", "passif à exposition égale"]
+
+[budget.P7]
+max_trials = 3
+justification = "H7-A, H7-B (exécutables seulement si des données OHLC légales sont fournies), H7-C (exécutable sur les données Binance de la phase 4)."
+[budget.P7-SENS]
+max_trials = 4
+justification = "Une grille pré-déclarée par hypothèse exécutée (3) + 1 réserve."
+[budget.P7-DIAG]
+max_trials = 3
+justification = "Dimensionnement par ATR (1) ; Monte Carlo (1) ; réserve (1)."
+
+[criteria]
+C1 = "test principal (alpha vs passif à exposition égale pour H7-C ; entrées aléatoires appariées pour H7-A/B) : p corrigé (Holm sur les tests P7 exécutés) < 0,05"
+C2 = "rendement net moyen par trade (R pour H7-C) > 0 avec IC95 > 0 (bootstrap par semaines ou par mois)"
+C3 = "moyenne > 0 avec coûts x2 ET avec une bougie de retard supplémentaire"
+C4 = ">= 70 % de la grille de perturbation positive"
+C5 = "positif sur au moins 2 des 3 sous-périodes (H7-A/B) ; 3 sur 4 années (H7-C : 2020, 2021, 2022, 2023 S1)"
+C6 = "drawdown maximal < 10 % au dimensionnement NEXUS"
+selection = "Sharpe déflaté (Bailey & López de Prado) > 0,95 avec le nombre total d'essais du registre"
+montecarlo = "5e percentile du rendement total (bootstrap par blocs, 10 000) > 0 ; médiane > 0 avec 20 % des trades supprimés ; > 0 sans le meilleur trade et sans la meilleure année"
+verdict = "candidate : C1-C6 + Monte Carlo + Sharpe déflaté ; prometteur : C2, C3, p < 0,20 ; sinon rejeté"
+
+[[hypothesis]]
+key = "H7-A-IBS-NDX"
+family = "P7"
+status = "en attente de données OHLC journalières légales (export MT5 démo NAS100, ou QQQ via une clé gratuite)"
+statement = "IBS du document : achat quand IBS < 0,1 ; sortie quand IBS > 0,9 ; exécution à l'ouverture suivante ; stop catastrophe s (vérifié sur le plus bas journalier, exécution au stop ou à l'ouverture en cas de gap)."
+rationale = "Retour à la moyenne intrajournalier sur indice actions (document IBS) ; signal jamais testé chez nous (données manquantes)."
+params = { ibs_entry = 0.10, ibs_exit = 0.90, stop = "3 x écart-type des rendements sur 5 séances, premières 5 années de l'historique disponible (ou avant 2010), borné [5 %, 15 %]", filter = "aucun (règle d'origine)", cubrik = "stochastic(1) brut < 10 ; sortie stochastic(1) > 90 (si vérifié)" }
+grid = { ibs_entry = [0.05, 0.15, 0.20], ibs_exit = [0.80, 0.85, 0.95] }
+data = { period = "dev : du début des données à 2023-06-30", windows = "3 sous-périodes égales" }
+metrics = ["rendement net par trade", "entrées aléatoires", "alpha vs passif", "exposition", "drawdown"]
+rejection = { text = "critères C1-C6 + Monte Carlo + Sharpe déflaté" }
+
+[[hypothesis]]
+key = "H7-B-RSI3IBS-SPX"
+family = "P7"
+status = "en attente de données OHLC journalières légales (export MT5 démo US500, ou SPY)"
+statement = "RSI(3) < 30 et IBS < 0,2 : achat à l'ouverture suivante ; sortie quand IBS > 0,9 ou clôture > plus haut de la veille (à l'ouverture suivante) ; stop catastrophe s."
+rationale = "Document IBS, stratégie 3 ; combine survente sur 3 jours et clôture en bas du range."
+params = { rsi_n = 3, rsi_th = 30, ibs_entry = 0.20, ibs_exit = 0.90, exit_prev_high = true, stop = "idem H7-A" }
+grid = { rsi_th = [20, 25, 35], ibs_entry = [0.10, 0.15, 0.25] }
+data = { period = "dev", windows = "3 sous-périodes égales" }
+metrics = ["idem H7-A"]
+rejection = { text = "idem H7-A" }
+
+[[hypothesis]]
+key = "H7-C-BBMR-H4"
+family = "P7"
+status = "exécutable (données Binance de la phase 4)"
+statement = "Adaptation mono-unité (H4) de la stratégie Freqtrade, achat seulement au comptant : entrée si clôture < Bollinger basse (20, 2 σ) ET RSI(14) > 55 ET ADX(14) > 25 ; sortie si clôture > Bollinger haute ; exécution à l'ouverture H4 suivante ; stop % fixe par actif = 4,5 x médiane(ATR14 H4 / clôture) du S2 2019, arrondi au %, borné [3 %, 25 %] ; univers figé de la phase 4 (10 cryptos) ; 2020-01 → 2023-06."
+rationale = "Retour à la moyenne dans une tendance confirmée (repli acheté quand la tendance est forte) ; construction distincte de E et P4-04 (filtre de régime RSI et ADX). Adaptation Cubrik : une seule unité de temps (RSI et ADX en H4, valeurs de départ H4 du document), stop % fixe. Vente à découvert exclue (comptant sans levier)."
+params = { tf = "4h", bb_n = 20, bb_k = 2.0, rsi_n = 14, rsi_th = 55, adx_n = 14, adx_th = 25, atr_mult = 4.5, side = "long", market = "spot" }
+grid = { rsi_th = [50, 60], bb_k = [1.5, 2.5] }
+data = { period = "dev", symbols = "univers de la phase 4", bars = "H4 reconstruites depuis H1 Binance" }
+metrics = ["alpha vs panier passif à exposition égale", "R moyen net", "drawdown", "Sharpe déflaté"]
+rejection = { text = "C1-C6 (C5 sur années) + Monte Carlo + Sharpe déflaté" }
+
+[atr_sizing]
+statement = "Diagnostic (P7-DIAG) : taille = budget de volatilité / volatilité monétaire de la position ; notionnel = B / ATR21%, plafonné à 100 % (sans levier), pour B = 0,25 %, 0,5 %, 1 % du capital par ATR. ATR21% approché par la moyenne sur 21 jours de |variation de clôture| pour les données French (pas de plus haut ni de plus bas). Appliqué aux deux stratégies figées de la phase 5. Comparé aux profils de la phase 6. Aucune règle de risque officielle modifiée."
