@@ -66,3 +66,11 @@ def test_safe_import_detects_tampering(tmp_path):
         zout.writestr("data/bars/EURUSD/2020.parquet", b"abd")
     with pytest.raises(ValueError):
         safe_import_zip(tampered, tmp_path / "dest")
+
+
+def test_dukascopy_downloader_blocked_without_written_consent(monkeypatch):
+    from datetime import date
+    from nexus.data import dukascopy
+    monkeypatch.delenv(dukascopy.CONSENT_ENV, raising=False)
+    with pytest.raises(dukascopy.DukascopyTermsError):
+        dukascopy.download_range("EURUSD", date(2020, 1, 1), date(2020, 1, 2))

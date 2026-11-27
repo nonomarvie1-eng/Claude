@@ -23,6 +23,17 @@
 #     powershell -ExecutionPolicy Bypass -File scripts\windows\telecharger_eurusd.ps1
 
 $ErrorActionPreference = "Stop"
+
+# ---------------------------------------------------------------------------
+# BLOQUÉ (2026-11-27) : les conditions d'utilisation de Dukascopy interdisent les outils
+# automatisés d'acquisition de données et la constitution de bases de données sans
+# accord écrit préalable de Dukascopy (voir docs/phase2d/01_conditions_utilisation.md).
+# Ce script ne doit PAS être lancé tant qu'un tel accord n'a pas été obtenu.
+# ---------------------------------------------------------------------------
+if (-not $env:NEXUS_DUKASCOPY_WRITTEN_CONSENT) {
+    Write-Host "Script bloqué : accord écrit de Dukascopy requis (voir docs/phase2d/01_conditions_utilisation.md)." -ForegroundColor Red
+    exit 1
+}
 $Projet = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 Set-Location $Projet
 Write-Host "Dossier du projet : $Projet"
