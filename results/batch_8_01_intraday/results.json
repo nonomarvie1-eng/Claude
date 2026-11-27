@@ -218,7 +218,49 @@
             "total_return_p05_pct": -99.28314635656817
           }
         }
-      }
+      },
+      "sensitivity": [
+        {
+          "variant": {
+            "adx_th": 15,
+            "stop_mult": 1
+          },
+          "R_mean": -0.17380633137388013,
+          "trades": 1688,
+          "capital_final": 225.44732138456064,
+          "max_dd_pct": 77.75795427342072
+        },
+        {
+          "variant": {
+            "adx_th": 25,
+            "stop_mult": 1
+          },
+          "R_mean": -0.15272074137470193,
+          "trades": 4823,
+          "capital_final": 22.86993628184166,
+          "max_dd_pct": 97.7209810471478
+        },
+        {
+          "variant": {
+            "bb_k": 1.5,
+            "stop_mult": 1
+          },
+          "R_mean": -0.1611967777761492,
+          "trades": 5015,
+          "capital_final": 16.13160560223784,
+          "max_dd_pct": 98.41690017850847
+        },
+        {
+          "variant": {
+            "bb_k": 2.5,
+            "stop_mult": 1
+          },
+          "R_mean": -0.16526758905087116,
+          "trades": 2326,
+          "capital_final": 140.24444124394336,
+          "max_dd_pct": 86.35994747470166
+        }
+      ]
     },
     "H8-4-TREND-PULLBACK": {
       "portfolio": {
