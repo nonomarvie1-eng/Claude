@@ -99,7 +99,7 @@ Le chiffre exact de chaque ligne figure dans `06_resultats_backtests.md`, ainsi 
 
 ## 5. Le vrai problème : avantage statistique contre rentabilité exploitable
 
-- Avec la règle NEXUS (0,5 % de risque au stop, stop catastrophe de 6 à 11 %), la position n'engage que **5 à 8 % du capital**, quelques jours par an. Le rendement annuel est donc de l'ordre de **0,1 %**, même quand l'avantage est réel.
+- Avec la règle NEXUS (0,5 % de risque au stop, stop catastrophe de 6 à 11 %), la position n’engage que **4,5 à 8 % du capital**, quelques jours par an. Le rendement annuel est donc de **0,1 à 0,3 %**, même quand l'avantage est réel.
 - Pour atteindre 2 à 4 %/an, il faut investir **100 % du capital** à chaque signal. Le risque réel par trade monte alors à 6 à 11 % du capital au stop, et le 95e percentile du drawdown simulé atteint **22 à 23 %**, bien au-delà de 10 %.
 - **Aucune des stratégies étudiées n'atteint vos objectifs indicatifs** (10 à 20 %/an avec un drawdown inférieur à 10 %). Par construction, le retour à la moyenne est investi environ 10 % du temps ; il ne peut rapporter que quelques pour cent par an sans levier.
 
