@@ -96,7 +96,7 @@ Avec 1 000 € et un risque de 0,5 % par trade, la taille dictée par le stop (3
 ## 8. Limites statistiques
 
 1. **Peu d'épisodes indépendants** : la période de développement contient environ un cycle haussier, un baissier et une reprise. Les stratégies de tendance D1 et H4 ont 15 à 140 trades, mais leurs résultats reposent sur quelques tendances.
-2. **Comparaisons multiples** : 41 essais de sélection dans cette phase et 92 au total. Les p-valeurs BH les plus favorables (≈ 0,15 à 0,20) restent loin de 0,05.
+2. **Comparaisons multiples** : 29 essais de sélection dans cette phase (41 avec l'audit) et 92 au total. Les p-valeurs BH les plus favorables (≈ 0,15 à 0,20) restent loin de 0,05.
 3. **Concentration** : les profits dépendent de 5 trades dans la plupart des cas « prometteurs ».
 4. **Exposition** : aucune variante n'a d'alpha significatif. Les verdicts « prometteurs » respectent la règle pré-enregistrée mais **ne doivent pas être lus comme un avantage propre**.
 5. **Walk-forward de la sélection** :
