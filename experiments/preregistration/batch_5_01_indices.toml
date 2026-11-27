@@ -1,0 +1,123 @@
+# NEXUS QUANT — Pré-enregistrement, lot 5-01 : retour à la moyenne sur indices actions (Connors)
+# et essai de gestion de l'exposition d'une stratégie de tendance (P4-01).
+# Rédigé et commité AVANT tout téléchargement des données d'indices et toute exécution.
+# Protocole lisible : docs/phase5/05_preregistration.md.
+
+[data]
+source = "Kenneth R. French Data Library : F-F_Research_Data_Factors_daily (US, 1926-07 →) ; Europe_3_Factors_Daily, Japan_3_Factors_Daily, Asia_Pacific_ex_Japan_3_Factors_Daily (USD, 1990-07 →)"
+series = "rendement total quotidien du marché = (Mkt-RF + RF) / 100 ; indice reconstruit par produit cumulé ; RF = taux sans risque quotidien"
+lock = "toute observation >= 2023-07-01 est écartée à la lecture et jamais stockée (validation et test final verrouillés)"
+
+[windows]
+us_primary = ["2010-01-01", "2023-07-01"]     # postérieur à la publication des règles (avant 2010) : décision
+us_repro = ["1993-02-01", "2010-01-01"]       # période des chiffres annoncés (SPY depuis 1993) : reproduction
+us_hist = ["1928-01-01", "1993-01-01"]        # contrôle antérieur, hors échantillon des auteurs
+intl = ["1991-07-01", "2023-07-01"]           # après amorçage de la SMA 200 sur les données dès 1990-07
+us_primary_subperiods = [["2010-01-01", "2015-01-01"], ["2015-01-01", "2020-01-01"], ["2020-01-01", "2023-07-01"]]
+
+[execution]
+primary = "signal à la clôture du jour t, exécution à la clôture du jour t (règle d'origine ; ≈ bougie D1 d'un CFD qui clôture ≈ 1 h après le marché au comptant)"
+stress_delay = "exécution à la clôture du jour t+1 (borne conservatrice du délai de contrôle de l'agent Cubrik)"
+stop_check = "à la clôture uniquement (pas de plus haut ni plus bas) ; exécution au cours de clôture qui franchit le stop"
+indicators = "RSI de Wilder ; SMA sur les clôtures de l'indice de rendement total"
+
+[costs]
+spread_slippage_per_side = 0.0003
+financing = "(RF quotidien + 2,5 %/an / 360) par nuit calendaire, positions acheteuses"
+stress = ["coûts x2", "0,20 % par côté"]
+
+[stops]
+rule = "s = 3 x écart-type des rendements sur 5 séances (fenêtres sans chevauchement) mesuré avant 2010 (US : 1950-2009 ; international : 1990-07-2009), arrondi au % entier, borné à [5 %, 15 %]"
+
+[sizing]
+primary = "règle NEXUS : risque 0,5 % du capital courant au stop => notionnel = 0,5 % / s ; aucun levier"
+info = ["prudent 0,25 %", "notionnel 100 % sans levier (comme les documents ; dépasse la règle de risque)"]
+capital_eur = 1000
+fx = "P&L en USD converti à taux constant (effet de change ignoré, signalé)"
+
+[budget.P5]
+max_trials = 8
+justification = "H5-01a, H5-01b, H5-02, H5-03, H5-04 (3 marchés), H5-EXP : une configuration chacune."
+[budget.P5-SENS]
+max_trials = 8
+justification = "Une grille de perturbation pré-déclarée par hypothèse principale (6) + 2 de réserve. Jamais utilisée pour choisir."
+[budget.P5-DIAG]
+max_trials = 8
+justification = "Chargement et contrôle des données, calibration des stops, reproduction des chiffres annoncés, bases aléatoires, Monte Carlo."
+
+[criteria]
+C1 = "test des entrées aléatoires (même régime clôture > SMA200, mêmes durées, même nombre ; 10 000 tirages) : p corrigé BH (7 tests H5-01a…H5-04) < 0,05"
+C2 = "rendement net moyen par trade > 0, IC95 bootstrap par mois > 0"
+C3 = "rendement net moyen > 0 avec coûts x2 ET avec exécution à t+1"
+C4 = "au moins 70 % des configurations de la grille de perturbation ont un rendement net moyen > 0"
+C5 = "rendement net moyen > 0 sur la période 1928-1992 (US) ET sur au moins 2 des 3 sous-périodes post-2010"
+C6 = "drawdown maximal < 10 % au dimensionnement NEXUS (0,5 %)"
+montecarlo = "pour toute hypothèse : 5e percentile du rendement total (bootstrap par blocs mensuels, 10 000) > 0 ; médiane > 0 avec 20 % des trades supprimés ; rendement > 0 sans le meilleur trade et sans la meilleure année"
+verdict = "candidate si C1-C6 et Monte Carlo ; prometteur si C2, C3 et p BH < 0,20 ; sinon rejeté"
+
+# --------------------------------------------------------------------------------------------
+[[hypothesis]]
+key = "H5-01a-RSI2-NOSTOP"
+family = "P5"
+statement = "RSI 2 de Connors, version d'origine : achat à la clôture si clôture > SMA200 et RSI(2) < 10 ; vente à la clôture du premier jour où la clôture dépasse la SMA5 ; pas de stop ; marché US."
+rationale = "Reproduction exacte de la règle publiée (documents 1 et 2) ; période post-2010 hors échantillon des auteurs."
+params = { rsi_n = 2, rsi_th = 10, trend_sma = 200, exit = "close > sma5", stop = "none", market = "US" }
+grid = { rsi_n = [2, 3], rsi_th = [5, 10, 15], trend_sma = [150, 200, 250] }
+data = { period = "us_primary (+ us_repro, us_hist en description)", source = "French US" }
+metrics = ["rendement net moyen par trade", "test entrées aléatoires", "alpha vs exposition passive", "drawdown"]
+rejection = { text = "C1-C6 ; la version sans stop n'est de toute façon pas déployable (règle de stop obligatoire)" }
+
+[[hypothesis]]
+key = "H5-01b-RSI2-STOP"
+family = "P5"
+statement = "Même règle que H5-01a avec un stop catastrophe à s % du prix d'entrée, vérifié à la clôture."
+rationale = "Version conforme à la règle de stop obligatoire ; s fixé avant 2010, sans optimisation."
+params = { rsi_n = 2, rsi_th = 10, trend_sma = 200, exit = "close > sma5", stop = "s", market = "US" }
+grid = { rsi_n = [2, 3], rsi_th = [5, 10, 15], trend_sma = [150, 200, 250] }
+data = { period = "us_primary", source = "French US" }
+metrics = ["idem H5-01a"]
+rejection = { text = "C1-C6 + Monte Carlo" }
+
+[[hypothesis]]
+key = "H5-02-RSI3050"
+family = "P5"
+statement = "RSI 30/50 : achat à la clôture si clôture > SMA200 et RSI(5) < 30 ; vente quand RSI(5) croise au-dessus de 50 ; stop catastrophe s."
+rationale = "Variante Connors la plus native dans Cubrik (document 1, stratégie 5)."
+params = { rsi_n = 5, entry_th = 30, exit_th = 50, trend_sma = 200, stop = "s", market = "US" }
+grid = { rsi_n = [4, 5, 6], entry_th = [25, 30, 35], exit_th = [45, 50, 55] }
+data = { period = "us_primary", source = "French US" }
+metrics = ["idem H5-01a"]
+rejection = { text = "C1-C6 + Monte Carlo" }
+
+[[hypothesis]]
+key = "H5-03-DOUBLE5"
+family = "P5"
+statement = "Double 5 : achat à la clôture si clôture > SMA200 et clôture = plus basse des 5 dernières clôtures ; vente à la clôture quand elle est la plus haute des 5 dernières ; stop catastrophe s."
+rationale = "Document 1, stratégie 1 (version modifiée par les auteurs : 5 jours au lieu de 7)."
+params = { n = 5, trend_sma = 200, stop = "s", market = "US" }
+grid = { n = [4, 5, 6, 7], trend_sma = [150, 200, 250] }
+data = { period = "us_primary", source = "French US" }
+metrics = ["idem H5-01a"]
+rejection = { text = "C1-C6 + Monte Carlo" }
+
+[[hypothesis]]
+key = "H5-04-RSI2-INTL"
+family = "P5"
+statement = "Réplication de H5-01b (mêmes paramètres, stop propre à chaque marché) sur Europe, Japon, Asie-Pacifique hors Japon ; un essai par marché."
+rationale = "Document 2 : l'avantage américain ne se transpose pas automatiquement ; test de généralité."
+params = { rsi_n = 2, rsi_th = 10, trend_sma = 200, exit = "close > sma5", stop = "s du marché", markets = ["Europe", "Japan", "AsiaPacExJapan"] }
+grid = { rsi_n = [2, 3], rsi_th = [5, 10, 15], trend_sma = [150, 200, 250] }
+data = { period = "intl", source = "French international (USD)" }
+metrics = ["idem H5-01a"]
+rejection = { text = "C1-C4, C6 (C5 : sous-périodes 1991-2002, 2003-2012, 2013-2023H1, au moins 2 sur 3)" }
+
+[[hypothesis]]
+key = "H5-EXP-DONCH-LOCK"
+family = "P5"
+statement = "P4-01 (Donchian 55/20 D1, 10 cryptos, mêmes stops et coûts) + paliers Cubrik « lock » en % du prix : dès que le plus haut atteint entrée × (1 + a), le stop remonte à entrée × (1 + a/2), pour a ∈ {50 %, 100 %, 200 %, 400 %, 800 %, 1 600 %, 3 200 %}."
+rationale = "Protection progressive des gains (document 6, transposée sans vente partielle, non documentée dans Cubrik) : ne jamais rendre plus de la moitié d'un gain une fois un palier atteint. Paliers géométriques fixés a priori, indépendants des actifs."
+params = { base = "P4-01-DONCH", tiers_at = [0.5, 1, 2, 4, 8, 16, 32], lock_fraction = 0.5, unit = "price" }
+grid = { lock_fraction = [0.33, 0.67] }
+data = { period = "dev (2020-01 → 2023-06)", source = "Binance Vision (déjà téléchargé)" }
+metrics = ["drawdown", "part du meilleur trade", "gains rendus", "alpha vs passif même exposition", "contribution de la meilleure année et des périodes de forte tendance"]
+rejection = { text = "critères C1-C6 de la phase 4 ; comparaison descriptive avec P4-01 (même moteur, même code)" }
