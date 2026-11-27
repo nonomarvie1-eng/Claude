@@ -4,6 +4,14 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
+## Phase 6 — Confirmation des signaux, dimensionnement, économie de Cubrik
+
+Commencer par [`docs/phase6/RAPPORT_PHASE_6.md`](docs/phase6/RAPPORT_PHASE_6.md).
+
+```bash
+python -m nexus.research.p6_runner diag|sizing
+```
+
 ## Phase 5 — Retour à la moyenne sur indices (Connors) et gestion de l'exposition
 
 Commencer par [`docs/phase5/RAPPORT_PHASE_5.md`](docs/phase5/RAPPORT_PHASE_5.md).
