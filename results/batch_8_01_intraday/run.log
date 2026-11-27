@@ -1,2 +1,11 @@
 /home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
   wk = dr.groupby(dr.index.to_period("W"))
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))
+H8-3-BB-RANGE-MR {"capital_final": 53.33845889619841, "trades_per_day": 2.8935003915426782, "R_mean": -0.1550677771634306, "R_ci95": [-0.19406678631147034, -0.11531961497336994], "p_R_le_0": 1.0, "max_dd_pct": 94.82422353356456, "win_rate": 0.47388362652232746, "profit_factor": 0.6995512100099052}
+/home/user/Claude/nexus/research/p8_runner.py:131: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  wk = dr.groupby(dr.index.to_period("W"))

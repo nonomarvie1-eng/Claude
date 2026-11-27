@@ -1,0 +1,224 @@
+{
+  "stops": {
+    "BTCUSDT": {
+      "atr_h1_median_pct": 0.8534211385827871,
+      "stop_pct": 1.71
+    },
+    "ETHUSDT": {
+      "atr_h1_median_pct": 0.969372059675783,
+      "stop_pct": 1.94
+    },
+    "BNBUSDT": {
+      "atr_h1_median_pct": 1.0167734484053956,
+      "stop_pct": 2.03
+    },
+    "XRPUSDT": {
+      "atr_h1_median_pct": 0.9048318365711023,
+      "stop_pct": 1.81
+    },
+    "EOSUSDT": {
+      "atr_h1_median_pct": 1.1124365462350507,
+      "stop_pct": 2.22
+    },
+    "BCHUSDT": {
+      "atr_h1_median_pct": 1.1129591084842099,
+      "stop_pct": 2.23
+    },
+    "LTCUSDT": {
+      "atr_h1_median_pct": 1.120165360296169,
+      "stop_pct": 2.24
+    },
+    "TRXUSDT": {
+      "atr_h1_median_pct": 1.169130771737468,
+      "stop_pct": 2.34
+    },
+    "LINKUSDT": {
+      "atr_h1_median_pct": 1.5788045636101402,
+      "stop_pct": 3.16
+    },
+    "MATICUSDT": {
+      "atr_h1_median_pct": 1.9862844191132476,
+      "stop_pct": 3.97
+    }
+  },
+  "results": {
+    "H8-3-BB-RANGE-MR": {
+      "portfolio": {
+        "capital_final": 53.33845889619841,
+        "gain_net": -946.6615411038016,
+        "ret_daily_mean_pct": -0.2237952105016656,
+        "ret_daily_median_pct": -0.08253062429099955,
+        "ret_weekly_mean_pct": -1.560097902512856,
+        "ret_monthly_mean_pct": -6.548682437796496,
+        "cagr_pct": -56.758011080906435,
+        "trades": 3695,
+        "trades_per_day": 2.8935003915426782,
+        "days_positive_pct": 36.10023492560689,
+        "days_negative_pct": 52.77995301487862,
+        "days_plus5_pct": 0.23492560689115116,
+        "sharpe": -4.081881488079587,
+        "max_dd_pct": 94.82422353356456,
+        "worst_day_pct": -3.1626464282501487,
+        "worst_week_pct": -9.856869417713943,
+        "info": {
+          "skipped_capacity": 4263,
+          "skipped_daily_block": 214,
+          "daily_block_days": 97,
+          "halt_time": null
+        },
+        "R_mean": -0.1550677771634306,
+        "R_ci95": [
+          -0.19406678631147034,
+          -0.11531961497336994
+        ],
+        "p_R_le_0": 1.0,
+        "win_rate": 0.47388362652232746,
+        "avg_win_R": 0.787036619990349,
+        "avg_loss_R": -1.0036402048466961,
+        "profit_factor": 0.6995512100099052,
+        "longest_loss_streak": 16,
+        "fees_total": 270.5362179675182,
+        "funding_total": -20.944728060987472,
+        "cost_total": 249.59148990653074,
+        "by_side": {
+          "long": {
+            "n": 1749,
+            "R": -0.16761767073805373
+          },
+          "short": {
+            "n": 1946,
+            "R": -0.14378835071840707
+          }
+        },
+        "by_reason": {
+          "signal": 1890,
+          "stop": 1805
+        },
+        "median_hours": 6.0
+      },
+      "mc": {
+        "dd_p95_pct": 97.20447051128946,
+        "p_dd_gt_10": 1.0,
+        "p_dd_gt_20": 1.0,
+        "p_ruin_50": 1.0,
+        "total_return_median_pct": -94.61335189669681,
+        "total_return_p05_pct": -97.1359990436774
+      },
+      "subperiods": {
+        "2020-2022": {
+          "n": 2184,
+          "R_mean": -0.16987362178025955
+        },
+        "2022-2023": {
+          "n": 1511,
+          "R_mean": -0.13366740347504247
+        }
+      },
+      "single_asset": {
+        "BTCUSDT": {
+          "n": 606,
+          "R_mean": -0.21040365116006207,
+          "final": 524.7938639693842
+        },
+        "ETHUSDT": {
+          "n": 618,
+          "R_mean": -0.19858303602194577,
+          "final": 537.0736785655591
+        },
+        "BNBUSDT": {
+          "n": 663,
+          "R_mean": -0.25930563663000084,
+          "final": 419.93037854324746
+        },
+        "XRPUSDT": {
+          "n": 712,
+          "R_mean": -0.2526893636319565,
+          "final": 402.1268186038116
+        },
+        "EOSUSDT": {
+          "n": 639,
+          "R_mean": -0.10392857923883127,
+          "final": 710.7325794738418
+        },
+        "BCHUSDT": {
+          "n": 634,
+          "R_mean": -0.08166699586668268,
+          "final": 765.6418616854438
+        },
+        "LTCUSDT": {
+          "n": 675,
+          "R_mean": -0.1499753274463617,
+          "final": 597.2531091464595
+        },
+        "TRXUSDT": {
+          "n": 651,
+          "R_mean": -0.09141166010681052,
+          "final": 737.274063349415
+        },
+        "LINKUSDT": {
+          "n": 595,
+          "R_mean": -0.14941761914229795,
+          "final": 636.6078397241887
+        },
+        "MATICUSDT": {
+          "n": 487,
+          "R_mean": -0.117193793011731,
+          "final": 748.3203979024831
+        }
+      },
+      "profiles": {
+        "0.25 %": {
+          "capital_final": 219.0216903685413,
+          "cagr_pct": -35.23134814192851,
+          "max_dd_pct": 78.42656967943267,
+          "ret_daily_mean_pct": -0.1174123930453746,
+          "days_plus5_pct": 0.0,
+          "worst_day_pct": -1.8704842557366819,
+          "sharpe": -4.185117283798411,
+          "mc": {
+            "dd_p95_pct": 84.17674547501568,
+            "p_dd_gt_10": 1.0,
+            "p_dd_gt_20": 1.0,
+            "p_ruin_50": 1.0,
+            "total_return_median_pct": -78.06286749589391,
+            "total_return_p05_pct": -84.04057289471073
+          }
+        },
+        "1 %": {
+          "capital_final": 12.540296565359245,
+          "cagr_pct": -71.41920297832662,
+          "max_dd_pct": 98.84204671261668,
+          "ret_daily_mean_pct": -0.3275869371155124,
+          "days_plus5_pct": 0.7830853563038371,
+          "worst_day_pct": -4.290143348058684,
+          "sharpe": -3.6317756294185726,
+          "mc": {
+            "dd_p95_pct": 99.54414574859504,
+            "p_dd_gt_10": 1.0,
+            "p_dd_gt_20": 1.0,
+            "p_ruin_50": 1.0,
+            "total_return_median_pct": -98.7234129978168,
+            "total_return_p05_pct": -99.52561879643854
+          }
+        },
+        "2 %": {
+          "capital_final": 22.894526569809848,
+          "cagr_pct": -66.0494126778502,
+          "max_dd_pct": 98.30395242164934,
+          "ret_daily_mean_pct": -0.27281847056301034,
+          "days_plus5_pct": 1.957713390759593,
+          "worst_day_pct": -4.086883817438103,
+          "sharpe": -2.4242801317037777,
+          "mc": {
+            "dd_p95_pct": 99.34065157149524,
+            "p_dd_gt_10": 1.0,
+            "p_dd_gt_20": 1.0,
+            "p_ruin_50": 1.0,
+            "total_return_median_pct": -97.72022926330816,
+            "total_return_p05_pct": -99.28314635656817
+          }
+        }
+      }
+    }
+  }
+}
