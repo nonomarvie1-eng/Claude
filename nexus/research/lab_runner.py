@@ -91,7 +91,8 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
         low_fee = replace(sp, commission_rate_side=0.00075)  # sensibilité : remise BNB 25 % (non retenue)
         frames["bnb"] = ExecFrame.from_m1(m1, low_fee)
         regimes = daily_regimes(sig)
-        d1 = resample(sig, 1440).set_index("ts")["c"]
+        d1_full = resample(sig, 1440).set_index("ts")
+        d1, d1_open0 = d1_full["c"], float(d1_full["o"].iloc[0])
         eurusdt = load_bars("EURUSDT_1h", p0 - pd.Timedelta(days=5), p1).set_index("ts")["c"].resample("1D").last()
         contexts = {}
         for h in spec["hypothesis"]:
@@ -124,9 +125,9 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
                 t1 = time.time()
                 try:
                     signals = STRATS[h["strategy"]](ctx, **v)
-                    res = {c: run_backtest(signals, frames[c], sp.stressed(c), STAT_PROFILE, fx, strategy=h["key"])
+                    res = {c: run_backtest(signals, frames[c], sp.stressed(c), STAT_PROFILE, fx, strategy=h["key"], period=(p0, p1))
                            for c in (0.0, 1.0, 1.5, 2.0)}
-                    res["bnb"] = run_backtest(signals, frames["bnb"], low_fee, STAT_PROFILE, fx, strategy=h["key"])
+                    res["bnb"] = run_backtest(signals, frames["bnb"], low_fee, STAT_PROFILE, fx, strategy=h["key"], period=(p0, p1))
                     tr = res[1.0].trades
                     row = {"trial_id": tid, "hypothesis": h["key"], "family": h["family"], "strategy": h["strategy"],
                            "symbol": symbol, "variant": json.dumps(variant, sort_keys=True), "tf": tf,
@@ -158,7 +159,7 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
                     for pname, pr in RISK_PROFILES.items():
                         for halt in (True, False):
                             prof = pr if halt else replace(pr, max_drawdown_halt=1.0)
-                            rr = run_backtest(signals, frames[1.0], sp, prof, fx, strategy=h["key"])
+                            rr = run_backtest(signals, frames[1.0], sp, prof, fx, strategy=h["key"], period=(p0, p1))
                             sm = summarize(rr.trades, rr.equity_daily, INITIAL_CAPITAL_EUR, periods_per_year=365)
                             sm.update(exposure_stats(rr.trades, p0, p1) if len(rr.trades) else {})
                             sm["halted"], sm["halt_reason"] = rr.halted, rr.halt_reason
@@ -189,7 +190,7 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
                         "alpha_lo": (attr.get("alpha_ci95_ann_pct") or [None])[0],
                         "daily_sharpe": daily_sharpe_ci(eq), "exposure": expo,
                         "passive": passive_benchmarks(d1, eurusdt, INITIAL_CAPITAL_EUR, sp.commission_rate_side,
-                                                      expo["avg_exposure_pct"] / 100),
+                                                      expo["avg_exposure_pct"] / 100, start_price=d1_open0),
                         "profiles": profiles,
                         "exit_reasons": tr["exit_reason"].value_counts().to_dict(),
                         "ambiguous_pct": float(tr["ambiguous_bar"].mean() * 100),

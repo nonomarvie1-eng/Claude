@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import pandas as pd  # noqa: E402
 
-from nexus.config import FINAL_TEST, ROOT  # noqa: E402
+from nexus.config import DEV, FINAL_TEST, ROOT, VALIDATION  # noqa: E402
 from nexus.data import binance, dukascopy  # noqa: E402
 from nexus.data.quality import quality_report  # noqa: E402
 from nexus.data.store import save_bars  # noqa: E402
@@ -32,10 +32,16 @@ def main(argv):
         market = "fx"
     save_bars(symbol, df)
     f0, f1 = FINAL_TEST
-    open_part = df[df["ts"] < f0]
+    v0, v1 = VALIDATION
+    # Depuis la phase 2D : statistiques de prix sur la période de développement uniquement ;
+    # validation et test final : couverture seule.
+    open_part = df[df["ts"] < v0]
+    val = df[(df["ts"] >= v0) & (df["ts"] < v1)]
     locked = df[(df["ts"] >= f0) & (df["ts"] < f1)]
     rep = {"symbol": symbol, "source": "binance_data_vision" if market == "crypto" else "dukascopy_datafeed",
-           "open_periods": quality_report(open_part, market=market)}
+           "development": quality_report(open_part, market=market)}
+    if len(val):
+        rep["validation_locked"] = quality_report(val, market=market, coverage_only=True)
     if len(locked):
         rep["final_test_locked"] = quality_report(locked, market=market, coverage_only=True)
     out = ROOT / "reports" / "data_quality" / f"{symbol}.json"

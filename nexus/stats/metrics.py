@@ -137,11 +137,15 @@ def daily_sharpe_ci(eq_daily: pd.Series, periods: int = 365, block: int = 20, n_
 
 
 def passive_benchmarks(asset_close_daily: pd.Series, fx_quote_per_eur_daily: pd.Series, initial: float,
-                       fee_rate: float, exposure: float) -> dict:
+                       fee_rate: float, exposure: float, start_price: float | None = None) -> dict:
     """Buy & Hold (100 % investi), liquidités (0 %), et détention passive constante
-    à l'exposition moyenne de la stratégie (rééquilibrage ignoré, borne indicative)."""
+    à l'exposition moyenne de la stratégie (rééquilibrage ignoré, borne indicative).
+    start_price : prix d'OUVERTURE du premier jour (audit 2D : sans lui, la référence
+    partait de la clôture du premier jour et omettait ce jour)."""
     p = asset_close_daily.dropna()
-    fx = fx_quote_per_eur_daily.reindex(p.index).ffill().bfill()
+    if start_price is not None:
+        p = pd.concat([pd.Series([start_price], index=[p.index[0] - pd.Timedelta(seconds=1)]), p])
+    fx = fx_quote_per_eur_daily.reindex(p.index, method="ffill").ffill().bfill()
     val_eur = initial * (1 - fee_rate) * (p / p.iloc[0]) * (fx.iloc[0] / fx) * (1 - fee_rate)
     dd = float(-(val_eur / val_eur.cummax() - 1).min())
     years = (p.index[-1] - p.index[0]).days / 365.25

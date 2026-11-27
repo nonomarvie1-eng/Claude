@@ -79,7 +79,11 @@ def fees_quote(spec: InstrumentSpec, qty: float, entry: float, exit_: float) -> 
 
 def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: RiskProfile,
                  fx: FxConverter, *, initial_equity: float = INITIAL_CAPITAL_EUR,
-                 strategy: str = "", max_cost_frac: float = 0.33) -> BacktestResult:
+                 strategy: str = "", max_cost_frac: float = 0.33, period: tuple | None = None) -> BacktestResult:
+    """period = (début, fin) UTC : la courbe de capital quotidienne couvre alors TOUTE la
+    période évaluée (jours en liquidités inclus), comme les références passives.
+    Sans `period`, elle ne couvre que l'intervalle premier signal → dernière sortie
+    (comportement antérieur, conservé pour la reproductibilité des lots déjà enregistrés)."""
     rm = RiskManager(profile, max_cost_frac_of_risk=max_cost_frac)
     equity = initial_equity
     rm.start(equity)
@@ -142,8 +146,12 @@ def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: Ri
                     continue
                 px = ex.bid_c[j] if s.side == 1 else ex.ask_c[j]
                 entry_fee = fees_quote(spec, qty, f.entry_price, f.entry_price) / 2
+                try:
+                    q_day = fx.quote_per_eur(spec.quote_ccy, int(day_end.value))   # taux du jour (audit 2D)
+                except ValueError:
+                    q_day = q_per_eur
                 mtm[day_end - pd.Timedelta(days=1)] = mtm.get(day_end - pd.Timedelta(days=1), 0.0) + \
-                    (s.side * (px - f.entry_price) * qty - entry_fee) / q_per_eur
+                    (s.side * (px - f.entry_price) * qty - entry_fee) / q_day
         notional_eur = qty * f.entry_price / q_per_eur
         equity += pnl_eur
         rm.on_trade_closed(pnl_eur, equity)
@@ -166,11 +174,14 @@ def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: Ri
             pass
     tr = pd.DataFrame(trades)
     rj = pd.DataFrame(rejections)
-    if len(tr):
-        eq = tr.set_index("exit_time")["equity_after"]
-        eq_daily = eq.groupby(eq.index.floor("D")).last()
-        first = signals[0].avail.floor("D") if signals else eq_daily.index[0]
-        idx = pd.date_range(min(first, eq_daily.index[0]), eq_daily.index[-1], freq="D")
+    if len(tr) or period is not None:
+        eq = tr.set_index("exit_time")["equity_after"] if len(tr) else pd.Series(dtype=float)
+        eq_daily = eq.groupby(eq.index.floor("D")).last() if len(tr) else pd.Series(dtype=float)
+        if period is not None:
+            idx = pd.date_range(pd.Timestamp(period[0]).floor("D"), pd.Timestamp(period[1]).floor("D") - pd.Timedelta(days=1), freq="D")
+        else:
+            first = signals[0].avail.floor("D") if signals else eq_daily.index[0]
+            idx = pd.date_range(min(first, eq_daily.index[0]), eq_daily.index[-1], freq="D")
         eq_daily = eq_daily.reindex(idx).ffill().fillna(initial_equity)
         if mtm:
             adj = pd.Series(mtm).reindex(idx).fillna(0.0)

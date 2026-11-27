@@ -74,6 +74,12 @@ CREATE TABLE IF NOT EXISTS strategy_status (
     trial_id INTEGER,
     ts TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS validation_access (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ts TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    code_version TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS final_test_access (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ts TEXT NOT NULL,
@@ -186,6 +192,10 @@ class Registry:
             "UPDATE trials SET status=?, n_trades=?, mean_r=?, p_value=?, result_json=?, finished_at=? WHERE id=?",
             (status, n_trades, mean_r, p_value, json.dumps(result, default=str) if result else None, now(), trial_id),
         )
+        self.con.commit()
+
+    def log_validation_access(self, reason: str) -> None:
+        self.con.execute("INSERT INTO validation_access (ts,reason,code_version) VALUES (?,?,?)", (now(), reason, code_version()))
         self.con.commit()
 
     def log_final_access(self, reason: str) -> None:
