@@ -227,3 +227,55 @@ def nexus_d(ctx: TFContext, *, require_compression=True, pct_max: float = 0.2, w
             break
         i = j + 1
     return out
+
+
+# ---------------------------------------------------------------------------
+# NEXUS E — Mean Reversion (achat seulement, sans accumulation)
+# ---------------------------------------------------------------------------
+def nexus_e(ctx: TFContext, *, mode: str, consolidation_filter: bool = False, max_bars: int = 60) -> list[Signal]:
+    """mode : "zscore" (z20 < −2, sortie clôture >= SMA20) | "atr" ((c − EMA50)/ATR14 < −3,
+    sortie clôture >= EMA50) | "shock" (rendement de la bougie < 1er percentile des 1 000 précédentes,
+    sortie clôture >= clôture précédant le choc). Stop 2 ATR14. Durée max `max_bars` bougies.
+    Une position à la fois ; nouvelle entrée seulement après réinitialisation du signal."""
+    from ..features.regime import efficiency_ratio
+    b = ctx.bars
+    c = b["c"].to_numpy(); a = b["atr14"].to_numpy(); n = len(b)
+    if mode == "zscore":
+        sma = b["c"].rolling(20).mean().to_numpy(); sd = b["c"].rolling(20).std(ddof=0).to_numpy()
+        z = (c - sma) / sd
+        enter = z < -2
+        eq_level = sma
+    elif mode == "atr":
+        e50 = ema(c, 50)
+        enter = (c - e50) / a < -3
+        eq_level = e50
+    elif mode == "shock":
+        r = np.concatenate([[np.nan], c[1:] / c[:-1] - 1])
+        q01 = pd.Series(r).shift(1).rolling(1000, min_periods=500).quantile(0.01).to_numpy()   # strictement passé
+        enter = r < q01
+        eq_level = np.concatenate([[np.nan], c[:-1]])   # clôture précédant le choc (fixée à l'entrée)
+    else:
+        raise KeyError(mode)
+    enter = np.where(np.isfinite(a), enter, False)
+    if consolidation_filter:
+        er = efficiency_ratio(c, 20)
+        enter = enter & (er < 0.3)
+    out, i = [], 0
+    while i < n:
+        if not enter[i]:
+            i += 1; continue
+        target_level = eq_level[i]
+        j = None
+        for k in range(i + 1, min(i + max_bars + 1, n)):
+            lvl = target_level if mode == "shock" else eq_level[k]
+            if c[k] >= lvl:
+                j = k; break
+        if j is None and i + max_bars < n:
+            j = i + max_bars
+        out.append(_emit(ctx, i, j, c[i] - 2 * a[i], tags={"mode": mode}))
+        if j is None:
+            break
+        i = j + 1
+        while i < n and enter[i]:     # réinitialisation exigée : pas d'accumulation pendant une baisse
+            i += 1
+    return out

@@ -37,11 +37,16 @@ from .runner import STAT_PROFILE, expand_variants, fold_means, load_inputs, mc_d
 
 STRATS = {
     "C": trend.nexus_c, "F_TSMOM": trend.nexus_f_tsmom, "F_DONCHIAN": trend.nexus_f_donchian,
-    "REF_SMA": trend.ref_sma, "D": trend.nexus_d,
+    "REF_SMA": trend.ref_sma, "D": trend.nexus_d, "E": trend.nexus_e,
 }
 
 CATS = ("Avantage statistique démontré", "Résultats prometteurs mais preuves insuffisantes",
         "Absence d'avantage démontré", "Résultats incompatibles avec une exploitation rentable")
+
+
+def _top5(x) -> float | None:
+    x = np.asarray(x, float); w = x[x > 0]
+    return float(np.sort(w)[-5:].sum() / w.sum() * 100) if w.sum() > 0 else None
 
 
 def verdict_v2(r: dict) -> str:
@@ -96,6 +101,8 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
         eurusdt = load_bars("EURUSDT_1h", p0 - pd.Timedelta(days=5), p1).set_index("ts")["c"].resample("1D").last()
         contexts = {}
         for h in spec["hypothesis"]:
+            if h["strategy"].startswith("G_"):
+                continue   # famille G : simulateur de portefeuille dédié (research/g_runner.py)
             for variant in expand_variants(h["params"]):
                 v = dict(variant)
                 tf = v.pop("tf")
@@ -181,6 +188,8 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
                         "mean_r_bnb_fee_sensitivity": float(res["bnb"].trades["r_net"].mean()),
                         "random_mean": float(np.nanmean(rm)), "random_p95": float(np.nanpercentile(rm, 95)),
                         "p_random": p_rand, "random_ret_mean_pct": float(np.nanmean(rnd["ret_means"]) * 100),
+                        "random_top5_share_median": float(np.nanmedian(rnd["top5_share"])) if "top5_share" in rnd else None,
+                        "strategy_top5_share_ret": _top5(tr["side"] * (tr["exit"] - tr["entry"]) / tr["entry"]),
                         "strategy_ret_mean_pct": float((tr["side"] * (tr["exit"] - tr["entry"]) / tr["entry"]).mean() * 100),
                         "win_rate": float((tr["r_net"] > 0).mean()), "r_std": float(tr["r_net"].std()),
                         "top5_share": float(np.sort(wins.to_numpy())[-5:].sum() / wins.sum() * 100) if wins.sum() > 0 else None,

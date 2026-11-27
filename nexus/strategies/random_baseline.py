@@ -67,7 +67,7 @@ def exposure_matched_random(trades: pd.DataFrame, ex: ExecFrame, spec: Instrumen
     sides = trades["side"].to_numpy()
     s_ns, e_ns = int(pd.Timestamp(start).value), int(pd.Timestamp(end).value)
     i_lo = ex.index_at_or_after(s_ns)
-    r_means, ret_means = np.full(n_rep, np.nan), np.full(n_rep, np.nan)
+    r_means, ret_means, top5 = np.full(n_rep, np.nan), np.full(n_rep, np.nan), np.full(n_rep, np.nan)
     for r in range(n_rep):
         rs, rets = [], []
         for j in range(len(trades)):
@@ -90,4 +90,6 @@ def exposure_matched_random(trades: pd.DataFrame, ex: ExecFrame, spec: Instrumen
             rs.append(pnl_u / ru); rets.append(pnl_u / f.entry_price)
         r_means[r] = np.mean(rs) if rs else np.nan
         ret_means[r] = np.mean(rets) if rets else np.nan
-    return {"r_means": r_means, "ret_means": ret_means}
+        pos = np.array([x for x in rets if x > 0])
+        top5[r] = np.sort(pos)[-5:].sum() / pos.sum() * 100 if pos.sum() > 0 else np.nan
+    return {"r_means": r_means, "ret_means": ret_means, "top5_share": top5}

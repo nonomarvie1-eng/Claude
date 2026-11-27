@@ -1,0 +1,100 @@
+# NEXUS QUANT — Pré-enregistrement, lot 2D-01 : NEXUS G (allocation dynamique BTC / liquidités)
+# et NEXUS E (retour à la moyenne). Rédigé AVANT toute exécution. Période de DÉVELOPPEMENT
+# uniquement. Budget global de la phase 2D : docs/phase2d/02_budget_et_protocole.md.
+
+[common]
+period = "dev"
+symbols = ["BTCUSDT"]
+random_baseline_reps = 200
+metrics = ["voir docs/phase2d/02_budget_et_protocole.md"]
+rejection = "verdict_v2 pour E ; règles G du protocole 2D §4."
+
+[budget.G]
+max_trials = 10
+justification = "5 modèles minimaux × 2 plafonds d'exposition (10 %, 25 %), justifiés a priori par la volatilité de BTC et la cible de drawdown de 10 %."
+[budget.E]
+max_trials = 8
+justification = "3 signaux d'excès + 1 filtre de consolidation (ablation) × 2 unités de temps (H1, H4)."
+
+# ------------------------------ NEXUS G --------------------------------
+# Décision à la clôture journalière UTC, exécution à l'ouverture du jour suivant (ordres au
+# marché, taker 0,10 % + conversion EUR/USDT 0,10 % + demi-spread + glissement), zone neutre
+# de rééquilibrage = 20 % du plafond, passage intégral en liquidités quand la cible vaut 0.
+# Fenêtre d'évaluation commune à toutes les stratégies et références : 2020-05-01 → 2023-07-01.
+
+[[hypothesis]]
+key = "NXG-01"
+family = "G"
+strategy = "G_MA"
+statement = "Allocation conditionnée par une moyenne mobile : poids = plafond si clôture > SMA100 journalière, 0 sinon."
+rationale = "Suivi de tendance de type Faber ; réduire l'exposition quand la tendance se détériore."
+params = { w_max = [0.10, 0.25] }
+
+[[hypothesis]]
+key = "NXG-02"
+family = "G"
+strategy = "G_TSMOM"
+statement = "Allocation conditionnée par le momentum : poids = plafond si rendement 90 jours > 0, 0 sinon."
+rationale = "Momentum de série temporelle (Moskowitz, Ooi, Pedersen 2012), horizon de 3 mois fixé a priori."
+params = { w_max = [0.10, 0.25] }
+
+[[hypothesis]]
+key = "NXG-03"
+family = "G"
+strategy = "G_VOL"
+statement = "Allocation ajustée à la volatilité, toujours investie : poids = min(plafond, plafond × 80 % / volatilité réalisée 30 j annualisée)."
+rationale = "Volatility targeting (Moreira & Muir 2017) ; isole la contribution du dimensionnement dynamique, sans timing directionnel. 80 % ≈ volatilité annuelle typique de BTC (hypothèse a priori)."
+params = { w_max = [0.10, 0.25] }
+
+[[hypothesis]]
+key = "NXG-04"
+family = "G"
+strategy = "G_PROG"
+statement = "Allocation progressive selon la force de la tendance : poids = plafond × (nombre de conditions vraies parmi clôture > SMA100, rendement 30 j > 0, rendement 90 j > 0) / 3."
+rationale = "Réduction graduelle de l'exposition plutôt que binaire."
+params = { w_max = [0.10, 0.25] }
+
+[[hypothesis]]
+key = "NXG-05"
+family = "G"
+strategy = "G_TSMOM_VOL"
+statement = "Momentum 90 j × ajustement à la volatilité : poids = indicateur(rendement 90 j > 0) × min(plafond, plafond × 80 % / volatilité 30 j)."
+rationale = "Momentum géré par la volatilité ; mesure la contribution du dimensionnement en plus du timing (comparaison avec NXG-02)."
+params = { w_max = [0.10, 0.25] }
+
+# ------------------------------ NEXUS E --------------------------------
+# Achat seulement. Une position à la fois ; après une sortie, une nouvelle entrée exige que le
+# signal se soit réinitialisé (pas d'accumulation pendant une baisse). Stop 2 ATR14 ; sortie
+# au retour à l'équilibre ou après 60 bougies.
+
+[[hypothesis]]
+key = "NXE-01"
+family = "E"
+strategy = "E"
+statement = "Z-score : entrée si (clôture − SMA20) / écart-type 20 < −2 ; sortie à clôture >= SMA20."
+rationale = "Retour à la moyenne après un écart statistique important (bande de Bollinger basse)."
+params = { tf = ["H1", "H4"], mode = ["zscore"] }
+
+[[hypothesis]]
+key = "NXE-02"
+family = "E"
+strategy = "E"
+statement = "Écart normalisé par l'ATR : entrée si (clôture − EMA50) / ATR14 < −3 ; sortie à clôture >= EMA50."
+rationale = "Excès mesuré en unités de volatilité plutôt qu'en écart-type de prix."
+params = { tf = ["H1", "H4"], mode = ["atr"] }
+
+[[hypothesis]]
+key = "NXE-03"
+family = "E"
+strategy = "E"
+statement = "Rendement exceptionnellement négatif : entrée si le rendement de la bougie est inférieur au 1er percentile des 1 000 bougies précédentes ; sortie à clôture >= clôture précédant le choc."
+rationale = "Sur-réaction de court terme (liquidations, flux contraints) suivie d'un rebond partiel."
+params = { tf = ["H1", "H4"], mode = ["shock"] }
+
+[[hypothesis]]
+key = "NXE-04"
+family = "E"
+strategy = "E"
+statement = "NXE-01 + filtre de consolidation : entrée seulement si l'efficacité directionnelle ER20 < 0,3."
+rationale = "Ablation justifiée a priori : le retour à la moyenne est attendu en marché sans tendance."
+params = { tf = ["H1", "H4"], mode = ["zscore"], consolidation_filter = [true] }

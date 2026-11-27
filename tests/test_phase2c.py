@@ -82,7 +82,9 @@ def test_trailing_percentile_uses_only_past():
 
 @pytest.mark.parametrize("fn,kw", [(trend.nexus_c, {}), (trend.nexus_c, {"exit_mode": "trailing", "confirmation": True}),
                                    (trend.nexus_f_tsmom, {"lookback": 20}), (trend.nexus_f_donchian, {"n": 20}),
-                                   (trend.ref_sma, {}), (trend.nexus_d, {})])
+                                   (trend.ref_sma, {}), (trend.nexus_d, {}), (trend.nexus_e, {"mode": "zscore"}),
+                                   (trend.nexus_e, {"mode": "atr"}), (trend.nexus_e, {"mode": "shock"}),
+                                   (trend.nexus_e, {"mode": "zscore", "consolidation_filter": True})])
 def test_trend_strategies_signals_do_not_depend_on_future(fn, kw):
     """Les signaux émis avant une date ne changent pas si l'on retire les données postérieures
     (hors heure de sortie, qui dépend par nature de la suite)."""
