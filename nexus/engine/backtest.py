@@ -69,6 +69,7 @@ class BacktestResult:
     final_equity: float
     halted: bool
     halt_reason: str
+    halt_time: object = None
 
 
 def fees_quote(spec: InstrumentSpec, qty: float, entry: float, exit_: float) -> float:
@@ -84,6 +85,7 @@ def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: Ri
     rm.start(equity)
     busy_until = -1
     trades, rejections = [], []
+    mtm: dict = {}
     signals = sorted(signals, key=lambda s: s.avail)
     for s in signals:
         t_ns = int(s.avail.value)
@@ -107,7 +109,7 @@ def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: Ri
             continue
         f = simulate(ex, spec, side=s.side, signal_avail=s.avail, stop=s.stop, target=s.target,
                      target_r=s.target_r, time_exit=s.time_exit, entry_type=s.entry_type,
-                     limit_price=s.limit_price, expiry=s.expiry)
+                     limit_price=s.limit_price, expiry=s.expiry, stop_path=s.stop_path)
         if not f.filled:
             rejections.append({"avail": s.avail, "reason": "ordre non exécuté (expiré)", **s.tags})
             continue
@@ -127,6 +129,22 @@ def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: Ri
         r_net = (s.side * (f.exit_price - f.entry_price) - fee_unit) / risk_unit if risk_unit > 0 else np.nan
         r_gross = s.side * (f.exit_price - f.entry_price) / risk_unit if risk_unit > 0 else np.nan
         equity_before = equity
+        # Valorisation quotidienne (mark-to-market) des positions qui passent la nuit :
+        # à chaque fin de journée UTC entre l'entrée et la sortie, P&L latent au prix de sortie
+        # possible (bid pour un achat), moins la commission d'entrée déjà payée.
+        entry_ns = int(ex.ts[f.entry_idx])
+        d0 = pd.Timestamp(entry_ns, tz="UTC").floor("D")
+        d1 = pd.Timestamp(exit_ns, tz="UTC").floor("D")
+        if d1 > d0:
+            for day_end in pd.date_range(d0 + pd.Timedelta(days=1), d1, freq="D"):
+                j = int(np.searchsorted(ex.ts, day_end.value, side="left")) - 1
+                if j < f.entry_idx:
+                    continue
+                px = ex.bid_c[j] if s.side == 1 else ex.ask_c[j]
+                entry_fee = fees_quote(spec, qty, f.entry_price, f.entry_price) / 2
+                mtm[day_end - pd.Timedelta(days=1)] = mtm.get(day_end - pd.Timedelta(days=1), 0.0) + \
+                    (s.side * (px - f.entry_price) * qty - entry_fee) / q_per_eur
+        notional_eur = qty * f.entry_price / q_per_eur
         equity += pnl_eur
         rm.on_trade_closed(pnl_eur, equity)
         busy_until = exit_ns + 1
@@ -139,7 +157,9 @@ def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: Ri
             "gap_during_trade": f.gap_during_trade,
             "r_net": r_net, "r_gross": r_gross, "pnl_eur": pnl_eur, "fees_eur": fees_eur,
             "risk_eur_planned": dec.risk_quote / q_per_eur, "equity_before": equity_before,
-            "equity_after": equity, "cost_frac_est": dec.est_cost_frac_of_risk, **s.tags,
+            "equity_after": equity, "cost_frac_est": dec.est_cost_frac_of_risk,
+            "notional_eur": notional_eur, "exposure_frac": notional_eur / equity_before,
+            "duration_h": (exit_ns - entry_ns) / 3.6e12, "halted_after": rm.halted, **s.tags,
         })
         if rm.halted:
             # On journalise les signaux restants comme refusés (bot arrêté)
@@ -152,6 +172,13 @@ def run_backtest(signals: list, ex: ExecFrame, spec: InstrumentSpec, profile: Ri
         first = signals[0].avail.floor("D") if signals else eq_daily.index[0]
         idx = pd.date_range(min(first, eq_daily.index[0]), eq_daily.index[-1], freq="D")
         eq_daily = eq_daily.reindex(idx).ffill().fillna(initial_equity)
+        if mtm:
+            adj = pd.Series(mtm).reindex(idx).fillna(0.0)
+            eq_daily = eq_daily + adj
     else:
         eq_daily = pd.Series(dtype=float)
-    return BacktestResult(tr, rj, eq_daily, equity, rm.halted, rm.halt_reason)
+    halt_time = None
+    if rm.halted and len(tr):
+        hit = tr[tr["halted_after"]]
+        halt_time = hit["exit_time"].iloc[0] if len(hit) else None
+    return BacktestResult(tr, rj, eq_daily, equity, rm.halted, rm.halt_reason, halt_time)

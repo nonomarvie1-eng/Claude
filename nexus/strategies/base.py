@@ -19,4 +19,5 @@ class Signal:
     target_r: float | None = None
     entry_est: float | None = None   # estimation du prix d'entrée pour le dimensionnement
     day: object = None
+    stop_path: tuple | None = None   # (t_ns, niveaux) stop suiveur décidé aux clôtures de bougies
     tags: dict = field(default_factory=dict)

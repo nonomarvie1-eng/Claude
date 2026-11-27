@@ -81,8 +81,14 @@ def _ns(t) -> int:
 
 def simulate(ex: ExecFrame, spec: InstrumentSpec, *, side: int, signal_avail, stop: float,
              target: float | None, time_exit, entry_type: str = "market", target_r: float | None = None,
-             limit_price: float | None = None, expiry=None, max_gap_min: float = 30.0) -> Fill:
-    """Simule un trade. side = +1 achat, -1 vente."""
+             limit_price: float | None = None, expiry=None, max_gap_min: float = 30.0,
+             stop_path: tuple | None = None) -> Fill:
+    """Simule un trade. side = +1 achat, -1 vente.
+
+    stop_path : (t_ns, niveaux) — stop suiveur décidé par la stratégie à la clôture
+    de ses bougies ; chaque niveau s'applique à partir des minutes dont l'ouverture
+    est >= t_ns. Le stop ne peut que se resserrer (cliquet).
+    """
     if side not in (1, -1):
         raise ValueError("side doit valoir +1 ou -1")
     if side == -1 and not spec.allow_short:
@@ -129,13 +135,19 @@ def simulate(ex: ExecFrame, spec: InstrumentSpec, *, side: int, signal_avail, st
 
     # ---------------- Sortie (recherche vectorisée du premier événement) ----------------
     end = int(np.searchsorted(ex.ts, t_exit, side="left"))   # première minute >= heure de sortie
+    stops = np.full(max(end - k, 0), stop, dtype=float)
+    if stop_path is not None and len(stop_path[0]) and end > k:
+        pt, pl = np.asarray(stop_path[0], np.int64), np.asarray(stop_path[1], float)
+        idx = np.searchsorted(pt, ex.ts[k:end], side="right") - 1
+        lv = np.where(idx >= 0, pl[np.clip(idx, 0, None)], stop)
+        stops = np.maximum.accumulate(np.maximum(lv, stop)) if side == 1 else np.minimum.accumulate(np.minimum(lv, stop))
     if side == 1:
         o_arr, h_arr, l_arr = ex.bid_o, ex.bid_h, ex.bid_l
-        stop_hits = l_arr[k:end] <= stop
+        stop_hits = l_arr[k:end] <= stops
         tgt_hits = (h_arr[k:end] >= target + tick) if target is not None else np.zeros(end - k, bool)
     else:
         o_arr, h_arr, l_arr = ex.ask_o, ex.ask_h, ex.ask_l
-        stop_hits = h_arr[k:end] >= stop
+        stop_hits = h_arr[k:end] >= stops
         tgt_hits = (l_arr[k:end] <= target - tick) if target is not None else np.zeros(end - k, bool)
     if limit_fill_bar and len(tgt_hits):
         tgt_hits[0] = False   # ordre chronologique inconnu dans la minute de remplissage
@@ -150,6 +162,7 @@ def simulate(ex: ExecFrame, spec: InstrumentSpec, *, side: int, signal_avail, st
     if i_stop is not None and (i_tgt is None or i_stop <= i_tgt):
         j = k + i_stop
         o = o_arr[j]
+        stop = stops[i_stop]
         if side == 1:
             base = stop if (j == entry_idx and limit_fill_bar) else min(stop, o)
             px = base * (1 - slip_s)

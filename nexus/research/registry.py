@@ -49,6 +49,31 @@ CREATE TABLE IF NOT EXISTS trials (
     started_at TEXT NOT NULL,
     finished_at TEXT
 );
+CREATE TABLE IF NOT EXISTS budgets (
+    family TEXT PRIMARY KEY,
+    max_trials INTEGER NOT NULL,
+    justification TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS budget_changes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    family TEXT NOT NULL,
+    old_max INTEGER,
+    new_max INTEGER NOT NULL,
+    reason TEXT NOT NULL,
+    ts TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS strategy_status (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    hypothesis_key TEXT NOT NULL,
+    variant_json TEXT NOT NULL,
+    symbol TEXT NOT NULL,
+    status TEXT NOT NULL,          -- rejected | insufficient | candidate | archived
+    verdict TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    trial_id INTEGER,
+    ts TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS final_test_access (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ts TEXT NOT NULL,
@@ -80,6 +105,34 @@ class Registry:
         path.parent.mkdir(parents=True, exist_ok=True)
         self.con = sqlite3.connect(path)
         self.con.executescript(SCHEMA)
+        cols = {r[1] for r in self.con.execute("PRAGMA table_info(trials)")}
+        for col, typ in (("data_hash", "TEXT"), ("seed", "INTEGER"), ("purpose", "TEXT")):
+            if col not in cols:
+                self.con.execute(f"ALTER TABLE trials ADD COLUMN {col} {typ}")
+        self.con.commit()
+
+    # -- budgets d'expériences ------------------------------------------------
+    def set_budget(self, family: str, max_trials: int, justification: str) -> None:
+        row = self.con.execute("SELECT max_trials FROM budgets WHERE family=?", (family,)).fetchone()
+        if row is None:
+            self.con.execute("INSERT INTO budgets VALUES (?,?,?,?)", (family, max_trials, justification, now()))
+        elif row[0] != max_trials:
+            # Toute extension est documentée et conservée (correction des comparaisons multiples)
+            self.con.execute("INSERT INTO budget_changes (family,old_max,new_max,reason,ts) VALUES (?,?,?,?,?)",
+                             (family, row[0], max_trials, justification, now()))
+            self.con.execute("UPDATE budgets SET max_trials=? WHERE family=?", (max_trials, family))
+        self.con.commit()
+
+    def family_trials(self, family: str) -> int:
+        return self.con.execute(
+            "SELECT COUNT(*) FROM trials t JOIN hypotheses h ON t.hypothesis_key=h.key WHERE h.family=?",
+            (family,)).fetchone()[0]
+
+    def set_status(self, key, variant, symbol, status, verdict, reason, trial_id=None) -> None:
+        self.con.execute("INSERT INTO strategy_status (hypothesis_key,variant_json,symbol,status,verdict,reason,trial_id,ts)"
+                         " VALUES (?,?,?,?,?,?,?,?)",
+                         (key, json.dumps(variant, sort_keys=True), symbol, status, verdict, reason, trial_id, now()))
+        self.con.commit()
 
     # -- hypothèses ---------------------------------------------------------
     def n_trials(self) -> int:
@@ -110,14 +163,20 @@ class Registry:
         return h
 
     # -- essais ---------------------------------------------------------------
-    def start_trial(self, key: str, variant: dict, symbol: str, period: str, cost_multiplier: float) -> int:
-        if not self.con.execute("SELECT 1 FROM hypotheses WHERE key=?", (key,)).fetchone():
+    def start_trial(self, key: str, variant: dict, symbol: str, period: str, cost_multiplier: float,
+                    *, data_hash: str | None = None, seed: int | None = None, purpose: str = "selection") -> int:
+        row = self.con.execute("SELECT family FROM hypotheses WHERE key=?", (key,)).fetchone()
+        if not row:
             raise PermissionError(f"hypothèse {key} non pré-enregistrée : exécution refusée")
+        b = self.con.execute("SELECT max_trials FROM budgets WHERE family=?", (row[0],)).fetchone()
+        if b is not None and self.family_trials(row[0]) >= b[0]:
+            raise PermissionError(f"budget d'expériences épuisé pour la famille {row[0]} ({b[0]} essais)")
         cfg = stable_hash({"key": key, "variant": variant, "symbol": symbol, "period": period, "cost": cost_multiplier})
         cur = self.con.execute(
             "INSERT INTO trials (hypothesis_key,variant_json,symbol,period,cost_multiplier,config_hash,code_version,"
-            "status,started_at) VALUES (?,?,?,?,?,?,?,?,?)",
-            (key, json.dumps(variant, sort_keys=True), symbol, period, cost_multiplier, cfg, code_version(), "running", now()),
+            "status,started_at,data_hash,seed,purpose) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (key, json.dumps(variant, sort_keys=True), symbol, period, cost_multiplier, cfg, code_version(), "running",
+             now(), data_hash, seed, purpose),
         )
         self.con.commit()
         return cur.lastrowid

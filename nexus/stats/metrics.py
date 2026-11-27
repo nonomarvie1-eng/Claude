@@ -71,3 +71,88 @@ def summarize(trades: pd.DataFrame, equity_daily: pd.Series, initial: float, *, 
     out["annual_pnl_eur"] = {str(k.year): round(float(v), 2) for k, v in tr["pnl_eur"].resample("YS").sum().items()}
     out["annual_mean_r"] = {str(k.year): round(float(v), 4) for k, v in tr["r_net"].resample("YS").mean().items()}
     return out
+
+
+def exposure_stats(trades: pd.DataFrame, start, end) -> dict:
+    """Temps passé sur le marché, exposition moyenne, turnover, durée moyenne."""
+    if len(trades) == 0:
+        return {"time_in_market_pct": 0.0, "avg_exposure_pct": 0.0, "turnover_per_year": 0.0, "avg_duration_h": 0.0}
+    span_h = (pd.Timestamp(end) - pd.Timestamp(start)).total_seconds() / 3600
+    dur = trades["duration_h"].to_numpy()
+    expo = trades["exposure_frac"].to_numpy()
+    years = span_h / (24 * 365.25)
+    return {
+        "time_in_market_pct": float(dur.sum() / span_h * 100),
+        # exposition moyenne pondérée par le temps, sur toute la période (0 en liquidités)
+        "avg_exposure_pct": float((dur * expo).sum() / span_h * 100),
+        "avg_exposure_when_invested_pct": float((dur * expo).sum() / dur.sum() * 100) if dur.sum() > 0 else 0.0,
+        "turnover_per_year": float(2 * expo.sum() / years),
+        "avg_duration_h": float(dur.mean()),
+        "median_duration_h": float(np.median(dur)),
+    }
+
+
+def market_attribution(eq_daily: pd.Series, asset_close_daily: pd.Series, n_boot: int = 2000,
+                       block: int = 20, seed: int = 0) -> dict:
+    """Régression des rendements quotidiens de la stratégie sur ceux de l'actif :
+    r_s = alpha + beta * r_m. Alpha annualisé (365 j) avec IC95 par bootstrap par
+    blocs de `block` jours (dépendance temporelle). Analyse descriptive."""
+    rs = eq_daily.pct_change()
+    rm = asset_close_daily.reindex(eq_daily.index).ffill().pct_change()
+    df = pd.concat([rs, rm], axis=1, keys=["s", "m"]).dropna()
+    if len(df) < 60 or df["m"].var() == 0:
+        return {}
+    x, y = df["m"].to_numpy(), df["s"].to_numpy()
+
+    def fit(xx, yy):
+        b = np.cov(xx, yy, ddof=1)[0, 1] / np.var(xx, ddof=1)
+        return yy.mean() - b * xx.mean(), b
+
+    a, b = fit(x, y)
+    rng = np.random.default_rng(seed)
+    n = len(x); nb = int(np.ceil(n / block))
+    alphas = []
+    for _ in range(n_boot):
+        starts = rng.integers(0, n - block + 1, nb)
+        idx = np.concatenate([np.arange(s, s + block) for s in starts])[:n]
+        alphas.append(fit(x[idx], y[idx])[0])
+    lo, hi = np.percentile(alphas, [2.5, 97.5])
+    resid = y - (a + b * x)
+    return {"beta": float(b), "alpha_ann_pct": float(a * 365 * 100), "alpha_ci95_ann_pct": [float(lo * 365 * 100), float(hi * 365 * 100)],
+            "r2": float(1 - resid.var() / y.var()) if y.var() > 0 else np.nan, "n_days": int(n)}
+
+
+def daily_sharpe_ci(eq_daily: pd.Series, periods: int = 365, block: int = 20, n_boot: int = 2000, seed: int = 0) -> dict:
+    r = eq_daily.pct_change().dropna().to_numpy()
+    if len(r) < 60 or r.std() == 0:
+        return {}
+    rng = np.random.default_rng(seed)
+    n = len(r); nb = int(np.ceil(n / block))
+    srs = []
+    for _ in range(n_boot):
+        starts = rng.integers(0, n - block + 1, nb)
+        s = r[np.concatenate([np.arange(k, k + block) for k in starts])[:n]]
+        srs.append(s.mean() / s.std() * np.sqrt(periods) if s.std() > 0 else 0.0)
+    return {"sharpe": float(r.mean() / r.std() * np.sqrt(periods)), "sharpe_ci95": [float(np.percentile(srs, 2.5)), float(np.percentile(srs, 97.5))]}
+
+
+def passive_benchmarks(asset_close_daily: pd.Series, fx_quote_per_eur_daily: pd.Series, initial: float,
+                       fee_rate: float, exposure: float) -> dict:
+    """Buy & Hold (100 % investi), liquidités (0 %), et détention passive constante
+    à l'exposition moyenne de la stratégie (rééquilibrage ignoré, borne indicative)."""
+    p = asset_close_daily.dropna()
+    fx = fx_quote_per_eur_daily.reindex(p.index).ffill().bfill()
+    val_eur = initial * (1 - fee_rate) * (p / p.iloc[0]) * (fx.iloc[0] / fx) * (1 - fee_rate)
+    dd = float(-(val_eur / val_eur.cummax() - 1).min())
+    years = (p.index[-1] - p.index[0]).days / 365.25
+    bh_ret = float(val_eur.iloc[-1] / initial - 1)
+    expo_val = initial * (1 + exposure * (val_eur / initial - 1))
+    return {
+        "buy_hold": {"final_eur": float(val_eur.iloc[-1]), "net_return_pct": bh_ret * 100,
+                     "cagr_pct": ((1 + bh_ret) ** (1 / years) - 1) * 100, "max_dd_pct": dd * 100,
+                     "time_in_market_pct": 100.0},
+        "cash": {"final_eur": initial, "net_return_pct": 0.0, "max_dd_pct": 0.0, "time_in_market_pct": 0.0},
+        "passive_same_exposure": {"exposure_pct": exposure * 100, "final_eur": float(expo_val.iloc[-1]),
+                                  "net_return_pct": float(expo_val.iloc[-1] / initial - 1) * 100,
+                                  "max_dd_pct": float(-(expo_val / expo_val.cummax() - 1).min()) * 100},
+    }
