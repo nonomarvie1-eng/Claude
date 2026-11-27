@@ -4,6 +4,10 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
+## Étude TradingView (avant la phase 4)
+
+[`docs/phase3/03_etude_tradingview.md`](docs/phase3/03_etude_tradingview.md) : MCP, conditions d'utilisation, abonnements, Pine v6, écarts d'exécution, architecture recommandée.
+
 ## Phase 3 — Liquidity Intelligence (études événementielles)
 
 Commencer par [`docs/phase3/RAPPORT_PHASE_3.md`](docs/phase3/RAPPORT_PHASE_3.md).
