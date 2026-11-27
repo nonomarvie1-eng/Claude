@@ -35,3 +35,4 @@ H8-1-BREAKOUT24 {"capital_final": 920.3741694666005, "trades_per_day": 1.7439310
   wk = dr.groupby(dr.index.to_period("W"))
 H8-2-VWAP-TREND {"capital_final": 52.42452169014057, "trades_per_day": 7.216914643696163, "R_mean": -0.05987980804491533, "R_ci95": [-0.08570031754139136, -0.03258450164429188], "p_R_le_0": 1.0, "max_dd_pct": 95.62378655246812, "win_rate": 0.21875, "profit_factor": 0.8600750769721165}
 H8-3-BB-RANGE-MR sens [-0.174, -0.153, -0.161, -0.165]
+H8-4-TREND-PULLBACK sens [-0.174, -0.152, -0.229, -0.125]

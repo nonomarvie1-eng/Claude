@@ -438,7 +438,49 @@
             "total_return_p05_pct": -95.45445121826924
           }
         }
-      }
+      },
+      "sensitivity": [
+        {
+          "variant": {
+            "rsi_low": 25,
+            "rsi_high": 75,
+            "stop_mult": 1
+          },
+          "R_mean": -0.17425752383872947,
+          "trades": 753,
+          "capital_final": 506.6126117777222,
+          "max_dd_pct": 50.307195343550234
+        },
+        {
+          "variant": {
+            "rsi_low": 35,
+            "rsi_high": 65,
+            "stop_mult": 1
+          },
+          "R_mean": -0.15193174545815616,
+          "trades": 2728,
+          "capital_final": 117.21189569295272,
+          "max_dd_pct": 88.41569770469413
+        },
+        {
+          "variant": {
+            "stop_mult": 0.75
+          },
+          "R_mean": -0.22891582863440388,
+          "trades": 1846,
+          "capital_final": 113.12972418609665,
+          "max_dd_pct": 88.715606243543
+        },
+        {
+          "variant": {
+            "stop_mult": 1.5
+          },
+          "R_mean": -0.1246942084215833,
+          "trades": 1426,
+          "capital_final": 400.3311251633149,
+          "max_dd_pct": 60.220520110269774
+        }
+      ]
     },
     "H8-1-BREAKOUT24": {
       "portfolio": {
