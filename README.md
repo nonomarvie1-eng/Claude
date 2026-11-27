@@ -4,6 +4,17 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
+## Phase 8 — Day trading H1 sur perpétuels crypto
+
+Commencer par [`docs/phase8/RAPPORT_PHASE_8.md`](docs/phase8/RAPPORT_PHASE_8.md).
+
+```bash
+python -m pytest                                    # 115 tests
+python -m nexus.research.p8_runner all
+```
+
+Phase 7 (IBS, ATR) : suspendue, voir `docs/phase7/`.
+
 ## Phase 6 — Confirmation des signaux, dimensionnement, économie de Cubrik
 
 Commencer par [`docs/phase6/RAPPORT_PHASE_6.md`](docs/phase6/RAPPORT_PHASE_6.md).

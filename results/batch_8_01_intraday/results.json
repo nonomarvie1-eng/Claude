@@ -280,7 +280,31 @@
           "R_median": -0.15487889562163104,
           "R_p05": -0.1685318911579199
         }
-      }
+      },
+      "random": {
+        "actual_R_ex_funding": -0.15769551149965272,
+        "random_mean": -0.09803249521414255,
+        "random_p95": -0.07237224801942936,
+        "percentile": 0.1
+      },
+      "p_holm": 1.0,
+      "dsr": 1.7127258101339423e-44,
+      "dsr_inputs": {
+        "sr_daily": -0.21374290708992322,
+        "n_trials_registry": 217,
+        "var_sr_trials": 0.006099604795376373
+      },
+      "criteria": {
+        "C1": "False",
+        "C2": false,
+        "C3": false,
+        "C4": false,
+        "C5": false,
+        "C6": false,
+        "C7": false,
+        "C8": false
+      },
+      "verdict": "rejeté"
     },
     "H8-4-TREND-PULLBACK": {
       "portfolio": {
@@ -520,7 +544,31 @@
           "R_median": -0.1876448013797839,
           "R_p05": -0.21262129723193138
         }
-      }
+      },
+      "random": {
+        "actual_R_ex_funding": -0.18751171750737808,
+        "random_mean": -0.09713850411280113,
+        "random_p95": -0.053521533791800247,
+        "percentile": 0.0
+      },
+      "p_holm": 1.0,
+      "dsr": 7.298706049851799e-38,
+      "dsr_inputs": {
+        "sr_daily": -0.13897819284729201,
+        "n_trials_registry": 217,
+        "var_sr_trials": 0.006099604795376373
+      },
+      "criteria": {
+        "C1": "False",
+        "C2": false,
+        "C3": false,
+        "C4": false,
+        "C5": false,
+        "C6": false,
+        "C7": false,
+        "C8": false
+      },
+      "verdict": "rejeté"
     },
     "H8-1-BREAKOUT24": {
       "portfolio": {
@@ -761,7 +809,31 @@
           "R_median": 0.016850051375366142,
           "R_p05": -0.03664269566382344
         }
-      }
+      },
+      "random": {
+        "actual_R_ex_funding": 0.030459086447206275,
+        "random_mean": -0.08422299482410121,
+        "random_p95": -0.0348348729493284,
+        "percentile": 100.0
+      },
+      "p_holm": 1.0,
+      "dsr": 1.3735871513432758e-14,
+      "dsr_inputs": {
+        "sr_daily": 0.007122169861756324,
+        "n_trials_registry": 217,
+        "var_sr_trials": 0.006099604795376373
+      },
+      "criteria": {
+        "C1": "False",
+        "C2": false,
+        "C3": false,
+        "C4": false,
+        "C5": false,
+        "C6": false,
+        "C7": false,
+        "C8": false
+      },
+      "verdict": "rejeté"
     },
     "H8-2-VWAP-TREND": {
       "portfolio": {
@@ -1000,7 +1072,33 @@
           "R_median": -0.059728487182440254,
           "R_p05": -0.06947264096465584
         }
-      }
+      },
+      "random": {
+        "actual_R_ex_funding": -0.056888380409570755,
+        "random_mean": -0.09972147737196582,
+        "random_p95": -0.08530903938146489,
+        "percentile": 100.0
+      },
+      "p_holm": 1.0,
+      "dsr": 6.629937436634379e-24,
+      "dsr_inputs": {
+        "sr_daily": -0.11110722043554405,
+        "n_trials_registry": 217,
+        "var_sr_trials": 0.006099604795376373
+      },
+      "criteria": {
+        "C1": "False",
+        "C2": false,
+        "C3": false,
+        "C4": false,
+        "C5": false,
+        "C6": false,
+        "C7": false,
+        "C8": false
+      },
+      "verdict": "rejeté"
     }
-  }
+  },
+  "registry_trials_total": 217,
+  "montecarlo_10000": "aucune hypothèse candidate ou prometteuse : Monte Carlo approfondi et analyse du levier non exécutés (pré-enregistré)"
 }
