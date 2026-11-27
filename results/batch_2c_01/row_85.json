@@ -1,0 +1,1 @@
+{"trial_id": 85, "hypothesis": "NXF-05", "family": "F", "strategy": "F_DONCHIAN", "symbol": "BTCUSDT", "variant": "{\"n\": 20, \"tf\": \"D1\", \"trailing\": true}", "tf": "D1", "n_signals": 1, "n_trades": 1, "rejections": {}, "verdict": "Données insuffisantes (< 20 trades)"}

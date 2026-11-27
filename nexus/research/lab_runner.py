@@ -67,7 +67,10 @@ def run(toml_path: str, n_random: int | None = None) -> pd.DataFrame:
     p0, p1 = PERIODS[period]
     reg = Registry()
     for fam, b in spec.get("budget", {}).items():
-        reg.set_budget(fam, int(b["max_trials"]), b["justification"])
+        # Le fichier ne crée un budget que s'il n'existe pas : toute modification ultérieure
+        # passe par Registry.set_budget explicite, journalisé dans budget_changes.
+        if reg.con.execute("SELECT 1 FROM budgets WHERE family=?", (fam,)).fetchone() is None:
+            reg.set_budget(fam, int(b["max_trials"]), b["justification"])
     for h in spec["hypothesis"]:
         reg.register_hypothesis({
             "key": h["key"], "family": h["family"], "statement": h["statement"], "rationale": h["rationale"],
