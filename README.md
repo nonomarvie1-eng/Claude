@@ -4,7 +4,21 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
-## Phase 1 — Audit et protocole (terminée, en attente de validation)
+## Phase 2 — Moteur et premières expériences (en cours)
+
+Commencer par [`docs/phase2/RAPPORT_PHASE_2.md`](docs/phase2/RAPPORT_PHASE_2.md).
+
+```bash
+pip install -e .[dev]            # numpy, pandas, pyarrow, scipy, pytest
+python -m pytest                 # 42 tests
+python scripts/download_data.py binance BTCUSDT 2020-01 2026-07
+python scripts/build_bars.py BTCUSDT
+python -m nexus.research.runner experiments/preregistration/batch_2b_01.toml --symbols BTCUSDT
+```
+
+Windows (données EUR/USD) : `scripts/windows/telecharger_eurusd.ps1` — voir [`docs/phase2/02_acces_donnees.md`](docs/phase2/02_acces_donnees.md).
+
+## Phase 1 — Audit et protocole (validée)
 
 Commencer par [`docs/phase1/00_SYNTHESE.md`](docs/phase1/00_SYNTHESE.md).
 
