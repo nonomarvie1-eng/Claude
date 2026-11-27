@@ -1,0 +1,145 @@
+# NEXUS QUANT — Pré-enregistrement, lot 2C-01 : NEXUS C (Trend Pullback), NEXUS F (Momentum),
+# référence moyenne mobile simple, premier test de filtre de régime.
+# Rédigé AVANT toute exécution de ces stratégies. BTC/USDT spot, achat seulement, période de
+# DÉVELOPPEMENT uniquement (2020-01-01 → 2023-07-01). Validation et test final non ouverts.
+# Règles de verdict : docs/phase2c/01_protocole_et_budget.md §4 (verdict_v2).
+
+[common]
+period = "dev"
+symbols = ["BTCUSDT"]
+random_baseline_reps = 200
+metrics = ["mean_r_net", "ci95_blocs_mensuels", "mean_r_sans_frottement", "mean_r_avant_commission",
+           "mean_r_couts_x1.5_x2", "sensibilite_frais_bnb", "aleatoire_exposition_comparable",
+           "alpha_beta_quotidiens", "sharpe_quotidien_ic95", "exposition_turnover_duree",
+           "buy_hold_liquidites_passif_meme_exposition", "regimes", "semestres", "profils_avec_et_sans_arret",
+           "walk_forward_selection"]
+rejection = "Voir verdict_v2 (docs/phase2c/01_protocole_et_budget.md §4). Moins de 20 trades : données insuffisantes."
+
+[budget.C]
+max_trials = 12
+justification = "2 unités de temps (H1, H4) × (1 modèle minimal + 5 ablations unitaires). Voir §3 du protocole."
+[budget.F]
+max_trials = 12
+justification = "11 essais planifiés (TSMOM, Donchian, filtre de volatilité, stop suiveur) + 1 réserve non utilisée par défaut."
+[budget.REF]
+max_trials = 2
+justification = "Référence moyenne mobile simple D1 (1) + 1 réserve."
+[budget.REG]
+max_trials = 4
+justification = "Filtre de régime journalier appliqué au modèle C minimal (2) + 2 réserves."
+
+# ----------------------------- NEXUS C ---------------------------------
+[[hypothesis]]
+key = "NXC-01"
+family = "C"
+strategy = "C"
+statement = "Trend Pullback minimal : clôture > EMA100 et EMA100 en hausse sur 10 bougies ; plus bas <= EMA20 et clôture > EMA20 ; stop 2 ATR14 ; sortie 2R ou clôture < EMA100."
+rationale = "Persistance des tendances : un retracement temporaire dans une tendance établie offrirait un meilleur point d'entrée que le hasard."
+params = { tf = ["H1", "H4"] }
+
+[[hypothesis]]
+key = "NXC-02"
+family = "C"
+strategy = "C"
+statement = "NXC-01 + filtre de structure (dernier événement BOS/CHoCH haussier, pivots 2/2)."
+rationale = "Ablation : contribution d'une structure Higher High / Higher Low."
+params = { tf = ["H1", "H4"], structure_filter = [true] }
+
+[[hypothesis]]
+key = "NXC-03"
+family = "C"
+strategy = "C"
+statement = "NXC-01 + confirmation de reprise : clôture au-dessus du plus haut précédent dans les 3 bougies suivant le retracement."
+rationale = "Ablation : contribution d'une confirmation directionnelle."
+params = { tf = ["H1", "H4"], confirmation = [true] }
+
+[[hypothesis]]
+key = "NXC-04"
+family = "C"
+strategy = "C"
+statement = "NXC-01 avec stop structurel : sous le dernier swing low confirmé − 0,1 ATR (distance entre 0,5 et 5 ATR, sinon pas de trade)."
+rationale = "Ablation : stop structurel contre stop de volatilité."
+params = { tf = ["H1", "H4"], stop_mode = ["structure"] }
+
+[[hypothesis]]
+key = "NXC-05"
+family = "C"
+strategy = "C"
+statement = "NXC-01 avec sortie par stop suiveur chandelier 3 ATR (plus haut des clôtures − 3 ATR14) et invalidation, sans objectif fixe."
+rationale = "Ablation : laisser courir les gains dans les tendances."
+params = { tf = ["H1", "H4"], exit_mode = ["trailing"] }
+
+[[hypothesis]]
+key = "NXC-06"
+family = "C"
+strategy = "C"
+statement = "NXC-01 avec sortie uniquement sur invalidation (clôture < EMA100), sans objectif fixe."
+rationale = "Ablation : contribution de l'objectif fixe 2R."
+params = { tf = ["H1", "H4"], exit_mode = ["invalidation"] }
+
+# ----------------------------- NEXUS F ---------------------------------
+[[hypothesis]]
+key = "NXF-01"
+family = "F"
+strategy = "F_TSMOM"
+statement = "Momentum de série temporelle D1 : long tant que clôture > clôture d'il y a L jours (L = 20 ≈ 1 mois, 60 ≈ 3 mois) ; liquidités sinon ; stop initial 3 ATR20."
+rationale = "Momentum de série temporelle documenté sur de nombreux actifs ; horizons courts plausibles en crypto. Peut rester entièrement en liquidités."
+params = { tf = ["D1"], lookback = [20, 60] }
+
+[[hypothesis]]
+key = "NXF-02"
+family = "F"
+strategy = "F_DONCHIAN"
+statement = "Cassure de Donchian : clôture > plus haut des N bougies précédentes ; sortie clôture < plus bas des N/2 ; stop initial 2 ATR20. D1 N = 20, 55 ; H4 N = 120 (≈ 20 jours)."
+rationale = "Suivi de tendance par cassure de plus haut récent (règles de type Turtle, peu de paramètres)."
+params = { tf = ["D1"], n = [20, 55] }
+
+[[hypothesis]]
+key = "NXF-02H4"
+family = "F"
+strategy = "F_DONCHIAN"
+statement = "Cassure de Donchian H4, N = 120 bougies (≈ 20 jours)."
+rationale = "Même horizon que D1 N = 20, granularité plus fine (plus de trades)."
+params = { tf = ["H4"], n = [120] }
+
+[[hypothesis]]
+key = "NXF-03"
+family = "F"
+strategy = "F_TSMOM"
+statement = "NXF-01 + filtre de volatilité : pas d'entrée si ATR20/prix est au-dessus du 80e percentile des 365 jours précédents."
+rationale = "Ablation : éviter d'entrer en période de volatilité extrême."
+params = { tf = ["D1"], lookback = [20, 60], vol_filter = [true] }
+
+[[hypothesis]]
+key = "NXF-04"
+family = "F"
+strategy = "F_DONCHIAN"
+statement = "NXF-02 D1 + filtre de volatilité (même règle que NXF-03)."
+rationale = "Ablation : contribution du filtre de volatilité sur les cassures."
+params = { tf = ["D1"], n = [20, 55], vol_filter = [true] }
+
+[[hypothesis]]
+key = "NXF-05"
+family = "F"
+strategy = "F_DONCHIAN"
+statement = "Donchian D1 N = 20 avec sortie par stop suiveur 3 ATR au lieu du canal N/2."
+rationale = "Ablation : sortie sur perte de momentum par stop suiveur."
+params = { tf = ["D1"], n = [20], trailing = [true] }
+
+# ----------------------------- Référence --------------------------------
+[[hypothesis]]
+key = "REF-SMA-01"
+family = "REF"
+strategy = "REF_SMA"
+statement = "Référence : long quand clôture D1 > SMA50, liquidités sinon ; stop initial 3 ATR20."
+rationale = "Stratégie de moyenne mobile simple servant de comparaison obligatoire."
+params = { tf = ["D1"], n = [50] }
+
+# ----------------------------- Régime -----------------------------------
+[[hypothesis]]
+key = "REG-01"
+family = "REG"
+strategy = "C"
+statement = "NXC-01 avec filtre de régime journalier causal : entrée uniquement si le régime de la veille est « haussier » (clôture > EMA100 D1 et EMA100 D1 en hausse sur 20 jours)."
+rationale = "Vérifier si un régime de plus haut niveau apporte une amélioration indépendante du filtre de tendance propre à la stratégie."
+params = { tf = ["H1", "H4"], regime_filter = [true] }
