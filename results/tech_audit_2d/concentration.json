@@ -1,0 +1,93 @@
+[
+  {
+    "hypothesis": "NXF-01",
+    "variant": {
+      "lookback": 20,
+      "tf": "D1"
+    },
+    "n": 51,
+    "strategy_top5_pct": 65.2020855907425,
+    "random_top5_median_pct": 62.92655022506695,
+    "random_top5_p5_p95": [
+      49.939148592432254,
+      77.4604626130978
+    ],
+    "share_random_more_concentrated": 0.39666666666666667
+  },
+  {
+    "hypothesis": "NXF-01",
+    "variant": {
+      "lookback": 60,
+      "tf": "D1"
+    },
+    "n": 20,
+    "strategy_top5_pct": 99.62046820556539,
+    "random_top5_median_pct": 92.79467048439969,
+    "random_top5_p5_p95": [
+      79.89265827715859,
+      99.65302637440828
+    ],
+    "share_random_more_concentrated": 0.056666666666666664
+  },
+  {
+    "hypothesis": "NXF-02H4",
+    "variant": {
+      "n": 120,
+      "tf": "H4"
+    },
+    "n": 20,
+    "strategy_top5_pct": 93.63527896392927,
+    "random_top5_median_pct": 98.92624248470855,
+    "random_top5_p5_p95": [
+      89.3693612249427,
+      100.0
+    ],
+    "share_random_more_concentrated": 0.8566666666666667
+  },
+  {
+    "hypothesis": "NXF-03",
+    "variant": {
+      "lookback": 20,
+      "tf": "D1",
+      "vol_filter": true
+    },
+    "n": 41,
+    "strategy_top5_pct": 81.13375598806027,
+    "random_top5_median_pct": 69.48550586361159,
+    "random_top5_p5_p95": [
+      57.26741204786486,
+      84.04889259568549
+    ],
+    "share_random_more_concentrated": 0.12
+  },
+  {
+    "hypothesis": "REF-SMA-01",
+    "variant": {
+      "n": 50,
+      "tf": "D1"
+    },
+    "n": 24,
+    "strategy_top5_pct": 97.02597355726425,
+    "random_top5_median_pct": 89.30611611841115,
+    "random_top5_p5_p95": [
+      73.91367100320167,
+      97.7492393440892
+    ],
+    "share_random_more_concentrated": 0.09333333333333334
+  },
+  {
+    "hypothesis": "NXD-02",
+    "variant": {
+      "require_compression": false,
+      "tf": "H4"
+    },
+    "n": 137,
+    "strategy_top5_pct": 29.712126208840207,
+    "random_top5_median_pct": 34.545066596325064,
+    "random_top5_p5_p95": [
+      27.858578059128263,
+      43.18575207465156
+    ],
+    "share_random_more_concentrated": 0.8666666666666667
+  }
+]

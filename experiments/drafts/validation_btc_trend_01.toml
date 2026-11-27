@@ -1,0 +1,18 @@
+# BROUILLON — NON ENREGISTRÉ, NON EXÉCUTÉ. Exécution soumise à l'autorisation explicite de l'utilisateur.
+# Hypothèse unique de validation : allocation de tendance BTC / liquidités, achat seulement.
+# Variantes FIGÉES avant tout accès à la période de validation (2023-07-01 → 2025-01-01).
+
+[validation]
+key = "VAL-TREND-01"
+period = "validation"            # ouverture unique, journalisée (validation_access)
+symbols = ["BTCUSDT"]
+statement = "Une allocation BTC/liquidités conditionnée par la tendance (règles figées) obtient un rendement quotidien moyen supérieur à celui d'un portefeuille passif de même exposition moyenne, avec un drawdown inférieur ou égal."
+variants = [
+  { key = "NXG-01", w_max = 0.10 },   # moyenne mobile 100 j, binaire
+  { key = "NXG-04", w_max = 0.10 },   # progressive (3 conditions)
+  { key = "NXG-02", w_max = 0.10 },   # momentum 90 j, binaire (référence « momentum simple »)
+]
+primary_criterion = "Différence de rendement quotidien moyen (stratégie − passif même exposition, mêmes coûts), test unilatéral, bootstrap par blocs de 20 jours, alpha = 0,05 / 3 (Bonferroni), pour chaque variante."
+secondary_criteria = ["Max drawdown <= celui du poids fixe 10 % rééquilibré mensuellement", "Sharpe >= passif même exposition", "Différence > 0 avec coûts x2"]
+decision = "Variante validée si critère principal ET critères secondaires 1 et 3 satisfaits. Sinon : rejet définitif de cette version (pas de réglage puis nouvel essai sur la validation). Une variante validée reste candidate au test final, qui exige une nouvelle autorisation."
+power_note = "La validation (2023-07 → 2024-12) est majoritairement haussière ; la puissance pour distinguer un filtre de tendance d'une exposition passive y est faible. Un échec n'invalide pas l'effet de protection en marché baissier, un succès ne le démontre pas."

@@ -4,12 +4,25 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
+## Phase 2D — Diversification, allocation dynamique, audit technique
+
+Commencer par [`docs/phase2d/RAPPORT_PHASE_2D.md`](docs/phase2d/RAPPORT_PHASE_2D.md).
+
+```bash
+python -m pytest                                                        # 77 tests
+python -m nexus.research.g_runner experiments/preregistration/batch_2d_01.toml     # NEXUS G
+python -m nexus.research.lab_runner experiments/preregistration/batch_2d_01.toml   # NEXUS E
+python -m nexus.research.report_2d
+```
+
+Données Dukascopy : téléchargement automatique **bloqué** (conditions d'utilisation, voir `docs/phase2d/01_conditions_utilisation.md`).
+
 ## Phase 2C — Recherche avancée BTC (H1/H4/D1)
 
 Commencer par [`docs/phase2c/RAPPORT_PHASE_2C.md`](docs/phase2c/RAPPORT_PHASE_2C.md).
 
 ```bash
-python -m pytest                                                        # 60 tests
+python -m pytest
 python -m nexus.research.audit_2b                                        # audit des résultats 2B
 python -m nexus.research.lab_runner experiments/preregistration/batch_2c_01.toml
 python -m nexus.research.report_2c                                       # rapports générés
