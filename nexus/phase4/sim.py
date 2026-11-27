@@ -54,6 +54,27 @@ def atr_pct(d1: pd.DataFrame, n: int = 14) -> pd.Series:
     return tr.ewm(alpha=1 / n, adjust=False, min_periods=n).mean() / d1["c"]
 
 
+def adx(d: pd.DataFrame, n: int = 14) -> pd.Series:
+    """ADX de Wilder (lissage alpha = 1/n)."""
+    h, l, c = d["h"], d["l"], d["c"]
+    up, dn = h.diff(), -l.diff()
+    pdm = up.where((up > dn) & (up > 0), 0.0)
+    mdm = dn.where((dn > up) & (dn > 0), 0.0)
+    pc = c.shift(1)
+    tr = pd.concat([h - l, (h - pc).abs(), (l - pc).abs()], axis=1).max(axis=1)
+    atr_ = tr.ewm(alpha=1 / n, adjust=False, min_periods=n).mean()
+    pdi = 100 * pdm.ewm(alpha=1 / n, adjust=False, min_periods=n).mean() / atr_
+    mdi = 100 * mdm.ewm(alpha=1 / n, adjust=False, min_periods=n).mean() / atr_
+    dx = 100 * (pdi - mdi).abs() / (pdi + mdi).replace(0, np.nan)
+    return dx.ewm(alpha=1 / n, adjust=False, min_periods=n).mean()
+
+
+def bollinger(c: pd.Series, n: int = 20, k: float = 2.0) -> tuple[pd.Series, pd.Series]:
+    m = c.rolling(n, min_periods=n).mean()
+    sd = c.rolling(n, min_periods=n).std(ddof=0)
+    return m - k * sd, m + k * sd
+
+
 def cross_above(a: pd.Series, b) -> pd.Series:
     b = b if isinstance(b, pd.Series) else pd.Series(float(b), index=a.index)
     ok = a.notna() & b.notna() & a.shift(1).notna() & b.shift(1).notna()
@@ -87,6 +108,10 @@ def signals(d1: pd.DataFrame, rule: dict) -> pd.DataFrame:
         f["short_entry"] = cross_below(roc, 0.0)
         f["long_exit"] = f["short_entry"]
         f["short_exit"] = f["long_entry"]
+    elif kind == "bbmr":
+        lo, hi = bollinger(c, rule["bb_n"], rule["bb_k"])
+        f["long_entry"] = (c < lo) & (rsi(c, rule["rsi_n"]) > rule["rsi_th"]) & (adx(d1, rule["adx_n"]) > rule["adx_th"])
+        f["long_exit"] = c > hi
     elif kind == "rsi2":
         r = rsi(c, rule["rsi_n"])
         trend = sma(c, rule["trend_sma"])
@@ -116,7 +141,8 @@ class Result:
 def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], *, start, end,
              risk: float = 0.005, costs: Costs = SPOT, cost_mult: float = 1.0, initial: float = 1000.0,
              rules_mode: bool = False, daily_loss: float = 0.02, dd_halt: float = 0.10,
-             stop_mult: float = 1.0, tiers: list[tuple[float, float]] | None = None) -> Result:
+             stop_mult: float = 1.0, tiers: list[tuple[float, float]] | None = None, bar_hours: int = 24,
+             delay_bars: int = 0) -> Result:
     """`tiers` : paliers Cubrik « lock » en % du prix (phase 5) : dès que le prix atteint entrée × (1 + at)
     (plus haut pour un achat), le stop remonte à entrée × (1 + lock), effectif à partir de la bougie H1
     suivante (aucune hypothèse favorable sur l'ordre intrabougie)."""
@@ -124,7 +150,8 @@ def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], 
     cst = costs.scaled(cost_mult)
     allow_short = costs.perp
     grid = pd.date_range(start, end, freq="1h", inclusive="left")
-    days = pd.date_range(start, end, freq="1D", inclusive="left")
+    # bougies de signal : D1 par défaut (phase 4) ; H4 en phase 7 (`a.d1` contient alors les bougies H4)
+    days = pd.date_range(start, end, freq=f"{bar_hours}h", inclusive="left")
     names = list(assets)
     A = {}
     for s in names:
@@ -141,6 +168,7 @@ def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], 
     pos: dict[str, dict] = {}
     trades, eq_days, expo_days = [], [], []
     pending: dict[str, str] = {}
+    due: dict[str, int] = {}                     # bougie à partir de laquelle l'ordre est exécuté (retard)
     e_prev = initial
     peak = initial
     halted = False
@@ -194,12 +222,14 @@ def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], 
                   "funding": 0.0, "bars": 0, "stop_px": fill * (1 - stop) if d > 0 else fill * (1 + stop)}
 
     for di, day in enumerate(days):
-        k0 = di * 24
+        k0 = di * bar_hours
         # ---- ouverture : ordres issus de la clôture précédente
         if not halted:
             for s, act in list(pending.items()):
+                if due.get(s, di) > di:
+                    continue                                     # retard d'exécution simulé
                 a = A[s]
-                kk = next((k for k in range(k0, min(k0 + 24, len(grid))) if not np.isnan(a["o"][k])), None)
+                kk = next((k for k in range(k0, min(k0 + bar_hours, len(grid))) if not np.isnan(a["o"][k])), None)
                 if kk is None:
                     continue                                     # pas de cotation ce jour : ordre reporté
                 px = a["o"][kk]
@@ -211,7 +241,7 @@ def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], 
                     open_(s, -1, kk, px, grid[kk])
                 del pending[s]
         # ---- heures du jour : stops, financement, règles de risque
-        for k in range(k0, min(k0 + 24, len(grid))):
+        for k in range(k0, min(k0 + bar_hours, len(grid))):
             for s in list(pos):
                 a, p = A[s], pos[s]
                 if a["fund"] is not None and not np.isnan(a["fund"][k]):
@@ -245,7 +275,7 @@ def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], 
                         close(s, A[s]["cff"][k], grid[k], "daily_loss")
                     stats["daily_loss_events"] += 1
         # ---- clôture : valeur, exposition, nouveaux ordres
-        klast = min(k0 + 23, len(grid) - 1)
+        klast = min(k0 + bar_hours - 1, len(grid) - 1)
         e_close = mtm(klast)
         peak = max(peak, e_close)
         expo = sum(p["qty"] * (A[s]["cff"][klast] if not np.isnan(A[s]["cff"][klast]) else p["entry"]) for s, p in pos.items())
@@ -255,7 +285,10 @@ def simulate(assets: dict[str, AssetData], rule: dict, stops: dict[str, float], 
         if halted:
             continue
         for s in names:
+            if delay_bars and s in pending:
+                continue                                         # un ordre déjà en attente n'est pas remplacé
             f = A[s]["sig"].iloc[di]
+            due[s] = di + 1 + delay_bars
             if s in pos:
                 p = pos[s]
                 p["bars"] += 1
