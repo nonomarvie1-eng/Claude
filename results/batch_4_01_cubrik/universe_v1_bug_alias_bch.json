@@ -1,0 +1,206 @@
+{
+  "ranking": [
+    {
+      "symbol": "BTCUSDT",
+      "days": 92,
+      "quote_volume_usdt": 33951907099.790333
+    },
+    {
+      "symbol": "ETHUSDT",
+      "days": 92,
+      "quote_volume_usdt": 5427173345.08895
+    },
+    {
+      "symbol": "BNBUSDT",
+      "days": 92,
+      "quote_volume_usdt": 2347423062.9972
+    },
+    {
+      "symbol": "XRPUSDT",
+      "days": 92,
+      "quote_volume_usdt": 2256566067.4268985
+    },
+    {
+      "symbol": "EOSUSDT",
+      "days": 92,
+      "quote_volume_usdt": 1930318029.285714
+    },
+    {
+      "symbol": "LTCUSDT",
+      "days": 92,
+      "quote_volume_usdt": 1443406531.1095889
+    },
+    {
+      "symbol": "TRXUSDT",
+      "days": 92,
+      "quote_volume_usdt": 1431309210.991589
+    },
+    {
+      "symbol": "LINKUSDT",
+      "days": 92,
+      "quote_volume_usdt": 1232068943.3839025
+    },
+    {
+      "symbol": "BCHUSDT",
+      "days": 65,
+      "quote_volume_usdt": 1193096428.352933
+    },
+    {
+      "symbol": "MATICUSDT",
+      "days": 92,
+      "quote_volume_usdt": 823270864.518056
+    },
+    {
+      "symbol": "VETUSDT",
+      "days": 92,
+      "quote_volume_usdt": 683028369.4112159
+    },
+    {
+      "symbol": "ADAUSDT",
+      "days": 92,
+      "quote_volume_usdt": 484159165.545597
+    },
+    {
+      "symbol": "ETCUSDT",
+      "days": 92,
+      "quote_volume_usdt": 420746891.309423
+    },
+    {
+      "symbol": "ONTUSDT",
+      "days": 92,
+      "quote_volume_usdt": 413753898.62480706
+    },
+    {
+      "symbol": "NEOUSDT",
+      "days": 92,
+      "quote_volume_usdt": 404020366.22022295
+    },
+    {
+      "symbol": "XLMUSDT",
+      "days": 92,
+      "quote_volume_usdt": 403251623.27156705
+    },
+    {
+      "symbol": "BTTUSDT",
+      "days": 92,
+      "quote_volume_usdt": 385255590.137701
+    },
+    {
+      "symbol": "ATOMUSDT",
+      "days": 92,
+      "quote_volume_usdt": 355822096.15810996
+    },
+    {
+      "symbol": "IOSTUSDT",
+      "days": 92,
+      "quote_volume_usdt": 298396445.229521
+    },
+    {
+      "symbol": "QTUMUSDT",
+      "days": 92,
+      "quote_volume_usdt": 236557131.661488
+    },
+    {
+      "symbol": "XTZUSDT",
+      "days": 92,
+      "quote_volume_usdt": 203876673.92320198
+    },
+    {
+      "symbol": "KAVAUSDT",
+      "days": 68,
+      "quote_volume_usdt": 202822142.94679502
+    },
+    {
+      "symbol": "XMRUSDT",
+      "days": 92,
+      "quote_volume_usdt": 194798485.0147192
+    },
+    {
+      "symbol": "ALGOUSDT",
+      "days": 92,
+      "quote_volume_usdt": 148941124.0500717
+    },
+    {
+      "symbol": "BATUSDT",
+      "days": 92,
+      "quote_volume_usdt": 147846938.528851
+    },
+    {
+      "symbol": "ZECUSDT",
+      "days": 92,
+      "quote_volume_usdt": 140053088.1191503
+    },
+    {
+      "symbol": "DASHUSDT",
+      "days": 92,
+      "quote_volume_usdt": 103200566.80886641
+    },
+    {
+      "symbol": "WAVESUSDT",
+      "days": 92,
+      "quote_volume_usdt": 74533781.835996
+    },
+    {
+      "symbol": "IOTAUSDT",
+      "days": 92,
+      "quote_volume_usdt": 68106665.00705199
+    },
+    {
+      "symbol": "ONEUSDT",
+      "days": 92,
+      "quote_volume_usdt": 66232526.65341
+    },
+    {
+      "symbol": "ENJUSDT",
+      "days": 92,
+      "quote_volume_usdt": 50400080.14738799
+    },
+    {
+      "symbol": "ICXUSDT",
+      "days": 92,
+      "quote_volume_usdt": 40736561.404936
+    },
+    {
+      "symbol": "ZILUSDT",
+      "days": 92,
+      "quote_volume_usdt": 38388136.97548799
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "days": 92,
+      "quote_volume_usdt": 37334931.8198971
+    },
+    {
+      "symbol": "HBARUSDT",
+      "days": 92,
+      "quote_volume_usdt": 24230040.833572004
+    },
+    {
+      "symbol": "THETAUSDT",
+      "days": 92,
+      "quote_volume_usdt": 21711308.169862006
+    },
+    {
+      "symbol": "OMGUSDT",
+      "days": 92,
+      "quote_volume_usdt": 18803497.103624
+    },
+    {
+      "symbol": "FTMUSDT",
+      "days": 92,
+      "quote_volume_usdt": 17490695.096914
+    }
+  ],
+  "universe": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT",
+    "EOSUSDT",
+    "LTCUSDT",
+    "TRXUSDT",
+    "LINKUSDT",
+    "MATICUSDT",
+    "VETUSDT"
+  ]
+}
