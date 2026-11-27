@@ -1,0 +1,42 @@
+{
+  "BTCUSDT": {
+    "median_atr_pct": 5.447898317350839,
+    "stop_pct": 16
+  },
+  "ETHUSDT": {
+    "median_atr_pct": 6.290861651573019,
+    "stop_pct": 19
+  },
+  "BNBUSDT": {
+    "median_atr_pct": 6.340893985795325,
+    "stop_pct": 19
+  },
+  "XRPUSDT": {
+    "median_atr_pct": 5.792679570395536,
+    "stop_pct": 17
+  },
+  "EOSUSDT": {
+    "median_atr_pct": 7.454317238791157,
+    "stop_pct": 22
+  },
+  "BCHUSDT": {
+    "median_atr_pct": 7.047139897141879,
+    "stop_pct": 21
+  },
+  "LTCUSDT": {
+    "median_atr_pct": 7.267701049968131,
+    "stop_pct": 22
+  },
+  "TRXUSDT": {
+    "median_atr_pct": 7.781242807025296,
+    "stop_pct": 23
+  },
+  "LINKUSDT": {
+    "median_atr_pct": 9.1120109139948,
+    "stop_pct": 25
+  },
+  "MATICUSDT": {
+    "median_atr_pct": 11.270546776913642,
+    "stop_pct": 25
+  }
+}

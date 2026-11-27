@@ -1,0 +1,146 @@
+{
+  "BTCUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39349,
+    "funding_first": "2020-01-01 00:00:00+00:00",
+    "funding_rows": 3831,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "ETHUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39349,
+    "funding_first": "2020-01-01 00:00:00+00:00",
+    "funding_rows": 3831,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "BNBUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39349,
+    "funding_first": "2020-02-10 08:00:00+00:00",
+    "funding_rows": 3710,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12",
+      "2020-01"
+    ]
+  },
+  "XRPUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39349,
+    "funding_first": "2020-01-06 08:00:00+00:00",
+    "funding_rows": 3815,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "EOSUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39349,
+    "funding_first": "2020-01-08 08:00:00+00:00",
+    "funding_rows": 3809,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "BCHUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39341,
+    "funding_first": "2020-01-01 00:00:00+00:00",
+    "funding_rows": 3831,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "LTCUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39349,
+    "funding_first": "2020-01-09 08:00:00+00:00",
+    "funding_rows": 3806,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "TRXUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 39349,
+    "funding_first": "2020-01-15 08:00:00+00:00",
+    "funding_rows": 3788,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "LINKUSDT": {
+    "h1_months": 54,
+    "h1_missing": [],
+    "h1_rows": 38979,
+    "funding_first": "2020-01-17 08:00:00+00:00",
+    "funding_rows": 3782,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12"
+    ]
+  },
+  "MATICUSDT": {
+    "h1_months": 51,
+    "h1_missing": [
+      "2019-01",
+      "2019-02",
+      "2019-03"
+    ],
+    "h1_rows": 36580,
+    "funding_first": "2020-10-22 08:00:00+00:00",
+    "funding_rows": 2945,
+    "funding_missing_months": [
+      "2019-09",
+      "2019-10",
+      "2019-11",
+      "2019-12",
+      "2020-01",
+      "2020-02",
+      "2020-03",
+      "2020-04",
+      "2020-05",
+      "2020-06",
+      "2020-07",
+      "2020-08",
+      "2020-09"
+    ]
+  }
+}
