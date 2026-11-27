@@ -333,8 +333,8 @@ def cmd_mc():
         mc_ok = (c["block_bootstrap"]["p05_return_pct"] > 0 and c["removal"]["0.2"]["median_return_pct"] > 0
                  and c["concentration"]["without_best_trade_pct"] > 0 and c["concentration"]["without_best_year_pct"] > 0)
         ev["montecarlo_pass"] = bool(mc_ok)
-        if ev.get("verdict", "").startswith("candidate") and not mc_ok:
-            ev["verdict"] = "prometteur (échec Monte Carlo)" if ev["criteria"]["C2"] else "rejeté"
+        if ev.get("verdict", "").startswith("candidate"):
+            ev["verdict"] = "candidate" if mc_ok else ("prometteur (échec Monte Carlo)" if ev["criteria"]["C2"] else "rejeté")
         print(k, json.dumps(c["block_bootstrap"]), flush=True)
     reg.finish_trial(tid, status="done", result={k: v["nexus_0.5pct"]["block_bootstrap"] for k, v in out.items()})
     save("montecarlo.json", out)

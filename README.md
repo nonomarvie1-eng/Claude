@@ -4,12 +4,22 @@ Projet de recherche en trading algorithmique **en simulation uniquement** (aucun
 
 Objectif : déterminer scientifiquement si un avantage statistique robuste, après coûts, existe dans un ensemble de stratégies intraday, et le dire explicitement si ce n'est pas le cas.
 
+## Phase 5 — Retour à la moyenne sur indices (Connors) et gestion de l'exposition
+
+Commencer par [`docs/phase5/RAPPORT_PHASE_5.md`](docs/phase5/RAPPORT_PHASE_5.md).
+
+```bash
+python -m pytest                                    # 103 tests
+python -m nexus.research.p5_runner diag|run|sens|mc|exp
+python -m nexus.research.report_5
+```
+
 ## Phase 4 — Stratégies compatibles Cubrik (réorientation : laboratoire de recherche)
 
 Commencer par [`docs/phase4/RAPPORT_PHASE_4.md`](docs/phase4/RAPPORT_PHASE_4.md) ; audit de la plateforme : [`docs/phase4/01_audit_cubrik.md`](docs/phase4/01_audit_cubrik.md).
 
 ```bash
-python -m pytest                                    # 96 tests
+python -m pytest
 python -m nexus.research.p4_runner universe|data|stops|run|random
 python -m nexus.research.report_4
 ```

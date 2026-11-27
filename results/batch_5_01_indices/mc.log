@@ -1,0 +1,7 @@
+H5-01a-RSI2-NOSTOP_US {"median_return_pct": 2.130815040466927, "p05_return_pct": -0.5922733016204965, "p95_drawdown_pct": 2.348301305801568, "share_losing": 0.094, "p_dd_over_limit": 0.0}
+H5-01b-RSI2-STOP_US {"median_return_pct": 1.6334192100391443, "p05_return_pct": -1.1779297798347526, "p95_drawdown_pct": 2.7098592673234365, "share_losing": 0.1666, "p_dd_over_limit": 0.0}
+H5-02-RSI3050_US {"median_return_pct": 4.69949568312813, "p05_return_pct": 1.5520103913977412, "p95_drawdown_pct": 2.0889396020228213, "share_losing": 0.0084, "p_dd_over_limit": 0.0}
+H5-03-DOUBLE5_US {"median_return_pct": 4.702035433928531, "p05_return_pct": 0.6769020982927354, "p95_drawdown_pct": 3.034755560289683, "share_losing": 0.0283, "p_dd_over_limit": 0.0}
+H5-04-RSI2-INTL_Europe {"median_return_pct": 1.7159982902132165, "p05_return_pct": -0.8087639249588863, "p95_drawdown_pct": 2.3251615439550353, "share_losing": 0.1301, "p_dd_over_limit": 0.0}
+H5-04-RSI2-INTL_Japan {"median_return_pct": 3.9773150700701865, "p05_return_pct": 1.944490797372659, "p95_drawdown_pct": 1.0713588527293338, "share_losing": 0.0004, "p_dd_over_limit": 0.0}
+H5-04-RSI2-INTL_AsiaPacExJapan {"median_return_pct": -2.764717123186972, "p05_return_pct": -5.672425622833875, "p95_drawdown_pct": 6.068213335192772, "share_losing": 0.951, "p_dd_over_limit": 0.0}

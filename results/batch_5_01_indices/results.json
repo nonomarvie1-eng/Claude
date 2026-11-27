@@ -173,7 +173,166 @@
         "end": 1
       }
     },
-    "p_bh": 0.2091040895910409
+    "p_bh": 0.2091040895910409,
+    "grid": {
+      "rows": [
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 56,
+          "mean_ret_pct": 0.5487225510541546
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 57,
+          "mean_ret_pct": 0.24487017718544188
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 61,
+          "mean_ret_pct": 0.3381045809107198
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 100,
+          "mean_ret_pct": 0.3798042836629452
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 104,
+          "mean_ret_pct": 0.23566233063420072
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 106,
+          "mean_ret_pct": 0.2072348195842299
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 158,
+          "mean_ret_pct": 0.35601655294202517
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 163,
+          "mean_ret_pct": 0.2858587464282439
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 165,
+          "mean_ret_pct": 0.2632915350707297
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 8,
+          "mean_ret_pct": 1.008055810623908
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 10,
+          "mean_ret_pct": 1.1387031362013786
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 12,
+          "mean_ret_pct": 0.2247748823292758
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 39,
+          "mean_ret_pct": 0.6358829855373012
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 41,
+          "mean_ret_pct": 0.3878531096483063
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 45,
+          "mean_ret_pct": 0.3739003440092613
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 70,
+          "mean_ret_pct": 0.6102300588320553
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 73,
+          "mean_ret_pct": 0.4155242421020281
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 77,
+          "mean_ret_pct": 0.48052011700560765
+        }
+      ],
+      "share_positive": 1.0
+    },
+    "criteria": {
+      "C1": false,
+      "C2": false,
+      "C3": true,
+      "C4": true,
+      "C5": false,
+      "C6": true
+    },
+    "verdict": "rejeté",
+    "montecarlo_pass": false
   },
   "H5-01b-RSI2-STOP_US": {
     "market": "US",
@@ -352,7 +511,166 @@
         "end": 1
       }
     },
-    "p_bh": 0.2331933473319335
+    "p_bh": 0.2331933473319335,
+    "grid": {
+      "rows": [
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 56,
+          "mean_ret_pct": 0.44629005431650987
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 57,
+          "mean_ret_pct": 0.1444434694677536
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 61,
+          "mean_ret_pct": 0.24426323107616096
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 100,
+          "mean_ret_pct": 0.3224420854898645
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 104,
+          "mean_ret_pct": 0.180620769673546
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 106,
+          "mean_ret_pct": 0.12693349575991544
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 159,
+          "mean_ret_pct": 0.32162160603478274
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 164,
+          "mean_ret_pct": 0.25301276304813697
+        },
+        {
+          "market": "US",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 166,
+          "mean_ret_pct": 0.21418435405597397
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 8,
+          "mean_ret_pct": 1.008055810623908
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 10,
+          "mean_ret_pct": 1.1387031362013786
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 12,
+          "mean_ret_pct": -0.15715056001008673
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 39,
+          "mean_ret_pct": 0.4888004261191428
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 41,
+          "mean_ret_pct": 0.3049252562514449
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 45,
+          "mean_ret_pct": 0.29834385535878644
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 70,
+          "mean_ret_pct": 0.5282840614419393
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 73,
+          "mean_ret_pct": 0.33710886758273934
+        },
+        {
+          "market": "US",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 77,
+          "mean_ret_pct": 0.40617826843537136
+        }
+      ],
+      "share_positive": 0.9444444444444444
+    },
+    "criteria": {
+      "C1": false,
+      "C2": false,
+      "C3": true,
+      "C4": true,
+      "C5": false,
+      "C6": true
+    },
+    "verdict": "rejeté",
+    "montecarlo_pass": false
   },
   "H5-02-RSI3050_US": {
     "market": "US",
@@ -530,7 +848,238 @@
         "stop": 3
       }
     },
-    "p_bh": 0.005249475052494751
+    "p_bh": 0.005249475052494751,
+    "grid": {
+      "rows": [
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 25,
+          "exit_th": 45,
+          "n": 98,
+          "mean_ret_pct": 0.45933439634991985
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 25,
+          "exit_th": 50,
+          "n": 92,
+          "mean_ret_pct": 0.4958842442200423
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 25,
+          "exit_th": 55,
+          "n": 89,
+          "mean_ret_pct": 0.6324165100960362
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 30,
+          "exit_th": 45,
+          "n": 140,
+          "mean_ret_pct": 0.39890997813533685
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 30,
+          "exit_th": 50,
+          "n": 132,
+          "mean_ret_pct": 0.4487409568553159
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 30,
+          "exit_th": 55,
+          "n": 125,
+          "mean_ret_pct": 0.5561987902783336
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 35,
+          "exit_th": 45,
+          "n": 177,
+          "mean_ret_pct": 0.2210553566742999
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 35,
+          "exit_th": 50,
+          "n": 166,
+          "mean_ret_pct": 0.2799648372657427
+        },
+        {
+          "market": "US",
+          "rsi_n": 4,
+          "entry_th": 35,
+          "exit_th": 55,
+          "n": 151,
+          "mean_ret_pct": 0.3864736023959049
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 25,
+          "exit_th": 45,
+          "n": 62,
+          "mean_ret_pct": 0.42735343672407955
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 25,
+          "exit_th": 50,
+          "n": 60,
+          "mean_ret_pct": 0.5042893662905092
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 25,
+          "exit_th": 55,
+          "n": 58,
+          "mean_ret_pct": 0.45237374197012153
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 30,
+          "exit_th": 45,
+          "n": 95,
+          "mean_ret_pct": 0.486239195089533
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 30,
+          "exit_th": 50,
+          "n": 88,
+          "mean_ret_pct": 0.6158734296619877
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 30,
+          "exit_th": 55,
+          "n": 81,
+          "mean_ret_pct": 0.5962313428261072
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 35,
+          "exit_th": 45,
+          "n": 146,
+          "mean_ret_pct": 0.41327894625407013
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 35,
+          "exit_th": 50,
+          "n": 134,
+          "mean_ret_pct": 0.5708955541049965
+        },
+        {
+          "market": "US",
+          "rsi_n": 5,
+          "entry_th": 35,
+          "exit_th": 55,
+          "n": 118,
+          "mean_ret_pct": 0.5900727910286752
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 25,
+          "exit_th": 45,
+          "n": 38,
+          "mean_ret_pct": 0.42827639151592833
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 25,
+          "exit_th": 50,
+          "n": 38,
+          "mean_ret_pct": 0.6007014398588151
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 25,
+          "exit_th": 55,
+          "n": 38,
+          "mean_ret_pct": 0.3881977341718984
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 30,
+          "exit_th": 45,
+          "n": 77,
+          "mean_ret_pct": 0.5955177401299903
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 30,
+          "exit_th": 50,
+          "n": 73,
+          "mean_ret_pct": 0.6478156219040944
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 30,
+          "exit_th": 55,
+          "n": 67,
+          "mean_ret_pct": 0.5801823001941675
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 35,
+          "exit_th": 45,
+          "n": 114,
+          "mean_ret_pct": 0.4657594490460448
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 35,
+          "exit_th": 50,
+          "n": 102,
+          "mean_ret_pct": 0.5924097071309993
+        },
+        {
+          "market": "US",
+          "rsi_n": 6,
+          "entry_th": 35,
+          "exit_th": 55,
+          "n": 92,
+          "mean_ret_pct": 0.6465825706156664
+        }
+      ],
+      "share_positive": 1.0
+    },
+    "criteria": {
+      "C1": true,
+      "C2": true,
+      "C3": true,
+      "C4": true,
+      "C5": false,
+      "C6": true
+    },
+    "verdict": "prometteur",
+    "montecarlo_pass": true
   },
   "H5-03-DOUBLE5_US": {
     "market": "US",
@@ -707,7 +1256,94 @@
         "end": 1
       }
     },
-    "p_bh": 0.2001799820017998
+    "p_bh": 0.2001799820017998,
+    "grid": {
+      "rows": [
+        {
+          "market": "US",
+          "n": 270,
+          "trend_sma": 150,
+          "mean_ret_pct": 0.19582901685374646
+        },
+        {
+          "market": "US",
+          "n": 276,
+          "trend_sma": 200,
+          "mean_ret_pct": 0.15982843266804644
+        },
+        {
+          "market": "US",
+          "n": 277,
+          "trend_sma": 250,
+          "mean_ret_pct": 0.16067212761434482
+        },
+        {
+          "market": "US",
+          "n": 208,
+          "trend_sma": 150,
+          "mean_ret_pct": 0.33793361224122553
+        },
+        {
+          "market": "US",
+          "n": 211,
+          "trend_sma": 200,
+          "mean_ret_pct": 0.26145738699059146
+        },
+        {
+          "market": "US",
+          "n": 213,
+          "trend_sma": 250,
+          "mean_ret_pct": 0.2525251399879721
+        },
+        {
+          "market": "US",
+          "n": 178,
+          "trend_sma": 150,
+          "mean_ret_pct": 0.4241591152665154
+        },
+        {
+          "market": "US",
+          "n": 180,
+          "trend_sma": 200,
+          "mean_ret_pct": 0.3654627836511334
+        },
+        {
+          "market": "US",
+          "n": 182,
+          "trend_sma": 250,
+          "mean_ret_pct": 0.31608721429302356
+        },
+        {
+          "market": "US",
+          "n": 145,
+          "trend_sma": 150,
+          "mean_ret_pct": 0.3787771195508811
+        },
+        {
+          "market": "US",
+          "n": 145,
+          "trend_sma": 200,
+          "mean_ret_pct": 0.31127547529089916
+        },
+        {
+          "market": "US",
+          "n": 148,
+          "trend_sma": 250,
+          "mean_ret_pct": 0.24058586259806136
+        }
+      ],
+      "share_positive": 1.0
+    },
+    "criteria": {
+      "C1": false,
+      "C2": false,
+      "C3": true,
+      "C4": true,
+      "C5": false,
+      "C6": true
+    },
+    "verdict": "rejeté",
+    "montecarlo_pass": true
   },
   "H5-04-RSI2-INTL_Europe": {
     "market": "Europe",
@@ -837,7 +1473,166 @@
         "mean_ret_pct": -0.035326380379510025
       }
     },
-    "p_bh": 0.2331933473319335
+    "p_bh": 0.2331933473319335,
+    "grid": {
+      "rows": [
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 124,
+          "mean_ret_pct": 0.26041526943892745
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 131,
+          "mean_ret_pct": 0.28864307633741315
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 133,
+          "mean_ret_pct": 0.15414545711718378
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 212,
+          "mean_ret_pct": 0.07928877193486655
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 223,
+          "mean_ret_pct": 0.12449193465553256
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 229,
+          "mean_ret_pct": 0.037976044515087334
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 311,
+          "mean_ret_pct": 0.0919938807610099
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 327,
+          "mean_ret_pct": 0.10213096712460615
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 331,
+          "mean_ret_pct": 0.06372267938626927
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 18,
+          "mean_ret_pct": 0.6426841163519886
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 21,
+          "mean_ret_pct": 0.45836766260368006
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 24,
+          "mean_ret_pct": 0.40851387424796015
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 70,
+          "mean_ret_pct": 0.2688336337449563
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 78,
+          "mean_ret_pct": 0.2731864736848677
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 84,
+          "mean_ret_pct": 0.1397120096168317
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 140,
+          "mean_ret_pct": 0.16642258846310046
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 150,
+          "mean_ret_pct": 0.14924875863344433
+        },
+        {
+          "market": "Europe",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 154,
+          "mean_ret_pct": 0.011734762440602928
+        }
+      ],
+      "share_positive": 1.0
+    },
+    "criteria": {
+      "C1": false,
+      "C2": false,
+      "C3": true,
+      "C4": true,
+      "C5": true,
+      "C6": true
+    },
+    "verdict": "rejeté",
+    "montecarlo_pass": false
   },
   "H5-04-RSI2-INTL_Japan": {
     "market": "Japan",
@@ -966,7 +1761,166 @@
         "mean_ret_pct": 0.7333661058533026
       }
     },
-    "p_bh": 0.005249475052494751
+    "p_bh": 0.005249475052494751,
+    "grid": {
+      "rows": [
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 78,
+          "mean_ret_pct": 0.4782421066844379
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 83,
+          "mean_ret_pct": 0.45688362492798384
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 93,
+          "mean_ret_pct": 0.5239013394823469
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 176,
+          "mean_ret_pct": 0.4731121203362618
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 184,
+          "mean_ret_pct": 0.46589812417301113
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 196,
+          "mean_ret_pct": 0.4260141467040454
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 258,
+          "mean_ret_pct": 0.2823080425795941
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 263,
+          "mean_ret_pct": 0.26626272724821237
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 274,
+          "mean_ret_pct": 0.17803256203023476
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 9,
+          "mean_ret_pct": 0.1769311458723645
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 11,
+          "mean_ret_pct": -0.0012627116240394502
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 15,
+          "mean_ret_pct": 0.2443899928584552
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 40,
+          "mean_ret_pct": 0.49202313657758207
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 45,
+          "mean_ret_pct": 0.4396096622981112
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 54,
+          "mean_ret_pct": 0.4909656343273198
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 102,
+          "mean_ret_pct": 0.30357658922661884
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 109,
+          "mean_ret_pct": 0.33409826356829164
+        },
+        {
+          "market": "Japan",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 117,
+          "mean_ret_pct": 0.31871713601203877
+        }
+      ],
+      "share_positive": 0.9444444444444444
+    },
+    "criteria": {
+      "C1": true,
+      "C2": true,
+      "C3": true,
+      "C4": true,
+      "C5": true,
+      "C6": true
+    },
+    "verdict": "candidate",
+    "montecarlo_pass": true
   },
   "H5-04-RSI2-INTL_AsiaPacExJapan": {
     "market": "AsiaPacExJapan",
@@ -1096,7 +2050,166 @@
         "mean_ret_pct": -0.29223618452953504
       }
     },
-    "p_bh": 0.9858014198580142
+    "p_bh": 0.9858014198580142,
+    "grid": {
+      "rows": [
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 134,
+          "mean_ret_pct": -0.18581063769147343
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 145,
+          "mean_ret_pct": -0.14807282923645912
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 152,
+          "mean_ret_pct": -0.22144457641825985
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 243,
+          "mean_ret_pct": -0.19089632104586746
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 252,
+          "mean_ret_pct": -0.20149103348759673
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 262,
+          "mean_ret_pct": -0.2972247722294483
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 305,
+          "mean_ret_pct": -0.30639713891924764
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 319,
+          "mean_ret_pct": -0.36039890245145584
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 2,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 329,
+          "mean_ret_pct": -0.38706278919437714
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 150,
+          "n": 34,
+          "mean_ret_pct": 0.017108109646609946
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 200,
+          "n": 40,
+          "mean_ret_pct": -0.15095425453951505
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 5,
+          "trend_sma": 250,
+          "n": 41,
+          "mean_ret_pct": 0.10139954557565223
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 150,
+          "n": 94,
+          "mean_ret_pct": 0.041722434317035755
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 200,
+          "n": 105,
+          "mean_ret_pct": 0.004857501243866363
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 10,
+          "trend_sma": 250,
+          "n": 111,
+          "mean_ret_pct": -0.0067191968321582115
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 150,
+          "n": 162,
+          "mean_ret_pct": -0.21908165311011096
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 200,
+          "n": 173,
+          "mean_ret_pct": -0.14157757840178908
+        },
+        {
+          "market": "AsiaPacExJapan",
+          "rsi_n": 3,
+          "rsi_th": 15,
+          "trend_sma": 250,
+          "n": 182,
+          "mean_ret_pct": -0.19130873685672664
+        }
+      ],
+      "share_positive": 0.2222222222222222
+    },
+    "criteria": {
+      "C1": false,
+      "C2": false,
+      "C3": false,
+      "C4": false,
+      "C5": false,
+      "C6": true
+    },
+    "verdict": "rejeté",
+    "montecarlo_pass": false
   },
   "_registry_trials_total": 176
 }
