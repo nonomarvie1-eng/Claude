@@ -1,0 +1,46 @@
+# BROUILLON — NON ENREGISTRÉ, NON EXÉCUTÉ. En attente de l'autorisation de l'utilisateur.
+# Sera déplacé dans experiments/preregistration/ (inchangé ou corrigé) et commité AVANT toute exécution.
+
+[common]
+timeframe = "1h"
+market = "perpétuels USDT-M Binance, achat et vente, notionnel <= capital (sans levier)"
+universe_decision = ["BTCUSDT", "ETHUSDT"]
+universe_replication = ["BNBUSDT", "XRPUSDT", "EOSUSDT", "BCHUSDT", "LTCUSDT", "TRXUSDT", "LINKUSDT", "MATICUSDT"]
+period = ["2020-01-01", "2023-07-01"]
+subperiods = [["2020-01-01", "2022-01-01"], ["2022-01-01", "2023-07-01"]]
+execution = "ouverture H1 suivante ; stress : +1 bougie de retard"
+stop = "2 x médiane(ATR14 H1 / clôture) du S2 2019, en % fixe par actif"
+costs = { taker = 0.0005, slippage = 0.0005, funding = "réel", stress = "x2" }
+risk_decision = 0.005
+risk_info = [0.0025, 0.01, 0.02]
+
+[[hypothesis]]
+key = "H8-1-BREAKOUT24"
+rule = "long : close crossesAbove highest(24) ; short : close crossesBelow lowest(24) ; sortie : canal opposé 12"
+sensitivity = [{ n_entry = 18 }, { n_entry = 36 }, { stop_mult = 1.5 }, { stop_mult = 3.0 }]
+
+[[hypothesis]]
+key = "H8-2-VWAP-TREND"
+rule = "long : close crossesAbove vwap(jour UTC) ET ema50 > ema200 ; short symétrique ; sortie au croisement inverse du vwap"
+sensitivity = [{ ema_fast = 34 }, { ema_fast = 89 }, { stop_mult = 1.5 }, { stop_mult = 3.0 }]
+
+[[hypothesis]]
+key = "H8-3-BB-RANGE-MR"
+rule = "long : close < bollinger_basse(20,2) ET adx14 < 20 ; short symétrique ; sortie : close croise sma20"
+sensitivity = [{ adx_th = 15 }, { adx_th = 25 }, { bb_k = 1.5 }, { bb_k = 2.5 }]
+
+[[hypothesis]]
+key = "H8-4-TREND-PULLBACK"
+rule = "long : ema50 > ema200 ET rsi14 < 30 ; short : ema50 < ema200 ET rsi14 > 70 ; sortie : rsi14 recroise 50"
+sensitivity = [{ rsi_low = 25, rsi_high = 75 }, { rsi_low = 35, rsi_high = 65 }, { stop_mult = 1.5 }, { stop_mult = 3.0 }]
+
+[[hypothesis]]
+key = "H8-5-CROSS-ASSET"
+rule = "meilleure de H8-1..4, figée, sur XAU/USD, EUR/USD, GBP/USD, NAS100, US500, JP225 en H1"
+status = "données à fournir par l'utilisateur (exports MT5 démo jusqu'au 2023-06-30)"
+
+[budget]
+P8 = 4
+P8-SENS = 16
+P8-DIAG = 4
+P8-XASSET = 6
