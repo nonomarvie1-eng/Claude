@@ -147,7 +147,8 @@ Fichiers HD (PNG 2079 × 2906 px à 300 dpi et PDF vectoriel avec polices embarq
 ## 7. Organisation des fichiers
 ```
 couverture/
-├── RAPPORT.md                  ← ce document
+├── RAPPORT.md                  ← série 1 (ce document)
+├── RAPPORT_SERIE2.md           ← série 2 (six couvertures, format A4)
 ├── 00_originaux/               photos reçues, en lecture seule + SHA256SUMS.txt
 ├── 01_audit/                   zooms de contrôle, grilles, avant/après, contrôle de fidélité
 ├── 02_recherche/               (références : voir §2)

@@ -1,0 +1,19 @@
+/* Série 2 — format réel du livre : A4 210 x 297 mm + 3 mm de fond perdu = 216 x 303 mm. */
+@import url("../polices/Cormorant.css");
+@import url("../polices/Fraunces.css");
+@import url("../polices/EBGaramond.css");
+@import url("../polices/BodoniModa.css");
+@import url("../polices/Jost.css");
+@import url("../polices/InstrumentSerif.css");
+@import url("../polices/Manrope.css");
+@import url("../polices/Playfair.css");
+:root{--W:216mm;--H:303mm;--bleed:3mm;
+  --ivoire:#F3E8D4;--foret:#233D30;--terracotta:#A35439;--ocre:#BD9452;--ocre-clair:#E7C98F;--brun:#30251F;--indigo:#243B59}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:var(--W);height:var(--H);background:#fff}
+.cover{position:relative;width:var(--W);height:var(--H);overflow:hidden;-webkit-font-smoothing:antialiased;
+  font-kerning:normal;font-feature-settings:"kern","liga";text-rendering:geometricPrecision}
+.abs{position:absolute}
+.img{position:absolute;background-repeat:no-repeat;background-size:100% 100%}
+.guides .cover::after{content:"";position:absolute;inset:3mm;outline:.25mm solid magenta;z-index:99}
+.guides .cover::before{content:"";position:absolute;inset:13mm;outline:.25mm dashed cyan;z-index:99}

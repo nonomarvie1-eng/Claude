@@ -1,0 +1,15 @@
+Série 2 — zones INTÉRIEURES au sujet (visage, plat), réduites puis recalées sur la photo ORIGINALE.
+NCC ~1 et facteur 1,000 = mêmes pixels, sans déformation (écart résiduel = correction colorimétrique globale + rééchantillonnage).
+
+S2-1 visage (P1)                   NCC = 0.5768  facteur 1.000  position source (247, 235)
+S2-1 bol (P1)                      NCC = 0.9992  facteur 1.000  position source (159, 870)
+S2-2 visage + calebasse (P8)       NCC = 0.9986  facteur 1.000  position source (157, 429)
+S2-3 visage (P1)                   NCC = 0.9490  facteur 1.000  position source (245, 238)
+S2-4 visage (P7)                   NCC = 0.9786  facteur 1.000  position source (833, 43)
+S2-4 mortier (P7)                  NCC = 0.9773  facteur 1.000  position source (456, 951)
+S2-5 plat (P6)                     NCC = 0.9946  facteur 1.000  position source (310, 468)
+S2-6 visage (P8)                   NCC = 0.6706  facteur 1.000  position source (175, 357)
+
+Mesure resserrée (yeux + lunettes), car les zones « visage » ci-dessus incluaient du fond remplacé :
+S2-1 yeux/lunettes (P1)            NCC = 0.8615  position source (288, 335)
+S2-6 yeux/lunettes (P8)            NCC = 0.7875  position source (205, 526)
