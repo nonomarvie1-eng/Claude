@@ -1,0 +1,87 @@
+{
+  "P1_portrait_cuisine_foutou.jpg": {
+    "params": {
+      "wb": 0.3,
+      "expo": 1.03,
+      "contrast": 1.04,
+      "sat": 0.9
+    },
+    "gains_rgb": [
+      0.833,
+      1.0,
+      1.181
+    ],
+    "outputs": [
+      {
+        "file": "P1_portrait_cuisine_foutou__retouche_x2.31.png",
+        "size": [
+          2079,
+          3696
+        ]
+      },
+      {
+        "file": "P1_portrait_cuisine_foutou__retouche_x1.60.png",
+        "size": [
+          1440,
+          2560
+        ]
+      }
+    ]
+  },
+  "P6_plat_poulet_yassa_thiere.png": {
+    "params": {
+      "wb": 0.22,
+      "expo": 1.0,
+      "contrast": 1.03,
+      "sat": 0.9
+    },
+    "gains_rgb": [
+      0.8659,
+      1.0,
+      1.1562
+    ],
+    "outputs": [
+      {
+        "file": "P6_plat_poulet_yassa_thiere__retouche_x1.92.png",
+        "size": [
+          2085,
+          2780
+        ]
+      },
+      {
+        "file": "P6_plat_poulet_yassa_thiere__assiette_detouree_x1.92.png",
+        "ellipse_source_px": {
+          "cx": 554.9994506835938,
+          "cy": 731.2642211914062,
+          "axes": [
+            978.2188110351562,
+            1006.4873657226562
+          ],
+          "angle": 85.11477661132812
+        }
+      }
+    ]
+  },
+  "P7_mortier_foutou.jpg": {
+    "params": {
+      "wb": 0.28,
+      "expo": 1.02,
+      "contrast": 1.04,
+      "sat": 0.92
+    },
+    "gains_rgb": [
+      0.8562,
+      1.0,
+      1.1781
+    ],
+    "outputs": [
+      {
+        "file": "P7_mortier_foutou__retouche_x1.65.png",
+        "size": [
+          1889,
+          2267
+        ]
+      }
+    ]
+  }
+}

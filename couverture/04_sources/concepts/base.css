@@ -1,0 +1,23 @@
+/* Base commune — format 170 x 240 mm + 3 mm de fond perdu = 176 x 246 mm.
+   Pour changer de format : modifier --W / --H (et la taille de page dans render.js). */
+@import url("../polices/Cormorant.css");
+@import url("../polices/Fraunces.css");
+@import url("../polices/EBGaramond.css");
+@import url("../polices/BodoniModa.css");
+@import url("../polices/Jost.css");
+@import url("../polices/InstrumentSerif.css");
+@import url("../polices/Manrope.css");
+:root{
+  --W:176mm; --H:246mm; --bleed:3mm;
+  --ivoire:#F3E8D4; --foret:#233D30; --terracotta:#A35439; --ocre:#BD9452;
+  --brun:#30251F; --indigo:#243B59;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:var(--W);height:var(--H);background:#fff}
+.cover{position:relative;width:var(--W);height:var(--H);overflow:hidden;
+  text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased;font-kerning:normal;
+  font-feature-settings:"kern","liga","clig"}
+.photo{position:absolute;background-repeat:no-repeat}
+/* Repères (désactivés pour l'export ; ajouter ?guides à l'URL) */
+.guides .cover::after{content:"";position:absolute;inset:var(--bleed);outline:.2mm solid magenta;pointer-events:none}
+.guides .cover::before{content:"";position:absolute;inset:calc(var(--bleed) + 10mm);outline:.2mm dashed cyan;pointer-events:none;z-index:99}

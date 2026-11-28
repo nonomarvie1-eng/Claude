@@ -1,0 +1,8 @@
+Contrôle de fidélité géométrique : chaque zone photo de la couverture est réduite à l'échelle source,
+puis recalée (matchTemplate) sur la photo ORIGINALE. NCC ~1 = mêmes pixels, sans déformation.
+
+A — visage + plat (P1)       NCC = 0.9987   position source (26, 136)  facteur 1.000
+B — gestuelle mortier (P7)   NCC = 0.9942   position source (28, 44)  facteur 1.000
+C — plat (P6)                NCC = 0.9892   position source (33, 183)  facteur 1.000
+D — assiette détourée (P6)   NCC = 0.9874   position source (180, 383)  facteur 1.000
+E — mains + plat (P1)        NCC = 0.9975   position source (70, 787)  facteur 1.000

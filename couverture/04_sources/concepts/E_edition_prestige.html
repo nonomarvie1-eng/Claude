@@ -1,0 +1,25 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>E — Édition de prestige</title>
+<link rel="stylesheet" href="base.css"><style>
+/* Concept E — Édition de prestige. Une seule famille : Bodoni Moda (romain, italique, petites capitales simulées).
+   Détail P1 : les mains qui tendent le plat (recadrage seul). */
+.cover{background:var(--indigo)}
+.cadre{position:absolute;inset:calc(var(--bleed) + 7mm);border:.35mm solid rgba(189,148,82,.85)}
+.cadre::after{content:"";position:absolute;inset:1.3mm;border:.15mm solid rgba(189,148,82,.55)}
+.pre{position:absolute;left:0;right:0;top:34mm;text-align:center;font-family:"Bodoni Moda";font-weight:500;font-size:2.9mm;letter-spacing:.42em;text-transform:uppercase;color:var(--ocre);padding-left:.42em}
+.titre{position:absolute;left:0;right:0;top:44mm;text-align:center;font-family:"Bodoni Moda";color:var(--ivoire);line-height:.95}
+.titre .l1{display:block;font-weight:500;font-size:24mm;letter-spacing:-.005em;font-variation-settings:"opsz" 96}
+.titre .l2{display:block;font-style:italic;font-weight:400;font-size:12.6mm;letter-spacing:.005em;margin-top:2.2mm;font-variation-settings:"opsz" 72}
+.photo{left:25.5mm;top:106mm;width:125mm;height:66mm;
+  background-image:url("../../03_photos_retouchees/P1_portrait_cuisine_foutou__retouche_x1.60.png");background-size:137.28mm 244.06mm;background-position:-9.1mm -118mm;
+  outline:.35mm solid var(--ocre);outline-offset:1.6mm}
+.nom{position:absolute;left:0;right:0;top:194mm;text-align:center;font-family:"Bodoni Moda";color:var(--ivoire)}
+.nom .a{display:block;font-size:3mm;letter-spacing:.42em;text-transform:uppercase;color:var(--ocre);font-weight:500;padding-left:.42em}
+.nom .b{display:block;font-size:10.5mm;font-weight:500;margin-top:2.6mm;letter-spacing:.02em}
+.orn{position:absolute;left:50%;top:91mm;width:22mm;margin-left:-11mm;height:.35mm;background:var(--ocre)}
+</style></head><body><div class="cover">
+<div class="cadre"></div>
+<h1 class="titre"><span class="l1">L<span style="letter-spacing:-.07em">’</span>Afrique</span><span class="l2">dans mon assiette</span></h1>
+<div class="orn"></div>
+<div class="photo"></div>
+<p class="nom"><span class="a">Les recettes de</span><span class="b">Mme Fofana</span></p>
+</div></body></html>
