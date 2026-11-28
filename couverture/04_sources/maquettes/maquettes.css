@@ -1,0 +1,23 @@
+/* Maquettes de préproduction — A4 + 3 mm (216 x 303 mm). NON destinées à la commercialisation. */
+@import url("../polices/BodoniModa.css");
+@import url("../polices/Playfair.css");
+@import url("../polices/Cormorant.css");
+@import url("../polices/Jost.css");
+:root{--ivoire:#F3E8D4;--foret:#233D30;--terracotta:#A35439;--ocre:#BD9452;--ocre-clair:#E7C98F;--brun:#30251F;--indigo:#243B59}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:216mm;height:303mm}
+.cover{position:relative;width:216mm;height:303mm;overflow:hidden;-webkit-font-smoothing:antialiased;font-kerning:normal;font-feature-settings:"kern","liga"}
+.abs{position:absolute}
+.photo{position:absolute;inset:0;background-size:100% 100%;background-repeat:no-repeat}
+[data-rel]{white-space:nowrap}
+.sans{font-family:Jost;font-weight:500;text-transform:uppercase}
+/* Familles testées : mêmes rôles, réglages propres à chaque dessin */
+.f-bodoni   .d{font-family:"Bodoni Moda";font-weight:500;font-variation-settings:"opsz" 96}
+.f-bodoni   .di{font-family:"Bodoni Moda";font-style:italic;font-weight:400;font-variation-settings:"opsz" 96}
+.f-playfair .d{font-family:"Playfair Display";font-weight:700}
+.f-playfair .di{font-family:"Playfair Display";font-style:italic;font-weight:500}
+.f-cormorant .d{font-family:"Cormorant Garamond";font-weight:600}
+.f-cormorant .di{font-family:"Cormorant Garamond";font-style:italic;font-weight:500}
+.f-bodoni .ap{letter-spacing:-.08em}
+.f-cormorant .ap{letter-spacing:-.03em}
+.f-playfair .ap{letter-spacing:-.03em}

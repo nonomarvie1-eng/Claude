@@ -1,0 +1,4 @@
+Maquettes — zones visage/plat recalées sur les ORIGINAUX (NCC ; facteur 1,000 = aucune déformation).
+A1 visage + bol (P1)         NCC = 0.9967  facteur 1.000
+A2 visage + plateau (P2)     NCC = 0.9892  facteur 1.000
+B1 plat (P6)                 NCC = 0.9638  facteur 1.000
